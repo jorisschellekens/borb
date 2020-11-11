@@ -3,7 +3,6 @@ from typing import Optional, List
 
 from ptext.exception.pdf_exception import (
     XREFTokenNotFoundError,
-    PDFTypeError,
     PDFValueError,
 )
 from ptext.io.tokenizer.high_level_tokenizer import HighLevelTokenizer

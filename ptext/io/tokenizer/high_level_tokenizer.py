@@ -2,7 +2,7 @@ import logging
 import re
 from typing import Optional
 
-from ptext.exception.pdf_exception import PDFEOFError, PDFTypeError
+from ptext.exception.pdf_exception import PDFEOFError, PDFTypeError, PDFSyntaxError
 from ptext.io.tokenizer.low_level_tokenizer import LowLevelTokenizer, TokenType
 from ptext.primitive.pdf_array import PDFArray
 from ptext.primitive.pdf_boolean import PDFBoolean
@@ -25,7 +25,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         if token is None:
             raise PDFEOFError()
         if token.token_type != TokenType.START_ARRAY:
-            raise ValueError("not a valid array")
+            raise PDFSyntaxError(message="invalid array", byte_offset=token.byte_offset)
 
         out = PDFArray()
 
@@ -36,7 +36,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
             if token.token_type == TokenType.END_ARRAY:
                 break
             if token.token_type == TokenType.END_DICT:
-                raise ValueError("unexpected close bracket")
+                raise PDFSyntaxError(
+                    message="unexpected end of dictionary",
+                    byte_offset=token.byte_offset,
+                )
 
             # go back
             self.seek(token.byte_offset)
@@ -56,7 +59,9 @@ class HighLevelTokenizer(LowLevelTokenizer):
         if token is None:
             raise PDFEOFError()
         if token.token_type != TokenType.START_DICT:
-            raise ValueError("not a valid dictionary")
+            raise PDFSyntaxError(
+                message="invalid dictionary", byte_offset=token.byte_offset
+            )
 
         out_dict = PDFDictionary()
         while True:
@@ -68,7 +73,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
             if token.token_type == TokenType.END_DICT:
                 break
             if token.token_type != TokenType.NAME:
-                raise ValueError("dictionary key is not a name")
+                raise PDFSyntaxError(
+                    message="dictionary key must be a name",
+                    byte_offset=token.byte_offset,
+                )
 
             # store name
             name = PDFName(token.text[1:])
@@ -76,7 +84,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
             # attempt to read value
             value = self.read_object()
             if value is None:
-                raise ValueError("unexpected end of dictionary")
+                raise PDFSyntaxError(
+                    message="unexpected end of dictionary",
+                    byte_offset=token.byte_offset,
+                )
 
             # store in dict object
             if name is not None:

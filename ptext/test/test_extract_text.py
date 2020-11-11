@@ -4,11 +4,7 @@ from pathlib import Path
 from ptext.object.canvas.listener.text.simple_text_extraction import (
     SimpleTextExtraction,
 )
-from ptext.object.canvas.listener.text.tf_idf_keyword_extraction import (
-    TFIDFKeywordExtraction,
-)
 from ptext.pdf import PDF
-
 from ptext.test.base_test import BaseTest
 
 
@@ -18,7 +14,7 @@ class TestExtractText(BaseTest):
         self.output_dir = Path("txt")
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "document_37.pdf"
+        self.input_file = self.input_dir / "document_172_single_page.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):

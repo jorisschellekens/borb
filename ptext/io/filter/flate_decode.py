@@ -63,6 +63,8 @@ class FlateDecode:
             )
 
         # initial transform
+        with open("/home/joris/unzippable.zip", "wb") as fh:
+            fh.write(bytes_in)
         bytes_after_zlib = zlib.decompress(bytes_in, bufsize=4092)
 
         # LZW and Flate encoding compress more compactly if their input data is highly predictable. One way of

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from ptext.object.canvas.geometry.line_segment import LineSegment
 from ptext.object.pdf_high_level_object import Event

@@ -1,10 +1,14 @@
 from codecs import decode
 
+from ptext.exception.pdf_exception import PDFValueError
+from ptext.io.filter.ascii85_decode import ASCII85Decode
+from ptext.io.filter.flate_decode import FlateDecode
+from ptext.io.filter.lzw_decode import LZWDecode
+from ptext.io.filter.run_length_decode import RunLengthDecode
 from ptext.primitive.pdf_array import PDFArray
 from ptext.primitive.pdf_dictionary import PDFDictionary
 from ptext.primitive.pdf_name import PDFName
 from ptext.primitive.pdf_object import PDFObject
-from ptext.io.filter.flate_decode import FlateDecode
 
 
 class PDFStream(PDFObject):
@@ -37,6 +41,7 @@ class PDFStream(PDFObject):
         decode_params_name = PDFName("DecodeParms")
         transformed_bytes = self.raw_byte_array
         for filter_name in filters:
+            # FLATE
             if filter_name in [PDFName("FlateDecode"), PDFName("Fl")]:
                 transformed_bytes = FlateDecode.decode_with_parameter_dictionary(
                     transformed_bytes,
@@ -44,6 +49,34 @@ class PDFStream(PDFObject):
                     if decode_params_name in self.stream_dictionary
                     else None,
                 )
+                continue
+
+            # ASCII85
+            if filter_name in [PDFName("ASCII85Decode")]:
+                transformed_bytes = ASCII85Decode.decode_with_parameter_dictionary(
+                    transformed_bytes, None
+                )
+                continue
+
+            # LZW
+            if filter_name in [PDFName("LZWDecode")]:
+                transformed_bytes = LZWDecode.decode_with_parameter_dictionary(
+                    transformed_bytes, None
+                )
+                continue
+
+            # RunLengthDecode
+            if filter_name in [PDFName("RunLengthDecode")]:
+                transformed_bytes = RunLengthDecode.decode_with_parameter_dictionary(
+                    transformed_bytes, None
+                )
+                continue
+
+            # unknown filter
+            raise PDFValueError(
+                expected_value_description="[/ASCII85Decode, /FlateDecode, /Fl, /LZWDecode, /RunLengthDecode]",
+                received_value_description=str(filter_name),
+            )
         # return
         return transformed_bytes
 

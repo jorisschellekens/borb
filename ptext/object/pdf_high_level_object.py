@@ -1,8 +1,7 @@
-import io
 from typing import Union, List, Any
 
 from ptext.primitive.pdf_null import PDFNull
-from ptext.primitive.pdf_object import PDFObject, PDFIndirectObject
+from ptext.primitive.pdf_object import PDFObject
 
 
 class Event:

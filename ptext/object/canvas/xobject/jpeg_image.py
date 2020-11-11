@@ -1,6 +1,4 @@
-import base64
-import io
-from typing import Any
+from typing import Any, Optional
 
 import PIL.Image
 
@@ -15,6 +13,9 @@ class JPEGImage(Image):
     def read(self, bytes_in: bytes) -> "JPEGImage":
         self.image = PIL.Image.open(bytes_in)
         return self
+
+    def get_PIL_image(self) -> Optional[PIL.Image.Image]:
+        return self.image
 
     def get_width(self) -> int:
         return self.get("Width").get_int_value()

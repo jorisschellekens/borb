@@ -46,7 +46,7 @@ class SVGExport(EventListener):
         page_size = page.get_page_info().get_size()
         if page_size is None and self.default_page_size is None:
             return
-        if page_size is None:
+        if page_size == (None, None):
             page_size = self.default_page_size
 
         self.current_page_width = page_size[0]
@@ -118,7 +118,52 @@ class SVGExport(EventListener):
         # build text element
         text_element = ET.Element("text")
         if text_render_info.get_font_family() is not None:
-            text_element.set("font-family", text_render_info.get_font_family())
+            font_family_name = text_render_info.get_font_family()
+
+            # check whether the font is bold
+            is_bold = False
+            bold_name_part = [
+                "Bold",
+                "bold",
+                ",Bold,",
+                ",bold,",
+                ",Bold",
+                ",bold",
+                "Bold,",
+                "bold,",
+            ]
+            for bn in bold_name_part:
+                if bn in font_family_name:
+                    font_family_name = font_family_name.replace(bn, "")
+                    is_bold = True
+            if is_bold:
+                text_element.set("font-weight", "bold")
+
+            # check whether the font is italic
+            is_italic = False
+            italic_name_part = [
+                "Italic",
+                "italic",
+                ",Italic,",
+                ",italic,",
+                ",Italic",
+                ",italic",
+                "Italic,",
+                "italic,",
+            ]
+            for bn in italic_name_part:
+                if bn in font_family_name:
+                    font_family_name = font_family_name.replace(bn, "")
+                    is_italic = True
+            if is_italic:
+                text_element.set("font-style", "italic")
+
+            # font family trimming
+            if font_family_name.endswith(","):
+                font_family_name = font_family_name[:-1]
+
+            # set font-family
+            text_element.set("font-family", font_family_name)
         text_element.set("x", str(x))
         text_element.set("y", str(y))
         text_element.set(
@@ -136,7 +181,6 @@ class SVGExport(EventListener):
 
         w = int(event.get_width())
         h = int(event.get_height())
-        img_scaled = event.get_image().image.resize((w, h))
 
         # COORDINATE TRANSFORM:
         # In PDF coordinate space the origin is at the bottom left of the page,

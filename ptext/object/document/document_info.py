@@ -1,4 +1,3 @@
-import os
 from typing import Optional, List
 
 from ptext.object.pdf_high_level_object import PDFHighLevelObject

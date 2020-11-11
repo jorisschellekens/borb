@@ -1,8 +1,6 @@
-from typing import List, Optional, Tuple
+from typing import Tuple
 
-from ptext.object.canvas.geometry.line_segment import LineSegment
 from ptext.object.pdf_high_level_object import Event
-from ptext.primitive.pdf_string import PDFString, PDFHexString, PDFLiteralString
 
 
 class ImageRenderEvent(Event):
@@ -20,9 +18,9 @@ class ImageRenderEvent(Event):
         self.height = max(abs(int(v[1])), 1)
 
         # scaled image
-        self.scaled_image = self.image.image.resize((self.width, self.height))
+        self.scaled_image = self.image.get_PIL_image().resize((self.width, self.height))
 
-    def get_image(self) -> int:
+    def get_image(self) -> "Image":
         return self.image
 
     def get_x(self) -> int:

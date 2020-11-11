@@ -2,7 +2,6 @@ from typing import Optional
 
 from ptext.object.canvas.geometry.matrix import Matrix
 from ptext.object.pdf_high_level_object import PDFHighLevelObject
-from ptext.primitive.pdf_array import PDFArray
 from ptext.primitive.pdf_name import PDFName
 from ptext.primitive.pdf_null import PDFNull
 from ptext.primitive.pdf_number import PDFInt, PDFFloat

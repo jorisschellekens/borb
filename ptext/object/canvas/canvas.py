@@ -1,4 +1,3 @@
-import copy
 import io
 import os
 
@@ -15,6 +14,21 @@ from ptext.object.canvas.operator.color.set_gray_non_stroking import SetGrayNonS
 from ptext.object.canvas.operator.color.set_gray_stroking import SetGrayStroking
 from ptext.object.canvas.operator.color.set_rgb_non_stroking import SetRGBNonStroking
 from ptext.object.canvas.operator.color.set_rgb_stroking import SetRGBStroking
+from ptext.object.canvas.operator.compatibility.begin_compatibility_section import (
+    BeginCompatibilitySection,
+)
+from ptext.object.canvas.operator.compatibility.end_compatibility_section import (
+    EndCompatibilitySection,
+)
+from ptext.object.canvas.operator.marked_content.begin_marked_content import (
+    BeginMarkedContent,
+)
+from ptext.object.canvas.operator.marked_content.begin_marked_content_with_property_list import (
+    BeginMarkedContentWithPropertyList,
+)
+from ptext.object.canvas.operator.marked_content.end_marked_content import (
+    EndMarkedContent,
+)
 from ptext.object.canvas.operator.state.modify_transformation_matrix import (
     ModifyTransformationMatrix,
 )
@@ -69,6 +83,13 @@ class Canvas(PDFHighLevelObject):
             SetGrayStroking(),
             SetRGBNonStroking(),
             SetRGBStroking(),
+            # compatibility
+            BeginCompatibilitySection(),
+            EndCompatibilitySection(),
+            # marked content
+            BeginMarkedContent(),
+            BeginMarkedContentWithPropertyList(),
+            EndMarkedContent(),
             # state
             ModifyTransformationMatrix(),
             PopGraphicsState(),
@@ -95,8 +116,12 @@ class Canvas(PDFHighLevelObject):
             # xobject
             Do(),
         ]
+        # compatibility mode
+        self.in_compatibility_section = False
         # set initial graphics state
         self.graphics_state = CanvasGraphicsState()
+        # canvas tag hierarchy is (oddly enough) not considered to be part of the graphics state
+        self.marked_content_stack = []
         # set graphics state stack
         self.graphics_state_stack = []
 
@@ -133,6 +158,9 @@ class Canvas(PDFHighLevelObject):
             if len(candidate_ops) == 1:
                 operator = candidate_ops[0]
                 if len(operand_stk) < operator.get_number_of_operands():
+                    # if we are in a compatibility section ignore any possible mistake
+                    if self.in_compatibility_section:
+                        continue
                     raise IllegalGraphicsStateError(
                         message="Unable to execute operator %s. Expected %d arguments, received %d."
                         % (
@@ -161,8 +189,15 @@ class Canvas(PDFHighLevelObject):
                             i, operands[i]
                         )
 
+                # debug
+                # print("%s %s" % (operator.text, str([str(x) for x in operands])))
+
                 # invoke
-                operator.invoke(self, operands)
+                try:
+                    operator.invoke(self, operands)
+                except Exception as e:
+                    if not self.in_compatibility_section:
+                        raise e
 
             # unknown operator
             if len(candidate_ops) == 0:

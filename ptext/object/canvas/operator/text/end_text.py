@@ -2,7 +2,6 @@ from typing import List
 
 from ptext.object.canvas.event.end_text_event import EndTextEvent
 from ptext.object.canvas.operator.canvas_operator import CanvasOperator
-from ptext.object.pdf_high_level_object import Event
 from ptext.primitive.pdf_object import PDFObject
 
 

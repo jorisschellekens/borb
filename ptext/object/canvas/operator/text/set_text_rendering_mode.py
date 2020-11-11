@@ -1,4 +1,3 @@
-import copy
 from typing import List
 
 from ptext.object.canvas.operator.canvas_operator import CanvasOperator

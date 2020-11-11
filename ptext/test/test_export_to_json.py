@@ -2,10 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from ptext.object.canvas.listener.export.svg_export import SVGExport
 from ptext.pdf import PDF
-import xml.etree.ElementTree as ET
-
 from ptext.test.base_test import BaseTest
 
 

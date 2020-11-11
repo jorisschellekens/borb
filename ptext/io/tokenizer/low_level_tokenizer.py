@@ -2,7 +2,7 @@ import enum
 import io
 from typing import Optional
 
-from ptext.exception.pdf_exception import PDFEOFError
+from ptext.exception.pdf_exception import PDFEOFError, PDFSyntaxError
 
 
 class TokenType(enum.IntEnum):
@@ -98,9 +98,9 @@ class LowLevelTokenizer:
             ch = self._next_char()
             # UNEXPECTED CHARACTER AFTER >
             if ch != ">":
-                raise ValueError(
-                    "Invalid character at byte position %d, expected >."
-                    % self.io_source.tell()
+                raise PDFSyntaxError(
+                    message="invalid character, expected >, received %s" % ch,
+                    byte_offset=self.io_source.tell(),
                 )
             return Token(out_pos, TokenType.END_DICT, ">>")
 
@@ -174,9 +174,9 @@ class LowLevelTokenizer:
             if len(ch) == 0:
                 raise PDFEOFError()
             if out_str.endswith("\\"):
-                raise ValueError(
-                    "escape character without subsequent character at position %d."
-                    % self.io_source.tell()
+                raise PDFSyntaxError(
+                    message="unterminated escape sequence",
+                    byte_offset=self.io_source.tell(),
                 )
             return Token(out_pos, TokenType.STRING, out_str)
 

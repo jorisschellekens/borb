@@ -6,7 +6,6 @@ from ptext.object.canvas.listener.text.tf_idf_keyword_extraction import (
     TFIDFKeywordExtraction,
 )
 from ptext.pdf import PDF
-
 from ptext.test.base_test import BaseTest
 
 

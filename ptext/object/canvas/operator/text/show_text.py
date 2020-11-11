@@ -1,8 +1,8 @@
 from typing import List
 
 from ptext.exception.pdf_exception import PDFTypeError
-from ptext.object.canvas.operator.canvas_operator import CanvasOperator
 from ptext.object.canvas.event.text_render_event import TextRenderEvent
+from ptext.object.canvas.operator.canvas_operator import CanvasOperator
 from ptext.primitive.pdf_object import PDFObject
 from ptext.primitive.pdf_string import PDFString
 

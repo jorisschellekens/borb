@@ -1,8 +1,4 @@
-from typing import Optional, Type, Any
-
-from ptext.primitive.pdf_indirect_reference import PDFIndirectReference
-from ptext.primitive.pdf_name import PDFName
-from ptext.primitive.pdf_object import PDFObject, PDFIndirectObject
+from typing import Optional, Type
 
 
 class PDFException(Exception):
@@ -23,6 +19,15 @@ class PDFException(Exception):
 
     def get_byte_offset(self) -> Optional[int]:
         return self.byte_offset
+
+
+class PDFSyntaxError(PDFException):
+    def __init__(
+        self,
+        message: Optional[str] = None,
+        byte_offset: Optional[int] = None,
+    ):
+        super(PDFSyntaxError, self).__init__(message=message, byte_offset=byte_offset)
 
 
 class PDFTypeError(PDFException, TypeError):

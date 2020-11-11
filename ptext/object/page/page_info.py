@@ -4,7 +4,7 @@ from ptext.object.page.page_size import PageSize
 from ptext.object.pdf_high_level_object import PDFHighLevelObject
 from ptext.primitive.pdf_name import PDFName
 from ptext.primitive.pdf_null import PDFNull
-from ptext.primitive.pdf_number import PDFFloat, PDFNumber
+from ptext.primitive.pdf_number import PDFNumber
 
 
 class PageInfo(PDFHighLevelObject):
