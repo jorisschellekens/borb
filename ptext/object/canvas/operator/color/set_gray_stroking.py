@@ -23,5 +23,5 @@ class SetGrayStroking(CanvasOperator):
             raise PDFTypeError(
                 expected_type=PDFNumber, received_type=operands[0].__class__
             )
-        g = operands[0].get_float_value()
+        g = operands[0].get_decimal_value()
         canvas.graphics_state.stroke_color = GrayColor(g)

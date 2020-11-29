@@ -26,8 +26,8 @@ class SetCMYKStroking(CanvasOperator):
                 raise PDFTypeError(
                     expected_type=PDFNumber, received_type=operands[i].__class__
                 )
-        c = operands[0].get_float_value()
-        m = operands[1].get_float_value()
-        y = operands[2].get_float_value()
-        k = operands[3].get_float_value()
+        c = operands[0].get_decimal_value()
+        m = operands[1].get_decimal_value()
+        y = operands[2].get_decimal_value()
+        k = operands[3].get_decimal_value()
         canvas.graphics_state.stroke_color = CMYKColor(c, m, y, k)

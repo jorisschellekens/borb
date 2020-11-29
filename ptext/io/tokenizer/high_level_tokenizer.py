@@ -1,4 +1,3 @@
-import logging
 import re
 from typing import Optional
 
@@ -15,12 +14,13 @@ from ptext.primitive.pdf_object import PDFObject, PDFIndirectObject
 from ptext.primitive.pdf_stream import PDFStream
 from ptext.primitive.pdf_string import PDFHexString, PDFLiteralString
 
-logger = logging.getLogger(__name__)
-
 
 class HighLevelTokenizer(LowLevelTokenizer):
     def read_array(self) -> PDFArray:
-
+        """
+        This method processes the next tokens and returns a PDFArray.
+        It fails and throws various errors if the next tokens do not represent a PDFArray.
+        """
         token = self.next_non_comment_token()
         if token is None:
             raise PDFEOFError()
@@ -54,7 +54,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
         return out
 
     def read_dictionary(self) -> PDFDictionary:
-
+        """
+        This method processes the next tokens and returns a PDFDictionary.
+        It fails and throws various errors if the next tokens do not represent a PDFDictionary.
+        """
         token = self.next_non_comment_token()
         if token is None:
             raise PDFEOFError()
@@ -96,6 +99,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
         return out_dict
 
     def read_indirect_object(self) -> Optional[PDFObject]:
+        """
+        This method processes the next tokens and returns an indirect PDFObject.
+        It fails and throws various errors if the next tokens do not represent an indirect PDFObject.
+        """
 
         # read object number
         token = self.next_non_comment_token()
@@ -126,6 +133,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
         )
 
     def read_indirect_reference(self) -> Optional[PDFObject]:
+        """
+        This method processes the next tokens and returns an indirect reference.
+        It fails and throws various errors if the next tokens do not represent an indirect reference.
+        """
 
         # read object number
         token = self.next_non_comment_token()
@@ -270,14 +281,16 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # process newline
         ch = self._next_char()
         if ch not in ["\r", "\n"]:
-            raise ValueError(
-                "The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone."
+            raise PDFSyntaxError(
+                "The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone.",
+                byte_offset=self.tell(),
             )
         if ch == "\r":
             ch = self._next_char()
             if ch != "\n":
-                raise ValueError(
-                    "The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone."
+                raise PDFSyntaxError(
+                    "The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone.",
+                    byte_offset=self.tell(),
                 )
 
         bytes = self.io_source.read(length_of_stream)
@@ -288,8 +301,9 @@ class HighLevelTokenizer(LowLevelTokenizer):
             end_of_stream_token.token_type != TokenType.OTHER
             or end_of_stream_token.text != "endstream"
         ):
-            raise ValueError(
-                "A stream shall consist of a dictionary followed by zero or more bytes bracketed between the keywords stream (followed by newline) and endstream"
+            raise PDFSyntaxError(
+                "A stream shall consist of a dictionary followed by zero or more bytes bracketed between the keywords stream (followed by newline) and endstream",
+                byte_offset=self.tell(),
             )
 
         # return PDFStream

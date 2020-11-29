@@ -1,15 +1,26 @@
 import base64
 
-from ptext.primitive.pdf_dictionary import PDFDictionary
-
 
 class ASCII85Decode:
-    @staticmethod
-    def decode_with_parameter_dictionary(
-        bytes_in: bytes, decode_params: PDFDictionary = None
-    ) -> bytes:
+    """
+    Decodes data encoded in an ASCII base-85 representation,
+    reproducing the original binary data.
+    """
 
+    @staticmethod
+    def decode(bytes_in: bytes) -> bytes:
+        """
+        Decodes data encoded in an ASCII base-85 representation
+        """
         exceptions_to_throw = []
+
+        # trimming
+        if bytes_in[-1] == 10 and bytes_in[-2] == 13:
+            bytes_in = bytes_in[0:-2]
+        if bytes_in[-1] == 10:
+            bytes_in = bytes_in[0:-1]
+        if bytes_in[-1] == 13:
+            bytes_in = bytes_in[0:-1]
 
         # normal decode
         try:
@@ -18,7 +29,7 @@ class ASCII85Decode:
             exceptions_to_throw.append(e)
             pass
 
-        # Adobe decode
+        # adobe decode
         try:
             return base64.a85decode(bytes_in, adobe=True)
         except Exception as e:

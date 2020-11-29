@@ -2,6 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
+from ptext.object.canvas.listener.text.stop_words import ENGLISH_STOP_WORDS
 from ptext.object.canvas.listener.text.tf_idf_keyword_extraction import (
     TFIDFKeywordExtraction,
 )
@@ -10,6 +11,11 @@ from ptext.test.base_test import BaseTest
 
 
 class TestExtractKeywords(BaseTest):
+    """
+    This test attempts to extract the keywords (TF-IDF)
+    from each PDF in the corpus
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path("keywords")
@@ -27,7 +33,7 @@ class TestExtractKeywords(BaseTest):
             self.output_dir.mkdir()
 
         with open(file, "rb") as pdf_file_handle:
-            l = TFIDFKeywordExtraction()
+            l = TFIDFKeywordExtraction(ENGLISH_STOP_WORDS)
             doc = PDF.loads(pdf_file_handle, [l])
 
             # export txt

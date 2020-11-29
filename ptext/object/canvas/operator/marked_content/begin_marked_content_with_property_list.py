@@ -25,4 +25,4 @@ class BeginMarkedContentWithPropertyList(CanvasOperator):
                 expected_type=PDFName, received_type=operands[0].__class__
             )
         # TODO
-        canvas.marked_content_stack.append(operands[0])
+        canvas.marked_content_stack.append(operands[0].name)

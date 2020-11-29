@@ -24,7 +24,7 @@ class SetRGBStroking(CanvasOperator):
                 raise PDFTypeError(
                     expected_type=PDFNumber, received_type=operands[i].__class__
                 )
-        r = operands[0].get_float_value()
-        g = operands[1].get_float_value()
-        b = operands[2].get_float_value()
+        r = operands[0].get_decimal_value()
+        g = operands[1].get_decimal_value()
+        b = operands[2].get_decimal_value()
         canvas.graphics_state.stroke_color = RGBColor(r, g, b)

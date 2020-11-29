@@ -1,8 +1,8 @@
 import io
-from typing import Optional, List
+from typing import Optional, List, Any
 
 from ptext.io.tokenizer.high_level_tokenizer import HighLevelTokenizer
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.primitive.pdf_object import PDFObject
 
 
@@ -11,7 +11,7 @@ class TransformerContext:
         self,
         source: Optional[io.IOBase] = None,
         tokenizer: Optional[HighLevelTokenizer] = None,
-        root_object: Optional[PDFHighLevelObject] = None,
+        root_object: Optional[Any] = None,
     ):
         self.source = source
         self.tokenizer = tokenizer
@@ -56,7 +56,7 @@ class BaseTransformer:
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
         for h in self.handlers:
             if h.can_be_transformed(object_to_transform):
                 return h.transform(

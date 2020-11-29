@@ -1,13 +1,21 @@
 import copy
 
-from ptext.primitive.pdf_dictionary import PDFDictionary
+from ptext.exception.pdf_exception import PDFSyntaxError
 
 
 class LZWDecode:
+    """
+    Decompresses data encoded using the LZW (Lempel-Ziv-
+    Welch) adaptive compression method, reproducing the original
+    text or binary data.
+    """
+
     @staticmethod
-    def decode_with_parameter_dictionary(
-        bytes_in: bytes, decode_params: PDFDictionary = None
-    ) -> bytes:
+    def decode(bytes_in: bytes) -> bytes:
+        """
+        Decompresses data encoded using the LZW (Lempel-Ziv-
+        Welch) adaptive compression method
+        """
 
         # Build the dictionary.
         dict_size = 256
@@ -29,7 +37,7 @@ class LZWDecode:
             elif k == dict_size:
                 entry = copy.deepcopy(w).append(w[0])
             else:
-                raise ValueError("lzw mal-compressed k: %s" % k)
+                raise PDFSyntaxError("malformed lzw byte stream")
             bytes_out.extend(entry)
 
             # Add w+entry[0] to the dictionary.

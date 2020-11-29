@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 from functools import cmp_to_key
 from typing import List
 
@@ -9,7 +10,7 @@ from ptext.object.canvas.event.text_render_event import (
     LeftToRightComparator,
 )
 from ptext.object.page.page import Page
-from ptext.object.pdf_high_level_object import EventListener, Event
+from ptext.object.event_listener import EventListener, Event
 
 
 class RegularExpressionTextExtraction(EventListener):
@@ -93,7 +94,7 @@ class RegularExpressionTextExtraction(EventListener):
             # add space if needed
             delta = abs(last_baseline_right - t.get_baseline().x0)
             space_width = round(t.get_space_character_width_in_text_space(), 1)
-            text += " " if (space_width * 0.90 < delta) else ""
+            text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
             text += t.get_text()

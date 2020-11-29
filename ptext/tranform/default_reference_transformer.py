@@ -1,10 +1,9 @@
-from typing import Optional, List
+from typing import Optional, List, Any
 
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.primitive.pdf_indirect_reference import PDFIndirectReference
 from ptext.primitive.pdf_null import PDFNull
 from ptext.primitive.pdf_object import PDFObject
-from ptext.primitive.pdf_string import PDFLiteralString
 from ptext.tranform.base_transformer import BaseTransformer, TransformerContext
 
 
@@ -22,7 +21,7 @@ class DefaultReferenceTransformer(BaseTransformer):
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
 
         # canonic reference
         ref_uuid = ""
@@ -43,7 +42,7 @@ class DefaultReferenceTransformer(BaseTransformer):
             return self.cache[ref_uuid]
 
         # lookup xref
-        xref = context.root_object.get(["XRef"])
+        xref = context.root_object["XRef"]
         src = context.source
         tok = context.tokenizer
 
@@ -55,8 +54,6 @@ class DefaultReferenceTransformer(BaseTransformer):
         val = self.get_root_transformer().transform(
             val, parent_object, context, event_listeners
         )
-        if val is not None and isinstance(val, PDFHighLevelObject):
-            val.set("ObjectNumber", PDFLiteralString(ref_uuid))
         context.indirect_reference_chain.pop(-1)
 
         # update cache

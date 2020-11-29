@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional, Type, Union
 
 
 class PDFException(Exception):
@@ -37,14 +37,13 @@ class PDFTypeError(PDFException, TypeError):
 
     def __init__(
         self,
-        received_type: Type,
+        received_type: Union[Type, None],
         expected_type: Type,
         byte_offset: Optional[int] = None,
     ):
         super(PDFTypeError, self).__init__(
             byte_offset=byte_offset,
-            message="must be %s, not %s"
-            % (expected_type.__name__, received_type.__name__),
+            message="must be %s, not %s" % (expected_type, received_type),
         )
 
 

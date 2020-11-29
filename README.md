@@ -1,6 +1,8 @@
+
 # pText
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Corpus Coverage : 95.6%](https://img.shields.io/badge/corpus%20coverage-95.6%25-green)]()
 
 pText is a library for creating and manipulating PDF files in python.
 
@@ -147,4 +149,38 @@ This should print something like this:
         # export to svg
         with open("output.svg", "wb") as svg_file_handle:
             svg_file_handle.write(ET.tostring(l.get_svg(0)))
-                
+
+### Extracting all images from a page
+    
+    # TODO : write demo code
+    
+## Structure Recognition
+
+Data inside a PDF document is typically not structured. 
+You should think of PDF more like a language for describing typesetting than a content-format.
+It is possible however to attempt to build structure in this kind of document.
+
+    with open("input.pdf", "rb") as pdf_file_handle:
+            
+        # read/parse the document
+        doc = PDF.loads(pdf_file_handle, [SimpleStructureRecognition()])
+            
+SimpleStructureRecognition performs the following tasks:
+
+1. Bundle TextRenderEvent objects in LineRenderEvent objects
+2. Bundle LineRenderEvent objects in ParagraphRenderEvent objects
+3. Bundle ParagraphRenderEvent objects in OrderedlistEvent objects (where applicable)
+4. Bundle ParagraphRenderEvent objects in BulletlistEvent objects (where applicable)
+5. Alert the EventListeners of the Page with the new Event objects
+
+### Audio Export
+
+    with open(file, "rb") as pdf_file_handle:
+        l = AudioExport()
+        
+        # It is important to add SimpleStructureExtraction
+        # This will ensure the AudioExport listener actually has paragraphs to work with
+        doc = PDF.loads(pdf_file_handle, [SimpleStructureExtraction(), l])
+        
+        l.get_audio_file_for_page(0, output_file)
+

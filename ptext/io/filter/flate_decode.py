@@ -1,18 +1,26 @@
 import copy
 import zlib
-from typing import List
+from typing import List, Optional
 
 from ptext.exception.pdf_exception import PDFValueError
-from ptext.primitive.pdf_dictionary import PDFDictionary
 from ptext.primitive.pdf_name import PDFName
 
 
 class FlateDecode:
+    """
+    (PDF 1.2) Decompresses data encoded using the zlib/deflate
+    compression method, reproducing the original text or binary
+    data.
+    """
+
     @staticmethod
     def decode_with_parameter_dictionary(
-        bytes_in: bytes, decode_params: PDFDictionary = None
+        bytes_in: bytes, decode_params: Optional["PDFDictionary"] = None
     ) -> bytes:
-
+        """
+        Decompresses data encoded using the zlib/deflate
+        compression method
+        """
         predictor = 1
         predictor_name = PDFName("Predictor")
         if decode_params is not None and predictor_name in decode_params:
@@ -43,6 +51,10 @@ class FlateDecode:
         bits_per_component: int = 8,
         columns: int = 1,
     ) -> bytes:
+        """
+        Decompresses data encoded using the zlib/deflate
+        compression method
+        """
 
         # check input bytes
         if len(bytes_in) == 0:
@@ -73,7 +85,6 @@ class FlateDecode:
         # function works well, the postprediction data clusters toward 0.
         # PDF supports two groups of Predictor functions. The first, the TIFF group, consists of the single function that is
         # Predictor 2 in the TIFF 6.0 specification.
-        # p28
 
         # check predictor
         if predictor == 1:

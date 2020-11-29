@@ -1,10 +1,7 @@
 from ptext.object.page.page_info import PageInfo
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
+from ptext.tranform.types_with_parent_attribute import DictionaryWithParentAttribute
 
 
-class Page(PDFHighLevelObject):
-    def __init__(self):
-        super().__init__()
-
+class Page(DictionaryWithParentAttribute):
     def get_page_info(self) -> PageInfo:
         return PageInfo(self)

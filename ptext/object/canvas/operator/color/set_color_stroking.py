@@ -47,23 +47,23 @@ class SetColorStroking(CanvasOperator):
         non_stroke_color_space = self.canvas.graphics_state.non_stroke_color_space
         if non_stroke_color_space == PDFName("DeviceCMYK"):
             canvas.graphics_state.stroke_color = CMYKColor(
-                operands[0].get_float_value(),
-                operands[1].get_float_value(),
-                operands[2].get_float_value(),
-                operands[3].get_float_value(),
+                operands[0].get_decimal_value(),
+                operands[1].get_decimal_value(),
+                operands[2].get_decimal_value(),
+                operands[3].get_decimal_value(),
             )
             return
 
         if non_stroke_color_space == PDFName("DeviceGray"):
             canvas.graphics_state.stroke_color = GrayColor(
-                operands[0].get_float_value()
+                operands[0].get_decimal_value()
             )
             return
 
         if non_stroke_color_space == PDFName("DeviceRGB"):
             canvas.graphics_state.stroke_color = RGBColor(
-                operands[0].get_float_value(),
-                operands[1].get_float_value(),
-                operands[2].get_float_value(),
+                operands[0].get_decimal_value(),
+                operands[1].get_decimal_value(),
+                operands[2].get_decimal_value(),
             )
             return

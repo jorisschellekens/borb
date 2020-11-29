@@ -31,8 +31,8 @@ class MoveTextPositionSetLeading(CanvasOperator):
                 expected_type=PDFNumber, received_type=operands[1].__class__
             )
 
-        tx = operands[0].get_float_value()
-        ty = operands[1].get_float_value()
+        tx = operands[0].get_decimal_value()
+        ty = operands[1].get_decimal_value()
 
         SetTextLeading().invoke(canvas, [PDFFloat(-ty)])
         MoveTextPosition().invoke(canvas, operands)

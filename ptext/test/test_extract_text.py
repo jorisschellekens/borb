@@ -9,12 +9,16 @@ from ptext.test.base_test import BaseTest
 
 
 class TestExtractText(BaseTest):
+    """
+    This test attempts to extract the text of each PDF in the corpus
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path("txt")
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "document_172_single_page.pdf"
+        self.input_file = self.input_dir / "document_1031_single_page.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):

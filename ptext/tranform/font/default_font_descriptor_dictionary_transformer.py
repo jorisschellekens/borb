@@ -1,7 +1,7 @@
-from typing import Optional, List
+from typing import Optional, List, Any
 
 from ptext.object.canvas.font.font import Font
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.primitive.pdf_dictionary import PDFDictionary
 from ptext.primitive.pdf_name import PDFName
 from ptext.primitive.pdf_object import PDFObject
@@ -23,7 +23,7 @@ class DefaultFontDescriptorDictionaryTransformer(BaseTransformer):
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
 
         # convert like regular dictionary
         if isinstance(parent_object, Font):
@@ -34,17 +34,14 @@ class DefaultFontDescriptorDictionaryTransformer(BaseTransformer):
                     )
 
         # build intermittent Font object
-        tmp = Font()
+        tmp = Font().set_parent(parent_object)
 
         # add listener(s)
         for l in event_listeners:
             tmp.add_event_listener(l)
 
-        tmp.set(
-            "FontDescriptor",
-            self.get_root_transformer().transform(
-                object_to_transform, tmp, context, []
-            ),
+        tmp["FontDescriptor"] = self.get_root_transformer().transform(
+            object_to_transform, tmp, context, []
         )
 
         # return

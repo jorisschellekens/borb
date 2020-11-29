@@ -1,6 +1,6 @@
 from ptext.object.canvas.event.image_render_event import ImageRenderEvent
 from ptext.object.canvas.event.text_render_event import TextRenderEvent
-from ptext.object.pdf_high_level_object import EventListener, Event
+from ptext.object.event_listener import EventListener, Event
 
 
 class LocationFilter(EventListener):

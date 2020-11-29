@@ -1,7 +1,7 @@
 import io
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Any
 
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.primitive.pdf_object import PDFObject
 from ptext.tranform.base_transformer import BaseTransformer, TransformerContext
 from ptext.tranform.default_array_transformer import DefaultArrayTransformer
@@ -73,7 +73,7 @@ class DefaultLowLevelObjectTransformer(BaseTransformer):
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
         if context is None:
             return super().transform(
                 object_to_transform,

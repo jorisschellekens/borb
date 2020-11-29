@@ -1,14 +1,13 @@
 from typing import Optional, Tuple
 
 from ptext.object.page.page_size import PageSize
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
 from ptext.primitive.pdf_name import PDFName
-from ptext.primitive.pdf_null import PDFNull
-from ptext.primitive.pdf_number import PDFNumber
+from ptext.tranform.types_with_parent_attribute import DictionaryWithParentAttribute
 
 
-class PageInfo(PDFHighLevelObject):
+class PageInfo(DictionaryWithParentAttribute):
     def __init__(self, page: "Page"):
+        super(PageInfo, self).__init__()
         self.page = page
 
     def get_width(self) -> Optional[int]:
@@ -18,22 +17,16 @@ class PageInfo(PDFHighLevelObject):
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
         """
-        i = self.page.get(["MediaBox", 2])
-        return (
-            i.get_int_value() if i != PDFNull() and isinstance(i, PDFNumber) else None
-        )
+        return self.page["MediaBox"][2]
 
-    def get_height(self) -> int:
+    def get_height(self) -> Optional[int]:
         """
         Return the height of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
         expressed in default user space units, that shall define the
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
         """
-        i = self.page.get(["MediaBox", 3])
-        return (
-            i.get_int_value() if i != PDFNull() and isinstance(i, PDFNumber) else None
-        )
+        return self.page["MediaBox"][3]
 
     def get_size(self) -> Tuple[int, int]:
         return self.get_width(), self.get_height()

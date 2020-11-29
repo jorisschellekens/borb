@@ -1,3 +1,4 @@
+from decimal import Decimal
 from functools import cmp_to_key
 
 from ptext.object.canvas.event.begin_page_event import BeginPageEvent
@@ -7,7 +8,7 @@ from ptext.object.canvas.event.text_render_event import (
     LeftToRightComparator,
 )
 from ptext.object.page.page import Page
-from ptext.object.pdf_high_level_object import EventListener, Event
+from ptext.object.event_listener import EventListener, Event
 
 
 class SimpleTextExtraction(EventListener):
@@ -49,6 +50,7 @@ class SimpleTextExtraction(EventListener):
         )
 
         # remove no-op
+        tris = [x for x in tris if x.get_text() is not None]
         tris = [x for x in tris if len(x.get_text().replace(" ", "")) != 0]
 
         # skip empty
@@ -57,14 +59,6 @@ class SimpleTextExtraction(EventListener):
 
         # sort according to comparator
         sorted(tris, key=cmp_to_key(LeftToRightComparator.cmp))
-
-        # attempt to handle situation where we render each glyph individually
-        # thus never rendering <space> character, and never having an estimated width
-        if all([len(x.get_text()) <= 1 for x in tris[0:32]]) and all(
-            [x.get_space_character_width_in_text_space() <= 0 for x in tris[0:32]]
-        ):
-            # TODO : estimate space width
-            pass
 
         # iterate over the TextRenderInfo objects to get the text
         last_baseline_bottom = tris[0].get_baseline().y0
@@ -91,7 +85,7 @@ class SimpleTextExtraction(EventListener):
             # add space if needed
             delta = abs(last_baseline_right - t.get_baseline().x0)
             space_width = round(t.get_space_character_width_in_text_space(), 1)
-            text += " " if (space_width * 0.90 < delta) else ""
+            text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
             text += t.get_text()

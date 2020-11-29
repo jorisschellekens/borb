@@ -3,7 +3,6 @@ from typing import List
 from ptext.exception.pdf_exception import PDFTypeError
 from ptext.object.canvas.font.font import Font
 from ptext.object.canvas.operator.canvas_operator import CanvasOperator
-from ptext.primitive.pdf_null import PDFNull
 from ptext.primitive.pdf_object import PDFObject
 
 
@@ -22,15 +21,23 @@ class SetFontAndSize(CanvasOperator):
     def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
 
         # get document
-        page = canvas.parent.parent
+        page = canvas.get_parent()
 
         # lookup font dictionary
-        font_ref = page.get(["Resources", "Font", operands[0].name])
-        if font_ref == PDFNull():
-            raise PDFTypeError(expected_type=Font, received_type=PDFNull)
+        font_ref = None
+        if (
+            "Resources" in page
+            and "Font" in page["Resources"]
+            and operands[0].name in page["Resources"]["Font"]
+        ):
+            font_ref = page["Resources"]["Font"][operands[0].name]
+        if font_ref == None:
+            raise PDFTypeError(expected_type=Font, received_type=None)
+        if not isinstance(font_ref, Font):
+            raise PDFTypeError(expected_type=Font, received_type=font_ref.__class__)
 
         # font size
-        font_size = operands[1].get_float_value()
+        font_size = operands[1].get_decimal_value()
 
         # set state
         canvas.graphics_state.font_size = font_size

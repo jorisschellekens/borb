@@ -1,4 +1,6 @@
-from ptext.io.encoding.encoding import ENCODING
+from typing import List
+
+from ptext.object.canvas.font.latin_text_encoding import StandardEncoding
 from ptext.primitive.pdf_object import PDFObject
 
 
@@ -14,6 +16,13 @@ class PDFString(PDFObject):
 
     def get_text(self) -> str:
         return self.text
+
+    def get_content_bytes(self) -> List[int]:
+        return []
+
+    def get_value_bytes(self) -> List[int]:
+        # TODO : check parent to determine encoding
+        return [StandardEncoding().code_to_unicode(b) for b in self.get_content_bytes()]
 
     def __eq__(self, other):
         return other.text == self.text if isinstance(other, PDFString) else False
@@ -40,6 +49,28 @@ class PDFLiteralString(PDFString):
     def __str__(self) -> str:
         return "(" + self.text + ")"
 
+    def get_content_bytes(self) -> bytearray:
+        txt = ""
+        i = 0
+        while i < len(self.text):
+            if self.text[i] == "\\":
+                c = self.text[i + 1]
+                if c == "n":
+                    txt += "\n"
+                elif c == "r":
+                    txt += "\r"
+                elif c == "t":
+                    txt += "\t"
+                elif c == "b":
+                    txt += "\b"
+                elif c == "f":
+                    txt += "\f"
+                i += 2
+                continue
+            txt += self.text[i]
+            i += 1
+        return bytearray(txt, encoding="UTF-8")
+
 
 class PDFHexString(PDFString):
     """
@@ -54,14 +85,14 @@ class PDFHexString(PDFString):
             int(text[i * 2 : i * 2 + 2], 16) for i in range(0, int(len(text) / 2))
         ]
 
-    def get_decoded_text(self):
-        # TODO : research encoding/decoding hexadecimal strings
-        return "".join(
-            [ENCODING[x] if x in ENCODING else " " for x in self.bytes if x != 0]
-        )
-
     def __eq__(self, other) -> bool:
         return other.text == self.text if isinstance(other, PDFHexString) else False
 
     def __str__(self) -> str:
         return "<" + self.text + ">"
+
+    def get_content_bytes(self) -> bytearray:
+        arr = bytearray()
+        for i in range(0, len(self.text), 2):
+            arr.append(int(self.text[i : i + 2], 16))
+        return arr

@@ -7,7 +7,6 @@ from ptext.exception.pdf_exception import (
 )
 from ptext.io.tokenizer.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.tokenizer.low_level_tokenizer import TokenType
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
 from ptext.object.xref.xref import XREF
 from ptext.primitive.pdf_boolean import PDFBoolean
 from ptext.primitive.pdf_dictionary import PDFDictionary
@@ -67,7 +66,7 @@ class PlainTextXREF(XREF):
 
         # process trailer
         trailer = self._read_trailer(src, tok)
-        self.set("Trailer", trailer)
+        self["Trailer"] = trailer
 
         # return self
         return self

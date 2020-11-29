@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import List
 
 from ptext.exception.pdf_exception import PDFTypeError
@@ -49,10 +50,10 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
             # adjust
             if isinstance(obj, PDFNumber):
                 gs = canvas.graphics_state
-                adjust_unscaled = obj.get_float_value()
+                adjust_unscaled = obj.get_decimal_value()
                 adjust_scaled = (
                     -adjust_unscaled
-                    * 0.001
+                    * Decimal(0.001)
                     * gs.font_size
                     * (gs.horizontal_scaling / 100)
                 )

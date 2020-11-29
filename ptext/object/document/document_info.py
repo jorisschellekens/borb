@@ -1,12 +1,7 @@
 from typing import Optional, List
 
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
-from ptext.primitive.pdf_null import PDFNull
-from ptext.primitive.pdf_number import PDFInt
-from ptext.primitive.pdf_string import PDFString
 
-
-class DocumentInfo(PDFHighLevelObject):
+class DocumentInfo:
     def __init__(self, document: "Document"):
         super().__init__()
         self.document = document
@@ -15,8 +10,10 @@ class DocumentInfo(PDFHighLevelObject):
         """
         (Optional; PDF 1.1) The document’s title.
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "Title"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["Title"]
+        except:
+            return None
 
     def get_creator(self) -> Optional[str]:
         """
@@ -24,23 +21,29 @@ class DocumentInfo(PDFHighLevelObject):
         the name of the conforming product that created the original document
         from which it was converted.
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "Creator"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["Creator"]
+        except:
+            return None
 
     def get_author(self) -> Optional[str]:
         """
         (Optional; PDF 1.1) The name of the person who created the document.
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "Author"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["Author"]
+        except:
+            return None
 
     def get_creation_date(self) -> Optional[str]:
         """
         (Optional) The date and time the document was created, in human-
         readable form (see 7.9.4, “Dates”).
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "CreationDate"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["CreationDate"]
+        except:
+            return None
 
     def get_modification_date(self) -> Optional[str]:
         """
@@ -48,34 +51,41 @@ class DocumentInfo(PDFHighLevelObject):
         otherwise optional; PDF 1.1) The date and time the document was
         most recently modified, in human-readable form (see 7.9.4, “Dates”).
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "ModDate"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["ModDate"]
+        except:
+            return None
 
     def get_subject(self) -> Optional[str]:
         """
         (Optional; PDF 1.1) The subject of the document.
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "Subject"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["Subject"]
+        except:
+            return None
 
     def get_keywords(self) -> Optional[List[str]]:
         """
         (Optional; PDF 1.1) Keywords associated with the document.
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "Keywords"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["Keywords"]
+        except:
+            return None
 
     def get_producer(self) -> Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
         the name of the conforming product that converted it to PDF.
         """
-        i = self.document.get(["XRef", "Trailer", "Info", "Producer"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Info"]["Producer"]
+        except:
+            return None
 
     def get_number_of_pages(self) -> Optional[int]:
-        i = self.document.get(["XRef", "Trailer", "Root", "Pages", "Count"])
-        return i.get_int_value() if i != PDFNull() and isinstance(i, PDFInt) else None
+        return self.document.get["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
 
     def get_file_size(self) -> Optional[int]:
         return self.document.get("FileSize").get_int_value()
@@ -91,8 +101,13 @@ class DocumentInfo(PDFHighLevelObject):
         likely that the correct and unchanged file has been found. If only the first identifier matches, a different version
         of the correct file has been found.
         """
-        i = self.document.get(["XRef", "Trailer", "ID"])
-        return [i.get(0).get_text(), i.get(1).get_text()] if i != PDFNull() else None
+        if (
+            "XRef" in self.document
+            and "Trailer" in self.document["XRef"]
+            and "ID" in self.document["XRef"]["Trailer"]
+        ):
+            return self.document["XRef"]["Trailer"]["ID"]
+        return None
 
     def get_language(self) -> Optional[str]:
         """
@@ -102,5 +117,7 @@ class DocumentInfo(PDFHighLevelObject):
         marked content (see 14.9.2, "Natural Language Specification"). If
         this entry is absent, the language shall be considered unknown.
         """
-        i = self.document.get(["XRef", "Trailer", "Root", "Lang"])
-        return i.get_text() if i != PDFNull() and isinstance(i, PDFString) else None
+        try:
+            return self.document["XRef"]["Trailer"]["Root"]["Lang"]
+        except:
+            return None

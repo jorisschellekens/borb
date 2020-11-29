@@ -1,10 +1,13 @@
-from ptext.object.page.page import Page
-from ptext.object.pdf_high_level_object import Event
+from ptext.object.event_listener import Event
 
 
 class EndPageEvent(Event):
-    def __init__(self, page: Page):
+    """
+    This implementation of Event is triggered right after the Canvas has been processed.
+    """
+
+    def __init__(self, page: "Page"):
         self.page = page
 
-    def get_page(self) -> Page:
+    def get_page(self) -> "Page":
         return self.page

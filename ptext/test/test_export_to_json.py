@@ -7,6 +7,10 @@ from ptext.test.base_test import BaseTest
 
 
 class TestExportToJSON(BaseTest):
+    """
+    This test attempts to export each PDF in the corpus to JSON
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path("json")
@@ -30,7 +34,9 @@ class TestExportToJSON(BaseTest):
 
             # export to json
             with open(output_file, "w") as json_file_handle:
-                json_file_handle.write(json.dumps(doc.as_dict(), indent=4))
+                json_file_handle.write(
+                    json.dumps(doc.to_json_serializable(doc), indent=4)
+                )
 
 
 if __name__ == "__main__":

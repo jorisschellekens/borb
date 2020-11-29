@@ -23,4 +23,4 @@ class SetCharacterSpacing(CanvasOperator):
                 expected_type=PDFNumber, received_type=operands[0].__class__
             )
 
-        canvas.graphics_state.character_spacing = operands[0].get_float_value()
+        canvas.graphics_state.character_spacing = operands[0].get_decimal_value()

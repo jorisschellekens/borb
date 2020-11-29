@@ -1,19 +1,36 @@
 import copy
+from decimal import Decimal
 
 from ptext.object.canvas.color.color import RGBColor
 from ptext.object.canvas.geometry.matrix import Matrix
 
 
 class CanvasGraphicsState:
+    """
+    A conforming reader shall maintain an internal data structure called the graphics state that holds current
+    graphics control parameters. These parameters define the global framework within which the graphics
+    operators execute.
+
+    EXAMPLE 1
+    The f (fill) operator implicitly uses the current colour parameter, and the S (stroke) operator additionally
+    uses the current line width parameter from the graphics state.
+
+    A conforming reader shall initialize the graphic state at the beginning of each page with the values specified in
+    Table 52 and Table 53. Table 52 lists those graphics state parameters that are device-independent and are
+    appropriate to specify in page descriptions. The parameters listed in Table 53 control details of the rendering
+    (scan conversion) process and are device-dependent; a page description that is intended to be device-
+    independent should not be written to modify these parameters.
+    """
+
     def __init__(self):
         self.ctm = Matrix.identity_matrix()
         self.text_matrix = Matrix.identity_matrix()
         self.text_line_matrix = Matrix.identity_matrix()
-        self.text_rise = 0
-        self.character_spacing = 0
-        self.word_spacing = 0
-        self.horizontal_scaling = 100
-        self.leading = 0
+        self.text_rise = Decimal(0)
+        self.character_spacing = Decimal(0)
+        self.word_spacing = Decimal(0)
+        self.horizontal_scaling = Decimal(100)
+        self.leading = Decimal(0)
         self.font = None
         self.font_size = None
         self.clipping_path = None
@@ -21,10 +38,10 @@ class CanvasGraphicsState:
         self.non_stroke_color = RGBColor(0, 0, 0)
         self.stroke_color_space = None
         self.stroke_color = RGBColor(0, 0, 0)
-        self.line_width = 1
+        self.line_width = Decimal(1)
         self.line_cap = None
         self.line_join = None
-        self.miter_limit = 10
+        self.miter_limit = Decimal(10)
         self.dash_pattern = None
         self.rendering_intent = None
         self.stroke_adjustment = None

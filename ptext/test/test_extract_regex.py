@@ -37,10 +37,10 @@ class TestExtractRegularExpression(BaseTest):
                 obj = [
                     {
                         "text": x.get_text(),
-                        "x0": x.get_baseline().x0,
-                        "y0": x.get_baseline().y0,
-                        "x1": x.get_baseline().x1,
-                        "y1": x.get_baseline().y1,
+                        "x0": int(x.get_baseline().x0),
+                        "y0": int(x.get_baseline().y0),
+                        "x1": int(x.get_baseline().x1),
+                        "y1": int(x.get_baseline().y1),
                     }
                     for x in l.get_matched_text_render_info_events_per_page(0)
                 ]

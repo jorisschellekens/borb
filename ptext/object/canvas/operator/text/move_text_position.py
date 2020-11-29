@@ -30,8 +30,8 @@ class MoveTextPosition(CanvasOperator):
                 expected_type=PDFNumber, received_type=operands[1].__class__
             )
 
-        tx = operands[0].get_float_value()
-        ty = operands[1].get_float_value()
+        tx = operands[0].get_decimal_value()
+        ty = operands[1].get_decimal_value()
 
         m = Matrix.identity_matrix()
         m[2][0] = tx

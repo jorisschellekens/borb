@@ -51,17 +51,33 @@ class Token:
 
 
 class LowLevelTokenizer:
+    """
+    In computer science, lexical analysis, lexing or tokenization is the process of converting a sequence of characters
+    (such as in a computer program or web page) into a sequence of tokens (strings with an assigned and thus identified meaning).
+    A program that performs lexical analysis may be termed a lexer, tokenizer, or scanner,
+    although scanner is also a term for the first stage of a lexer.
+    A lexer is generally combined with a parser, which together analyze the syntax of programming languages, web pages,
+    and so forth.
+    """
+
     def __init__(self, io_source):
         self.io_source = io_source
 
     def next_non_comment_token(self) -> Optional[Token]:
+        """
+        This function retrieves the next non-comment Token.
+        It returns None if no such Token exists (end of stream/file)
+        """
         t = self.next_token()
         while t is not None and t.token_type == TokenType.COMMENT:
             t = self.next_token()
         return t
 
     def next_token(self) -> Optional[Token]:
-
+        """
+        This function retrieves the next Token.
+        It returns None if no such Token exists (end of stream/file)
+        """
         ch = self._next_char()
         if len(ch) == 0:
             return None
@@ -162,7 +178,7 @@ class LowLevelTokenizer:
                     break
                 if ch == "\\":
                     ch = self._next_char()
-                    out_str += ch
+                    out_str += "\\" + ch
                     continue
                 if ch == "(":
                     bracket_nesting_level += 1
@@ -207,33 +223,10 @@ class LowLevelTokenizer:
         """
         return self.io_source.tell()
 
-    def _get_hex_value(self, ch: str) -> Optional[int]:
-        if "0" <= ch <= "9":
-            return ord(ch) - ord("0")
-        if "A" <= ch <= "F":
-            return ord(ch) - ord("A") + 10
-        if "a" <= ch <= "f":
-            return ord(ch) - ord("a") + 10
-        return None
-
     def _is_delimiter(self, ch: str) -> bool:
-        return (ord(ch) + 1) in [
-            0,
-            1,
-            10,
-            11,
-            13,
-            14,
-            33,
-            38,
-            41,
-            42,
-            48,
-            61,
-            63,
-            92,
-            94,
-        ]
+        # fmt: off
+        return ord(ch) in [ -1, 0, 9, 10, 12, 13, 32, 37, 40, 41, 47, 60, 62, 91, 93,]
+        # fmt: on
 
     def _is_whitespace(self, ch: str) -> bool:
         return ord(ch) in [0, 9, 10, 12, 13, 32]

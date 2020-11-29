@@ -3,7 +3,6 @@ from typing import Optional
 
 from ptext.exception.pdf_exception import PDFTypeError, PDFValueError
 from ptext.io.tokenizer.high_level_tokenizer import HighLevelTokenizer
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
 from ptext.object.xref.xref import XREF
 from ptext.primitive.pdf_array import PDFArray
 from ptext.primitive.pdf_boolean import PDFBoolean
@@ -111,12 +110,12 @@ class StreamXREF(XREF):
             index = xref_stream.stream_dictionary[index_name]
             if (
                 not isinstance(index, PDFArray)
-                or len(index) != 2
+                or len(index) % 2 != 0
                 or not isinstance(index[0], PDFInt)
                 or not isinstance(index[1], PDFInt)
             ):
                 raise PDFTypeError(
-                    expected_type=[PDFInt].__class__, received_type=index.__class__
+                    expected_type=list.__class__, received_type=index.__class__
                 )
         else:
             index = PDFArray().append(PDFInt(0)).append(PDFInt(number_of_objects))
@@ -241,4 +240,4 @@ class StreamXREF(XREF):
 
         # initialize trailer
         trailer = xref_stream.stream_dictionary
-        self.set("Trailer", trailer)
+        self["Trailer"] = trailer

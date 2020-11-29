@@ -1,16 +1,21 @@
 import io
-from typing import Optional, List
+from typing import Optional, List, Any, Union
 
+from ptext.exception.pdf_exception import PDFTypeError
 from ptext.object.canvas.canvas import Canvas
 from ptext.object.canvas.event.begin_page_event import BeginPageEvent
 from ptext.object.canvas.event.end_page_event import EndPageEvent
 from ptext.object.page.page import Page
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.primitive.pdf_dictionary import PDFDictionary
 from ptext.primitive.pdf_name import PDFName
 from ptext.primitive.pdf_null import PDFNull
 from ptext.primitive.pdf_object import PDFObject
 from ptext.tranform.base_transformer import BaseTransformer, TransformerContext
+from ptext.tranform.types_with_parent_attribute import (
+    DictionaryWithParentAttribute,
+    ListWithParentAttribute,
+)
 
 
 class DefaultPageDictionaryTransformer(BaseTransformer):
@@ -28,11 +33,10 @@ class DefaultPageDictionaryTransformer(BaseTransformer):
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
 
         # convert dictionary like structure
-        tmp = Page()
-        tmp.parent = parent_object
+        tmp = Page().set_parent(parent_object)
 
         # add listener(s)
         for l in event_listeners:
@@ -45,27 +49,31 @@ class DefaultPageDictionaryTransformer(BaseTransformer):
                 continue
             v = self.get_root_transformer().transform(v, tmp, context, [])
             if v != PDFNull():
-                tmp.set(k.name, v)
+                tmp[k.name] = v
 
         # send out BeginPageEvent
         tmp.event_occurred(BeginPageEvent(tmp))
 
         # set up canvas
-        contents = tmp.get("Contents")
+        if "Contents" not in tmp:
+            raise PDFTypeError(
+                expected_type=Union[
+                    ListWithParentAttribute, DictionaryWithParentAttribute
+                ],
+                received_type=None,
+            )
+        contents = tmp["Contents"]
         if contents != PDFNull():
-            contents.set("Canvas", Canvas())
+            canvas = Canvas().set_parent(tmp)
 
             # process bytes in stream
-            if contents.has_key("Type") and contents.get("Type") == PDFName("Stream"):
-                contents.get("Canvas").read(io.BytesIO(contents.get("DecodedBytes")))
+            if isinstance(contents, dict):
+                canvas.read(io.BytesIO(contents["DecodedBytes"]))
 
             # process bytes in array
-            if contents.has_key("Type") and contents.get("Type") == PDFName("Array"):
-                l = contents.get("Length").get_int_value()
-                bts = b"".join(
-                    [contents.get([i, "DecodedBytes"]) + b" " for i in range(0, l)]
-                )
-                contents.get("Canvas").read(io.BytesIO(bts))
+            if isinstance(contents, list):
+                bts = b"".join([x["DecodedBytes"] + b" " for x in contents])
+                canvas.read(io.BytesIO(bts))
 
         # send out EndPageEvent
         tmp.event_occurred(EndPageEvent(tmp))

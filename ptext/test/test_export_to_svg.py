@@ -8,12 +8,16 @@ from ptext.test.base_test import BaseTest
 
 
 class TestExportToSVG(BaseTest):
+    """
+    This test attempts to export each PDF in the corpus to SVG
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path("svg")
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "document_1031.pdf"
+        self.input_file = self.input_dir / "document_556_single_page.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):

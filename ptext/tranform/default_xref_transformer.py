@@ -1,14 +1,14 @@
 import io
 import os
-from typing import Union, Optional, List
+from decimal import Decimal
+from typing import Union, Optional, List, Any
 
 from ptext.exception.pdf_exception import PDFCommentTokenNotFoundError
 from ptext.io.tokenizer.high_level_tokenizer import HighLevelTokenizer
 from ptext.object.document.document import Document
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.object.xref.plaintext_xref import PlainTextXREF
 from ptext.object.xref.stream_xref import StreamXREF
-from ptext.primitive.pdf_number import PDFInt
 from ptext.primitive.pdf_object import PDFObject
 from ptext.tranform.base_transformer import BaseTransformer, TransformerContext
 
@@ -27,7 +27,7 @@ class DefaultXREFTransformer(BaseTransformer):
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
 
         # update context
         context.root_object = Document()
@@ -48,7 +48,7 @@ class DefaultXREFTransformer(BaseTransformer):
         context.source.seek(0, os.SEEK_END)
         file_length = context.source.tell()
         context.source.seek(0)
-        context.root_object.set("FileSize", PDFInt(file_length))
+        context.root_object["FileSize"] = Decimal(file_length)
 
         # build XREF object
         self._read_xref(context)
@@ -56,12 +56,12 @@ class DefaultXREFTransformer(BaseTransformer):
         # transform trailer dictionary
         xref = context.root_object.get("XRef")
         trailer = self.get_root_transformer().transform(
-            context.root_object.get(["XRef", "Trailer"]),
+            context.root_object["XRef"]["Trailer"],
             context.root_object,
             context,
             [],
         )
-        xref.set("Trailer", trailer)
+        xref["Trailer"] = trailer
 
         # return
         return context.root_object
@@ -131,13 +131,10 @@ class DefaultXREFTransformer(BaseTransformer):
             most_recent_xref = PlainTextXREF()
             most_recent_xref.parent = self
             most_recent_xref.read(src, tok, initial_offset)
-            if doc.has_key("XRef"):
-                doc.set(
-                    "XRef",
-                    doc.get("XRef").merge_references(most_recent_xref),
-                )
+            if "XRef" in doc:
+                doc["XRef"] = (doc["XRef"].merge_references(most_recent_xref),)
             else:
-                doc.set("XRef", most_recent_xref)
+                doc["XRef"] = most_recent_xref
         except Exception as ex0:
             most_recent_xref = None
             exceptions_to_rethrow.append(ex0)
@@ -146,16 +143,14 @@ class DefaultXREFTransformer(BaseTransformer):
         if most_recent_xref is None:
             try:
                 most_recent_xref = StreamXREF()
-                most_recent_xref.parent = self
+                most_recent_xref.set_parent(self)
                 most_recent_xref.read(src, tok, initial_offset)
-                if doc.has_key("XRef"):
-                    doc.set(
-                        "XRef",
-                        doc.get("XRef").merge_references(most_recent_xref),
-                    )
+                if "XRef" in doc:
+                    doc["XRef"] = doc["XRef"].merge_references(most_recent_xref)
                 else:
-                    doc.set("XRef", most_recent_xref)
+                    doc["XRef"] = most_recent_xref
             except Exception as ex0:
+                raise ex0
                 most_recent_xref = None
                 exceptions_to_rethrow.append(ex0)
 

@@ -8,7 +8,7 @@ from ptext.primitive.pdf_object import PDFObject
 
 class BeginTextObject(CanvasOperator):
     """
-        Begin a text object, initializing the text matrix, Tm , and the text line matrix,
+    Begin a text object, initializing the text matrix, Tm , and the text line matrix,
     Tlm , to the identity matrix. Text objects shall not be nested; a second BT shall
     not appear before an ET.
     """

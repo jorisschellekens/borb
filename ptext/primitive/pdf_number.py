@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Union
 
 from ptext.primitive.pdf_object import PDFObject
@@ -20,6 +21,9 @@ class PDFNumber(PDFObject):
 
     def get_int_value(self):
         return int(self.value)
+
+    def get_decimal_value(self):
+        return Decimal(self.get_float_value())
 
     def __str__(self):
         return str(self.value)

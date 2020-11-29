@@ -53,23 +53,17 @@ class PDFStream(PDFObject):
 
             # ASCII85
             if filter_name in [PDFName("ASCII85Decode")]:
-                transformed_bytes = ASCII85Decode.decode_with_parameter_dictionary(
-                    transformed_bytes, None
-                )
+                transformed_bytes = ASCII85Decode.decode(transformed_bytes)
                 continue
 
             # LZW
             if filter_name in [PDFName("LZWDecode")]:
-                transformed_bytes = LZWDecode.decode_with_parameter_dictionary(
-                    transformed_bytes, None
-                )
+                transformed_bytes = LZWDecode.decode(transformed_bytes)
                 continue
 
             # RunLengthDecode
             if filter_name in [PDFName("RunLengthDecode")]:
-                transformed_bytes = RunLengthDecode.decode_with_parameter_dictionary(
-                    transformed_bytes, None
-                )
+                transformed_bytes = RunLengthDecode.decode(transformed_bytes)
                 continue
 
             # unknown filter

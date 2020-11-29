@@ -4,7 +4,6 @@ from typing import Optional, NamedTuple, List
 from ptext.exception.pdf_exception import StartXREFTokenNotFoundError, PDFTypeError
 from ptext.io.tokenizer.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.tokenizer.low_level_tokenizer import TokenType
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
 from ptext.primitive.pdf_boolean import PDFBoolean
 from ptext.primitive.pdf_indirect_reference import PDFIndirectReference
 from ptext.primitive.pdf_name import PDFName
@@ -12,6 +11,7 @@ from ptext.primitive.pdf_null import PDFNull
 from ptext.primitive.pdf_number import PDFInt
 from ptext.primitive.pdf_object import PDFIndirectObject, PDFObject
 from ptext.primitive.pdf_stream import PDFStream
+from ptext.tranform.types_with_parent_attribute import DictionaryWithParentAttribute
 
 
 class XREFSection(NamedTuple):
@@ -36,9 +36,9 @@ class XREFSection(NamedTuple):
         return s
 
 
-class XREF(PDFHighLevelObject):
+class XREF(DictionaryWithParentAttribute):
     def __init__(self):
-        super().__init__()
+        super(XREF, self).__init__()
         self.document = None
         self.tokenizer = None
         self.input = None

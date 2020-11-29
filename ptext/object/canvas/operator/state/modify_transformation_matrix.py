@@ -25,11 +25,11 @@ class ModifyTransformationMatrix(CanvasOperator):
                     expected_type=PDFNumber, received_type=operands[i].__class__
                 )
         mtx = Matrix.matrix_from_six_values(
-            operands[0].get_float_value(),
-            operands[1].get_float_value(),
-            operands[2].get_float_value(),
-            operands[3].get_float_value(),
-            operands[4].get_float_value(),
-            operands[5].get_float_value(),
+            operands[0].get_decimal_value(),
+            operands[1].get_decimal_value(),
+            operands[2].get_decimal_value(),
+            operands[3].get_decimal_value(),
+            operands[4].get_decimal_value(),
+            operands[5].get_decimal_value(),
         )
         canvas.graphics_state.ctm = mtx.mul(canvas.graphics_state.ctm)

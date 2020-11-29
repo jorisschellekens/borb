@@ -20,5 +20,5 @@ class SetGrayNonStroking(CanvasOperator):
             raise PDFTypeError(
                 expected_type=PDFNumber, received_type=operands[0].__class__
             )
-        g = operands[0].get_float_value()
+        g = operands[0].get_decimal_value()
         canvas.graphics_state.non_stroke_color = GrayColor(g)

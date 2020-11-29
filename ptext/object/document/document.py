@@ -1,8 +1,8 @@
 from ptext.object.document.document_info import DocumentInfo
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
+from ptext.tranform.types_with_parent_attribute import DictionaryWithParentAttribute
 
 
-class Document(PDFHighLevelObject):
+class Document(DictionaryWithParentAttribute):
     def get_document_info(self) -> "DocumentInfo":
         return DocumentInfo(self)
 

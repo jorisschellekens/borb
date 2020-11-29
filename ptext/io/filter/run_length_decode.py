@@ -1,12 +1,17 @@
-from ptext.primitive.pdf_dictionary import PDFDictionary
-
-
 class RunLengthDecode:
-    @staticmethod
-    def decode_with_parameter_dictionary(
-        bytes_in: bytes, decode_params: PDFDictionary = None
-    ) -> bytes:
+    """
+    Decompresses data encoded using a byte-oriented run-length
+    encoding algorithm, reproducing the original text or binary data
+    (typically monochrome image data, or any data that contains
+    frequent long runs of a single byte value).
+    """
 
+    @staticmethod
+    def decode(bytes_in: bytes) -> bytes:
+        """
+        Decompresses data encoded using a byte-oriented run-length
+        encoding algorithm
+        """
         bytes_out = bytearray()
         for i in range(0, len(bytes_in), 2):
             b = bytes_in[i]

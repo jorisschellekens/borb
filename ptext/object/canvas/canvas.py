@@ -1,4 +1,5 @@
 import io
+import logging
 import os
 
 from ptext.exception.pdf_exception import IllegalGraphicsStateError
@@ -65,13 +66,18 @@ from ptext.object.canvas.operator.text.show_text_with_glyph_positioning import (
     ShowTextWithGlyphPositioning,
 )
 from ptext.object.canvas.operator.xobject.do import Do
-from ptext.object.pdf_high_level_object import PDFHighLevelObject
 from ptext.primitive.pdf_canvas_operator_name import PDFCanvasOperatorName
+from ptext.tranform.types_with_parent_attribute import (
+    DictionaryWithParentAttribute,
+    ListWithParentAttribute,
+)
+
+logger = logging.getLogger(__name__)
 
 
-class Canvas(PDFHighLevelObject):
+class Canvas(DictionaryWithParentAttribute):
     def __init__(self):
-        super().__init__()
+        super(Canvas, self).__init__()
         # initialize operators
         self.canvas_operators = [
             # color
@@ -174,25 +180,32 @@ class Canvas(PDFHighLevelObject):
                     operands.insert(0, operand_stk.pop(-1))
 
                 # append
-                if not self.has_key("Instructions"):
-                    self.set("Instructions", PDFHighLevelObject())
+                if "Instructions" not in self:
+                    self["Instructions"] = ListWithParentAttribute().set_parent(self)
 
-                instruction_number = len(self.get("Instructions"))
-
-                self.get("Instructions").set(
-                    instruction_number,
-                    PDFHighLevelObject().set("Type", operator.get_text()),
+                instruction_number = len(self["Instructions"])
+                instruction_dictionary = DictionaryWithParentAttribute()
+                instruction_dictionary["Name"] = operator.get_text()
+                instruction_dictionary["Args"] = ListWithParentAttribute().set_parent(
+                    instruction_dictionary
                 )
+
                 if len(operands) > 0:
                     for i in range(0, len(operands)):
-                        self.get(["Instructions", instruction_number]).set(
-                            i, operands[i]
-                        )
+                        instruction_dictionary["Args"].append(operands[i])
+                self["Instructions"].append(instruction_dictionary)
 
                 # debug
-                # print("%s %s" % (operator.text, str([str(x) for x in operands])))
+                logger.debug(
+                    "%d %s %s"
+                    % (
+                        instruction_number,
+                        operator.text,
+                        str([str(x) for x in operands]),
+                    )
+                )
 
-                # invoke
+                # invoke (error on 1184)
                 try:
                     operator.invoke(self, operands)
                 except Exception as e:

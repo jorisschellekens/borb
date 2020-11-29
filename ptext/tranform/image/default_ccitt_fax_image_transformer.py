@@ -1,9 +1,8 @@
-from typing import Optional, List
+from typing import Optional, List, Any
 
-from ptext.object.pdf_high_level_object import PDFHighLevelObject, EventListener
+from ptext.object.event_listener import EventListener
 from ptext.primitive.pdf_array import PDFArray
 from ptext.primitive.pdf_name import PDFName
-from ptext.primitive.pdf_null import PDFNull
 from ptext.primitive.pdf_object import PDFObject
 from ptext.primitive.pdf_stream import PDFStream
 from ptext.tranform.base_transformer import BaseTransformer, TransformerContext
@@ -39,7 +38,7 @@ class DefaultCCITTFaxImageTransformer(BaseTransformer):
         parent_object: PDFObject,
         context: Optional[TransformerContext] = None,
         event_listeners: List[EventListener] = [],
-    ) -> PDFHighLevelObject:
+    ) -> Any:
 
         # TODO
-        return PDFNull()
+        return None
