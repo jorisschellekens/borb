@@ -23,16 +23,16 @@ class RegularExpressionTextExtraction(EventListener):
 
     def event_occurred(self, event: Event) -> None:
         if isinstance(event, TextRenderEvent):
-            self.render_text(event)
+            self._render_text(event)
         if isinstance(event, BeginPageEvent):
-            self.begin_page(event.get_page())
+            self._begin_page(event.get_page())
         if isinstance(event, EndPageEvent):
-            self.end_page(event.get_page())
+            self._end_page(event.get_page())
 
-    def get_text(self, page_nr: int) -> str:
+    def get_text_per_page(self, page_nr: int) -> str:
         return self.text_per_page[page_nr] if page_nr in self.text_per_page else ""
 
-    def render_text(self, text_render_info: TextRenderEvent):
+    def _render_text(self, text_render_info: TextRenderEvent):
 
         # init if needed
         if self.current_page not in self.text_render_info_events_per_page:
@@ -43,10 +43,10 @@ class RegularExpressionTextExtraction(EventListener):
             text_render_info
         )
 
-    def begin_page(self, page: Page):
+    def _begin_page(self, page: Page):
         self.current_page += 1
 
-    def end_page(self, page: Page):
+    def _end_page(self, page: Page):
 
         # get TextRenderInfo objects on page
         tris = (
@@ -56,7 +56,7 @@ class RegularExpressionTextExtraction(EventListener):
         )
 
         # remove no-op
-        tris = [x for x in tris if len(x.get_text().replace(" ", "")) != 0]
+        tris = [x for x in tris if len(x.get_text_per_page().replace(" ", "")) != 0]
 
         # skip empty
         if len(tris) == 0:
@@ -78,15 +78,15 @@ class RegularExpressionTextExtraction(EventListener):
                 if text.endswith(" "):
                     text = text[0:-1]
                 text += "\n"
-                text += t.get_text()
+                text += t.get_text_per_page()
                 last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
                 last_baseline_bottom = t.get_baseline().y0
                 poss.append(len(text))
                 continue
 
             # check text
-            if t.get_text().startswith(" ") or text.endswith(" "):
-                text += t.get_text()
+            if t.get_text_per_page().startswith(" ") or text.endswith(" "):
+                text += t.get_text_per_page()
                 last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
                 poss.append(len(text))
                 continue
@@ -97,7 +97,7 @@ class RegularExpressionTextExtraction(EventListener):
             text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
-            text += t.get_text()
+            text += t.get_text_per_page()
             last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
             poss.append(len(text))
             continue

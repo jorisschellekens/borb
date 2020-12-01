@@ -92,7 +92,7 @@ class AudioExport(EventListener):
             self.text_to_speak_for_page[self.current_page] = ""
         self.text_to_speak_for_page[self.current_page] += text_to_speak_for_paragraph
 
-    def get_audio_file_for_page(self, page_number: int, path: str):
+    def get_audio_file_per_page(self, page_number: int, path: str):
         sound = gTTS(text=self.text_to_speak_for_page[page_number], lang=self.language)
         sound.save(path)
         return path

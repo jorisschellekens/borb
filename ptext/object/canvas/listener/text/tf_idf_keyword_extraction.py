@@ -109,7 +109,7 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         for k in self.keywords:
             k.number_of_pages = self.number_of_pages
 
-    def get_keywords(
+    def get_keywords_per_page(
         self, page_number: int, limit: Optional[int] = None
     ) -> List[TFIDFKeyword]:
         out = sorted(

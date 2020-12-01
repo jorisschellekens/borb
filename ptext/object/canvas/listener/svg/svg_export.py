@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from ptext.object.canvas.event.begin_page_event import BeginPageEvent
 from ptext.object.canvas.event.end_page_event import EndPageEvent
@@ -7,6 +7,12 @@ from ptext.object.canvas.event.image_render_event import ImageRenderEvent
 from ptext.object.canvas.event.text_render_event import TextRenderEvent
 from ptext.object.canvas.listener.structure.line.line_render_event import (
     LineRenderEvent,
+)
+from ptext.object.canvas.listener.structure.list.bullet_list import (
+    BulletListRenderEvent,
+)
+from ptext.object.canvas.listener.structure.list.ordered_list import (
+    OrderedListRenderEvent,
 )
 from ptext.object.canvas.listener.structure.paragraph.paragraph_render_event import (
     ParagraphRenderEvent,
@@ -38,13 +44,17 @@ class SVGExport(EventListener):
         self.current_page = -1
 
     def event_occurred(self, event: Event) -> None:
+        if isinstance(event, BulletListRenderEvent) or isinstance(
+            event, OrderedListRenderEvent
+        ):
+            self._render_list(event)
+            return
         if isinstance(event, ParagraphRenderEvent):
-            self.render_paragraph(event)
+            self._render_paragraph(event)
             return
         if isinstance(event, LineRenderEvent):
-            self.render_text_line(event)
+            self._render_text_line(event)
             return
-
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
         if isinstance(event, EndPageEvent):
@@ -88,7 +98,7 @@ class SVGExport(EventListener):
                 if method() is not None:
                     e = ET.Element("desc")
                     e.set("property", name)
-                    e.text = method().get_text()
+                    e.text = method().get_text_per_page()
                     svg_element.append(e)
 
         # white background
@@ -109,7 +119,7 @@ class SVGExport(EventListener):
         self.current_page_height = None
         self.current_page_svg_element = None
 
-    def get_svg(self, page_number: int) -> ET.Element:
+    def get_svg_per_page(self, page_number: int) -> ET.Element:
         return self.svg_element_per_page[page_number]
 
     def _render_text(self, text_render_info: "TextRenderInfo"):
@@ -234,28 +244,30 @@ class SVGExport(EventListener):
 
         self.current_page_svg_element.append(img_element)
 
-    def render_text_line(self, event: LineRenderEvent):
+    def _render_text_line(self, event: LineRenderEvent):
         bb = event.get_bounding_box()
         y = int(self.current_page_height - bb.y - bb.height)
-        line_element = ET.Element("rect")
-        line_element.set("x", str(bb.x))
-        line_element.set("y", str(y))
-        line_element.set("width", str(bb.width))
-        line_element.set("height", str(bb.height))
-        line_element.set(
-            "style", "stroke: rgb(255, 0, 0); stroke-width: 1; fill: none;"
-        )
-        self.current_page_svg_element.append(line_element)
+        self._render_box(bb.x, y, bb.width, bb.height, 250, 121, 33)
 
-    def render_paragraph(self, event: ParagraphRenderEvent):
+    def _render_paragraph(self, event: ParagraphRenderEvent):
         bb = event.get_bounding_box()
         y = int(self.current_page_height - bb.y - bb.height)
+        self._render_box(bb.x, y, bb.width, bb.height, 254, 153, 32)
+
+    def _render_list(self, event: Union[BulletListRenderEvent, OrderedListRenderEvent]):
+        bb = event.get_bounding_box()
+        y = int(self.current_page_height - bb.y - bb.height)
+        self._render_box(bb.x, y, bb.width, bb.height, 55, 80, 92)
+
+    def _render_box(self, x, y, width, height, red, green, blue):
         line_element = ET.Element("rect")
-        line_element.set("x", str(bb.x))
+        line_element.set("x", str(x))
         line_element.set("y", str(y))
-        line_element.set("width", str(int(bb.width)))
-        line_element.set("height", str(bb.height))
+        line_element.set("width", str(int(width)))
+        line_element.set("height", str(height))
         line_element.set(
-            "style", "stroke: rgb(0, 255, 255); stroke-width: 1; fill: none;"
+            "style",
+            "stroke: rgb(%d, %d, %d); stroke-width: 1; fill: none;"
+            % (red, green, blue),
         )
         self.current_page_svg_element.append(line_element)

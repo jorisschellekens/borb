@@ -8,27 +8,27 @@ from ptext.object.canvas.geometry.rectangle import Rectangle
 
 class LineRenderEvent(TextRenderEvent):
     def __init__(self, text_render_events: List[TextRenderEvent]):
-        self.text_render_events = text_render_events
+        self.contained_events = text_render_events
 
     def get_font_color(self):
-        return self.text_render_events[0].get_font_color()
+        return self.contained_events[0].get_font_color()
 
     def get_font_family(self):
-        return self.text_render_events[0].get_font_family()
+        return self.contained_events[0].get_font_family()
 
     def get_font_size(self):
-        return self.text_render_events[0].get_font_size()
+        return self.contained_events[0].get_font_size()
 
     def get_space_character_width_in_text_space(self):
-        return self.text_render_events[0].get_space_character_width_in_text_space()
+        return self.contained_events[0].get_space_character_width_in_text_space()
 
     def get_text(self):
         text = ""
         right = min(
-            self.text_render_events[0].get_baseline().x0,
-            self.text_render_events[0].get_baseline().x1,
+            self.contained_events[0].get_baseline().x0,
+            self.contained_events[0].get_baseline().x1,
         )
-        for e in self.text_render_events:
+        for e in self.contained_events:
             if e.get_text().startswith(" ") or text.endswith(" "):
                 text += e.get_text()
                 right = max(e.get_baseline().x0, e.get_baseline().x1)
@@ -42,15 +42,15 @@ class LineRenderEvent(TextRenderEvent):
 
     def get_baseline(self):
         min_x = min(
-            self.text_render_events[0].get_baseline().x0,
-            self.text_render_events[0].get_baseline().x1,
+            self.contained_events[0].get_baseline().x0,
+            self.contained_events[0].get_baseline().x1,
         )
         max_x = min(
-            self.text_render_events[0].get_baseline().x0,
-            self.text_render_events[0].get_baseline().x1,
+            self.contained_events[0].get_baseline().x0,
+            self.contained_events[0].get_baseline().x1,
         )
-        y = self.text_render_events[0].get_baseline().y0
-        for e in self.text_render_events:
+        y = self.contained_events[0].get_baseline().y0
+        for e in self.contained_events:
             min_x = min(min_x, e.get_baseline().x0, e.get_baseline().x1)
             max_x = max(max_x, e.get_baseline().x0, e.get_baseline().x1)
         return LineSegment(x0=min_x, y0=y, x1=max_x, y1=y)
@@ -60,7 +60,7 @@ class LineRenderEvent(TextRenderEvent):
         max_ascent = max(
             [
                 x.get_font_ascent() * Decimal(0.001) * x.get_font_size()
-                for x in self.text_render_events
+                for x in self.contained_events
             ]
         )
         return Rectangle(ls.x0, ls.y0, abs(ls.x1 - ls.x0), max_ascent)

@@ -50,8 +50,8 @@ class SimpleTextExtraction(EventListener):
         )
 
         # remove no-op
-        tris = [x for x in tris if x.get_text() is not None]
-        tris = [x for x in tris if len(x.get_text().replace(" ", "")) != 0]
+        tris = [x for x in tris if x.get_text_per_page() is not None]
+        tris = [x for x in tris if len(x.get_text_per_page().replace(" ", "")) != 0]
 
         # skip empty
         if len(tris) == 0:
@@ -71,14 +71,14 @@ class SimpleTextExtraction(EventListener):
                 if text.endswith(" "):
                     text = text[0:-1]
                 text += "\n"
-                text += t.get_text()
+                text += t.get_text_per_page()
                 last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
                 last_baseline_bottom = t.get_baseline().y0
                 continue
 
             # check text
-            if t.get_text().startswith(" ") or text.endswith(" "):
-                text += t.get_text()
+            if t.get_text_per_page().startswith(" ") or text.endswith(" "):
+                text += t.get_text_per_page()
                 last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
                 continue
 
@@ -88,7 +88,7 @@ class SimpleTextExtraction(EventListener):
             text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
-            text += t.get_text()
+            text += t.get_text_per_page()
             last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
             continue
 

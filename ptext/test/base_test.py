@@ -23,6 +23,7 @@ class BaseTest(unittest.TestCase):
         self.time_per_document = {}
         # io
         self.input_dir = Path("/home/joris/Code/pdf-corpus/")
+        # self.input_dir = Path("/home/joris/PycharmProjects/pdf-corpus/")
         self.input_file = self.input_dir / "document_1031_single_page.pdf"
         self.output_dir = Path("svg")
 

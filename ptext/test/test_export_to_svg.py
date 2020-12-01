@@ -2,7 +2,11 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from ptext.object.canvas.listener.export.svg_export import SVGExport
+
+from ptext.object.canvas.listener.structure.simple_structure_extraction import (
+    SimpleStructureExtraction,
+)
+from ptext.object.canvas.listener.svg.svg_export import SVGExport
 from ptext.pdf import PDF
 from ptext.test.base_test import BaseTest
 
@@ -17,7 +21,7 @@ class TestExportToSVG(BaseTest):
         self.output_dir = Path("svg")
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "document_556_single_page.pdf"
+        self.input_file = self.input_dir / "document_1031_single_page.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):
@@ -31,10 +35,10 @@ class TestExportToSVG(BaseTest):
 
         with open(file, "rb") as pdf_file_handle:
             l = SVGExport()
-            doc = PDF.loads(pdf_file_handle, [l])
+            doc = PDF.loads(pdf_file_handle, [SimpleStructureExtraction(), l])
             output_file = self.output_dir / (file.stem + ".svg")
             with open(output_file, "wb") as svg_file_handle:
-                svg_file_handle.write(ET.tostring(l.get_svg(0)))
+                svg_file_handle.write(ET.tostring(l.get_svg_per_page(0)))
 
 
 if __name__ == "__main__":

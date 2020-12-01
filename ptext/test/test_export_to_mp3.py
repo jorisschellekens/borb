@@ -35,7 +35,7 @@ class TestExportToMP3(BaseTest):
             l = AudioExport()
             doc = PDF.loads(pdf_file_handle, [SimpleStructureExtraction(), l])
             output_file = self.output_dir / (file.stem + ".mp3")
-            l.get_audio_file_for_page(0, output_file)
+            l.get_audio_file_per_page(0, output_file)
 
 
 if __name__ == "__main__":

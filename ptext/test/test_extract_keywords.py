@@ -40,7 +40,9 @@ class TestExtractKeywords(BaseTest):
             output_file = self.output_dir / (file.stem + ".json")
             with open(output_file, "w") as json_file_handle:
                 json_file_handle.write(
-                    json.dumps([x.__dict__ for x in l.get_keywords(0, 5)], indent=4)
+                    json.dumps(
+                        [x.__dict__ for x in l.get_keywords_per_page(0, 5)], indent=4
+                    )
                 )
 
 

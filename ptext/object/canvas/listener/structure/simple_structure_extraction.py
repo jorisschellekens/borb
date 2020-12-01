@@ -71,5 +71,9 @@ class SimpleStructureExtraction(EventListener):
             page.event_occurred(evt)
 
         # paragraphs to lists
-        events = SimpleOrderedListFactory().create(events)
-        events = SimpleBulletListFactory().create(events)
+        for e in SimpleOrderedListFactory().create(events):
+            page.event_occurred(e)
+        for e in SimpleBulletListFactory().create(events):
+            page.event_occurred(e)
+
+        # TODO : extract tables
