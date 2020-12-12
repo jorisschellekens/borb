@@ -2,7 +2,8 @@
 # pText
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Corpus Coverage : 95.6%](https://img.shields.io/badge/corpus%20coverage-95.6%25-green)]()
+[![Corpus Coverage : 96.2%](https://img.shields.io/badge/corpus%20coverage-96.2%25-green)]()
+[![Text Extraction : 70.7%](https://img.shields.io/badge/text%20extraction-70.7%25-orange)]()
 
 pText is a library for creating and manipulating PDF files in python.
 
@@ -242,4 +243,5 @@ SimpleStructureRecognition performs the following tasks:
 2. Bundle LineRenderEvent objects in ParagraphRenderEvent objects
 3. Bundle ParagraphRenderEvent objects in OrderedlistEvent objects (where applicable)
 4. Bundle ParagraphRenderEvent objects in BulletlistEvent objects (where applicable)
+5. Find those ParagraphRenderEvent objects that make up titles and subtitles (where applicable)
 5. Alert the EventListeners of the Page with the new Event objects
