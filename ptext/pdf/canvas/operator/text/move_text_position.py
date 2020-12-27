@@ -1,11 +1,11 @@
 import copy
+from decimal import Decimal
 from typing import List
 
 from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.geometry.matrix import Matrix
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_number import PDFNumber
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class MoveTextPosition(CanvasOperator):
@@ -19,19 +19,19 @@ class MoveTextPosition(CanvasOperator):
     def __init__(self):
         super().__init__("Td", 2)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
 
-        if not isinstance(operands[0], PDFNumber):
+        if not isinstance(operands[0], Decimal):
             raise PDFTypeError(
-                expected_type=PDFNumber, received_type=operands[0].__class__
+                expected_type=Decimal, received_type=operands[0].__class__
             )
-        if not isinstance(operands[1], PDFNumber):
+        if not isinstance(operands[1], Decimal):
             raise PDFTypeError(
-                expected_type=PDFNumber, received_type=operands[1].__class__
+                expected_type=Decimal, received_type=operands[1].__class__
             )
 
-        tx = operands[0].get_decimal_value()
-        ty = operands[1].get_decimal_value()
+        tx = operands[0]
+        ty = operands[1]
 
         m = Matrix.identity_matrix()
         m[2][0] = tx

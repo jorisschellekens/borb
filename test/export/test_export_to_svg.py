@@ -3,11 +3,10 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-
+from ptext.action.export.svg_export import SVGExport
 from ptext.action.structure.simple_structure_extraction import (
     SimpleStructureExtraction,
 )
-from ptext.action.export.svg_export import SVGExport
 from ptext.pdf.pdf import PDF
 from test.base_test import BaseTest
 
@@ -24,7 +23,7 @@ class TestExportToSVG(BaseTest):
         self.output_dir = Path("svg")
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "0237.pdf"
+        self.input_file = self.input_dir / "0128.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):

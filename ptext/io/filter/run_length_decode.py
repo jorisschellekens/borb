@@ -12,6 +12,11 @@ class RunLengthDecode:
         Decompresses data encoded using a byte-oriented run-length
         encoding algorithm
         """
+
+        # trivial case
+        if len(bytes_in) == 0:
+            return bytes_in
+
         bytes_out = bytearray()
         for i in range(0, len(bytes_in), 2):
             b = bytes_in[i]

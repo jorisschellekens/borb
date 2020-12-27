@@ -35,9 +35,9 @@ class CanvasGraphicsState:
         self.font_size = None
         self.clipping_path = None
         self.non_stroke_color_space = None
-        self.non_stroke_color = RGBColor(0, 0, 0)
+        self.non_stroke_color = RGBColor(Decimal(0), Decimal(0), Decimal(0))
         self.stroke_color_space = None
-        self.stroke_color = RGBColor(0, 0, 0)
+        self.stroke_color = RGBColor(Decimal(0), Decimal(0), Decimal(0))
         self.line_width = Decimal(1)
         self.line_cap = None
         self.line_join = None

@@ -3,10 +3,9 @@ from typing import List
 import PIL
 
 from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType, Name
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class Do(CanvasOperator):
@@ -25,17 +24,15 @@ class Do(CanvasOperator):
     def __init__(self):
         super().__init__("Do", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
-        if not isinstance(operands[0], PDFName):
-            raise PDFTypeError(
-                expected_type=PDFName, received_type=operands[0].__class__
-            )
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
+        if not isinstance(operands[0], Name):
+            raise PDFTypeError(expected_type=Name, received_type=operands[0].__class__)
 
         # get Page
         page = canvas.get_parent()
 
         # get XObject
-        resource_name = operands[0].name
+        resource_name = operands[0]
         xobject = (
             page["Resources"]["XObject"][resource_name]
             if resource_name in page["Resources"]["XObject"]

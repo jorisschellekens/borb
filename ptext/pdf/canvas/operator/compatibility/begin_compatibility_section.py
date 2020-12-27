@@ -1,7 +1,7 @@
 from typing import List
 
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class BeginCompatibilitySection(CanvasOperator):
@@ -14,5 +14,5 @@ class BeginCompatibilitySection(CanvasOperator):
     def __init__(self):
         super().__init__("BX", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
         canvas.in_compatibility_section = True

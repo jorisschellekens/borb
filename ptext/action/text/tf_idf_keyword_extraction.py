@@ -1,10 +1,9 @@
 import re
+import typing
 from math import log
 from typing import List, Optional
 
-from ptext.action import (
-    SimpleTextExtraction,
-)
+from ptext.action.text.simple_text_extraction import SimpleTextExtraction
 from ptext.pdf.page.page import Page
 
 
@@ -62,9 +61,11 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
     many more sophisticated ranking functions are variants of this simple model.
     """
 
-    def __init__(self, stopwords: List[str] = [], minimum_term_frequency: int = 3):
+    def __init__(
+        self, stopwords: typing.List[str] = [], minimum_term_frequency: int = 3
+    ):
         super().__init__()
-        self.keywords = []
+        self.keywords: typing.List[TFIDFKeyword] = []
         self.stopwords = [x.upper() for x in stopwords]
         self.number_of_pages = 0
         self.minimum_term_frequency = minimum_term_frequency

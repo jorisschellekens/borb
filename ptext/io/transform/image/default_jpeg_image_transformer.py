@@ -1,51 +1,45 @@
 import io
-from typing import Optional, List, Any, Union
+import typing
+from typing import Optional, Any, Union
 
-from PIL import Image
+from PIL import Image   # type: ignore [import]
 
-from ptext.io.tokenize.types.pdf_array import PDFArray
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.io.tokenize.types.pdf_stream import PDFStream
-from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
-from ptext.io.transform.types import add_base_methods
+from ptext.io.transform.types import add_base_methods, Stream, AnyPDFType
+from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 @add_base_methods
 class DefaultJPEGImageTransformer(BaseTransformer):
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
         return (
-            isinstance(object, PDFStream)
+            isinstance(object, Stream)
+            and object.get("Type", None) in ["XObject", None]
+            and object.get("Subtype", None) == ("Image")
+            and "Filter" in object
             and (
-                (
-                    PDFName("Type") in object.stream_dictionary
-                    and object.stream_dictionary[PDFName("Type")] == PDFName("XObject")
-                )
-                or PDFName("Type") not in object.stream_dictionary
-            )
-            and PDFName("Subtype") in object.stream_dictionary
-            and object.stream_dictionary[PDFName("Subtype")] == PDFName("Image")
-            and PDFName("Filter") in object.stream_dictionary
-            and (
-                object.stream_dictionary[PDFName("Filter")] == PDFName("DCTDecode")
+                object["Filter"] == "DCTDecode"
                 or (
-                    isinstance(object.stream_dictionary[PDFName("Filter")], PDFArray)
-                    and object.stream_dictionary[PDFName("Filter")][0]
-                    == PDFName("DCTDecode")
+                    isinstance(object["Filter"], list)
+                    and object["Filter"][0] == "DCTDecode"
                 )
             )
         )
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
         # use PIL to read image bytes
-        tmp = Image.open(io.BytesIO(object_to_transform.raw_byte_array))
+        assert isinstance(object_to_transform, Stream)
+        raw_byte_array = object_to_transform["Bytes"]
+        tmp = Image.open(io.BytesIO(raw_byte_array))
 
         # add base methods
         add_base_methods(tmp.__class__)

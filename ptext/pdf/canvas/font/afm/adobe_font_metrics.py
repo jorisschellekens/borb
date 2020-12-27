@@ -2,14 +2,15 @@ import io
 import os
 import pathlib
 import re
+import typing
 from decimal import Decimal
 from typing import List, Optional
 
+from ptext.io.transform.types import (
+    List,
+)
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.font_descriptor import FontDescriptor
-from ptext.io.transform.types import (
-    ListWithParentAttribute,
-)
 
 
 class AdobeFontMetrics:
@@ -128,7 +129,7 @@ class AdobeFontMetrics:
         out_font["Name"] = out_font_descriptor["FontName"]
         out_font["BaseFont"] = out_font_descriptor["FontName"]
 
-        widths = ListWithParentAttribute().set_parent(out_font)
+        widths = List().set_parent(out_font)
         avg_char_width = 0
         avg_char_width_norm = 0
         first_char = None
@@ -183,7 +184,7 @@ class AdobeFontMetrics:
         return out_font
 
     @staticmethod
-    def _find_line(lines: List[str], key: str) -> Optional[str]:
+    def _find_line(lines: typing.List[str], key: str) -> Optional[str]:
         relevant_line = [x for x in lines if x.startswith(key)]
         if len(relevant_line) == 0:
             return None
@@ -194,20 +195,20 @@ class AdobeFontMetrics:
         return relevant_line
 
     @staticmethod
-    def _find_and_parse_as_string(lines: List[str], key: str) -> Optional[str]:
+    def _find_and_parse_as_string(lines: typing.List[str], key: str) -> Optional[str]:
         return AdobeFontMetrics._find_line(lines, key)
 
     @staticmethod
-    def _find_and_parse_as_integer(lines: List[str], key: str) -> Optional[int]:
+    def _find_and_parse_as_integer(lines: typing.List[str], key: str) -> Optional[int]:
         relevant_line = AdobeFontMetrics._find_line(lines, key)
         return int(relevant_line) if relevant_line is not None else None
 
     @staticmethod
-    def _find_and_parse_as_float(lines: List[str], key: str) -> Optional[float]:
+    def _find_and_parse_as_float(lines: typing.List[str], key: str) -> Optional[float]:
         relevant_line = AdobeFontMetrics._find_line(lines, key)
         return float(relevant_line) if relevant_line is not None else None
 
     @staticmethod
-    def _find_and_parse_as_bool(lines: List[str], key: str) -> Optional[bool]:
+    def _find_and_parse_as_bool(lines: typing.List[str], key: str) -> Optional[bool]:
         relevant_line = AdobeFontMetrics._find_line(lines, key)
         return (relevant_line.upper() == "TRUE") if relevant_line is not None else None

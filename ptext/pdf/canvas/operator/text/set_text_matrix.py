@@ -1,11 +1,10 @@
 import copy
+from decimal import Decimal
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.geometry.matrix import Matrix
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_number import PDFNumber
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class SetTextMatrix(CanvasOperator):
@@ -23,21 +22,22 @@ class SetTextMatrix(CanvasOperator):
     def __init__(self):
         super().__init__("Tm", 6)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
 
-        for i in range(0, 6):
-            if not isinstance(operands[i], PDFNumber):
-                raise PDFTypeError(
-                    expected_type=PDFNumber, received_type=operands[i].__class__
-                )
+        assert isinstance(operands[0], Decimal)
+        assert isinstance(operands[1], Decimal)
+        assert isinstance(operands[2], Decimal)
+        assert isinstance(operands[3], Decimal)
+        assert isinstance(operands[4], Decimal)
+        assert isinstance(operands[5], Decimal)
 
         mtx = Matrix.matrix_from_six_values(
-            operands[0].get_decimal_value(),
-            operands[1].get_decimal_value(),
-            operands[2].get_decimal_value(),
-            operands[3].get_decimal_value(),
-            operands[4].get_decimal_value(),
-            operands[5].get_decimal_value(),
+            operands[0],
+            operands[1],
+            operands[2],
+            operands[3],
+            operands[4],
+            operands[5],
         )
         canvas.graphics_state.text_matrix = mtx
         canvas.graphics_state.text_line_matrix = copy.deepcopy(mtx)

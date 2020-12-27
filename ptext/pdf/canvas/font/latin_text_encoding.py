@@ -19,13 +19,10 @@ class Encoding:
 
     def add_symbol(self, code: int, glyph_name: str):
         if 0 <= code < 256 and glyph_name in ADOBE_GLYPH_DICTIONARY:
-            unicode = ADOBE_GLYPH_DICTIONARY.get(glyph_name)[
-                0
-            ]  # TODO : fix when unicode points to multiple chars
+            unicode = ADOBE_GLYPH_DICTIONARY.get(glyph_name)[0]
             self._unicode_to_code[unicode] = code
             self._code_to_unicode[code] = unicode
             self._differences[code] = glyph_name
-            # self._unicode_differences[unicode] = unicode
         return self
 
     def can_encode_unicode(self, unicode: int) -> bool:

@@ -1,9 +1,9 @@
 from typing import List
 
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.text.move_to_next_line import MoveToNextLine
 from ptext.pdf.canvas.operator.text.show_text import ShowText
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class MoveToNextLineShowText(CanvasOperator):
@@ -17,6 +17,6 @@ class MoveToNextLineShowText(CanvasOperator):
     def __init__(self):
         super().__init__("'", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
         MoveToNextLine().invoke(canvas, [])
         ShowText().invoke(canvas, operands)

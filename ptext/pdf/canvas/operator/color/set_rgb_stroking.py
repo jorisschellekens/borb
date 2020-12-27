@@ -1,10 +1,9 @@
+from decimal import Decimal
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.color.color import RGBColor
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_number import PDFNumber
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class SetRGBStroking(CanvasOperator):
@@ -18,13 +17,11 @@ class SetRGBStroking(CanvasOperator):
     def __init__(self):
         super().__init__("RG", 3)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject]):
-        for i in range(0, 3):
-            if not isinstance(operands[i], PDFNumber):
-                raise PDFTypeError(
-                    expected_type=PDFNumber, received_type=operands[i].__class__
-                )
-        r = operands[0].get_decimal_value()
-        g = operands[1].get_decimal_value()
-        b = operands[2].get_decimal_value()
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType]):
+        assert isinstance(operands[0], Decimal)
+        assert isinstance(operands[1], Decimal)
+        assert isinstance(operands[2], Decimal)
+        r = operands[0]
+        g = operands[1]
+        b = operands[2]
         canvas.graphics_state.stroke_color = RGBColor(r, g, b)

@@ -1,28 +1,32 @@
-from typing import Optional, List, Any, Union
-
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.pdf.canvas.font.font import Font
-from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.io.tokenize.types.pdf_dictionary import PDFDictionary
+import io
+import typing
+from typing import Optional, Any, Union
 
 from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
-from ptext.io.transform.object.default_dictionary_transformer import DefaultDictionaryTransformer
+from ptext.io.transform.object.default_dictionary_transformer import (
+    DefaultDictionaryTransformer,
+)
+from ptext.io.transform.types import AnyPDFType
+from ptext.pdf.canvas.event.event_listener import EventListener
+from ptext.pdf.canvas.font.font import Font
 
 
 class DefaultFontDescriptorDictionaryTransformer(BaseTransformer):
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
         return (
-            isinstance(object, PDFDictionary)
-            and PDFName("Type") in object
-            and object[PDFName("Type")] == PDFName("FontDescriptor")
+            isinstance(object, dict)
+            and "Type" in object
+            and object["Type"] == "FontDescriptor"
         )
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
         # convert like regular dictionary
@@ -34,7 +38,7 @@ class DefaultFontDescriptorDictionaryTransformer(BaseTransformer):
                     )
 
         # build intermittent Font object
-        tmp = Font().set_parent(parent_object)
+        tmp = Font().set_parent(parent_object) # type: ignore [attr-defined]
 
         # add listener(s)
         for l in event_listeners:

@@ -55,7 +55,7 @@ class Matrix:
         m.mtx = m_vals
         return m
 
-    def cross(self, x: float, y: float, z: float):
+    def cross(self, x: Decimal, y: Decimal, z: Decimal):
         x2 = x * self[0][0] + y * self[1][0] + z * self[2][0]
         y2 = x * self[0][1] + y * self[1][1] + z * self[2][1]
         z2 = x * self[0][2] + y * self[1][2] + z * self[2][2]

@@ -2613,7 +2613,7 @@
   <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ptext/tranform/types_with_parent_attribute.py" />
   <problem_class id="PyMissingOrEmptyDocstringInspection" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Missing or empty docstring</problem_class>
   <description>Missing docstring</description>
-  <highlighted_element>hexstr</highlighted_element>
+  <highlighted_element>HexadecimalString</highlighted_element>
   <offset>6</offset>
   <length>6</length>
 </problem>
@@ -2624,7 +2624,7 @@
   <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ptext/tranform/types_with_parent_attribute.py" />
   <problem_class id="PyMissingOrEmptyDocstringInspection" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Missing or empty docstring</problem_class>
   <description>Missing docstring</description>
-  <highlighted_element>HexStringWithParentAttribute</highlighted_element>
+  <highlighted_element>HexadecimalStringingWithParentAttribute</highlighted_element>
   <offset>6</offset>
   <length>28</length>
 </problem>

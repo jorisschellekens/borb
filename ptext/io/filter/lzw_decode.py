@@ -17,6 +17,10 @@ class LZWDecode:
         Welch) adaptive compression method
         """
 
+        # trivial case
+        if len(bytes_in) == 0:
+            return bytes_in
+
         # Build the dictionary.
         dict_size = 256
         dictionary = {i: bytearray() for i in range(dict_size)}
@@ -35,13 +39,15 @@ class LZWDecode:
             if k in dictionary:
                 entry = dictionary[k]
             elif k == dict_size:
-                entry = copy.deepcopy(w).append(w[0])
+                entry = copy.deepcopy(w)
+                entry.append(w[0])
             else:
                 raise PDFSyntaxError("malformed lzw byte stream")
             bytes_out.extend(entry)
 
             # Add w+entry[0] to the dictionary.
-            dictionary[dict_size] = copy.deepcopy(w).append(entry[0])
+            dictionary[dict_size] = copy.deepcopy(w)
+            dictionary[dict_size].append(entry[0])
             dict_size += 1
 
             w = entry

@@ -1,11 +1,9 @@
+from decimal import Decimal
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.color.color import GrayColor, RGBColor, CMYKColor
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.io.tokenize.types.pdf_number import PDFNumber
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class SetColorStroking(CanvasOperator):
@@ -30,40 +28,42 @@ class SetColorStroking(CanvasOperator):
 
     def get_number_of_operands(self) -> int:
         stroke_color_space = self.canvas.graphics_state.stroke_color_space
-        if stroke_color_space == PDFName("DeviceCMYK"):
+        if stroke_color_space == "DeviceCMYK":
             return 4
-        if stroke_color_space == PDFName("DeviceGray"):
+        if stroke_color_space == "DeviceGray":
             return 1
-        if stroke_color_space == PDFName("DeviceRGB"):
+        if stroke_color_space == "DeviceRGB":
             return 3
         return self.number_of_operands
 
-    def invoke(self, canvas: "PDFCanvas", operands: List[PDFObject] = []):
-        for i in range(0, len(operands)):
-            if not isinstance(operands[i], PDFNumber):
-                raise PDFTypeError(
-                    expected_type=PDFNumber, received_type=operands[i].__class__
-                )
+    def invoke(self, canvas: "PDFCanvas", operands: List[AnyPDFType] = []):
+
         non_stroke_color_space = self.canvas.graphics_state.non_stroke_color_space
-        if non_stroke_color_space == PDFName("DeviceCMYK"):
+        if non_stroke_color_space == "DeviceCMYK":
+            assert isinstance(operands[0], Decimal)
+            assert isinstance(operands[1], Decimal)
+            assert isinstance(operands[2], Decimal)
+            assert isinstance(operands[3], Decimal)
             canvas.graphics_state.stroke_color = CMYKColor(
-                operands[0].get_decimal_value(),
-                operands[1].get_decimal_value(),
-                operands[2].get_decimal_value(),
-                operands[3].get_decimal_value(),
+                operands[0],
+                operands[1],
+                operands[2],
+                operands[3],
             )
             return
 
-        if non_stroke_color_space == PDFName("DeviceGray"):
-            canvas.graphics_state.stroke_color = GrayColor(
-                operands[0].get_decimal_value()
-            )
+        if non_stroke_color_space == "DeviceGray":
+            assert isinstance(operands[0], Decimal)
+            canvas.graphics_state.stroke_color = GrayColor(operands[0])
             return
 
-        if non_stroke_color_space == PDFName("DeviceRGB"):
+        if non_stroke_color_space == "DeviceRGB":
+            assert isinstance(operands[0], Decimal)
+            assert isinstance(operands[1], Decimal)
+            assert isinstance(operands[2], Decimal)
             canvas.graphics_state.stroke_color = RGBColor(
-                operands[0].get_decimal_value(),
-                operands[1].get_decimal_value(),
-                operands[2].get_decimal_value(),
+                operands[0],
+                operands[1],
+                operands[2],
             )
             return

@@ -1,9 +1,9 @@
 import copy
 
-from ptext.io.transform.types import DictionaryWithParentAttribute
+from ptext.io.transform.types import Dictionary
 
 
-class FontDescriptor(DictionaryWithParentAttribute):
+class FontDescriptor(Dictionary):
     """
     A font descriptor specifies metrics and other attributes of a simple font or a CIDFont as a whole, as distinct from
     the metrics of individual glyphs. These font metrics provide information that enables a conforming reader to

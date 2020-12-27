@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from typing import Optional
 
-from ptext.io.tokenize.types.pdf_string import PDFHexString
+from ptext.io.transform.types import Dictionary, HexadecimalString
 from ptext.pdf.canvas.font.cmap.cmap import CMap
 from ptext.pdf.canvas.font.glyph_line import GlyphLine, Glyph
 from ptext.pdf.canvas.font.latin_text_encoding import (
@@ -11,12 +11,11 @@ from ptext.pdf.canvas.font.latin_text_encoding import (
     WingDings,
 )
 from ptext.pdf.canvas.geometry.matrix import Matrix
-from ptext.io.transform.types import DictionaryWithParentAttribute
 
 logger = logging.getLogger(__name__)
 
 
-class Font(DictionaryWithParentAttribute):
+class Font(Dictionary):
     """
     A font shall be represented in PDF as a dictionary specifying the type of font, its PostScript name, its encoding,
     and information that can be used to provide a substitute when the font program is not available. Optionally, the
@@ -176,8 +175,8 @@ class Font(DictionaryWithParentAttribute):
         value_bytes = content.get_value_bytes()
         while i < len(value_bytes):
             # attempt to use ToUnicode CMAP (2 bytes)
-            if i + 1 < len(value_bytes) and isinstance(content, PDFHexString):
-                code = value_bytes[i] * 256 + value_bytes[i+1]
+            if i + 1 < len(value_bytes) and isinstance(content, HexadecimalString):
+                code = value_bytes[i] * 256 + value_bytes[i + 1]
                 if (
                     self._to_unicode_map is not None
                     and self._to_unicode_map.code_to_unicode(code) is not None
@@ -192,7 +191,7 @@ class Font(DictionaryWithParentAttribute):
             # attempt to use ToUnicode CMAP (1 byte)
             code = value_bytes[i]
             if (
-                isinstance(content, PDFHexString)
+                isinstance(content, HexadecimalString)
                 and self._to_unicode_map is not None
                 and self._to_unicode_map.code_to_unicode(code) is not None
                 and self._to_unicode_map.code_to_unicode(code) != 0
@@ -268,6 +267,7 @@ class Font(DictionaryWithParentAttribute):
             else:
                 self._font_encoding = StandardEncoding()
             i = 0
+            # LEONND font in document 0263_page_0 is not being handled properly
             while i < len(self["Encoding"]["Differences"]):
                 start_code = self["Encoding"]["Differences"][i]
                 j = 0

@@ -1,7 +1,7 @@
 from typing import List
 
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_object import PDFObject
 
 
 class SetTextRenderingMode(CanvasOperator):
@@ -13,6 +13,6 @@ class SetTextRenderingMode(CanvasOperator):
     def __init__(self):
         super().__init__("Tr", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
         # TODO implement 'Tr' operator
         pass

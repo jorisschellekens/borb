@@ -1,5 +1,5 @@
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 
 
 class SimpleTableExtraction(EventListener):

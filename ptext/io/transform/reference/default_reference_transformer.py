@@ -1,8 +1,10 @@
-from typing import Optional, List, Any, Union
+import io
+import typing
+from typing import Optional, Any, Union
 
-from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.io.tokenize.types.pdf_indirect_reference import PDFIndirectReference
 from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
+from ptext.io.transform.types import Reference, AnyPDFType
+from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class DefaultReferenceTransformer(BaseTransformer):
@@ -10,28 +12,33 @@ class DefaultReferenceTransformer(BaseTransformer):
         self.cache = {}
         self.ref_count = {}
 
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
-        return isinstance(object, PDFIndirectReference)
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
+        return isinstance(object, Reference)
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+
+        assert isinstance(object_to_transform, Reference)
 
         # canonic reference
         ref_uuid = ""
-        if object_to_transform.get_object_number() is not None:
-            ref_uuid = "%d" % object_to_transform.get_object_number().get_int_value()
-        if object_to_transform.get_parent_stream_number() is not None:
+        if object_to_transform.object_number is not None:
+            ref_uuid = "%d" % object_to_transform.object_number
+        if object_to_transform.parent_stream_object_number is not None:
             ref_uuid = "%d/%d" % (
-                object_to_transform.get_parent_stream_number().get_int_value,
-                object_to_transform.get_index_in_stream().get_int_value(),
+                object_to_transform.parent_stream_object_number,
+                object_to_transform.index_in_parent_stream,
             )
 
         # check for circular reference
+        assert context is not None
         if ref_uuid in context.indirect_reference_chain:
             return None
 
@@ -45,7 +52,7 @@ class DefaultReferenceTransformer(BaseTransformer):
         tok = context.tokenizer
 
         # get reference
-        val = xref.get_object_for_indirect_reference(object_to_transform, src, tok)
+        val = xref.get(object_to_transform, src, tok)
 
         # transform
         context.indirect_reference_chain.append(ref_uuid)

@@ -1,24 +1,15 @@
 import xml.etree.ElementTree as ET
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 
-from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.action.structure.line.line_render_event import (
     LineRenderEvent,
 )
-from ptext.action.structure.list import (
-    BulletListRenderEvent,
-)
-from ptext.action.structure.list import (
-    OrderedListRenderEvent,
-)
-from ptext.action.structure.paragraph import (
-    ParagraphRenderEvent,
-)
-from ptext.pdf.page.page_size import PageSize
+from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
+from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
+from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.page.page_size import PageSize
 
 
 class SVGExport(EventListener):
@@ -43,15 +34,7 @@ class SVGExport(EventListener):
         self.current_page_svg_element = None
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
-        if isinstance(event, BulletListRenderEvent) or isinstance(
-            event, OrderedListRenderEvent
-        ):
-            self._render_list(event)
-            return
-        if isinstance(event, ParagraphRenderEvent):
-            self._render_paragraph(event)
-            return
+    def event_occurred(self, event: "Event") -> None:
         if isinstance(event, LineRenderEvent):
             self._render_text_line(event)
             return
@@ -215,7 +198,7 @@ class SVGExport(EventListener):
         # append to page
         self.current_page_svg_element.append(text_element)
 
-    def _render_image(self, event: ImageRenderEvent):
+    def _render_image(self, event: "ImageRenderEvent"):
 
         # build img element
         img_element = ET.Element("g")
@@ -245,20 +228,10 @@ class SVGExport(EventListener):
 
         self.current_page_svg_element.append(img_element)
 
-    def _render_text_line(self, event: LineRenderEvent):
+    def _render_text_line(self, event: "LineRenderEvent"):
         bb = event.get_bounding_box()
         y = int(self.current_page_height - bb.y - bb.height)
         self._render_box(bb.x, y, bb.width, bb.height, 250, 121, 33)
-
-    def _render_paragraph(self, event: ParagraphRenderEvent):
-        bb = event.get_bounding_box()
-        y = int(self.current_page_height - bb.y - bb.height)
-        self._render_box(bb.x, y, bb.width, bb.height, 254, 153, 32)
-
-    def _render_list(self, event: Union[BulletListRenderEvent, OrderedListRenderEvent]):
-        bb = event.get_bounding_box()
-        y = int(self.current_page_height - bb.y - bb.height)
-        self._render_box(bb.x, y, bb.width, bb.height, 55, 80, 92)
 
     def _render_box(self, x, y, width, height, red, green, blue):
         line_element = ET.Element("rect")

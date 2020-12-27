@@ -9,11 +9,11 @@ class FontExtraction(EventListener):
         self.fonts_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
+    def event_occurred(self, event: "Event") -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event)
 
-    def _begin_page(self, event: BeginPageEvent):
+    def _begin_page(self, event: "BeginPageEvent"):
 
         # update page number
         self.current_page += 1

@@ -1,16 +1,12 @@
 import io
+from decimal import Decimal
 from typing import Optional
 
 from ptext.exception.pdf_exception import PDFTypeError, PDFValueError
+from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.transform.types import Reference, Stream, Dictionary
 from ptext.pdf.xref.xref import XREF
-from ptext.io.tokenize.types.pdf_array import PDFArray
-from ptext.io.tokenize.types.pdf_boolean import PDFBoolean
-from ptext.io.tokenize.types.pdf_indirect_reference import PDFIndirectReference
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.io.tokenize.types.pdf_number import PDFInt
-from ptext.io.tokenize.types.pdf_object import PDFIndirectObject
-from ptext.io.tokenize.types.pdf_stream import PDFStream
 
 
 class StreamXREF(XREF):
@@ -34,102 +30,90 @@ class StreamXREF(XREF):
         io_source: io.IOBase,
         tokenizer: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
-    ) -> "PDFHighLevelObject":
+    ) -> "XREF":
 
         if initial_offset is not None:
-            self.input.seek(initial_offset)
+            io_source.seek(initial_offset)
         else:
             self._seek_to_xref_token(io_source, tokenizer)
 
-        xref_stream_indirect = tokenizer.read_object()
-        if not isinstance(xref_stream_indirect, PDFIndirectObject):
+        xref_stream = tokenizer.read_object()
+        if not isinstance(xref_stream, Stream):
             raise PDFTypeError(
-                received_type=xref_stream_indirect.__class__,
-                expected_type=PDFIndirectObject,
+                received_type=xref_stream.__class__,
+                expected_type=Stream,
             )
-        if not isinstance(xref_stream_indirect.get_object(), PDFStream):
-            raise PDFTypeError(
-                received_type=xref_stream_indirect.get_object().__class__,
-                expected_type=PDFStream,
-            )
-
-        xref_stream = xref_stream_indirect.get_object()
 
         # check widths
-        widths_name = PDFName("W")
-        if widths_name not in xref_stream.stream_dictionary:
-            raise PDFTypeError(expected_type=PDFArray, received_type=None)
+        if "W" not in xref_stream:
+            raise PDFTypeError(expected_type=list, received_type=None)
         if any(
             [
-                not isinstance(xref_stream.stream_dictionary[widths_name][x], PDFInt)
-                for x in range(0, len(xref_stream.stream_dictionary[widths_name]))
+                not isinstance(xref_stream["W"][x], Decimal)
+                for x in range(0, len(xref_stream["W"]))
             ]
         ):
             raise PDFValueError(
-                expected_value_description="[PDFInt]",
-                received_value_description=str(
-                    [str(x) for x in xref_stream.stream_dictionary[widths_name]]
-                ),
+                expected_value_description="[Decimal]",
+                received_value_description=str([str(x) for x in xref_stream["W"]]),
             )
 
         # decode widths
-        widths = [
-            xref_stream.stream_dictionary[widths_name][x].get_int_value()
-            for x in range(0, len(xref_stream.stream_dictionary[widths_name]))
-        ]
+        widths = [int(xref_stream["W"][x]) for x in range(0, len(xref_stream["W"]))]
         total_entry_width = sum(widths)
+
+        # parent
+        document = self.get_root()
 
         # list of references
         indirect_references = [
-            PDFIndirectReference(
-                object_number=PDFInt(0),
-                generation_number=PDFInt(65535),
-                is_in_use=PDFBoolean(False),
-                document=self.document,
+            Reference(
+                object_number=0,
+                generation_number=65535,
+                is_in_use=False,
+                document=document,
             )
         ]
 
         # check size
-        if not PDFName("Size") in xref_stream.stream_dictionary:
-            raise PDFTypeError(expected_type=PDFInt, received_type=None)
-        if not isinstance(xref_stream.stream_dictionary[PDFName("Size")], PDFInt):
+        if "Size" not in xref_stream:
+            raise PDFTypeError(expected_type=Decimal, received_type=None)
+        if not isinstance(xref_stream["Size"], Decimal):
             raise PDFTypeError(
-                expected_type=PDFInt,
-                received_type=xref_stream.stream_dictionary[PDFName("Size")].__class__,
+                expected_type=Decimal,
+                received_type=xref_stream["Size"].__class__,
             )
 
         # get size
-        number_of_objects = xref_stream.stream_dictionary[
-            PDFName("Size")
-        ].get_int_value()
+        number_of_objects = int(xref_stream["Size"])
 
         # index
-        index_name = PDFName("Index")
-        index = PDFArray()
-        if index_name in xref_stream.stream_dictionary:
-            index = xref_stream.stream_dictionary[index_name]
+        index = []
+        if "Index" in xref_stream:
+            index = xref_stream["Index"]
             if (
-                not isinstance(index, PDFArray)
+                not isinstance(index, list)
                 or len(index) % 2 != 0
-                or not isinstance(index[0], PDFInt)
-                or not isinstance(index[1], PDFInt)
+                or not isinstance(index[0], Decimal)
+                or not isinstance(index[1], Decimal)
             ):
                 raise PDFTypeError(
                     expected_type=list.__class__, received_type=index.__class__
                 )
         else:
-            index = PDFArray().append(PDFInt(0)).append(PDFInt(number_of_objects))
+            index = [Decimal(0), Decimal(number_of_objects)]
+
+        # apply filters
+        xref_stream = decode_stream(xref_stream)
 
         # read every range specified in \Index
-        xref_stream_decoded_bytes = xref_stream.get_decoded_bytes()
+        xref_stream_decoded_bytes = xref_stream["DecodedBytes"]
         for idx in range(0, len(index), 2):
-            start = index[idx].get_int_value()
-            length = index[idx + 1].get_int_value()
+            start = int(index[idx])
+            length = int(index[idx + 1])
 
+            bptr = 0
             for i in range(0, length):
-                bytes = xref_stream_decoded_bytes[
-                    i * total_entry_width : (i + 1) * total_entry_width
-                ]
 
                 # object number
                 object_number = start + i
@@ -139,17 +123,20 @@ class StreamXREF(XREF):
                 if widths[0] > 0:
                     type = 0
                     for j in range(0, widths[0]):
-                        type = (type << 8) + (bytes[j] & 0xFF)
+                        type = (type << 8) + (xref_stream_decoded_bytes[bptr] & 0xFF)
+                        bptr += 1
 
                 # read field 2
                 field2 = 0
                 for j in range(0, widths[1]):
-                    field2 = (field2 << 8) + (bytes[widths[0] + j] & 0xFF)
+                    field2 = (field2 << 8) + (xref_stream_decoded_bytes[bptr] & 0xFF)
+                    bptr += 1
 
                 # read field 3
                 field3 = 0
                 for j in range(0, widths[2]):
-                    field3 = (field3 << 8) + (bytes[widths[0] + widths[1] + j] & 0xFF)
+                    field3 = (field3 << 8) + (xref_stream_decoded_bytes[bptr] & 0xFF)
+                    bptr += 1
 
                 if type not in [0, 1, 2]:
                     raise PDFValueError(
@@ -164,12 +151,12 @@ class StreamXREF(XREF):
                     # cross-reference table).
                     # field2    : The object number of the next free object
                     # field3    : The generation number to use if this object number is used again
-                    pdf_indirect_reference = PDFIndirectReference(
-                        document=self.document,
-                        object_number=PDFInt(object_number),
-                        byte_offset=PDFInt(field2),
-                        generation_number=PDFInt(field3),
-                        is_in_use=PDFBoolean(False),
+                    pdf_indirect_reference = Reference(
+                        document=document,
+                        object_number=object_number,
+                        byte_offset=field2,
+                        generation_number=field3,
+                        is_in_use=False,
                     )
 
                 if type == 1:
@@ -179,11 +166,11 @@ class StreamXREF(XREF):
                     # field2    : The byte offset of the object, starting from the beginning of the
                     # file.
                     # field3    : The generation number of the object. Default value: 0.
-                    pdf_indirect_reference = PDFIndirectReference(
-                        document=self.document,
-                        object_number=PDFInt(object_number),
-                        byte_offset=PDFInt(field2),
-                        generation_number=PDFInt(field3),
+                    pdf_indirect_reference = Reference(
+                        document=document,
+                        object_number=object_number,
+                        byte_offset=field2,
+                        generation_number=field3,
                     )
 
                 if type == 2:
@@ -193,12 +180,12 @@ class StreamXREF(XREF):
                     # stored. (The generation number of the object stream shall be
                     # implicitly 0.)
                     # field3    : The index of this object within the object stream.
-                    pdf_indirect_reference = PDFIndirectReference(
-                        document=self.document,
-                        object_number=PDFInt(object_number),
-                        generation_number=PDFInt(0),
-                        parent_stream_object_number=PDFInt(field2),
-                        index_in_parent_stream_object=PDFInt(field3),
+                    pdf_indirect_reference = Reference(
+                        document=document,
+                        object_number=object_number,
+                        generation_number=0,
+                        parent_stream_object_number=field2,
+                        index_in_parent_stream=field3,
                     )
 
                 # append
@@ -208,14 +195,14 @@ class StreamXREF(XREF):
                             x
                             for x in indirect_references
                             if x.object_number is not None
-                            and x.object_number == PDFInt(object_number)
+                            and x.object_number == Decimal(object_number)
                         ]
                     ),
                     None,
                 )
                 ref_is_in_reading_state = (
                     existing_indirect_ref is not None
-                    and existing_indirect_ref.is_in_use == PDFBoolean(True)
+                    and existing_indirect_ref.is_in_use
                     and existing_indirect_ref.generation_number
                     == pdf_indirect_reference.generation_number
                 )
@@ -227,8 +214,10 @@ class StreamXREF(XREF):
                 if ref_is_first_encountered:
                     indirect_references.append(pdf_indirect_reference)
                 elif ref_is_in_reading_state:
-                    existing_indirect_ref.index_in_parent_stream_object = (
-                        pdf_indirect_reference.index_in_parent_stream_object
+                    assert existing_indirect_ref is not None
+                    assert pdf_indirect_reference is not None
+                    existing_indirect_ref.index_in_parent_stream = (
+                        pdf_indirect_reference.index_in_parent_stream
                     )
                     existing_indirect_ref.parent_stream_object_number = (
                         pdf_indirect_reference.parent_stream_object_number
@@ -236,8 +225,10 @@ class StreamXREF(XREF):
 
         # add section
         for r in indirect_references:
-            self.add_indirect_reference(r)
+            self.append(r)
 
         # initialize trailer
-        trailer = xref_stream.stream_dictionary
-        self["Trailer"] = trailer
+        self["Trailer"] = Dictionary(xref_stream)
+
+        # return
+        return self

@@ -76,3 +76,4 @@ class ImageRenderEvent(Event):
             g = int((1 - c[1]) * (1 - c[3]) / 255)
             b = int((1 - c[2]) * (1 - c[0]) / 255)
             return RGBColor(r=Decimal(r), g=Decimal(g), b=Decimal(b))
+        return RGBColor(Decimal(0), Decimal(0), Decimal(0))

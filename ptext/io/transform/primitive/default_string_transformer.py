@@ -1,31 +1,35 @@
-from typing import Optional, List, Any, Union
+import io
+import typing
+from typing import Optional, Any, Union
 
-from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.io.tokenize.types.pdf_string import PDFString, PDFLiteralString, PDFHexString
 from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
 from ptext.io.transform.types import (
-    StringWithParentAttribute,
-    HexStringWithParentAttribute,
+    String,
+    HexadecimalString,
+    Name,
+    AnyPDFType,
 )
+from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class DefaultStringTransformer(BaseTransformer):
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
-        return isinstance(object, PDFString)
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
+        return (
+            isinstance(object, String)
+            or isinstance(object, HexadecimalString)
+            or isinstance(object, Name)
+        )
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
-        if isinstance(object_to_transform, PDFLiteralString):
-            return StringWithParentAttribute(object_to_transform.text).set_parent(
-                parent_object
-            )
-        if isinstance(object_to_transform, PDFHexString):
-            return HexStringWithParentAttribute(object_to_transform.text).set_parent(
-                parent_object
-            )
-        return None
+        # set parent
+        object_to_transform.set_parent(parent_object)  # type: ignore[union-attr]
+        # return
+        return object_to_transform

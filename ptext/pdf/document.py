@@ -1,8 +1,8 @@
+from ptext.io.transform.types import Dictionary
 from ptext.pdf.trailer.document_info import DocumentInfo
-from ptext.io.transform.types import DictionaryWithParentAttribute
 
 
-class Document(DictionaryWithParentAttribute):
+class Document(Dictionary):
     def get_document_info(self) -> "DocumentInfo":
         return DocumentInfo(self)
 

@@ -1,14 +1,16 @@
 import io
-from typing import Optional, List, Any, Union
+import typing
+from typing import Optional, Any, Union
 
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class TransformerContext:
     def __init__(
         self,
-        source: Optional[io.IOBase] = None,
+        source: Optional[Union[io.BufferedIOBase, io.RawIOBase]] = None,
         tokenizer: Optional[HighLevelTokenizer] = None,
         root_object: Optional[Any] = None,
     ):
@@ -46,15 +48,17 @@ class BaseTransformer:
             p = p.parent
         return p
 
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
         return False
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         for h in self.handlers:
             if h.can_be_transformed(object_to_transform):

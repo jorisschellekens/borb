@@ -1,11 +1,10 @@
 from typing import Optional, Tuple
 
+from ptext.io.transform.types import Dictionary
 from ptext.pdf.page.page_size import PageSize
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.io.transform.types import DictionaryWithParentAttribute
 
 
-class PageInfo(DictionaryWithParentAttribute):
+class PageInfo(Dictionary):
     def __init__(self, page: "Page"):
         super(PageInfo, self).__init__()
         self.page = page
@@ -29,7 +28,7 @@ class PageInfo(DictionaryWithParentAttribute):
         return self.page["MediaBox"][3]
 
     def get_size(self) -> Tuple[int, int]:
-        return self.get_width(), self.get_height()
+        return self.get_width() or 0, self.get_height() or 0
 
     def get_size_as_enum(self) -> Optional[PageSize]:
         """
@@ -51,9 +50,9 @@ class PageInfo(DictionaryWithParentAttribute):
                     pass
         return None
 
-    def get_page_number(self) -> int:
+    def get_page_number(self) -> Optional[int]:
         kids = self.page.get_parent()
-        l = self.page.get_parent().get("Length").get_int_value()
+        l = int(self.page.get_parent().get("Length"))
         for i in range(0, l):
             if kids.get(i) == self:
                 return i
@@ -68,7 +67,7 @@ class PageInfo(DictionaryWithParentAttribute):
         stream.
         This method returns whether this PDF uses operators from the "ImageC" procedure set.
         """
-        return self.page.get(["Resources", "ProcSet"]).has_value(PDFName("ImageC"))
+        return "ImageC" in self.page["Resources"]["ProcSet"]
 
     def uses_grayscale_images(self) -> Optional[bool]:
         """
@@ -79,7 +78,7 @@ class PageInfo(DictionaryWithParentAttribute):
         stream.
         This method returns whether this PDF uses operators from the "ImageB" procedure set.
         """
-        return self.page.get(["Resources", "ProcSet"]).has_value(PDFName("ImageB"))
+        return "ImageB" in self.page["Resources"]["ProcSet"]
 
     def uses_indexed_images(self) -> Optional[bool]:
         """
@@ -90,7 +89,7 @@ class PageInfo(DictionaryWithParentAttribute):
         stream.
         This method returns whether this PDF uses operators from the "ImageI" procedure set.
         """
-        return self.page.get(["Resources", "ProcSet"]).has_value(PDFName("ImageI"))
+        return "ImageI" in self.page["Resources"]["ProcSet"]
 
     def uses_painting_and_graphics_state(self) -> Optional[bool]:
         """
@@ -101,7 +100,7 @@ class PageInfo(DictionaryWithParentAttribute):
         stream.
         This method returns whether this PDF uses operators from the "PDF" procedure set.
         """
-        return self.page.get(["Resources", "ProcSet"]).has_value(PDFName("PDF"))
+        return "PDF" in self.page["Resources"]["ProcSet"]
 
     def uses_text(self) -> Optional[bool]:
         """
@@ -112,4 +111,4 @@ class PageInfo(DictionaryWithParentAttribute):
         stream.
         This method returns whether this PDF uses operators from the "Text" procedure set.
         """
-        return self.page.get(["Resources", "ProcSet"]).has_value(PDFName("Text"))
+        return "Text" in self.page["Resources"]["ProcSet"]

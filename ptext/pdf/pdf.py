@@ -1,11 +1,11 @@
 import io
 from typing import List
 
-from ptext.pdf.document import Document
-from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.io.transform.default_low_level_object_transformer import (
     DefaultLowLevelObjectTransformer,
 )
+from ptext.pdf.canvas.event.event_listener import EventListener
+from ptext.pdf.document import Document
 
 
 class PDF:

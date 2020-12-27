@@ -1,6 +1,7 @@
 from decimal import Decimal
 from typing import List
 
+from ptext.pdf.canvas.color.color import Color
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.geometry.line_segment import LineSegment
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
@@ -10,19 +11,19 @@ class LineRenderEvent(TextRenderEvent):
     def __init__(self, text_render_events: List[TextRenderEvent]):
         self.contained_events = text_render_events
 
-    def get_font_color(self):
+    def get_font_color(self) -> Color:
         return self.contained_events[0].get_font_color()
 
-    def get_font_family(self):
+    def get_font_family(self) -> str:
         return self.contained_events[0].get_font_family()
 
-    def get_font_size(self):
+    def get_font_size(self) -> Decimal:
         return self.contained_events[0].get_font_size()
 
-    def get_space_character_width_in_text_space(self):
+    def get_space_character_width_in_text_space(self) -> Decimal:
         return self.contained_events[0].get_space_character_width_in_text_space()
 
-    def get_text(self):
+    def get_text(self) -> str:
         text = ""
         right = min(
             self.contained_events[0].get_baseline().x0,
@@ -40,7 +41,7 @@ class LineRenderEvent(TextRenderEvent):
             text += e.get_text()
         return text
 
-    def get_baseline(self):
+    def get_baseline(self) -> LineSegment:
         min_x = min(
             self.contained_events[0].get_baseline().x0,
             self.contained_events[0].get_baseline().x1,

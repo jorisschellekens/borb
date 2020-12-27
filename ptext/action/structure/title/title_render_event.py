@@ -1,8 +1,6 @@
 from typing import List, Optional
 
-from ptext.action.structure.paragraph import (
-    ParagraphRenderEvent,
-)
+from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
 
 
 class TitleRenderEvent(ParagraphRenderEvent):

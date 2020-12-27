@@ -1,15 +1,17 @@
 import io
 import os
+import typing
 from decimal import Decimal
-from typing import Union, Optional, List, Any
+from typing import Union, Optional, Any
 
 from ptext.exception.pdf_exception import PDFCommentTokenNotFoundError
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.pdf.document import Document
+from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.event.event_listener import EventListener
+from ptext.pdf.document import Document
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
 from ptext.pdf.xref.stream_xref import StreamXREF
-from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
 
 
 class DefaultXREFTransformer(BaseTransformer):
@@ -17,18 +19,24 @@ class DefaultXREFTransformer(BaseTransformer):
         super().__init__()
         self.tokenizer = None
 
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
         return isinstance(object, io.IOBase)
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
         # update context
+        assert context is not None
+        assert isinstance(object_to_transform, io.BufferedIOBase) or isinstance(
+            object_to_transform, io.RawIOBase
+        )
         context.root_object = Document()
         context.source = object_to_transform
         context.tokenizer = HighLevelTokenizer(context.source)
@@ -54,26 +62,37 @@ class DefaultXREFTransformer(BaseTransformer):
 
         # transform trailer dictionary
         xref = context.root_object.get("XRef")
+
+        if "Trailer" in xref and "Encrypt" in xref["Trailer"]:
+            # TODO
+            raise NotImplementedError(
+                "password-protected PDFs are currently not supported"
+            )
         trailer = self.get_root_transformer().transform(
             context.root_object["XRef"]["Trailer"],
             context.root_object,
             context,
             [],
         )
+
         xref["Trailer"] = trailer
+        for k in ["DecodeParms", "Filter", "Index", "Length", "Prev", "W"]:
+            if k in xref["Trailer"]:
+                xref["Trailer"].pop(k)
 
         # return
         return context.root_object
 
     def _remove_prefix(self, context: TransformerContext) -> None:
 
-        src = context.source
+        assert context is not None
+        assert context.source is not None
 
         # read first 2 Kb
         bytes_near_sof = "".join(
-            [src.read(1).decode("latin-1") for _ in range(0, 2048)]
+            [context.source.read(1).decode("latin-1") for _ in range(0, 2048)]
         )
-        src.seek(0)
+        context.source.seek(0)
 
         # find %PDF-
         index_of_pdf_comment = -1
@@ -128,10 +147,10 @@ class DefaultXREFTransformer(BaseTransformer):
         # attempt to read plaintext XREF
         try:
             most_recent_xref = PlainTextXREF()
-            most_recent_xref.parent = self
+            most_recent_xref.parent = doc
             most_recent_xref.read(src, tok, initial_offset)
             if "XRef" in doc:
-                doc["XRef"] = (doc["XRef"].merge_references(most_recent_xref),)
+                doc["XRef"] = doc["XRef"].merge(most_recent_xref)
             else:
                 doc["XRef"] = most_recent_xref
         except Exception as ex0:
@@ -142,10 +161,10 @@ class DefaultXREFTransformer(BaseTransformer):
         if most_recent_xref is None:
             try:
                 most_recent_xref = StreamXREF()
-                most_recent_xref.set_parent(self)
+                most_recent_xref.parent = doc
                 most_recent_xref.read(src, tok, initial_offset)
                 if "XRef" in doc:
-                    doc["XRef"] = doc["XRef"].merge_references(most_recent_xref)
+                    doc["XRef"] = doc["XRef"].merge(most_recent_xref)
                 else:
                     doc["XRef"] = most_recent_xref
             except Exception as ex0:
@@ -158,3 +177,12 @@ class DefaultXREFTransformer(BaseTransformer):
         if most_recent_xref is None:
             for e in exceptions_to_rethrow:
                 raise e
+
+        # handle Prev, Previous
+        prev = None
+        if "Prev" in most_recent_xref["Trailer"]:
+            prev = int(most_recent_xref["Trailer"]["Prev"])
+        if "Previous" in most_recent_xref["Trailer"]:
+            prev = int(most_recent_xref["Trailer"]["Previous"])
+        if prev is not None:
+            self._read_xref(context, initial_offset=prev)

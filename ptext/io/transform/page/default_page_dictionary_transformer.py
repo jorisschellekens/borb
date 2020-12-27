@@ -1,36 +1,35 @@
 import io
-from typing import Optional, List, Any, Union
+import typing
+from typing import Optional, List, Any, Union, Dict
 
 from ptext.exception.pdf_exception import PDFTypeError
-from ptext.io.tokenize.types.pdf_name import PDFName
+from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
+from ptext.io.transform.types import (
+    Dictionary,
+    List,
+    AnyPDFType,
+)
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.page.page import Page
 from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.io.tokenize.types.pdf_dictionary import PDFDictionary
-from ptext.io.tokenize.types.pdf_null import PDFNull
-from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
-from ptext.io.transform.types import (
-    DictionaryWithParentAttribute,
-    ListWithParentAttribute,
-)
+from ptext.pdf.page.page import Page
 
 
 class DefaultPageDictionaryTransformer(BaseTransformer):
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
         return (
-            isinstance(object, PDFDictionary)
-            and PDFName("Type") in object
-            and object[PDFName("Type")] == PDFName("Page")
+            isinstance(object, Dict) and "Type" in object and object["Type"] == "Page"
         )
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
         # convert dictionary like structure
@@ -41,13 +40,14 @@ class DefaultPageDictionaryTransformer(BaseTransformer):
             tmp.add_event_listener(l)
 
         # convert key/value pairs
+        assert isinstance(object_to_transform, Dictionary)
         for k, v in object_to_transform.items():
             # avoid circular reference
-            if k == PDFName("Parent"):
+            if k == "Parent":
                 continue
             v = self.get_root_transformer().transform(v, tmp, context, [])
-            if v != PDFNull():
-                tmp[k.name] = v
+            if v is not None:
+                tmp[k] = v
 
         # send out BeginPageEvent
         tmp.event_occurred(BeginPageEvent(tmp))
@@ -55,13 +55,11 @@ class DefaultPageDictionaryTransformer(BaseTransformer):
         # set up canvas
         if "Contents" not in tmp:
             raise PDFTypeError(
-                expected_type=Union[
-                    ListWithParentAttribute, DictionaryWithParentAttribute
-                ],
+                expected_type=Union[List, Dictionary],
                 received_type=None,
             )
         contents = tmp["Contents"]
-        if contents != PDFNull():
+        if contents is not None:
             canvas = Canvas().set_parent(tmp)
 
             # process bytes in stream

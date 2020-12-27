@@ -1,54 +1,60 @@
-from typing import Optional, List, Any, Union
+import io
+import typing
+from typing import Optional, Any, Union
 
-from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.io.tokenize.types.pdf_indirect_reference import PDFIndirectReference
-from ptext.io.tokenize.types.pdf_null import PDFNull
-from ptext.io.tokenize.types.pdf_object import PDFObject, PDFIndirectObject
-from ptext.io.tokenize.types.pdf_stream import PDFStream
+from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
-from ptext.io.transform.types import DictionaryWithParentAttribute
+from ptext.io.transform.types import (
+    Dictionary,
+    Stream,
+    Reference,
+    AnyPDFType,
+)
+from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class DefaultStreamTransformer(BaseTransformer):
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
-        return isinstance(object, PDFStream)
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
+        return isinstance(object, Stream)
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
-        tmp = DictionaryWithParentAttribute().set_parent(parent_object)
+        tmp = Dictionary().set_parent(parent_object)
 
         # add listener(s)
         for l in event_listeners:
             tmp.add_event_listener(l)
 
         # resolve references in stream dictionary
+        assert context is not None
+        assert context.tokenizer is not None
+        assert isinstance(object_to_transform, Stream)
         xref = parent_object.get_root().get("XRef")
-        for k, v in object_to_transform.stream_dictionary.items():
-            if isinstance(v, PDFIndirectReference):
-                v = xref.get_object_for_indirect_reference(
-                    v, context.tokenizer.io_source, context.tokenizer
-                )
-                if isinstance(v, PDFIndirectObject):
-                    v = v.get_object()
-                object_to_transform.stream_dictionary[k] = v
+        for k, v in object_to_transform.items():
+            if isinstance(v, Reference):
+                v = xref.get(v, context.tokenizer.io_source, context.tokenizer)
+                object_to_transform[k] = v
 
-        # convert content
-        tmp["RawBytes"] = object_to_transform.raw_byte_array
-        tmp["DecodedBytes"] = object_to_transform.get_decoded_bytes()
-        tmp["Type"] = "Stream"
+        # apply filter(s)
+        object_to_transform = decode_stream(object_to_transform)
 
-        # convert stream dictionary
-        tmp2 = self.get_root_transformer().transform(
-            object_to_transform.stream_dictionary, parent_object, context, []
-        )
-        if not isinstance(tmp2, PDFNull):
-            for k, v in tmp2.items():
-                tmp[k] = v
+        # convert (remainder of) stream dictionary
+        for k, v in object_to_transform.items():
+            if not isinstance(v, Reference):
+                v = self.get_root_transformer().transform(v, tmp, context, [])
+                if v is not None:
+                    object_to_transform[k] = v
 
-        return tmp
+        # linkage
+        object_to_transform.set_parent(parent_object)
+
+        # return
+        return object_to_transform

@@ -1,48 +1,25 @@
 import io
-from typing import Optional, NamedTuple, List
+import logging
+from decimal import Decimal
+from typing import Union, Optional
 
-from ptext.exception.pdf_exception import StartXREFTokenNotFoundError, PDFTypeError
+from ptext.exception.pdf_exception import (
+    StartXREFTokenNotFoundError,
+    PDFTypeError,
+    PDFSyntaxError,
+)
+from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.tokenize.low_level_tokenizer import TokenType
-from ptext.io.tokenize.types.pdf_boolean import PDFBoolean
-from ptext.io.tokenize.types.pdf_indirect_reference import PDFIndirectReference
-from ptext.io.tokenize.types.pdf_name import PDFName
-from ptext.io.tokenize.types.pdf_null import PDFNull
-from ptext.io.tokenize.types.pdf_number import PDFInt
-from ptext.io.tokenize.types.pdf_object import PDFObject, PDFIndirectObject
-from ptext.io.tokenize.types.pdf_stream import PDFStream
-from ptext.io.transform.types import DictionaryWithParentAttribute
+from ptext.io.transform.types import Dictionary, Reference, AnyPDFType
+
+logger = logging.getLogger(__name__)
 
 
-class XREFSection(NamedTuple):
-
-    start_object_number: int
-    number_of_objects: int
-    indirect_references: List["PDFIndirectReference"]
-
-    def __len__(self):
-        return len(self.indirect_references)
-
-    def __str__(self):
-        s = str(self.start_object_number) + " " + str(self.number_of_objects) + "\n"
-        for r in self.indirect_references:
-            s += "%010d %07d %s\n" % (
-                r.byte_offset.get_int_value() if r.byte_offset is not None else 0,
-                r.generation_number.get_int_value()
-                if r.generation_number is not None
-                else 0,
-                "n" if r.is_in_use == PDFBoolean(True) else "f",
-            )
-        return s
-
-
-class XREF(DictionaryWithParentAttribute):
+class XREF(Dictionary):
     def __init__(self):
         super(XREF, self).__init__()
-        self.document = None
-        self.tokenizer = None
-        self.input = None
-        self.sections = []
+        self.entries = []
 
     ##
     ## LOWLEVEL IO
@@ -81,12 +58,14 @@ class XREF(DictionaryWithParentAttribute):
 
         # find "startxref" text
         start_of_xref_token_byte_offset = self._find_backwards(src, tok, "startxref")
+        assert start_of_xref_token_byte_offset is not None
         if start_of_xref_token_byte_offset == -1:
             raise StartXREFTokenNotFoundError()
 
         # set tokenizer to "startxref"
         src.seek(start_of_xref_token_byte_offset)
         token = tok.next_non_comment_token()
+        assert token is not None
         if token.text == "xref":
             src.seek(start_of_xref_token_byte_offset)
             return
@@ -95,9 +74,10 @@ class XREF(DictionaryWithParentAttribute):
         # and we need to go back to the start of XREF
         if token.text == "startxref":
             token = tok.next_non_comment_token()
+            assert token is not None
             if token.token_type != TokenType.NUMBER:
-                raise InvalidNumberAfterStartXREFToken(
-                    token.byte_offset, token.byte_offset + len(token.text)
+                raise PDFSyntaxError(
+                    byte_offset=token.byte_offset, message="invalid XREF"
                 )
 
             start_of_xref_offset = int(token.text)
@@ -107,178 +87,133 @@ class XREF(DictionaryWithParentAttribute):
     ## GETTERS AND SETTERS
     ##
 
-    def add_indirect_reference(
-        self, indirect_reference: PDFIndirectReference
-    ) -> "XREF":
-        object_number = indirect_reference.get_object_number().get_int_value()
-
-        # modify existing section
-        for section in self.sections:
-            if (
-                section.start_object_number
-                <= object_number
-                < section.start_object_number + section.number_of_objects
-            ):
-                section.indirect_references[
-                    section.start_object_number - object_number
-                ] = indirect_reference
-                return self
-
-        # append to section
-        for section in self.sections:
-            if (
-                section.start_object_number
-                <= object_number
-                <= section.start_object_number + section.number_of_objects
-            ):
-                l = section.indirect_references
-                l.append(indirect_reference)
-                section_b = XREFSection(
-                    start_object_number=section.start_object_number,
-                    number_of_objects=section.number_of_objects + 1,
-                    indirect_references=l,
-                )
-                self.sections.remove(section)
-                self.sections.append(section_b)
-                return self
-
-        # new section
-        self.sections.append(
-            XREFSection(
-                start_object_number=object_number,
-                number_of_objects=1,
-                indirect_references=[indirect_reference],
-            )
-        )
+    def append(self, r: Reference) -> "XREF":
+        self.entries.append(r)
         return self
 
-    def merge_references(self, other_xref: "XREF") -> "XREF":
-        # sections
-        for s in other_xref.sections:
-            for r in s.indirect_references:
-                self.add_indirect_reference(r)
+    def merge(self, other_xref: "XREF") -> "XREF":
+        for r in other_xref.entries:
+            duplicate_entries = []
+            if r.object_number is not None:
+                duplicate_entries = [
+                    x for x in self.entries if x.object_number == r.object_number
+                ]
+            elif r.parent_stream_object_number is not None:
+                duplicate_entries = [
+                    x
+                    for x in self.entries
+                    if x.parent_stream_object_number == r.parent_stream_object_number
+                    and x.index_in_parent_stream == r.index_in_parent_stream
+                ]
+            if len(duplicate_entries) == 0:
+                self.append(r)
         return self
 
-    def get_indirect_reference_for_object_number(
-        self, object_number: int
-    ) -> Optional[PDFIndirectReference]:
-        for s in self.sections:
-            if (
-                s.start_object_number
-                <= object_number
-                < s.start_object_number + s.number_of_objects
-            ):
-                return s.indirect_references[object_number - s.start_object_number]
-        return None
-
-    def get_object_for_indirect_reference(
+    def get(
         self,
-        indirect_reference: PDFIndirectReference,
+        indirect_reference: Union[Reference, int],
         src: io.IOBase,
         tok: HighLevelTokenizer,
-    ) -> PDFObject:
+    ) -> Optional[AnyPDFType]:
 
+        # cache
         obj = None
-        obj_number = (
-            indirect_reference.object_number.get_int_value()
-            if indirect_reference.object_number is not None
-            else None
-        )
 
-        # lookup xref entry
-        xref_entry = (
-            self.get_indirect_reference_for_object_number(obj_number)
-            if obj_number is not None
-            else None
-        )
+        # lookup Reference object for int
+        if isinstance(indirect_reference, int) or isinstance(
+            indirect_reference, Decimal
+        ):
+            refs = [
+                x for x in self.entries if x.object_number == int(indirect_reference)
+            ]
+            if len(refs) == 0:
+                return None
+            indirect_reference = refs[0]
+
+        # lookup Reference (in self) for Reference
+        elif isinstance(indirect_reference, Reference):
+            refs = [
+                x
+                for x in self.entries
+                if x.object_number == indirect_reference.object_number
+            ]
+            if len(refs) == 0:
+                return None
+            indirect_reference = refs[0]
 
         # reference points to an object that is not in use
-        if xref_entry is not None and xref_entry.is_in_use == PDFBoolean(False):
-            return PDFNull
-
-        # object number exists, but there is no corresponding xref entry
-        if obj_number is not None and xref_entry is None:
-            return PDFNull
+        assert isinstance(indirect_reference, Reference)
+        if not indirect_reference.is_in_use:
+            obj = None
 
         # the indirect reference may have a byte offset
         if indirect_reference.byte_offset is not None:
-            byte_offset = indirect_reference.byte_offset.get_int_value()
+            byte_offset = int(indirect_reference.byte_offset)
+            tell_before = tok.tell()
             tok.seek(byte_offset)
-            obj = tok.read_object()
-
-        # corresponding entry specifies a byte offset
-        if xref_entry.byte_offset is not None:
-            byte_offset = xref_entry.byte_offset.get_int_value()
-            tok.seek(byte_offset)
-            obj = tok.read_object(self)
+            obj = tok.read_object(xref=self)
+            tok.seek(tell_before)
 
         # entry specifies a parent object
-        if xref_entry.parent_stream_object_number is not None:
-            parent_ref = PDFIndirectReference(
-                object_number=xref_entry.parent_stream_object_number
-            )
+        if indirect_reference.parent_stream_object_number is not None:
 
-            # read parent object
-            stream_object = self.get_object_for_indirect_reference(parent_ref, src, tok)
-            if not isinstance(stream_object, PDFIndirectObject) or not isinstance(
-                stream_object.get_object(), PDFStream
-            ):
+            stream_object = self.get(
+                indirect_reference.parent_stream_object_number, src, tok
+            )
+            assert isinstance(stream_object, dict)
+            if "Length" not in stream_object:
                 raise PDFTypeError(
-                    expected_type=PDFStream, received_type=stream_object.__class__
+                    expected_type=Union[Decimal, Reference], received_type=None
                 )
-            first_byte = (
-                stream_object.get_object()
-                .stream_dictionary[PDFName("First")]
-                .get_int_value()
-                if PDFName("First") in stream_object.get_object().stream_dictionary
-                else 0
-            )
-            stream_bytes = stream_object.get_object().get_decoded_bytes()[first_byte:]
 
-            # fetch index in parent
-            index = xref_entry.index_in_parent_stream_object.get_int_value()
-            length = 0
-            if isinstance(
-                stream_object.get_object().stream_dictionary[PDFName("Length")],
-                PDFIndirectReference,
-            ):
-                length = (
-                    self.get_object_for_indirect_reference(
-                        stream_object.get_object().stream_dictionary[PDFName("Length")],
-                        src,
-                        tok,
+            if "First" not in stream_object:
+                raise PDFTypeError(
+                    expected_type=Union[Decimal, Reference], received_type=None
+                )
+
+            # Length may be Reference
+            if isinstance(stream_object["Length"], Reference):
+                stream_object["Length"] = self.get(
+                    stream_object["Length"], src=src, tok=tok
+                )
+
+            # First may be Reference
+            if isinstance(stream_object["First"], Reference):
+                stream_object["First"] = self.get(
+                    stream_object["First"], src=src, tok=tok
+                )
+
+            first_byte = int(stream_object.get("First", 0))
+            if "DecodedBytes" not in stream_object:
+                try:
+                    stream_object = decode_stream(stream_object)
+                except Exception as ex:
+                    logger.debug(
+                        "unable to inflate stream for object %d"
+                        % indirect_reference.parent_stream_object_number
                     )
-                    .get_object()
-                    .get_int_value()
-                )
-            if isinstance(
-                stream_object.get_object().stream_dictionary[PDFName("Length")], PDFInt
-            ):
-                length = (
-                    stream_object.get_object()
-                    .stream_dictionary[PDFName("Length")]
-                    .get_int_value()
-                )
+                    raise ex
+            stream_bytes = stream_object["DecodedBytes"][first_byte:]
 
             # tokenize parent stream
+            index = int(indirect_reference.index_in_parent_stream)
+            length = int(stream_object["Length"])
             if index < length:
                 tok = HighLevelTokenizer(io.BytesIO(stream_bytes))
                 obj = [tok.read_object() for x in range(0, index + 1)]
                 obj = obj[-1]
             else:
-                obj = PDFNull()
+                obj = None
 
-        if isinstance(obj, PDFIndirectObject):
-            return obj
-        else:
-            return PDFIndirectObject(object=obj, indirect_reference=indirect_reference)
+        # return
+        return obj
 
     ##
     ## OVERRIDES
     ##
 
     def __len__(self):
-        return sum([len(x) for x in self.sections])
+        return len(self.entries)
 
     def __str__(self):
         out = "xref\n"

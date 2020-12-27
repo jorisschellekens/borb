@@ -7,7 +7,6 @@ from ptext.action.color.color_spectrum_extraction import (
 from ptext.pdf.pdf import PDF
 from test.base_test import BaseTest
 
-
 logging.basicConfig(filename="test_extract_colors.log", level=logging.DEBUG)
 
 

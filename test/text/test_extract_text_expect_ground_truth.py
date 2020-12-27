@@ -15,10 +15,11 @@ logging.basicConfig(
 class TestExtractTextExpectGroundTruth(BaseTest):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.messed_up_characters = {}
+        self.global_char_abs_diff = {}
+        self.number_of_wrong_chars_per_document = {}
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "0246_page_0.pdf"
+        self.input_file = self.input_dir / "0263_page_0.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):
@@ -37,9 +38,9 @@ class TestExtractTextExpectGroundTruth(BaseTest):
         with open(file, "rb") as pdf_file_handle:
             l = SimpleTextExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
-            self._compare_text(txt_ground_truth, l.get_text(0))
+            self._compare_text(file.stem, txt_ground_truth, l.get_text(0))
 
-    def _compare_text(self, txt0: str, txt1: str):
+    def _compare_text(self, filename: str, txt0: str, txt1: str):
         char_count_0 = {}
         for c in txt0:
             if c not in char_count_0:
@@ -55,6 +56,8 @@ class TestExtractTextExpectGroundTruth(BaseTest):
         for c in "\t\n\r \xa0":
             char_count_0[c] = 0
             char_count_1[c] = 0
+
+        # count difference in frequency
         diffs = {}
         for c in [k for k, v in char_count_0.items()] + [
             k for k, v in char_count_1.items()
@@ -63,21 +66,60 @@ class TestExtractTextExpectGroundTruth(BaseTest):
             f1 = char_count_1.get(c, 0)
             if f0 != f1:
                 diffs[c] = f0 - f1
-            if c not in self.messed_up_characters:
-                self.messed_up_characters[c] = 0
-            self.messed_up_characters[c] += abs(f0 - f1)
+
+        # take care of special characters
+        diffs = self._redeem_special_characters(diffs)
+
+        # update count per character
+        for c in diffs:
+            if c not in self.global_char_abs_diff:
+                self.global_char_abs_diff[c] = 0
+            self.global_char_abs_diff[c] += diffs[c]
+
+        # update count per document
+        self.number_of_wrong_chars_per_document[filename] = sum(
+            [abs(v) for k, v in diffs.items()]
+        )
+
+        # error if needed
         if len(diffs) > 0:
             raise ValueError("Character count mismatch : %s" % str(diffs))
 
+    def _redeem_special_characters(self, differences: dict) -> dict:
+        # ligature ff
+        if "ﬀ" in differences and "f" in differences:
+            k = differences["ﬀ"]
+            differences.pop("ﬀ")
+            differences["f"] -= 2 * k
+        # ligature fi
+        if "\ufb01" in differences and "f" in differences and "i" in differences:
+            k = differences["\ufb01"]
+            differences.pop("\ufb01")
+            differences["f"] -= k
+            differences["i"] -= k
+        # ligature fl
+        if "\ufb02" in differences and "f" in differences and "l" in differences:
+            k = differences["\ufb02"]
+            differences.pop("\ufb02")
+            differences["f"] -= k
+            differences["l"] -= k
+        # remove zero-count items
+        differences = {k: v for k, v in differences.items() if v != 0}
+        # return
+        return differences
+
     def _test_info_as_json(self):
         json = super(TestExtractTextExpectGroundTruth, self)._test_info_as_json()
-        N = sum([v for k, v in self.messed_up_characters.items()])
+        N = sum([v for k, v in self.global_char_abs_diff.items()])
         if N == 0:
             return json
         else:
             json["messed_up_chars"] = {
-                k: v for k, v in self.messed_up_characters.items() if v / N > 0.01
+                k: v for k, v in self.global_char_abs_diff.items() if v / N > 0.01
             }
+            json[
+                "number_of_wrong_chars_per_document"
+            ] = self.number_of_wrong_chars_per_document
         return json
 
 

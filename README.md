@@ -2,7 +2,7 @@
 # pText
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Corpus Coverage : 96.2%](https://img.shields.io/badge/corpus%20coverage-96.2%25-green)]()
+[![Corpus Coverage : 98.2%](https://img.shields.io/badge/corpus%20coverage-98.2%25-green)]()
 [![Text Extraction : 70.7%](https://img.shields.io/badge/text%20extraction-70.7%25-orange)]()
 
 pText is a library for creating and manipulating PDF files in python.

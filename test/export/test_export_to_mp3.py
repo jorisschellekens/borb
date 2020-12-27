@@ -9,7 +9,6 @@ from ptext.action.structure.simple_structure_extraction import (
 from ptext.pdf.pdf import PDF
 from test.base_test import BaseTest
 
-
 logging.basicConfig(filename="test_export_to_mp3.log", level=logging.DEBUG)
 
 

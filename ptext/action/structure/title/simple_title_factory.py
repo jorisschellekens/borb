@@ -1,11 +1,7 @@
 from typing import List, Tuple
 
-from ptext.action.structure.paragraph import (
-    ParagraphRenderEvent,
-)
-from ptext.action.structure.title import (
-    TitleRenderEvent,
-)
+from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
+from ptext.action.structure.title.title_render_event import TitleRenderEvent
 
 
 class SimpleTitleFactory:

@@ -1,13 +1,11 @@
 from typing import List, Optional, Tuple
 
-from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
-from ptext.pdf.canvas.geometry.line_segment import LineSegment
 from ptext.action.structure.line.line_render_event import (
     LineRenderEvent,
 )
-from ptext.action.structure.paragraph import (
-    ParagraphRenderEvent,
-)
+from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
+from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
+from ptext.pdf.canvas.geometry.line_segment import LineSegment
 
 
 class SimpleParagraphFactory:

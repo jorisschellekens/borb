@@ -1,6 +1,6 @@
 from typing import List
 
-from ptext.io.tokenize.types.pdf_object import PDFObject
+from ptext.io.transform.types import AnyPDFType
 
 
 class CanvasOperator:
@@ -14,5 +14,5 @@ class CanvasOperator:
     def get_number_of_operands(self) -> int:
         return self.number_of_operands
 
-    def invoke(self, canvas: "PDFCanvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "PDFCanvas", operands: List[AnyPDFType] = []):
         pass

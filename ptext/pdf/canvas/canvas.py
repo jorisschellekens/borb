@@ -4,6 +4,11 @@ import os
 
 from ptext.exception.pdf_exception import IllegalGraphicsStateError
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.transform.types import (
+    Dictionary,
+    List,
+    CanvasOperatorName,
+)
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
 from ptext.pdf.canvas.operator.color.set_cmyk_stroking import SetCMYKStroking
@@ -66,16 +71,11 @@ from ptext.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
     ShowTextWithGlyphPositioning,
 )
 from ptext.pdf.canvas.operator.xobject.do import Do
-from ptext.io.tokenize.types.pdf_canvas_operator_name import PDFCanvasOperatorName
-from ptext.io.transform.types import (
-    DictionaryWithParentAttribute,
-    ListWithParentAttribute,
-)
 
 logger = logging.getLogger(__name__)
 
 
-class Canvas(DictionaryWithParentAttribute):
+class Canvas(Dictionary):
     def __init__(self):
         super(Canvas, self).__init__()
         # initialize operators
@@ -156,7 +156,7 @@ class Canvas(DictionaryWithParentAttribute):
                 break
 
             # push argument onto stack
-            if not isinstance(obj, PDFCanvasOperatorName):
+            if not isinstance(obj, CanvasOperatorName):
                 operand_stk.append(obj)
                 continue
 
@@ -184,12 +184,12 @@ class Canvas(DictionaryWithParentAttribute):
 
                 # append
                 if "Instructions" not in self:
-                    self["Instructions"] = ListWithParentAttribute().set_parent(self)
+                    self["Instructions"] = List().set_parent(self)
 
                 instruction_number = len(self["Instructions"])
-                instruction_dictionary = DictionaryWithParentAttribute()
+                instruction_dictionary = Dictionary()
                 instruction_dictionary["Name"] = operator.get_text()
-                instruction_dictionary["Args"] = ListWithParentAttribute().set_parent(
+                instruction_dictionary["Args"] = List().set_parent(
                     instruction_dictionary
                 )
 

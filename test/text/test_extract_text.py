@@ -21,7 +21,7 @@ class TestExtractText(BaseTest):
         self.output_dir = Path("txt")
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "0246_page_0.pdf"
+        self.input_file = self.input_dir / "0001.pdf"
         super().test_single_document()
 
     def test_against_entire_corpus(self):

@@ -14,6 +14,10 @@ class ASCII85Decode:
         """
         exceptions_to_throw = []
 
+        # trivial case
+        if len(bytes_in) == 0:
+            return bytes_in
+
         # trimming
         if bytes_in[-1] == 10 and bytes_in[-2] == 13:
             bytes_in = bytes_in[0:-2]

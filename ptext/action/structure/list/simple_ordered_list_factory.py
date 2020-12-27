@@ -1,11 +1,7 @@
 from typing import List, Tuple
 
-from ptext.action.structure.list import (
-    OrderedListRenderEvent,
-)
-from ptext.action.structure.paragraph import (
-    ParagraphRenderEvent,
-)
+from ptext.action.structure.list.ordered_list_render_event import OrderedListRenderEvent
+from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
 
 
 class SimpleOrderedListFactory:
@@ -20,13 +16,13 @@ class SimpleOrderedListFactory:
                 # find consecutive list elements
                 j = i + 1
                 while (
-                    self._starts_with_number(paragraph_render_events[j].get_text())
+                    j < len(paragraph_render_events)
+                    and self._starts_with_number(paragraph_render_events[j].get_text())
                     and abs(
                         paragraph_render_events[j].get_bounding_box().x
                         - paragraph_render_events[i].get_bounding_box().x
                     )
                     < 20
-                    and j < len(paragraph_render_events)
                 ):
                     j += 1
 

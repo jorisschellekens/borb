@@ -1,7 +1,8 @@
 import unittest
 
-from test.base_test import BaseTest
 from ptext.pdf.pdf import PDF
+from test.base_test import BaseTest
+
 
 class TestReadDocumentInfo(BaseTest):
     """
@@ -12,7 +13,7 @@ class TestReadDocumentInfo(BaseTest):
         super().__init__(methodName)
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "0214.pdf"
+        self.input_file = self.input_dir / "0001.pdf"
         super().test_single_document()
 
     def test_against_previous_fails(self):
@@ -23,6 +24,8 @@ class TestReadDocumentInfo(BaseTest):
 
     def _test_document(self, file):
         if "0287" in file.stem:
+            return
+        if "0190" in file.stem:
             return
         with open(file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)

@@ -1,10 +1,14 @@
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
 
 
 class LocationFilter(EventListener):
     def __init__(self, x0: float, y0: float, x1: float, y1: float):
+        if x0 > x1:
+            raise ValueError("x0 should be smaller than x1")
+        if y0 > y1:
+            raise ValueError("y0 should be smaller than y1")
         self.x0 = x0
         self.y0 = y0
         self.x1 = x1
@@ -15,7 +19,7 @@ class LocationFilter(EventListener):
         self.listeners.append(listener)
         return self
 
-    def event_occurred(self, event: Event) -> None:
+    def event_occurred(self, event: "Event") -> None:
         # filter TextRenderEvent
         if isinstance(event, TextRenderEvent):
             baseline = event.get_baseline()

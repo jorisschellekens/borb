@@ -1,13 +1,13 @@
 from decimal import Decimal
+from typing import Tuple
 
 from gtts import gTTS
 
+from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.action.structure.paragraph import (
-    ParagraphRenderEvent,
-)
-from ptext.pdf.page.page import Page
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.page.page import Page
+from ptext.pdf.page.page_size import PageSize
 
 
 class AudioExport(EventListener):
@@ -15,37 +15,47 @@ class AudioExport(EventListener):
     This implementation of EventListener exports a Page as an mp3 file, essentially reading the text on the Page
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        include_position: bool = True,
+        language: str = "en",
+        slow: bool = False,
+        default_page_size: Tuple[int, int] = PageSize.A4_PORTRAIT,
+    ):
 
         # tts info
-        self.include_position = True
-        self.language = "en"
-        self.slow = False
+        self.include_position = include_position
+        self.language = language
+        self.slow = slow
 
         # page info
         self.text_to_speak_for_page = {}
         self.current_paragraph = -1
         self.current_page = -1
         self.current_page_size = None
+        self.default_page_size = default_page_size
 
-    def event_occurred(self, event: Event) -> None:
+    def event_occurred(self, event: "Event") -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
         if isinstance(event, ParagraphRenderEvent):
             self._speak_paragraph(event)
 
-    def _begin_page(self, page: Page):
+    def _begin_page(self, page: "Page"):
         self.current_page += 1
         self.current_page = 0
-        self.current_page_size = page.get_page_info().get_size()
+        self.current_page_size = (
+            page.get_page_info().get_size() or self.default_page_size
+        )
 
-    def _speak_paragraph(self, event: ParagraphRenderEvent):
+    def _speak_paragraph(self, event: "ParagraphRenderEvent"):
         self.current_paragraph += 1
 
         # text to speak
         text_to_speak_for_paragraph = ""
 
         # position
+        assert self.current_page_size is not None
         if self.include_position:
             mid_x = (
                 event.get_bounding_box().x

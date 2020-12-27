@@ -2,12 +2,9 @@ from decimal import Decimal
 from typing import List
 
 from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_array import PDFArray
-from ptext.io.tokenize.types.pdf_number import PDFNumber
-from ptext.io.tokenize.types.pdf_object import PDFObject
-from ptext.io.tokenize.types.pdf_string import PDFString
 
 
 class ShowTextWithGlyphPositioning(CanvasOperator):
@@ -28,18 +25,16 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
     def __init__(self):
         super().__init__("TJ", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
 
-        if not isinstance(operands[0], PDFArray):
-            raise PDFTypeError(
-                expected_type=PDFArray, received_type=operands[0].__class__
-            )
+        if not isinstance(operands[0], list):
+            raise PDFTypeError(expected_type=list, received_type=operands[0].__class__)
 
         for i in range(0, len(operands[0])):
             obj = operands[0][i]
 
             # display string
-            if isinstance(obj, PDFString):
+            if isinstance(obj, str):
                 tri = TextRenderEvent(canvas.graphics_state, obj)
                 # render
                 canvas.event_occurred(tri)
@@ -48,9 +43,9 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
                 continue
 
             # adjust
-            if isinstance(obj, PDFNumber):
+            if isinstance(obj, Decimal):
                 gs = canvas.graphics_state
-                adjust_unscaled = obj.get_decimal_value()
+                adjust_unscaled = obj
                 adjust_scaled = (
                     -adjust_unscaled
                     * Decimal(0.001)

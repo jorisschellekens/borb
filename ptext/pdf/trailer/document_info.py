@@ -88,7 +88,7 @@ class DocumentInfo:
         return self.document.get["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
 
     def get_file_size(self) -> Optional[int]:
-        return self.document.get("FileSize").get_int_value()
+        return int(self.document.get("FileSize"))
 
     def get_ids(self) -> Optional[List[str]]:
         """

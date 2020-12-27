@@ -1,9 +1,8 @@
 import copy
 import zlib
-from typing import List, Optional
+from typing import List
 
 from ptext.exception.pdf_exception import PDFValueError
-from ptext.io.tokenize.types.pdf_name import PDFName
 
 
 class FlateDecode:
@@ -12,37 +11,6 @@ class FlateDecode:
     compression method, reproducing the original text or binary
     data.
     """
-
-    @staticmethod
-    def decode_with_parameter_dictionary(
-        bytes_in: bytes, decode_params: Optional["PDFDictionary"] = None
-    ) -> bytes:
-        """
-        Decompresses data encoded using the zlib/deflate
-        compression method
-        """
-        predictor = 1
-        predictor_name = PDFName("Predictor")
-        if decode_params is not None and predictor_name in decode_params:
-            predictor = decode_params[predictor_name].get_int_value()
-
-        bits_per_component = 8
-        bits_per_component_name = PDFName("BitsPerComponent")
-        if decode_params is not None and bits_per_component_name in decode_params:
-            bits_per_component = decode_params[bits_per_component_name].get_int_value()
-
-        columns = 1
-        columns_name = PDFName("Columns")
-        if decode_params is not None and columns_name in decode_params:
-            columns = decode_params[columns_name].get_int_value()
-
-        # redirect call
-        return FlateDecode.decode(
-            bytes_in,
-            predictor=predictor,
-            bits_per_component=bits_per_component,
-            columns=columns,
-        )
 
     @staticmethod
     def decode(
@@ -56,7 +24,7 @@ class FlateDecode:
         compression method
         """
 
-        # check input bytes
+        # trivial case
         if len(bytes_in) == 0:
             return bytes_in
 
@@ -137,7 +105,7 @@ class FlateDecode:
             # PNG_FILTER_UP
             # Predicts the same as the sample above
             if filter_type == 2:
-                for i in range(0, bytes_per_row - 1):
+                for i in range(0, bytes_per_row):
                     current_row[i] = (current_row[i] + prior_row[i]) % 256
 
             # PNG_FILTER_AVERAGE

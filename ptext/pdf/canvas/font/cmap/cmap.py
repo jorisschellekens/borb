@@ -2,8 +2,7 @@ import io
 from typing import Union, List, Optional, Tuple
 
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.tokenize.types.pdf_array import PDFArray
-from ptext.io.tokenize.types.pdf_string import PDFHexString
+from ptext.io.transform.types import HexadecimalString
 
 
 class CMap:
@@ -34,7 +33,9 @@ class CMap:
         """
         return self._code_to_unicode.get(character_code, None)
 
-    def _add_symbol(self, character_code: int, unicode: Union[int, List[int]]) -> "CMap":
+    def _add_symbol(
+        self, character_code: int, unicode: Union[int, List[int]]
+    ) -> "CMap":
         self._unicode_to_code[unicode] = character_code
         self._code_to_unicode[character_code] = unicode
         return self
@@ -78,13 +79,13 @@ class CMap:
                 for j in range(0, n):
 
                     c_start_token = tok.read_object()
-                    c_start = int(c_start_token.get_text(), 16)
+                    c_start = int(c_start_token, 16)
 
                     c_end_token = tok.read_object()
-                    c_end = int(c_end_token.get_text(), 16)
+                    c_end = int(c_end_token, 16)
 
                     tmp = tok.read_object()
-                    if isinstance(tmp, PDFHexString):
+                    if isinstance(tmp, HexadecimalString):
                         uc = self._hex_string_to_int_or_tuple(tmp)
                         for k in range(0, c_end - c_start + 1):
                             if isinstance(uc, int):
@@ -92,7 +93,7 @@ class CMap:
                             elif isinstance(uc, tuple):
                                 self._add_symbol(c_start + k, (uc[0], uc[1] + k))
 
-                    elif isinstance(tmp, PDFArray):
+                    elif isinstance(tmp, list):
                         for k in range(0, c_end - c_start + 1):
                             uc = self._hex_string_to_int_or_tuple(tmp[k])
                             self._add_symbol(c_start + k, uc)
@@ -103,8 +104,8 @@ class CMap:
         return self
 
     def _hex_string_to_int_or_tuple(
-        self, token: PDFHexString
+        self, token: HexadecimalString
     ) -> Union[int, Tuple[int, int]]:
-        uc_hex = token.get_text().replace(" ", "")
+        uc_hex = token.replace(" ", "")
         uc = [int(uc_hex[k : k + 4], 16) for k in range(0, int(len(uc_hex)), 4)]
         return tuple(uc) if len(uc) > 1 else uc[0]

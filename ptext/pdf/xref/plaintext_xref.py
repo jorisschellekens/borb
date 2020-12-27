@@ -4,14 +4,12 @@ from typing import Optional, List
 from ptext.exception.pdf_exception import (
     XREFTokenNotFoundError,
     PDFValueError,
+    PDFSyntaxError,
 )
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.tokenize.low_level_tokenizer import TokenType
+from ptext.io.transform.types import Reference, Dictionary
 from ptext.pdf.xref.xref import XREF
-from ptext.io.tokenize.types.pdf_boolean import PDFBoolean
-from ptext.io.tokenize.types.pdf_dictionary import PDFDictionary
-from ptext.io.tokenize.types.pdf_indirect_reference import PDFIndirectReference
-from ptext.io.tokenize.types.pdf_number import PDFInt
 
 
 class PlainTextXREF(XREF):
@@ -43,7 +41,7 @@ class PlainTextXREF(XREF):
         src: io.IOBase,
         tok: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
-    ) -> "PDFHighLevelObject":
+    ) -> "XREF":
 
         if initial_offset is not None:
             src.seek(initial_offset)
@@ -52,6 +50,7 @@ class PlainTextXREF(XREF):
 
         # now we should be back to the start of XREF
         token = tok.next_non_comment_token()
+        assert token is not None
         if token.text != "xref":
             raise XREFTokenNotFoundError()
 
@@ -62,30 +61,33 @@ class PlainTextXREF(XREF):
                 break
             else:
                 for r in xref_section:
-                    self.add_indirect_reference(r)
+                    self.append(r)
 
         # process trailer
-        trailer = self._read_trailer(src, tok)
-        self["Trailer"] = trailer
+        self["Trailer"] = self._read_trailer(src, tok)
 
         # return self
         return self
 
-    def _read_section(
-        self, src: io.IOBase, tok: HighLevelTokenizer
-    ) -> List[PDFIndirectReference]:
+    def _read_section(self, src: io.IOBase, tok: HighLevelTokenizer) -> List[Reference]:
 
         tokens = [tok.next_non_comment_token() for _ in range(0, 2)]
+        assert tokens[0] is not None
+        assert tokens[1] is not None
         if tokens[0].text in ["trailer", "startxref"]:
             src.seek(tokens[0].byte_offset)
             return []
         if tokens[0].token_type != TokenType.NUMBER:
             raise PDFValueError(
-                expected_type_description="number", received_type_description=tokens[0]
+                byte_offset=tokens[0].byte_offset,
+                expected_value_description="number",
+                received_value_description=tokens[0].text,
             )
         if tokens[1].token_type != TokenType.NUMBER:
             raise PDFValueError(
-                expected_type_description="number", received_type_description=tokens[1]
+                byte_offset=tokens[1].byte_offset,
+                expected_value_description="number",
+                received_value_description=tokens[1].text,
             )
 
         start_object_number = int(tokens[0].text)
@@ -95,10 +97,13 @@ class PlainTextXREF(XREF):
         # read subsection
         for i in range(0, number_of_objects):
             tokens = [tok.next_non_comment_token() for _ in range(0, 3)]
+            assert tokens[0] is not None
+            assert tokens[1] is not None
+            assert tokens[2] is not None
             if tokens[0].text in ["trailer", "startxref"]:
-                raise UnexpectedEndOfXREF(
-                    start_byte_position=tokens[0].byte_offset,
-                    stop_byte_position=tokens[0].byte_offset,
+                raise PDFSyntaxError(
+                    byte_offset=tokens[0].byte_offset,
+                    message="unexpected EOF while processing XREF",
                 )
             if (
                 tokens[0].token_type != TokenType.NUMBER
@@ -106,34 +111,38 @@ class PlainTextXREF(XREF):
                 or tokens[2].token_type != TokenType.OTHER
                 or tokens[2].text not in ["f", "n"]
             ):
-                raise InvalidXREFLine(
-                    start_byte_position=tokens[0].byte_offset,
-                    stop_byte_position=tokens[2].byte_offset,
+                raise PDFSyntaxError(
+                    byte_offset=tokens[0].byte_offset,
+                    message="invalid XREF line",
                 )
 
             indirect_references.append(
-                PDFIndirectReference(
-                    object_number=PDFInt(start_object_number + i),
-                    byte_offset=PDFInt(int(tokens[0].text)),
-                    generation_number=PDFInt(int(tokens[1].text)),
-                    is_in_use=PDFBoolean(tokens[2].text == "n"),
+                Reference(
+                    object_number=start_object_number + i,
+                    byte_offset=int(tokens[0].text),
+                    generation_number=int(tokens[1].text),
+                    is_in_use=(tokens[2].text == "n"),
                 )
             )
 
         # return
         return indirect_references
 
-    def _read_trailer(self, src: io.IOBase, tok: HighLevelTokenizer) -> PDFDictionary:
+    def _read_trailer(self, src: io.IOBase, tok: HighLevelTokenizer) -> Dictionary:
 
         # return None if there is no trailer
-        if tok.next_non_comment_token().text != "trailer":
-            return PDFDictionary()
+        token = tok.next_non_comment_token()
+        assert token is not None
+        if token.text != "trailer":
+            return Dictionary()
 
         # if there is a keyword "trailer" the next token should be TokenType.START_DICT
-        if tok.next_non_comment_token().token_type != TokenType.START_DICT:
-            raise MalFormedTrailer(
-                start_byte_position=self.tokenizer.tell(),
-                stop_byte_position=self.tokenizer.tell(),
+        token = tok.next_non_comment_token()
+        assert token is not None
+        if token.token_type != TokenType.START_DICT:
+            raise PDFSyntaxError(
+                byte_offset=tok.tell(),
+                message="invalid XREF trailer",
             )
 
         # go back 2 chars "<<"
@@ -143,12 +152,13 @@ class PlainTextXREF(XREF):
         trailer_dict = tok.read_dictionary()
 
         # process startxref
-        end_of_xref_token = tok.next_non_comment_token()
-        if (
-            end_of_xref_token.token_type != TokenType.OTHER
-            or end_of_xref_token.text != "startxref"
-        ):
-            raise StartXREFTokenNotFound()
+        token = tok.next_non_comment_token()
+        assert token is not None
+        if token.token_type != TokenType.OTHER or token.text != "startxref":
+            raise PDFSyntaxError(
+                byte_offset=token.byte_offset,
+                message="start of XREF not found",
+            )
 
         # return
         return trailer_dict

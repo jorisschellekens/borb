@@ -1,10 +1,9 @@
 from typing import List
 
 from ptext.exception.pdf_exception import PDFTypeError
+from ptext.io.transform.types import AnyPDFType, String
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.io.tokenize.types.pdf_object import PDFObject
-from ptext.io.tokenize.types.pdf_string import PDFString
 
 
 class ShowText(CanvasOperator):
@@ -15,10 +14,10 @@ class ShowText(CanvasOperator):
     def __init__(self):
         super().__init__("Tj", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[PDFObject] = []):
-        if not isinstance(operands[0], PDFString):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
+        if not isinstance(operands[0], String):
             raise PDFTypeError(
-                expected_type=PDFString, received_type=operands[0].__class__
+                expected_type=String, received_type=operands[0].__class__
             )
         tri = TextRenderEvent(canvas.graphics_state, operands[0])
         # render

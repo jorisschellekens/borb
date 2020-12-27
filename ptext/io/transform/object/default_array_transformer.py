@@ -1,10 +1,10 @@
-from typing import Optional, List, Any, Union
+import io
+import typing
+from typing import Union, Any, Optional
 
-from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.io.tokenize.types.pdf_array import PDFArray
-from ptext.io.tokenize.types.pdf_object import PDFObject
 from ptext.io.transform.base_transformer import BaseTransformer, TransformerContext
-from ptext.io.transform.types import ListWithParentAttribute
+from ptext.io.transform.types import List, AnyPDFType
+from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class DefaultArrayTransformer(BaseTransformer):
@@ -12,19 +12,21 @@ class DefaultArrayTransformer(BaseTransformer):
     This implementation of BaseTransformer converts a PDFArray to a List
     """
 
-    def can_be_transformed(self, object: Union["io.IOBase", "PDFObject"]) -> bool:
-        return isinstance(object, PDFArray)
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
+    ) -> bool:
+        return isinstance(object, List)
 
     def transform(
         self,
-        object_to_transform: Union["io.IOBase", "PDFObject"],
+        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[TransformerContext] = None,
-        event_listeners: List[EventListener] = [],
+        event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
         # create root object
-        tmp = ListWithParentAttribute().set_parent(parent_object)
+        tmp = List().set_parent(parent_object)
 
         # add listener(s)
         for l in event_listeners:

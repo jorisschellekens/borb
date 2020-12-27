@@ -3,12 +3,12 @@ from functools import cmp_to_key
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.text_render_event import (
     TextRenderEvent,
     LeftToRightComparator,
 )
 from ptext.pdf.page.page import Page
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
 
 
 class SimpleTextExtraction(EventListener):

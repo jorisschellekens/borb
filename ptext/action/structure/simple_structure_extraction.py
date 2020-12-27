@@ -1,25 +1,23 @@
-from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.canvas.event.text_render_event import (
-    TextRenderEvent,
-)
 from ptext.action.structure.line.simple_line_render_event_factory import (
     SimpleLineRenderEventFactory,
 )
 from ptext.action.structure.list.simple_bullet_list_factory import (
     SimpleBulletListFactory,
 )
-from ptext.action.structure.list import (
+from ptext.action.structure.list.simple_ordered_list_factory import (
     SimpleOrderedListFactory,
 )
-from ptext.action.structure.paragraph import (
+from ptext.action.structure.paragraph.simple_paragraph_factory import (
     SimpleParagraphFactory,
 )
-from ptext.action.structure.title import (
-    SimpleTitleFactory,
+from ptext.action.structure.title.simple_title_factory import SimpleTitleFactory
+from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
+from ptext.pdf.canvas.event.end_page_event import EndPageEvent
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
+from ptext.pdf.canvas.event.text_render_event import (
+    TextRenderEvent,
 )
 from ptext.pdf.page.page import Page
-from ptext.pdf.canvas.event.event_listener import Event, EventListener
 
 
 class SimpleStructureExtraction(EventListener):

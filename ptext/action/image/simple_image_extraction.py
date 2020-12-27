@@ -1,9 +1,9 @@
 from typing import List
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.page.page import Page
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
 
 
 class SimpleImageExtraction(EventListener):
@@ -11,11 +11,11 @@ class SimpleImageExtraction(EventListener):
         self.image_render_info_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
+    def event_occurred(self, event: "Event") -> None:
         if isinstance(event, BeginPageEvent):
-            self.begin_page(event.get_page())
+            self._begin_page(event.get_page())
         if isinstance(event, ImageRenderEvent):
-            self.render_image(event)
+            self._render_image(event)
 
     def get_images_per_page(self, page_nr: int) -> List["PIL.Image.Image"]:
         return (
@@ -24,7 +24,7 @@ class SimpleImageExtraction(EventListener):
             else []
         )
 
-    def render_image(self, image_render_event: ImageRenderEvent):
+    def _render_image(self, image_render_event: "ImageRenderEvent"):
 
         # init if needed
         if self.current_page not in self.image_render_info_per_page:
@@ -35,5 +35,5 @@ class SimpleImageExtraction(EventListener):
             image_render_event.get_image()
         )
 
-    def begin_page(self, page: Page):
+    def _begin_page(self, page: Page):
         self.current_page += 1
