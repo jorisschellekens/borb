@@ -1,7 +1,8 @@
+import typing
 from decimal import Decimal
 from typing import Tuple
 
-from gtts import gTTS
+from gtts import gTTS  # type: ignore [import]
 
 from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -20,7 +21,7 @@ class AudioExport(EventListener):
         include_position: bool = True,
         language: str = "en",
         slow: bool = False,
-        default_page_size: Tuple[int, int] = PageSize.A4_PORTRAIT,
+        default_page_size: Tuple[int, int] = PageSize.A4_PORTRAIT.value,
     ):
 
         # tts info
@@ -29,11 +30,11 @@ class AudioExport(EventListener):
         self.slow = slow
 
         # page info
-        self.text_to_speak_for_page = {}
+        self.text_to_speak_for_page: typing.Dict[int, str] = {}
         self.current_paragraph = -1
-        self.current_page = -1
-        self.current_page_size = None
-        self.default_page_size = default_page_size
+        self.current_page: int = -1
+        self.current_page_size: typing.Optional[Tuple[int, int]] = None
+        self.default_page_size: Tuple[int, int] = default_page_size
 
     def event_occurred(self, event: "Event") -> None:
         if isinstance(event, BeginPageEvent):

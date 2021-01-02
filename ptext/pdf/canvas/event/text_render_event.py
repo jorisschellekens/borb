@@ -1,6 +1,7 @@
 from decimal import Decimal
 
-from ptext.io.transform.types import String
+from ptext.io.read_transform.types import String
+from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.event.event_listener import Event
 from ptext.pdf.canvas.geometry.line_segment import LineSegment
 
@@ -10,7 +11,7 @@ class TextRenderEvent(Event):
     This implementation of Event is triggered right after the Canvas has processed a text-rendering instruction
     """
 
-    def __init__(self, graphics_state: "CanvasGraphicsState", raw_bytes: String):
+    def __init__(self, graphics_state: CanvasGraphicsState, raw_bytes: String):
         self.raw_bytes = raw_bytes
         self.glyph_line = graphics_state.font.build_glyph_line(raw_bytes)
         self.text_to_user_space_transform_matrix = graphics_state.text_matrix.mul(
@@ -57,13 +58,12 @@ class TextRenderEvent(Event):
     def get_text(self) -> str:
         return self.glyph_line.get_text()
 
-    def _get_baseline(self, graphics_state: "CanvasGraphicsState") -> LineSegment:
+    def _get_baseline(self, graphics_state: CanvasGraphicsState) -> LineSegment:
         # build and transform line segment
         return LineSegment(
             Decimal(0),
             graphics_state.text_rise,
-            self._get_pdf_string_width_in_text_space(self.raw_bytes, graphics_state)
-            or Decimal(0),
+            self._get_pdf_string_width_in_text_space(graphics_state) or Decimal(0),
             graphics_state.text_rise,
         ).transform_by(self.text_to_user_space_transform_matrix)
 
@@ -74,7 +74,7 @@ class TextRenderEvent(Event):
         return self.space_character_width
 
     def _get_pdf_string_width_in_text_space(
-        self, text: String, graphics_state: "CanvasGraphicsState"
+        self, graphics_state: CanvasGraphicsState
     ) -> Decimal:
         """
         Get the width of a String in text space units

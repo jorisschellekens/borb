@@ -113,7 +113,7 @@ class FlateDecode:
             # sample above
             if filter_type == 3:
                 for i in range(0, bytes_per_pixel):
-                    current_row[i] += prior_row[i] / 2
+                    current_row[i] += int(prior_row[i] / 2)
 
                 for i in range(bytes_per_pixel, bytes_per_row):
                     current_row[i] += (int)(

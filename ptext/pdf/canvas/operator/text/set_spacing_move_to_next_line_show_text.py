@@ -1,6 +1,6 @@
 from typing import List
 
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.text.move_to_next_line_show_text import (
     MoveToNextLineShowText,
@@ -23,7 +23,7 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
     def __init__(self):
         super().__init__('"', 3)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
         SetWordSpacing().invoke(canvas, [operands[0]])
         SetCharacterSpacing().invoke(canvas, [operands[1]])
         MoveToNextLineShowText().invoke(canvas, [operands[2]])

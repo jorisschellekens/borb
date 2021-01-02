@@ -18,7 +18,9 @@ class FontType1(Font):
         if "FontDescriptor" in self and "AvgWidth" in self["FontDescriptor"]:
             return self["FontDescriptor"]["AvgWidth"]
         # standard 14
-        standard_14_font = AdobeFontMetrics.get(self.get_font_name())
+        font_name: Optional[str] = self.get_font_name()
+        assert font_name is not None
+        standard_14_font = AdobeFontMetrics.get(font_name)
         if (
             standard_14_font is not None
             and "FontDescriptor" in standard_14_font
@@ -33,7 +35,9 @@ class FontType1(Font):
         if "FontDescriptor" in self and "Ascent" in self["FontDescriptor"]:
             return self["FontDescriptor"]["Ascent"]
         # standard 14
-        standard_14_font = AdobeFontMetrics.get(self.get_font_name())
+        font_name: Optional[str] = self.get_font_name()
+        assert font_name is not None
+        standard_14_font = AdobeFontMetrics.get(font_name)
         if (
             standard_14_font is not None
             and "FontDescriptor" in standard_14_font
@@ -48,7 +52,9 @@ class FontType1(Font):
         if "FontDescriptor" in self and "Descent" in self["FontDescriptor"]:
             return self["FontDescriptor"]["Descent"]
         # standard 14
-        standard_14_font = AdobeFontMetrics.get(self.get_font_name())
+        font_name: Optional[str] = self.get_font_name()
+        assert font_name is not None
+        standard_14_font = AdobeFontMetrics.get(font_name)
         if (
             standard_14_font is not None
             and "FontDescriptor" in standard_14_font
@@ -67,7 +73,9 @@ class FontType1(Font):
                 return self["Widths"][int(character_code - self["FirstChar"])]
             return None
         # standard 14
-        standard_14_font = AdobeFontMetrics.get(self.get_font_name())
+        font_name: Optional[str] = self.get_font_name()
+        assert font_name is not None
+        standard_14_font = AdobeFontMetrics.get(font_name)
         if (
             standard_14_font is not None
             and "Widths" in standard_14_font
@@ -85,12 +93,14 @@ class FontType1(Font):
         # default
         return None
 
-    def get_missing_character_width(self) -> Optional[Decimal]:
+    def get_missing_character_width(self) -> Decimal:
         # self
         if "FontDescriptor" in self and "MissingWidth" in self["FontDescriptor"]:
             return self["FontDescriptor"]["MissingWidth"]
         # standard 14
-        standard_14_font = AdobeFontMetrics.get(self.get_font_name())
+        font_name: Optional[str] = self.get_font_name()
+        assert font_name is not None
+        standard_14_font = AdobeFontMetrics.get(font_name)
         if (
             standard_14_font is not None
             and "FontDescriptor" in standard_14_font
@@ -98,7 +108,7 @@ class FontType1(Font):
         ):
             return standard_14_font["FontDescriptor"]["MissingWidth"]
         # default
-        return None
+        return Decimal(250)
 
     def get_font_name(self) -> Optional[str]:
         return self.get("BaseFont") or self.get("Name")

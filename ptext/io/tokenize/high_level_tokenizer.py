@@ -2,8 +2,7 @@ import re
 from typing import Optional
 
 from ptext.exception.pdf_exception import PDFEOFError, PDFTypeError, PDFSyntaxError
-from ptext.io.tokenize.low_level_tokenizer import LowLevelTokenizer, TokenType
-from ptext.io.transform.types import (
+from ptext.io.read_transform.types import (
     List,
     Dictionary,
     Reference,
@@ -16,6 +15,7 @@ from ptext.io.transform.types import (
     Boolean,
     Stream,
 )
+from ptext.io.tokenize.low_level_tokenizer import LowLevelTokenizer, TokenType
 
 
 class HighLevelTokenizer(LowLevelTokenizer):
@@ -133,9 +133,14 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
         # read obj
         value = self.read_object()
-        value.set_reference(  # type: ignore[union-attr]
-            Reference(object_number=object_number, generation_number=generation_number)
-        )
+        if value is not None:
+            value.set_reference(  # type: ignore[union-attr]
+                Reference(
+                    object_number=object_number, generation_number=generation_number
+                )
+            )
+
+        # return
         return value
 
     def read_indirect_reference(self) -> Optional[Reference]:
@@ -174,7 +179,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
             generation_number=generation_number,
         )
 
-    def read_object(self, xref: Optional["XREF"] = None) -> Optional[AnyPDFType]:
+    def read_object(self, xref: Optional["XREF"] = None) -> Optional[AnyPDFType]:  # type: ignore [name-defined]
 
         token = self.next_non_comment_token()
         if token is None or len(token.text) == 0:
@@ -243,7 +248,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # default
         return None
 
-    def read_stream(self, xref: Optional["XREF"] = None) -> Optional[Stream]:
+    def read_stream(self, xref: Optional["XREF"] = None) -> Optional[Stream]:  # type: ignore [name-defined]
 
         byte_offset = self.tell()
 
@@ -272,7 +277,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
                 )
             pos_before = self.tell()
             length_of_stream = int(
-                xref.get(length_of_stream, src=self.io_source, tok=self)
+                xref.get_object(length_of_stream, src=self.io_source, tok=self)
             )
             self.seek(pos_before)
 
@@ -306,7 +311,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
             )
 
         # set Bytes
-        stream_dictionary["Bytes"] = bytes
+        stream_dictionary[Name("Bytes")] = bytes
 
         # return
         return Stream(stream_dictionary)

@@ -1,3 +1,5 @@
+import typing
+
 from ptext.action.structure.line.simple_line_render_event_factory import (
     SimpleLineRenderEventFactory,
 )
@@ -91,11 +93,12 @@ class SimpleStructureExtraction(EventListener):
         # TODO : extract tables
 
         # fire events
-        for e in (
-            title_events
-            + list_render_events_a
-            + list_render_events_b
-            + paragraph_render_events
-            + line_render_events
-        ):
-            page.event_occurred(e)
+        evts: typing.List[Event] = (
+            title_events  # type: ignore [assignment]
+            + list_render_events_a  # type: ignore [operator]
+            + list_render_events_b  # type: ignore [operator]
+            + paragraph_render_events  # type: ignore [operator]
+            + line_render_events  # type: ignore [operator]
+        )
+        for e in evts:
+            page.event_occurred(e)  # type: ignore [attr-defined]

@@ -4,6 +4,7 @@ from ptext.action.structure.line.line_render_event import (
     LineRenderEvent,
 )
 from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
+from ptext.io.read_transform.types import Decimal
 from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
 from ptext.pdf.canvas.geometry.line_segment import LineSegment
 
@@ -49,13 +50,13 @@ class SimpleParagraphFactory:
         # return
         return [], [self._build_paragraph_from_lines(x) for x in ds.sets()]
 
-    def _overlap(self, l0: LineSegment, l1: LineSegment) -> float:
+    def _overlap(self, l0: LineSegment, l1: LineSegment) -> Decimal:
         # lines do not overlap (l0 is left)
         if max(l0.x0, l0.x1) < min(l1.x0, l1.x1):
-            return 0
+            return Decimal(0)
         # lines do not overlap (l1 is left)
         if max(l1.x0, l1.x1) < min(l0.x0, l0.x1):
-            return 0
+            return Decimal(0)
         x0 = max(min(l0.x0, l0.x1), min(l1.x0, l1.x1))
         x1 = min(max(l0.x0, l0.x1), max(l1.x0, l1.x1))
         return abs(x1 - x0)

@@ -5,7 +5,7 @@ from ptext.io.filter.ascii85_decode import ASCII85Decode
 from ptext.io.filter.flate_decode import FlateDecode
 from ptext.io.filter.lzw_decode import LZWDecode
 from ptext.io.filter.run_length_decode import RunLengthDecode
-from ptext.io.transform.types import Stream, List, Decimal, Dictionary
+from ptext.io.read_transform.types import Stream, List, Decimal, Dictionary, Name
 
 
 def decode_stream(s: Stream) -> Stream:
@@ -21,7 +21,7 @@ def decode_stream(s: Stream) -> Stream:
         else:
             filters = [s["Filter"]]
 
-    decode_params = []
+    decode_params: typing.List[Dictionary] = []
     if "DecodeParms" in s:
         if isinstance(s["DecodeParms"], List):
             decode_params = s["DecodeParms"]
@@ -67,11 +67,11 @@ def decode_stream(s: Stream) -> Stream:
         )
 
     # set DecodedBytes
-    s["DecodedBytes"] = transformed_bytes
+    s[Name("DecodedBytes")] = transformed_bytes
 
     # set Type if not yet set
     if "Type" not in s:
-        s["Type"] = "Stream"
+        s[Name("Type")] = Name("Stream")
 
     # return
     return s

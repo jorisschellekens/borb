@@ -85,12 +85,12 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
 
         # update dictionary
         for w in words:
-            kw = [
+            keywords_on_same_page = [
                 x
                 for x in self.keywords
                 if x.page_number == self.current_page and x.text == w
             ]
-            if len(kw) == 0:
+            if len(keywords_on_same_page) == 0:
                 self.keywords.append(
                     TFIDFKeyword(
                         text=w,
@@ -100,11 +100,12 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
                         words_on_page=len(words),
                     )
                 )
-            for kw in [x for x in self.keywords if x.text == w]:
-                if kw.page_number == self.current_page:
-                    kw.term_frequency += 1
-                if self.current_page not in kw.occurs_on_pages:
-                    kw.occurs_on_pages.append(self.current_page)
+            for keyword in [x for x in self.keywords if x.text == w]:
+                assert isinstance(keyword, TFIDFKeyword)
+                if keyword.page_number == self.current_page:
+                    keyword.term_frequency += 1
+                if self.current_page not in keyword.occurs_on_pages:
+                    keyword.occurs_on_pages.append(self.current_page)
 
         # update number of pages
         for k in self.keywords:

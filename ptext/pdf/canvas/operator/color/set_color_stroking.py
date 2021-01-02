@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.color.color import GrayColor, RGBColor, CMYKColor
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -22,7 +22,7 @@ class SetColorStroking(CanvasOperator):
     specified.
     """
 
-    def __init__(self, canvas: "Canvas"):
+    def __init__(self, canvas: "Canvas"):  # type: ignore [name-defined]
         super().__init__("SCN", 0)
         self.canvas = canvas
 
@@ -36,7 +36,7 @@ class SetColorStroking(CanvasOperator):
             return 3
         return self.number_of_operands
 
-    def invoke(self, canvas: "PDFCanvas", operands: List[AnyPDFType] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
 
         non_stroke_color_space = self.canvas.graphics_state.non_stroke_color_space
         if non_stroke_color_space == "DeviceCMYK":

@@ -1,3 +1,4 @@
+import typing
 from typing import List, Any
 
 
@@ -45,7 +46,7 @@ class disjointset:
         return self
 
     def sets(self) -> List[List[Any]]:
-        cluster_parents = {}
+        cluster_parents: typing.Dict[Any, Any] = {}
         for x, _ in self.parents.items():
             p = self.find(x)
             if p not in cluster_parents:

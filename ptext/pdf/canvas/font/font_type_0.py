@@ -26,7 +26,7 @@ class FontType0(Font):
     def get_single_character_width(self, character_code: int) -> Optional[Decimal]:
         return self.get_descendant_font().get_single_character_width(character_code)
 
-    def get_missing_character_width(self) -> Optional[Decimal]:
+    def get_missing_character_width(self) -> Decimal:
         return self.get_descendant_font().get_missing_character_width()
 
     def get_font_name(self) -> Optional[str]:
@@ -51,7 +51,7 @@ class FontType0(Font):
         if self._to_unicode_map is None:
             self._init_to_unicode_map()
         # set parent
-        self.get_descendant_font()._parent = self
+        self.get_descendant_font()._parent = self  # type: ignore [attr-defined]
         # call child
         return self.get_descendant_font().build_glyph_line(content)
 

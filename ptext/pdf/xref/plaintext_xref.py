@@ -1,14 +1,14 @@
 import io
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from ptext.exception.pdf_exception import (
     XREFTokenNotFoundError,
     PDFValueError,
     PDFSyntaxError,
 )
+from ptext.io.read_transform.types import Reference, Dictionary
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.tokenize.low_level_tokenizer import TokenType
-from ptext.io.transform.types import Reference, Dictionary
 from ptext.pdf.xref.xref import XREF
 
 
@@ -38,7 +38,7 @@ class PlainTextXREF(XREF):
 
     def read(
         self,
-        src: io.IOBase,
+        src: Union[io.BufferedIOBase, io.RawIOBase],
         tok: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
     ) -> "XREF":

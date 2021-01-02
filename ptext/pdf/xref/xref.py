@@ -9,9 +9,9 @@ from ptext.exception.pdf_exception import (
     PDFSyntaxError,
 )
 from ptext.io.filter.stream_decode_util import decode_stream
+from ptext.io.read_transform.types import Dictionary, Reference, AnyPDFType, Stream
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.tokenize.low_level_tokenizer import TokenType
-from ptext.io.transform.types import Dictionary, Reference, AnyPDFType
 
 logger = logging.getLogger(__name__)
 
@@ -109,10 +109,10 @@ class XREF(Dictionary):
                 self.append(r)
         return self
 
-    def get(
+    def get_object(
         self,
         indirect_reference: Union[Reference, int],
-        src: io.IOBase,
+        src: Union[io.BufferedIOBase, io.RawIOBase],
         tok: HighLevelTokenizer,
     ) -> Optional[AnyPDFType]:
 
@@ -155,12 +155,15 @@ class XREF(Dictionary):
             tok.seek(tell_before)
 
         # entry specifies a parent object
-        if indirect_reference.parent_stream_object_number is not None:
+        if (
+            indirect_reference.parent_stream_object_number is not None
+            and indirect_reference.index_in_parent_stream is not None
+        ):
 
-            stream_object = self.get(
+            stream_object = self.get_object(
                 indirect_reference.parent_stream_object_number, src, tok
             )
-            assert isinstance(stream_object, dict)
+            assert isinstance(stream_object, Stream)
             if "Length" not in stream_object:
                 raise PDFTypeError(
                     expected_type=Union[Decimal, Reference], received_type=None
@@ -173,13 +176,13 @@ class XREF(Dictionary):
 
             # Length may be Reference
             if isinstance(stream_object["Length"], Reference):
-                stream_object["Length"] = self.get(
+                stream_object["Length"] = self.get_object(
                     stream_object["Length"], src=src, tok=tok
                 )
 
             # First may be Reference
             if isinstance(stream_object["First"], Reference):
-                stream_object["First"] = self.get(
+                stream_object["First"] = self.get_object(
                     stream_object["First"], src=src, tok=tok
                 )
 
@@ -200,8 +203,8 @@ class XREF(Dictionary):
             length = int(stream_object["Length"])
             if index < length:
                 tok = HighLevelTokenizer(io.BytesIO(stream_bytes))
-                obj = [tok.read_object() for x in range(0, index + 1)]
-                obj = obj[-1]
+                list_of_objs = [tok.read_object() for x in range(0, index + 1)]
+                obj = list_of_objs[-1]
             else:
                 obj = None
 

@@ -245,3 +245,52 @@ SimpleStructureRecognition performs the following tasks:
 4. Bundle ParagraphRenderEvent objects in BulletlistEvent objects (where applicable)
 5. Find those ParagraphRenderEvent objects that make up titles and subtitles (where applicable)
 5. Alert the EventListeners of the Page with the new Event objects
+
+## 7. Writing a PDF
+
+### 7.1 changing the author of a PDF
+
+    doc = None
+    with open("input.pdf", "rb") as pdf_file_handle: 
+        doc = PDF.loads(pdf_file_handle)
+        doc["XRef"]["Trailer"]["Info"]["Author"] = "Joris Schellekens"
+
+    with open("output.pdf", "wb" as pdf_file_handle:
+        PDF.dumps(pdf_file_handle, doc)
+
+### 7.2 concatenating two PDFs
+
+    doc_01 = None 
+    with open("input_01.pdf", "rb") as pdf_file_handle: 
+        doc_01 = PDF.loads(pdf_file_handle)
+
+    doc_02 = None 
+    with open("input_02.pdf", "rb") as pdf_file_handle: 
+        doc_02 = PDF.loads(pdf_file_handle)
+    
+    # create empty Document
+    doc_03 = Document()
+
+    # add all pages
+    for i in range(0, int(doc_01.get_document_info().get_number_of_pages())):
+        doc_03.append_page(doc_01.get_page(i))
+    for i in range(0, int(doc_02.get_document_info().get_number_of_pages())):
+        doc_03.append_page(doc_02.get_page(i))
+
+    # attempt to store PDF
+    with open("output.pdf", "wb") as out_file_handle:
+        PDF.dumps(in_file_handle, doc_03)
+
+### 7.3 removing a page from a PDF
+    
+    # read PDF
+    doc = None
+    with open("input.pdf", "rb") as pdf_file_handle: 
+        doc = PDF.loads(pdf_file_handle)
+
+    # remove page
+    doc.pop_page(0)
+    
+    # write PDF
+    with open("output.pdf", "wb" as pdf_file_handle:
+        PDF.dumps(pdf_file_handle, doc)

@@ -4,9 +4,9 @@ import pathlib
 import re
 import typing
 from decimal import Decimal
-from typing import List, Optional
+from typing import Optional
 
-from ptext.io.transform.types import (
+from ptext.io.read_transform.types import (
     List,
 )
 from ptext.pdf.canvas.font.font import Font
@@ -19,7 +19,7 @@ class AdobeFontMetrics:
     contains the master design of a specific font, which defines the way each character of the font looks.
     """
 
-    _font_cache = {}
+    _font_cache: typing.Dict[str, Optional[Font]] = {}
 
     @staticmethod
     def get(name: str) -> Optional[Font]:
@@ -58,8 +58,9 @@ class AdobeFontMetrics:
         return None
 
     @staticmethod
-    def _read_file(input: io.IOBase) -> Optional[Font]:
-        lines = [x for x in input.readlines() if not x.startswith("Comment")]
+    def _read_file(input: io.BufferedIOBase) -> Optional[Font]:
+        lines: typing.List[str] = [x for x in input.readlines()]
+        lines = [x for x in lines if not x.startswith("Comment")]
         lines = [x[:-1] if x.endswith("\n") else x for x in lines]
 
         # check first/last line
@@ -71,7 +72,7 @@ class AdobeFontMetrics:
         out_font = Font()
 
         # FontDescriptor
-        out_font_descriptor = FontDescriptor().set_parent(out_font)
+        out_font_descriptor = FontDescriptor().set_parent(out_font)  # type: ignore [attr-defined]
         out_font_descriptor["FontName"] = AdobeFontMetrics._find_and_parse_as_string(
             lines, "FontName"
         )
@@ -129,7 +130,7 @@ class AdobeFontMetrics:
         out_font["Name"] = out_font_descriptor["FontName"]
         out_font["BaseFont"] = out_font_descriptor["FontName"]
 
-        widths = List().set_parent(out_font)
+        widths = List().set_parent(out_font)  # type: ignore [attr-defined]
         avg_char_width = 0
         avg_char_width_norm = 0
         first_char = None
@@ -167,6 +168,9 @@ class AdobeFontMetrics:
                 avg_char_width_norm += 1
 
             widths.append(Decimal(w))
+
+        assert first_char is not None
+        assert last_char is not None
 
         out_font["FirstChar"] = Decimal(first_char)
         out_font["LastChar"] = Decimal(last_char)

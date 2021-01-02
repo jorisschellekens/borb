@@ -1,8 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -14,9 +13,6 @@ class SetLineWidth(CanvasOperator):
     def __init__(self):
         super().__init__("w", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
-        if not isinstance(operands[0], Decimal):
-            raise PDFTypeError(
-                expected_type=Decimal, received_type=operands[0].__class__
-            )
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        assert isinstance(operands[0], Decimal)
         canvas.graphics_state.line_width = operands[0]

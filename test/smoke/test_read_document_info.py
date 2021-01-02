@@ -13,7 +13,7 @@ class TestReadDocumentInfo(BaseTest):
         super().__init__(methodName)
 
     def test_single_document(self):
-        self.input_file = self.input_dir / "0001.pdf"
+        self.input_file = self.input_dir / "0134_page_0.pdf"
         super().test_single_document()
 
     def test_against_previous_fails(self):

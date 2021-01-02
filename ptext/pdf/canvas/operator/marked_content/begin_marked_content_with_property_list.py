@@ -1,7 +1,6 @@
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType, Name
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -18,8 +17,7 @@ class BeginMarkedContentWithPropertyList(CanvasOperator):
     def __init__(self):
         super().__init__("BDC", 2)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
-        if not isinstance(operands[0], str):
-            raise PDFTypeError(expected_type=str, received_type=operands[0].__class__)
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         # TODO
+        assert isinstance(operands[0], Name)
         canvas.marked_content_stack.append(operands[0])

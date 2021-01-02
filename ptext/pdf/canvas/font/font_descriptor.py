@@ -1,6 +1,6 @@
 import copy
 
-from ptext.io.transform.types import Dictionary
+from ptext.io.read_transform.types import Dictionary
 
 
 class FontDescriptor(Dictionary):

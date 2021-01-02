@@ -2,7 +2,7 @@ from typing import Optional, List
 
 
 class DocumentInfo:
-    def __init__(self, document: "Document"):
+    def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super().__init__()
         self.document = document
 
@@ -85,10 +85,10 @@ class DocumentInfo:
             return None
 
     def get_number_of_pages(self) -> Optional[int]:
-        return self.document.get["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
+        return self.document["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
 
     def get_file_size(self) -> Optional[int]:
-        return int(self.document.get("FileSize"))
+        return int(self.document("FileSize"))
 
     def get_ids(self) -> Optional[List[str]]:
         """

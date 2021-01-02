@@ -1,3 +1,5 @@
+import typing
+
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
@@ -13,7 +15,7 @@ class LocationFilter(EventListener):
         self.y0 = y0
         self.x1 = x1
         self.y1 = y1
-        self.listeners = []
+        self.listeners: typing.List[EventListener] = []
 
     def add_listener(self, listener: "EventListener") -> "LocationFilter":
         self.listeners.append(listener)

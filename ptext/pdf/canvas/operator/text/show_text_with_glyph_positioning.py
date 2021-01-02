@@ -1,8 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType, String
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -25,16 +24,16 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
     def __init__(self):
         super().__init__("TJ", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
 
-        if not isinstance(operands[0], list):
-            raise PDFTypeError(expected_type=list, received_type=operands[0].__class__)
+        assert isinstance(operands[0], List)
 
         for i in range(0, len(operands[0])):
             obj = operands[0][i]
 
             # display string
-            if isinstance(obj, str):
+            if isinstance(obj, String):
+                assert isinstance(obj, String)
                 tri = TextRenderEvent(canvas.graphics_state, obj)
                 # render
                 canvas.event_occurred(tri)
@@ -44,6 +43,7 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
 
             # adjust
             if isinstance(obj, Decimal):
+                assert isinstance(obj, Decimal)
                 gs = canvas.graphics_state
                 adjust_unscaled = obj
                 adjust_scaled = (

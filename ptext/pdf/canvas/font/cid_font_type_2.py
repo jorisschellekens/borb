@@ -58,13 +58,13 @@ class CIDFontType2(TrueTypeFont):
         if self._font_encoding is None:
             self._init_font_encoding()
         if self._font_encoding is None:
-            self._font_encoding = self._parent._font_encoding
+            self._font_encoding = self._parent._font_encoding  # type: ignore [attr-defined]
 
         # init ToUnicode
         if self._to_unicode_map is None:
             self._init_to_unicode_map()
         if self._to_unicode_map is None:
-            self._to_unicode_map = self._parent._to_unicode_map
+            self._to_unicode_map = self._parent._to_unicode_map  # type: ignore [attr-defined]
 
         return super().build_glyph_line(content)
 

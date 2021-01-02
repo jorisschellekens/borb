@@ -16,10 +16,11 @@ class Encoding:
     def code_to_unicode(self, code: int) -> int:
         if 0 <= code < 256:
             return self._code_to_unicode[code]
+        return -1
 
     def add_symbol(self, code: int, glyph_name: str):
         if 0 <= code < 256 and glyph_name in ADOBE_GLYPH_DICTIONARY:
-            unicode = ADOBE_GLYPH_DICTIONARY.get(glyph_name)[0]
+            unicode = ADOBE_GLYPH_DICTIONARY[glyph_name][0]
             self._unicode_to_code[unicode] = code
             self._code_to_unicode[code] = unicode
             self._differences[code] = glyph_name

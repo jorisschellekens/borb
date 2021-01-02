@@ -1,7 +1,10 @@
+import typing
 from typing import List, Tuple
 
+from ptext.action.structure.line.line_render_event import LineRenderEvent
 from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRenderEvent
 from ptext.action.structure.title.title_render_event import TitleRenderEvent
+from ptext.io.read_transform.types import Decimal
 
 
 class SimpleTitleFactory:
@@ -10,7 +13,7 @@ class SimpleTitleFactory:
     ) -> Tuple[List[ParagraphRenderEvent], List[TitleRenderEvent]]:
 
         # determine font size in which the majority of text is written
-        font_size_count = {}
+        font_size_count: typing.Dict[Decimal, int] = {}
         for p in paragraph_render_events:
             font_size = p.get_font_size()
             number_of_characters = len(p.get_text())
@@ -60,6 +63,7 @@ class SimpleTitleFactory:
     def _all_same_font(self, paragraph_render_event: ParagraphRenderEvent) -> bool:
         text_render_events = []
         for line_render_event in paragraph_render_event.contained_events:
+            assert isinstance(line_render_event, LineRenderEvent)
             for text_render_event in line_render_event.contained_events:
                 text_render_events.append(text_render_event)
 

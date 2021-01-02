@@ -1,11 +1,11 @@
 import io
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Union
 
 from ptext.exception.pdf_exception import PDFTypeError, PDFValueError
 from ptext.io.filter.stream_decode_util import decode_stream
+from ptext.io.read_transform.types import Reference, Stream, Dictionary, List
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.transform.types import Reference, Stream, Dictionary
 from ptext.pdf.xref.xref import XREF
 
 
@@ -27,7 +27,7 @@ class StreamXREF(XREF):
 
     def read(
         self,
-        io_source: io.IOBase,
+        io_source: Union[io.BufferedIOBase, io.RawIOBase],
         tokenizer: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
     ) -> "XREF":
@@ -63,7 +63,7 @@ class StreamXREF(XREF):
         total_entry_width = sum(widths)
 
         # parent
-        document = self.get_root()
+        document = self.get_root()  # type: ignore [attr-defined]
 
         # list of references
         indirect_references = [
@@ -91,15 +91,10 @@ class StreamXREF(XREF):
         index = []
         if "Index" in xref_stream:
             index = xref_stream["Index"]
-            if (
-                not isinstance(index, list)
-                or len(index) % 2 != 0
-                or not isinstance(index[0], Decimal)
-                or not isinstance(index[1], Decimal)
-            ):
-                raise PDFTypeError(
-                    expected_type=list.__class__, received_type=index.__class__
-                )
+            assert isinstance(index, List)
+            assert len(index) % 2 == 0
+            assert isinstance(index[0], Decimal)
+            assert isinstance(index[1], Decimal)
         else:
             index = [Decimal(0), Decimal(number_of_objects)]
 
@@ -138,11 +133,8 @@ class StreamXREF(XREF):
                     field3 = (field3 << 8) + (xref_stream_decoded_bytes[bptr] & 0xFF)
                     bptr += 1
 
-                if type not in [0, 1, 2]:
-                    raise PDFValueError(
-                        expected_value_description="integer in [0, 1, 2]",
-                        received_value_description=str(type),
-                    )
+                # check type
+                assert type in [0, 1, 2]
 
                 pdf_indirect_reference = None
                 if type == 0:
@@ -188,6 +180,8 @@ class StreamXREF(XREF):
                         index_in_parent_stream=field3,
                     )
 
+                assert pdf_indirect_reference is not None
+
                 # append
                 existing_indirect_ref = next(
                     iter(
@@ -212,6 +206,7 @@ class StreamXREF(XREF):
                 )
 
                 if ref_is_first_encountered:
+                    assert pdf_indirect_reference is not None
                     indirect_references.append(pdf_indirect_reference)
                 elif ref_is_in_reading_state:
                     assert existing_indirect_ref is not None

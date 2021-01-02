@@ -2,8 +2,7 @@ import copy
 from decimal import Decimal
 from typing import List
 
-from ptext.exception.pdf_exception import PDFTypeError
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.geometry.matrix import Matrix
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -19,16 +18,10 @@ class MoveTextPosition(CanvasOperator):
     def __init__(self):
         super().__init__("Td", 2)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
 
-        if not isinstance(operands[0], Decimal):
-            raise PDFTypeError(
-                expected_type=Decimal, received_type=operands[0].__class__
-            )
-        if not isinstance(operands[1], Decimal):
-            raise PDFTypeError(
-                expected_type=Decimal, received_type=operands[1].__class__
-            )
+        assert isinstance(operands[0], Decimal)
+        assert isinstance(operands[1], Decimal)
 
         tx = operands[0]
         ty = operands[1]

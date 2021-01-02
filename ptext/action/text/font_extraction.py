@@ -1,7 +1,9 @@
+import typing
 from typing import List
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.font.font import Font
 
 
 class FontExtraction(EventListener):
@@ -9,11 +11,11 @@ class FontExtraction(EventListener):
         self.fonts_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: "Event") -> None:
+    def event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event)
 
-    def _begin_page(self, event: "BeginPageEvent"):
+    def _begin_page(self, event: BeginPageEvent):
 
         # update page number
         self.current_page += 1
@@ -35,7 +37,7 @@ class FontExtraction(EventListener):
         for _, f in page["Resources"]["Font"].items():
             self.fonts_per_page[self.current_page].append(f)
 
-    def get_fonts_per_page(self, page_number: int) -> List["Font"]:
+    def get_fonts_per_page(self, page_number: int) -> List[Font]:
         return (
             self.fonts_per_page[page_number]
             if page_number in self.fonts_per_page
@@ -43,4 +45,9 @@ class FontExtraction(EventListener):
         )
 
     def get_font_names_per_page(self, page_number: int) -> List[str]:
-        return [x.get_font_name() for x in self.get_fonts_per_page(page_number)]
+        out: typing.List[str] = []
+        for x in self.get_fonts_per_page(page_number):
+            font_name: typing.Optional[str] = x.get_font_name()
+            if font_name is not None:
+                out.append(font_name)
+        return out

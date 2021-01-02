@@ -4,6 +4,7 @@ from ptext.action.structure.paragraph.paragraph_render_event import ParagraphRen
 from ptext.action.structure.title.title_render_event import TitleRenderEvent
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.page.page import Page
 
 
 class MarkdownExport(EventListener):
@@ -23,11 +24,11 @@ class MarkdownExport(EventListener):
         elif isinstance(event, ParagraphRenderEvent):
             self._render_paragraph(event)
 
-    def _begin_page(self, page: "Page"):
+    def _begin_page(self, page: Page):
         self.current_page += 1
         self.markdown_per_page[self.current_page] = ""
 
-    def _render_title(self, event: "TitleRenderEvent"):
+    def _render_title(self, event: TitleRenderEvent):
         if not self.markdown_per_page[self.current_page].endswith("\n"):
             self.markdown_per_page[self.current_page] += "\n"
         self.markdown_per_page[self.current_page] += "".join(
@@ -38,7 +39,7 @@ class MarkdownExport(EventListener):
         if not event.get_text().endswith("\n"):
             self.markdown_per_page[self.current_page] += event.get_text()
 
-    def _render_paragraph(self, event: "ParagraphRenderEvent"):
+    def _render_paragraph(self, event: ParagraphRenderEvent):
         if not self.markdown_per_page[self.current_page].endswith("\n"):
             self.markdown_per_page[self.current_page] += "\n"
         for evt in event.contained_events:
@@ -50,7 +51,7 @@ class MarkdownExport(EventListener):
                 self.markdown_per_page[self.current_page] += evt.get_text() + "  \n"
         self.markdown_per_page[self.current_page] += "\n"
 
-    def _render_bullet_list(self, event: "BulletListRenderEvent"):
+    def _render_bullet_list(self, event: BulletListRenderEvent):
         if not self.markdown_per_page[self.current_page].endswith("\n"):
             self.markdown_per_page[self.current_page] += "\n"
         for evt in event.contained_events:
@@ -63,7 +64,7 @@ class MarkdownExport(EventListener):
                     "+ " + evt.get_text() + "  \n"
                 )
 
-    def _render_ordered_list(self, event: "OrderedListRenderEvent"):
+    def _render_ordered_list(self, event: OrderedListRenderEvent):
         if not self.markdown_per_page[self.current_page].endswith("\n"):
             self.markdown_per_page[self.current_page] += "\n"
         txts = []

@@ -1,14 +1,15 @@
 import io
 import logging
 import os
+import typing
 
 from ptext.exception.pdf_exception import IllegalGraphicsStateError
-from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.transform.types import (
+from ptext.io.read_transform.types import (
     Dictionary,
     List,
     CanvasOperatorName,
 )
+from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
 from ptext.pdf.canvas.operator.color.set_cmyk_stroking import SetCMYKStroking
@@ -131,11 +132,11 @@ class Canvas(Dictionary):
         # set graphics state stack
         self.graphics_state_stack = []
 
-    def add_listener(self, event_listener: "EventListener") -> "Canvas":
+    def add_listener(self, event_listener: "EventListener") -> "Canvas":  # type: ignore [name-defined]
         """
         This method adds a generic EventListener to this Canvas
         """
-        self.listeners.append(event_listener)
+        self.listeners.append(event_listener)  # type: ignore [attr-defined]
         return self
 
     def read(self, io_source: io.IOBase) -> "Canvas":
@@ -178,18 +179,18 @@ class Canvas(Dictionary):
                             len(operand_stk),
                         )
                     )
-                operands = []
+                operands: typing.List["CanvasOperator"] = []  # type: ignore [name-defined]
                 for _ in range(0, operator.get_number_of_operands()):
                     operands.insert(0, operand_stk.pop(-1))
 
                 # append
                 if "Instructions" not in self:
-                    self["Instructions"] = List().set_parent(self)
+                    self["Instructions"] = List().set_parent(self)  # type: ignore [attr-defined]
 
                 instruction_number = len(self["Instructions"])
                 instruction_dictionary = Dictionary()
                 instruction_dictionary["Name"] = operator.get_text()
-                instruction_dictionary["Args"] = List().set_parent(
+                instruction_dictionary["Args"] = List().set_parent(  # type: ignore [attr-defined]
                     instruction_dictionary
                 )
 

@@ -9,7 +9,7 @@ class TitleRenderEvent(ParagraphRenderEvent):
         paragraph_render_events: List[ParagraphRenderEvent],
         level: Optional[int] = None,
     ):
-        super(TitleRenderEvent, self).__init__(paragraph_render_events)
+        super(TitleRenderEvent, self).__init__(paragraph_render_events)  # type: ignore [arg-type]
         self.level = 1
         if level is not None:
             self.level = level

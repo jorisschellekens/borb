@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from ptext.io.transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.text.move_text_position import MoveTextPosition
 
@@ -20,6 +20,6 @@ class MoveToNextLine(CanvasOperator):
     def __init__(self):
         super().__init__("T*", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):
+    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
         operands = [Decimal(0), -canvas.graphics_state.leading]
         MoveTextPosition().invoke(canvas, operands)

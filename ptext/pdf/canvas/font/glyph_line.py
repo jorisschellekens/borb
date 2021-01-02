@@ -10,7 +10,7 @@ class Glyph:
         self.width = width if width is not None else Decimal(0)
         self.unicode = unicode
         if self.unicode == 0:
-            self.width = 0
+            self.width = Decimal(0)
 
     def to_unicode_string(self) -> str:
         if isinstance(self.unicode, int) and self.unicode > 0:
@@ -28,6 +28,8 @@ class GlyphLine:
         return "".join([g.to_unicode_string() for g in self.glyphs])
 
     def to_unicode_string(self, start: Optional[int] = None, end: Optional[int] = None):
+        start = start or 0
+        end = end or -1
         return "".join([self.glyphs[i].to_unicode_string() for i in range(start, end)])
 
     def append(self, glyph: Glyph) -> "GlyphLine":

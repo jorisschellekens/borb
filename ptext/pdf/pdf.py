@@ -1,8 +1,11 @@
 import io
-from typing import List
+from typing import List, Union
 
-from ptext.io.transform.default_low_level_object_transformer import (
-    DefaultLowLevelObjectTransformer,
+from ptext.io.read_transform.read_any_object_transformer import (
+    ReadAnyObjectTransformer,
+)
+from ptext.io.write_transform.write_any_object_transformer import (
+    WriteAnyObjectTransformer,
 )
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.document import Document
@@ -25,7 +28,16 @@ class PDF:
     """
 
     @staticmethod
-    def loads(file: io.IOBase, event_listeners: List[EventListener] = []) -> Document:
-        return DefaultLowLevelObjectTransformer().transform(
+    def loads(
+        file: Union[io.BufferedIOBase, io.RawIOBase],
+        event_listeners: List[EventListener] = [],
+    ) -> Document:
+        return ReadAnyObjectTransformer().transform(
             file, parent_object=None, context=None, event_listeners=event_listeners
+        )
+
+    @staticmethod
+    def dumps(file: Union[io.BufferedIOBase, io.RawIOBase], document: Document) -> None:
+        WriteAnyObjectTransformer().transform(
+            object_to_transform=document, context=None, destination=file
         )

@@ -1,14 +1,13 @@
+import typing
 import xml.etree.ElementTree as ET
 from typing import Optional, Tuple
 
-from ptext.action.structure.line.line_render_event import (
-    LineRenderEvent,
-)
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.page.page import Page
 from ptext.pdf.page.page_size import PageSize
 
 
@@ -20,24 +19,21 @@ class SVGExport(EventListener):
     def __init__(
         self,
         include_document_information: bool = False,
-        default_page_size: Optional[Tuple[float, float]] = PageSize.A4_PORTRAIT.value,
+        default_page_size: Optional[Tuple[int, int]] = PageSize.A4_PORTRAIT.value,
     ):
-        self.svg_element_per_page = {}
+        self.svg_element_per_page: typing.Dict[int, ET.Element] = {}
 
         # global settings
         self.include_document_information = include_document_information
         self.default_page_size = default_page_size
 
         # page being rendered
-        self.current_page_width = None
-        self.current_page_height = None
+        self.current_page_width: Optional[float] = None
+        self.current_page_height: Optional[float] = None
         self.current_page_svg_element = None
         self.current_page = -1
 
-    def event_occurred(self, event: "Event") -> None:
-        if isinstance(event, LineRenderEvent):
-            self._render_text_line(event)
-            return
+    def event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
         if isinstance(event, EndPageEvent):
@@ -47,7 +43,7 @@ class SVGExport(EventListener):
         if isinstance(event, ImageRenderEvent):
             self._render_image(event)
 
-    def _begin_page(self, page: "Page"):
+    def _begin_page(self, page: Page):
 
         # get page nr
         self.current_page += 1
@@ -56,6 +52,7 @@ class SVGExport(EventListener):
         page_size = page.get_page_info().get_size()
         if page_size is None and self.default_page_size is None:
             return
+        assert self.default_page_size is not None
         if page_size == (None, None):
             page_size = self.default_page_size
 
@@ -90,11 +87,12 @@ class SVGExport(EventListener):
         rct_element.set("height", str(self.current_page_height))
         rct_element.set("style", "fill:rgb(255, 255, 255);")
         svg_element.append(rct_element)
-        self.current_page_svg_element = svg_element
+        self.current_page_svg_element = svg_element  # type: ignore [assignment]
 
-    def _end_page(self, page: "Page"):
+    def _end_page(self, page: Page):
 
         # store
+        assert self.current_page_svg_element is not None
         self.svg_element_per_page[self.current_page] = self.current_page_svg_element
 
         # reset
@@ -105,7 +103,7 @@ class SVGExport(EventListener):
     def get_svg_per_page(self, page_number: int) -> ET.Element:
         return self.svg_element_per_page[page_number]
 
-    def _render_text(self, text_render_info: "TextRenderInfo"):
+    def _render_text(self, text_render_info: TextRenderEvent):
 
         if text_render_info.get_text() is None:
             return
@@ -191,14 +189,15 @@ class SVGExport(EventListener):
             text_element.set(
                 "style",
                 "fill:rgb(%d, %d, %d); font-size:%d px; white-space: pre;"
-                % (r, g, b, fs),
+                % (r, g, b, int(fs)),
             )
         text_element.text = text_render_info.get_text()
 
         # append to page
+        assert self.current_page_svg_element is not None
         self.current_page_svg_element.append(text_element)
 
-    def _render_image(self, event: "ImageRenderEvent"):
+    def _render_image(self, event: ImageRenderEvent):
 
         # build img element
         img_element = ET.Element("g")
@@ -209,6 +208,7 @@ class SVGExport(EventListener):
         # COORDINATE TRANSFORM:
         # In PDF coordinate space the origin is at the bottom left of the page,
         # for SVG images, the origin is the top left.
+        assert self.current_page_height is not None
         x = int(event.get_x())
         y = int(self.current_page_height - event.get_y() - event.get_height())
 
@@ -226,22 +226,5 @@ class SVGExport(EventListener):
                 pixel_element.set("height", "1")
                 img_element.append(pixel_element)
 
+        assert self.current_page_svg_element is not None
         self.current_page_svg_element.append(img_element)
-
-    def _render_text_line(self, event: "LineRenderEvent"):
-        bb = event.get_bounding_box()
-        y = int(self.current_page_height - bb.y - bb.height)
-        self._render_box(bb.x, y, bb.width, bb.height, 250, 121, 33)
-
-    def _render_box(self, x, y, width, height, red, green, blue):
-        line_element = ET.Element("rect")
-        line_element.set("x", str(x))
-        line_element.set("y", str(y))
-        line_element.set("width", str(int(width)))
-        line_element.set("height", str(height))
-        line_element.set(
-            "style",
-            "stroke: rgb(%d, %d, %d); stroke-width: 1; fill: none;"
-            % (red, green, blue),
-        )
-        self.current_page_svg_element.append(line_element)

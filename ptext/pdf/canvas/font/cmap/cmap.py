@@ -1,8 +1,9 @@
 import io
 from typing import Union, List, Optional, Tuple
 
+from ptext.io.read_transform.types import HexadecimalString
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.transform.types import HexadecimalString
+from ptext.io.tokenize.low_level_tokenizer import Token
 
 
 class CMap:
@@ -34,7 +35,7 @@ class CMap:
         return self._code_to_unicode.get(character_code, None)
 
     def _add_symbol(
-        self, character_code: int, unicode: Union[int, List[int]]
+        self, character_code: int, unicode: Union[int, Tuple[int, int]]
     ) -> "CMap":
         self._unicode_to_code[unicode] = character_code
         self._code_to_unicode[character_code] = unicode
@@ -57,7 +58,7 @@ class CMap:
         N = len(cmap_bytes)
         tok = HighLevelTokenizer(io.BytesIO(cmap_bytes.encode("latin-1")))
 
-        prev_token = None
+        prev_token: Optional[Token] = None
         while tok.tell() < N:
 
             token = tok.next_non_comment_token()
@@ -66,22 +67,35 @@ class CMap:
 
             # beginbfchar
             if token.text == "beginbfchar":
+                assert prev_token is not None
                 n = int(prev_token.text)
                 for j in range(0, n):
-                    c = self._hex_string_to_int_or_tuple(tok.read_object())
-                    uc = self._hex_string_to_int_or_tuple(tok.read_object())
+                    obj = tok.read_object()
+                    assert isinstance(obj, HexadecimalString)
+                    c = self._hex_string_to_int_or_tuple(obj)
+                    assert isinstance(c, int)
+
+                    obj = tok.read_object()
+                    assert isinstance(obj, HexadecimalString)
+                    uc = self._hex_string_to_int_or_tuple(obj)
+
                     self._add_symbol(c, uc)
                 continue
 
             # beginbfrange
             if token.text == "beginbfrange":
+                assert prev_token is not None
                 n = int(prev_token.text)
                 for j in range(0, n):
 
                     c_start_token = tok.read_object()
+                    assert c_start_token is not None
+                    assert isinstance(c_start_token, HexadecimalString)
                     c_start = int(c_start_token, 16)
 
                     c_end_token = tok.read_object()
+                    assert c_end_token is not None
+                    assert isinstance(c_end_token, HexadecimalString)
                     c_end = int(c_end_token, 16)
 
                     tmp = tok.read_object()

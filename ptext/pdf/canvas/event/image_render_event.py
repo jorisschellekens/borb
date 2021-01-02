@@ -1,5 +1,8 @@
 from decimal import Decimal
 
+from PIL import Image  # type: ignore [import]
+
+from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.color.color import RGBColor
 from ptext.pdf.canvas.event.event_listener import Event
 
@@ -9,7 +12,7 @@ class ImageRenderEvent(Event):
     This implementation of Event is triggered when an Image has been processed using a Do instruction
     """
 
-    def __init__(self, graphics_state: "CanvasGraphicsState", image: "Image"):
+    def __init__(self, graphics_state: CanvasGraphicsState, image: Image):
         self.image = image
 
         # calculate position
@@ -25,7 +28,7 @@ class ImageRenderEvent(Event):
         # scaled image
         self.scaled_image = self.image.resize((self.width, self.height))
 
-    def get_image(self) -> "PIL.Image":
+    def get_image(self) -> Image:
         """
         Get the (source) Image
         This Image may have different dimensions than
@@ -33,7 +36,7 @@ class ImageRenderEvent(Event):
         """
         return self.image
 
-    def get_scaled_image(self) -> "PIL.Image":
+    def get_scaled_image(self) -> Image:
         """
         Get the (scaled) Image
         This Image has the same dimensions as how

@@ -1,11 +1,11 @@
 from typing import Optional, Tuple
 
-from ptext.io.transform.types import Dictionary
+from ptext.io.read_transform.types import Dictionary
 from ptext.pdf.page.page_size import PageSize
 
 
 class PageInfo(Dictionary):
-    def __init__(self, page: "Page"):
+    def __init__(self, page: "Page"):  # type: ignore [name-defined]
         super(PageInfo, self).__init__()
         self.page = page
 
