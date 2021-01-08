@@ -26,6 +26,8 @@ def decode_stream(s: Stream) -> Stream:
         if isinstance(s["DecodeParms"], List):
             decode_params = s["DecodeParms"]
         else:
+            assert s["DecodeParms"] is not None
+            assert isinstance(s["DecodeParms"], Dictionary)
             decode_params = [s["DecodeParms"]]
     else:
         decode_params = [Dictionary() for x in range(0, len(filters))]

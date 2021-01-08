@@ -23,6 +23,9 @@ from ptext.io.read_transform.image.read_jpeg_2000_image_transformer import (
 from ptext.io.read_transform.image.read_jpeg_image_transformer import (
     ReadJPEGImageTransformer,
 )
+from ptext.io.read_transform.metadata.read_xmp_metadata_transformer import (
+    ReadXMPMetadataTransformer,
+)
 from ptext.io.read_transform.object.read_array_transformer import (
     ReadArrayTransformer,
 )
@@ -62,6 +65,8 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
     def __init__(self):
         super().__init__()
         self.add_child_transformer(DefaultXREFTransformer())
+        # XMP
+        self.add_child_transformer(ReadXMPMetadataTransformer())
         # fonts
         self.add_child_transformer(ReadFontDictionaryTransformer())
         self.add_child_transformer(ReadFontDescriptorDictionaryTransformer())
@@ -72,6 +77,7 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self.add_child_transformer(ReadJPEG2000ImageTransformer())
         self.add_child_transformer(ReadJPEGImageTransformer())
         # pages
+        # self.add_child_transformer(ReadPagesDictionaryTransformer())
         self.add_child_transformer(ReadPageDictionaryTransformer())
         # references
         self.add_child_transformer(DefaultIndirectObjectTransformer())

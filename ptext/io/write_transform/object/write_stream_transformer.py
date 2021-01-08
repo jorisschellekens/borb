@@ -1,3 +1,4 @@
+import logging
 import typing
 from typing import Optional
 
@@ -12,6 +13,8 @@ from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
     TransformerWriteContext,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class WriteStreamTransformer(WriteBaseTransformer):
@@ -32,7 +35,12 @@ class WriteStreamTransformer(WriteBaseTransformer):
         ref = object_to_transform.get_reference()  # type: ignore [attr-defined]
         if ref is not None:
             assert isinstance(ref, Reference)
+            assert ref.object_number is not None
             if ref in context.duplicate_references:
+                logger.debug(
+                    "skip writing object %d %d R (duplicate)"
+                    % (ref.object_number, ref.generation_number or 0)
+                )
                 return
             if ref.object_number is not None and ref.byte_offset is None:
                 started_object = True
@@ -51,7 +59,7 @@ class WriteStreamTransformer(WriteBaseTransformer):
                 isinstance(v, Dictionary)
                 or isinstance(v, List)
                 or isinstance(v, Stream)
-            ):
+            ) and v.can_be_referenced():
                 stream_dictionary[k] = self.get_reference(v, context)
                 queue.append(v)
             else:

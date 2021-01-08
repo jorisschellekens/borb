@@ -46,6 +46,15 @@ def add_base_methods(cls):
             setattr(self, "_reference", None)
         return getattr(self, "_reference")
 
+    def can_be_referenced(self):
+        if not hasattr(self, "_can_be_referenced"):
+            setattr(self, "_can_be_referenced", True)
+        return getattr(self, "_can_be_referenced")
+
+    def set_can_be_referenced(self, a_flag: bool):
+        setattr(self, "_can_be_referenced", a_flag)
+        return self
+
     def add_event_listener(self, event_listener):
         """
         Add an EventListener to this object
@@ -99,11 +108,14 @@ def add_base_methods(cls):
     # pdf methods
     setattr(cls, "set_reference", set_reference)
     setattr(cls, "get_reference", get_reference)
+    setattr(cls, "can_be_referenced", can_be_referenced)
+    setattr(cls, "set_can_be_referenced", set_can_be_referenced)
     # serialization methods
     setattr(cls, "to_json_serializable", to_json_serializable)
     # initialize fields
     setattr(cls, "_parent", None)
     setattr(cls, "_event_listeners", [])
+    setattr(cls, "_can_be_referenced", True)
     return cls
 
 
@@ -231,6 +243,12 @@ class Boolean:
 
     def __bool__(self):
         return self.value
+
+    def __str__(self):
+        if self.value:
+            return "True"
+        else:
+            return "False"
 
 
 @add_base_methods

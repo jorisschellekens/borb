@@ -72,6 +72,7 @@ from ptext.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
     ShowTextWithGlyphPositioning,
 )
 from ptext.pdf.canvas.operator.xobject.do import Do
+from ptext.util.profiler_annotations import profile
 
 logger = logging.getLogger(__name__)
 

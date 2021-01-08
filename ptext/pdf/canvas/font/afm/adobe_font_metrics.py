@@ -131,8 +131,8 @@ class AdobeFontMetrics:
         out_font["BaseFont"] = out_font_descriptor["FontName"]
 
         widths = List().set_parent(out_font)  # type: ignore [attr-defined]
-        avg_char_width = 0
-        avg_char_width_norm = 0
+        avg_char_width: float = 0
+        avg_char_width_norm: float = 0
         first_char = None
         last_char = None
 

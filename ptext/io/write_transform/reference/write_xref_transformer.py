@@ -1,6 +1,12 @@
 from typing import Optional
 
-from ptext.io.read_transform.types import AnyPDFType, Dictionary, Name, Reference
+from ptext.io.read_transform.types import (
+    AnyPDFType,
+    Dictionary,
+    Name,
+    Reference,
+    Decimal,
+)
 from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
     TransformerWriteContext,
@@ -25,16 +31,22 @@ class WriteXREFTransformer(WriteBaseTransformer):
 
         # transform Trailer dictionary (replacing objects by references)
         trailer_out = Dictionary()
+        # /Root
         trailer_out[Name("Root")] = self.get_reference(
             object_to_transform["Trailer"]["Root"], context
         )
-        trailer_out[Name("Info")] = self.get_reference(
-            object_to_transform["Trailer"]["Info"], context
-        )
+        # /Info
+        if "Info" in object_to_transform["Trailer"]:
+            trailer_out[Name("Info")] = self.get_reference(
+                object_to_transform["Trailer"]["Info"], context
+            )
+        # /Size
         trailer_out[Name("Size")] = object_to_transform["Trailer"]["Size"]
-        trailer_out[Name("ID")] = self.get_reference(
-            object_to_transform["Trailer"]["ID"], context
-        )
+        # /ID
+        if "ID" in object_to_transform["Trailer"]:
+            trailer_out[Name("ID")] = self.get_reference(
+                object_to_transform["Trailer"]["ID"], context
+            )
 
         # write Root object
         self.get_root_transformer().transform(
@@ -42,14 +54,16 @@ class WriteXREFTransformer(WriteBaseTransformer):
         )
 
         # write Info object
-        self.get_root_transformer().transform(
-            object_to_transform["Trailer"]["Info"], context
-        )
+        if "Info" in object_to_transform["Trailer"]:
+            self.get_root_transformer().transform(
+                object_to_transform["Trailer"]["Info"], context
+            )
 
         # write ID object
-        self.get_root_transformer().transform(
-            object_to_transform["Trailer"]["ID"], context
-        )
+        if "ID" in object_to_transform["Trailer"]:
+            self.get_root_transformer().transform(
+                object_to_transform["Trailer"]["ID"], context
+            )
 
         # write XREF
         start_of_xref = context.destination.tell()
@@ -67,6 +81,9 @@ class WriteXREFTransformer(WriteBaseTransformer):
                     context.destination.write(
                         bytes("{0:010d} 00000 f\n".format(r.byte_offset), "latin1")
                     )
+
+        # update Size
+        trailer_out[Name("Size")] = Decimal(len(context.indirect_objects))
 
         # write Trailer
         context.destination.write(bytes("trailer\n", "latin1"))
