@@ -43,7 +43,7 @@ class TestAddTextAnnotation(Test):
             rectangle=(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
             name_of_icon="Key",
             open=True,
-            color=X11Color("AliceBlue"),
+            color=X11Color("Orange"),
         )
 
         # attempt to store PDF

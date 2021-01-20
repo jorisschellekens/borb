@@ -1,8 +1,11 @@
+import copy
+import typing
 from decimal import Decimal
 
 from ptext.io.read_transform.types import String
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.event.event_listener import Event
+from ptext.pdf.canvas.font.glyph_line import GlyphLine
 from ptext.pdf.canvas.geometry.line_segment import LineSegment
 
 
@@ -12,6 +15,7 @@ class TextRenderEvent(Event):
     """
 
     def __init__(self, graphics_state: CanvasGraphicsState, raw_bytes: String):
+        self.graphics_state = graphics_state
         self.raw_bytes = raw_bytes
         self.glyph_line = graphics_state.font.build_glyph_line(raw_bytes)
         self.text_to_user_space_transform_matrix = graphics_state.text_matrix.mul(
@@ -42,6 +46,39 @@ class TextRenderEvent(Event):
 
         # calculate baseline
         self.baseline = self._get_baseline(graphics_state)
+        if raw_bytes != " ":
+            bl = self.baseline
+
+    def split_on_glyphs(self) -> typing.List["TextRenderEvent"]:
+        split_events = []
+        y: Decimal = self.get_baseline().y0
+        x0: Decimal = min(self.get_baseline().x0, self.get_baseline().x1)
+        x1: Decimal = x0
+        for g in self.glyph_line.glyphs:
+            e = TextRenderEvent(self.graphics_state, String(" "))
+            e.glyph_line = GlyphLine([g])
+            e.text_to_user_space_transform_matrix = copy.deepcopy(
+                self.text_to_user_space_transform_matrix
+            )
+            e.font_size = self.font_size
+            e.font_color = self.font_color
+            e.font_family = self.font_family
+            e.font_ascent = self.font_ascent
+            e.space_character_width = self.space_character_width
+
+            # calculate end of LineSegment
+            x1 = x0 + (g.width / Decimal(1000)) * e.font_size
+
+            # set LineSegment
+            e.baseline = LineSegment(x0=x0, y0=y, x1=x1, y1=y)
+
+            # append
+            split_events.append(e)
+
+            # prepare for next iteration
+            x0 = x1
+
+        return split_events
 
     def get_font_ascent(self) -> Decimal:
         return self.font_ascent

@@ -2,6 +2,9 @@ import io
 from typing import Optional, Union
 
 from ptext.io.read_transform.types import AnyPDFType
+from ptext.io.write_transform.ascii_art.write_ascii_art_transformer import (
+    WriteASCIIArtTransformer,
+)
 from ptext.io.write_transform.image.write_image_transformer import WriteImageTransformer
 from ptext.io.write_transform.object.write_array_transformer import (
     WriteArrayTransformer,
@@ -30,11 +33,8 @@ from ptext.io.write_transform.reference.write_reference_transformer import (
 from ptext.io.write_transform.reference.write_xref_transformer import (
     WriteXREFTransformer,
 )
-from ptext.io.write_transform.write_ascii_art_transformer import (
-    WriteASCIIArtTransformer,
-)
 from ptext.io.write_transform.write_base_transformer import (
-    TransformerWriteContext,
+    WriteTransformerContext,
     WriteBaseTransformer,
 )
 from ptext.io.write_transform.write_pdf_transformer import WritePDFTransformer
@@ -66,13 +66,13 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[TransformerWriteContext] = None,
+        context: Optional[WriteTransformerContext] = None,
         destination: Optional[Union[io.BufferedIOBase, io.RawIOBase]] = None,
     ):
         if context is None:
             super().transform(
                 object_to_transform,
-                TransformerWriteContext(
+                WriteTransformerContext(
                     destination=destination, root_object=object_to_transform
                 ),
             )

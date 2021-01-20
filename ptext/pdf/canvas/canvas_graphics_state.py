@@ -1,4 +1,5 @@
 import copy
+import typing
 from decimal import Decimal
 
 from ptext.pdf.canvas.color.color import RGBColor
@@ -33,7 +34,8 @@ class CanvasGraphicsState:
         self.leading = Decimal(0)
         self.font = None
         self.font_size = None
-        self.clipping_path = None
+        self.path: typing.List["LineSegment"] = []
+        self.clipping_path: typing.List["LineSegment"] = []
         self.non_stroke_color_space = None
         self.non_stroke_color = RGBColor(Decimal(0), Decimal(0), Decimal(0))
         self.stroke_color_space = None

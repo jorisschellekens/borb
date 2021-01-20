@@ -3,7 +3,6 @@ from pathlib import Path
 
 from ptext.pdf.document import Document
 from ptext.pdf.pdf import PDF
-
 from tests.test import Test
 
 logging.basicConfig(filename="../write/test-concat-documents.log", level=logging.DEBUG)

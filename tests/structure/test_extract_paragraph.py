@@ -8,8 +8,6 @@ from ptext.functionality.structure.simple_structure_extraction import (
 )
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.pdf import PDF
-from tests.base_test import BaseTest
-
 from tests.test import Test
 
 logging.basicConfig(

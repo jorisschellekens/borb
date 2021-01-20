@@ -1,7 +1,6 @@
 import logging
 
 from ptext.pdf.pdf import PDF
-
 from tests.test import Test
 
 logging.basicConfig(

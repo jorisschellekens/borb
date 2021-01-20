@@ -1,4 +1,6 @@
 ptext/pdf/canvas/font/cmap/cmap.py:125: error: Incompatible return value type (got "Union[Tuple[int, ...], int]", expected "Union[int, Tuple[int, int]]")  [return-value]
+ptext/io/write_transform/reference/write_xref_transformer.py:137: error: Unsupported operand types for + ("None" and "int")  [operator]
+ptext/io/write_transform/reference/write_xref_transformer.py:137: note: Left operand is of type "Optional[int]"
 ptext/pdf/canvas/font/afm/adobe_font_metrics.py:42: error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "List[Tuple[str, str]]")  [assignment]
 ptext/pdf/canvas/font/afm/adobe_font_metrics.py:48: error: Unsupported operand types for / ("Path" and "List[Tuple[str, str]]")  [operator]
 ptext/pdf/canvas/font/afm/adobe_font_metrics.py:50: error: Invalid index type "List[Tuple[str, str]]" for "Dict[str, Optional[Font]]"; expected type "str"  [index]
@@ -9,5 +11,5 @@ ptext/pdf/canvas/font/afm/adobe_font_metrics.py:195: error: Incompatible types i
 ptext/pdf/canvas/font/afm/adobe_font_metrics.py:199: error: Incompatible return value type (got "List[str]", expected "Optional[str]")  [return-value]
 ptext/io/read_transform/reference/read_xref_transformer.py:119: error: Value of type "Optional[bytes]" is not indexable  [index]
 ptext/io/read_transform/reference/read_xref_transformer.py:121: error: Incompatible types in assignment (expression has type "BytesIO", variable has type "Union[BufferedIOBase, RawIOBase, None]")  [assignment]
-ptext/action/structure/paragraph/simple_paragraph_factory.py:51: error: List comprehension has incompatible type List[Optional[ParagraphRenderEvent]]; expected List[ParagraphRenderEvent]  [misc]
-Found 12 errors in 4 files (checked 187 source files)
+ptext/functionality/structure/paragraph/simple_paragraph_factory.py:53: error: List comprehension has incompatible type List[Optional[ParagraphRenderEvent]]; expected List[ParagraphRenderEvent]  [misc]
+Found 13 errors in 5 files (checked 190 source files)

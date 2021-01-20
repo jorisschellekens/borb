@@ -5,7 +5,7 @@ from typing import Optional, Any, Union
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.types import (
     Stream,
@@ -25,7 +25,7 @@ class ReadStreamTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 

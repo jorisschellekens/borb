@@ -1,0 +1,166 @@
+.
+├── ground_truth.txt
+├── gt
+│   ├── 0004_Processing_out.pdf
+│   ├── 0030_page_0_Virton_out.pdf
+│   ├── 0030_Virton_out.pdf
+│   ├── 0038_page_0_Wethuis_out.pdf
+│   ├── 0038_Wethuis_out.pdf
+│   ├── 0039_medial_out.pdf
+│   ├── 0039_page_0_medial_out.pdf
+│   ├── 0044_getting_out.pdf
+│   ├── 0044_page_0_getting_out.pdf
+│   ├── 0049_page_0_Services_out.pdf
+│   ├── 0049_Services_out.pdf
+│   ├── 0056_Decree_out.pdf
+│   ├── 0056_page_0_Decree_out.pdf
+│   ├── 0060_Interested_out.pdf
+│   ├── 0060_page_0_Interested_out.pdf
+│   ├── 0064_LEAFLET_out.pdf
+│   ├── 0064_page_0_LEAFLET_out.pdf
+│   ├── 0071_dagdelen_out.pdf
+│   ├── 0071_page_0_dagdelen_out.pdf
+│   ├── 0072_compared_out.pdf
+│   ├── 0072_page_0_compared_out.pdf
+│   ├── 0075_Donderdag_out.pdf
+│   ├── 0075_page_0_Donderdag_out.pdf
+│   ├── 0088_page_0_Woensdag_out.pdf
+│   ├── 0088_Woensdag_out.pdf
+│   ├── 0098_Immunisation_out.pdf
+│   ├── 0098_page_0_Immunisation_out.pdf
+│   ├── 0118_Health_out.pdf
+│   ├── 0118_page_0_Health_out.pdf
+│   ├── 0126_page_0_Paperback_out.pdf
+│   ├── 0126_Paperback_out.pdf
+│   ├── 0130_page_0_sections_out.pdf
+│   ├── 0130_sections_out.pdf
+│   ├── 0160_Health_out.pdf
+│   ├── 0160_page_0_Health_out.pdf
+│   ├── 0182_page_0_sustainable_out.pdf
+│   ├── 0182_sustainable_out.pdf
+│   ├── 0196_page_0_University_out.pdf
+│   ├── 0196_University_out.pdf
+│   ├── 0197_contained_out.pdf
+│   ├── 0197_page_0_contained_out.pdf
+│   ├── 0205_kannibaal_out.pdf
+│   ├── 0205_page_0_kannibaal_out.pdf
+│   ├── 0210_Holtsmere_out.pdf
+│   ├── 0210_page_0_Holtsmere_out.pdf
+│   ├── 0224_page_0_Woensdag_out.pdf
+│   ├── 0224_Woensdag_out.pdf
+│   ├── 0235_afhaalmenu_out.pdf
+│   ├── 0246_page_0_Restaurant_out.pdf
+│   ├── 0246_Restaurant_out.pdf
+│   ├── 0326_Health_out.pdf
+│   ├── 0326_page_0_Health_out.pdf
+│   ├── 0328_page_0_supporting_out.pdf
+│   ├── 0328_supporting_out.pdf
+│   ├── 0340_Betadine_out.pdf
+│   ├── 0340_page_0_Betadine_out.pdf
+│   ├── 0358_JUSTICE_out.pdf
+│   ├── 0358_page_0_JUSTICE_out.pdf
+│   ├── 0361_page_0_zeevruchten_out.pdf
+│   ├── 0361_zeevruchten_out.pdf
+│   ├── 0362_correct_out.pdf
+│   ├── 0362_page_0_correct_out.pdf
+│   ├── 0591_page_0_SUPPLY_out.pdf
+│   └── 0591_SUPPLY_out.pdf
+└── nope
+    ├── 0000_page_0_Safety_out.pdf
+    ├── 0010_independently_out.pdf
+    ├── 0010_page_0_independently_out.pdf
+    ├── 0011_page_0_Personal_out.pdf
+    ├── 0011_Personal_out.pdf
+    ├── 0012_page_0_Waterput_out.pdf
+    ├── 0012_Waterput_out.pdf
+    ├── 0013_page_0_Please_out.pdf
+    ├── 0013_Please_out.pdf
+    ├── 0015_page_0_Provider_out.pdf
+    ├── 0017_letter_out.pdf
+    ├── 0017_page_0_letter_out.pdf
+    ├── 0031_Information_out.pdf
+    ├── 0031_page_0_Information_out.pdf
+    ├── 0035_evidence_out.pdf
+    ├── 0035_page_0_evidence_out.pdf
+    ├── 0051_page_0_whether_out.pdf
+    ├── 0051_whether_out.pdf
+    ├── 0063_CryptoLock_out.pdf
+    ├── 0063_page_0_CryptoLock_out.pdf
+    ├── 0131_buurtbewoner_out.pdf
+    ├── 0131_page_0_buurtbewoner_out.pdf
+    ├── 0146_BalanceBox_out.pdf
+    ├── 0146_page_0_BalanceBox_out.pdf
+    ├── 0150_accordance_out.pdf
+    ├── 0150_page_0_accordance_out.pdf
+    ├── 0468_LEDGER_out.pdf
+    ├── 0468_page_0_LEDGER_out.pdf
+    ├── 0506_page_0_ThermoProtect_out.pdf
+    ├── 0506_ThermoProtect_out.pdf
+    ├── 0577_page_0_Science_out.pdf
+    ├── 0577_Science_out.pdf
+    ├── 0580_consider_out.pdf
+    ├── 0580_page_0_consider_out.pdf
+    ├── first_char_messed_up
+    │   ├── 0055_page_0_wanted_out.pdf
+    │   ├── 0055_wanted_out.pdf
+    │   ├── 0076_destra_out.pdf
+    │   ├── 0076_page_0_destra_out.pdf
+    │   ├── 0177_page_0_Revised_out.pdf
+    │   ├── 0177_Revised_out.pdf
+    │   └── 0247_page_0_English_out.pdf
+    ├── nothing_there
+    │   ├── 0003_Invoices_out.pdf
+    │   ├── 0003_page_0_Invoices_out.pdf
+    │   ├── 0005_page_0_smeerstof_out.pdf
+    │   ├── 0005_smeerstof_out.pdf
+    │   ├── 0007_Geopend_out.pdf
+    │   ├── 0007_page_0_Geopend_out.pdf
+    │   ├── 0008_page_0_carers_out.pdf
+    │   ├── 0008_Service_out.pdf
+    │   ├── 0009_page_0_tomatensaus_out.pdf
+    │   ├── 0009_tomatensaus_out.pdf
+    │   ├── 0016_huiselijke_out.pdf
+    │   ├── 0016_page_0_huiselijke_out.pdf
+    │   ├── 0029_advice_out.pdf
+    │   ├── 0029_page_0_advice_out.pdf
+    │   ├── 0034_page_0_Published_out.pdf
+    │   ├── 0034_Published_out.pdf
+    │   ├── 0041_duurzame_out.pdf
+    │   ├── 0041_page_0_duurzame_out.pdf
+    │   ├── 0042_page_0_TomasMikolov_out.pdf
+    │   ├── 0042_TomasMikolov_out.pdf
+    │   ├── 0097_Garnalen_out.pdf
+    │   ├── 0097_page_0_Garnalen_out.pdf
+    │   ├── 0108_maaltijd_out.pdf
+    │   ├── 0108_page_0_maaltijd_out.pdf
+    │   ├── 0133_lokale_out.pdf
+    │   ├── 0133_page_0_lokale_out.pdf
+    │   ├── 0148_Faltering_out.pdf
+    │   ├── 0148_page_0_Faltering_out.pdf
+    │   ├── 0161_feeding_out.pdf
+    │   ├── 0161_page_0_feeding_out.pdf
+    │   ├── 0236_applied_out.pdf
+    │   ├── 0236_page_0_applied_out.pdf
+    │   ├── 0237_draagt_out.pdf
+    │   ├── 0237_page_0_draagt_out.pdf
+    │   ├── 0286_page_0_through_out.pdf
+    │   ├── 0286_through_out.pdf
+    │   ├── 0583_MESSAGE_out.pdf
+    │   ├── 0583_page_0_MESSAGE_out.pdf
+    │   ├── 0590_Limoncello_out.pdf
+    │   └── 0590_page_0_Limoncello_out.pdf
+    └── smushed_together
+        ├── 0014_Overvloeds_out.pdf
+        ├── 0014_page_0_Overvloeds_out.pdf
+        ├── 0033_page_0_LptBFGC_out.pdf
+        ├── 0033_protein_out.pdf
+        ├── 0045_AUGURA_out.pdf
+        ├── 0045_page_0_AUGURA_out.pdf
+        ├── 0077_page_0_wiring_out.pdf
+        ├── 0077_wiring_out.pdf
+        ├── 0112_NOTICE_out.pdf
+        ├── 0112_page_0_NOTICE_out.pdf
+        ├── 0179_page_0_Philadelphia_out.pdf
+        └── 0179_Philadelphia_out.pdf
+
+5 directories, 158 files

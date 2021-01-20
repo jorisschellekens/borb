@@ -17,7 +17,7 @@ logging.basicConfig(
 class TestExtractRegularExpression(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("test-extract-regular-expression")
+        self.output_dir = Path("./text/test-extract-regular-expression")
 
     def test_corpus(self):
         super(TestExtractRegularExpression, self).test_corpus()

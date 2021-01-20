@@ -2,7 +2,6 @@ import logging
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.color.color import RGBColor, X11Color
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 

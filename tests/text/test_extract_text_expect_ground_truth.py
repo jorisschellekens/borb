@@ -1,5 +1,7 @@
 import logging
+import os
 import unittest
+from pathlib import Path
 
 from ptext.functionality.text.simple_text_extraction import (
     SimpleTextExtraction,
@@ -17,11 +19,21 @@ class TestExtractTextExpectGroundTruth(Test):
         super().__init__(methodName)
         self.global_char_abs_diff = {}
         self.number_of_wrong_chars_per_document = {}
+        self.output_dir = Path("../text/test-text-extract-text-expect-ground-truth")
+
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0322_page_0.pdf"))
+
+    def test_corpus(self):
+        pdf_file_names = os.listdir(self.input_dir)
+        pdfs = [
+            (self.input_dir / x)
+            for x in pdf_file_names
+            if x.endswith(".pdf") and "page_0" in x
+        ]
+        self._test_list_of_documents(pdfs)
 
     def test_document(self, file):
-
-        if "page_0" not in file.stem:
-            return
 
         txt_ground_truth_file = self.input_dir / (file.stem + ".txt")
         txt_ground_truth = ""
@@ -32,6 +44,9 @@ class TestExtractTextExpectGroundTruth(Test):
             l = SimpleTextExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
             self._compare_text(file.stem, txt_ground_truth, l.get_text(0))
+
+        # return
+        return True
 
     def _compare_text(self, filename: str, txt0: str, txt1: str):
         char_count_0 = {}
@@ -83,37 +98,28 @@ class TestExtractTextExpectGroundTruth(Test):
         if "ﬀ" in differences and "f" in differences:
             k = differences["ﬀ"]
             differences.pop("ﬀ")
-            differences["f"] -= 2 * k
+            differences["f"] += 2 * k
         # ligature fi
         if "\ufb01" in differences and "f" in differences and "i" in differences:
             k = differences["\ufb01"]
             differences.pop("\ufb01")
-            differences["f"] -= k
-            differences["i"] -= k
+            differences["f"] += k
+            differences["i"] += k
         # ligature fl
         if "\ufb02" in differences and "f" in differences and "l" in differences:
             k = differences["\ufb02"]
             differences.pop("\ufb02")
-            differences["f"] -= k
-            differences["l"] -= k
+            differences["f"] += k
+            differences["l"] += k
+        # middle dot versus bullet
+        if "\u2022" in differences and "\u00b7" in differences:
+            k = differences["\u2022"]
+            differences.pop("\u2022")
+            differences["\u00b7"] += k
         # remove zero-count items
         differences = {k: v for k, v in differences.items() if v != 0}
         # return
         return differences
-
-    def _test_info_as_json(self):
-        json = super(TestExtractTextExpectGroundTruth, self)._test_info_as_json()
-        N = sum([v for k, v in self.global_char_abs_diff.items()])
-        if N == 0:
-            return json
-        else:
-            json["messed_up_chars"] = {
-                k: v for k, v in self.global_char_abs_diff.items() if v / N > 0.01
-            }
-            json[
-                "number_of_wrong_chars_per_document"
-            ] = self.number_of_wrong_chars_per_document
-        return json
 
 
 if __name__ == "__main__":

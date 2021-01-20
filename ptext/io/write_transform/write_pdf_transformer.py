@@ -13,7 +13,7 @@ from ptext.io.read_transform.types import (
 )
 from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
-    TransformerWriteContext,
+    WriteTransformerContext,
 )
 from ptext.pdf.document import Document
 
@@ -25,7 +25,7 @@ class WritePDFTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: Any,
-        context: Optional[TransformerWriteContext] = None,
+        context: Optional[WriteTransformerContext] = None,
     ):
         # write header
         assert context is not None
@@ -48,7 +48,9 @@ class WritePDFTransformer(WriteBaseTransformer):
         if "ID" not in object_to_transform["XRef"]["Trailer"]:
             object_to_transform["XRef"]["Trailer"][
                 Name("ID")
-            ] = List().set_can_be_referenced(False)
+            ] = List().set_can_be_referenced(  # type: ignore [attr-defined]
+                False
+            )
             object_to_transform["XRef"]["Trailer"]["ID"].append(random_id)
             object_to_transform["XRef"]["Trailer"]["ID"].append(random_id)
         else:

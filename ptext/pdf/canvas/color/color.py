@@ -14,7 +14,7 @@ class Color(object):
     This reflection is governed by the object's physical properties such as light absorption, emission spectra, etc.
     """
 
-    def to_rgb(self) -> "Color":
+    def to_rgb(self) -> "RGBColor":
         """
         This method returns the RGB representation of this Color
         """
@@ -66,7 +66,7 @@ class CMYKColor(Color):
         self.yellow = y
         self.key = k
 
-    def to_rgb(self) -> "Color":
+    def to_rgb(self) -> "RGBColor":
         ONE = Decimal(1)
         r = (ONE - self.cyan) * (ONE - self.key)
         g = (ONE - self.magenta) * (ONE - self.key)
@@ -81,7 +81,7 @@ class GrayColor(Color):
     def __init__(self, g: Decimal):
         self.gray_level = g
 
-    def to_rgb(self) -> "Color":
+    def to_rgb(self) -> "RGBColor":
         return RGBColor(self.gray_level, self.gray_level, self.gray_level)
 
     def __deepcopy__(self, memodict={}):

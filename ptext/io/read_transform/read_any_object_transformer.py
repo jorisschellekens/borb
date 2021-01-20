@@ -38,6 +38,9 @@ from ptext.io.read_transform.object.read_stream_transformer import (
 from ptext.io.read_transform.page.read_page_dictionary_transformer import (
     ReadPageDictionaryTransformer,
 )
+from ptext.io.read_transform.page.read_root_dictionary_transformer import (
+    ReadRootDictionaryTransformer,
+)
 from ptext.io.read_transform.primitive.read_number_transformer import (
     ReadNumberTransformer,
 )
@@ -46,7 +49,7 @@ from ptext.io.read_transform.primitive.read_string_transformer import (
 )
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.reference.read_indirect_object_transformer import (
     DefaultIndirectObjectTransformer,
@@ -77,7 +80,7 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self.add_child_transformer(ReadJPEG2000ImageTransformer())
         self.add_child_transformer(ReadJPEGImageTransformer())
         # pages
-        # self.add_child_transformer(ReadPagesDictionaryTransformer())
+        self.add_child_transformer(ReadRootDictionaryTransformer())
         self.add_child_transformer(ReadPageDictionaryTransformer())
         # references
         self.add_child_transformer(DefaultIndirectObjectTransformer())
@@ -99,14 +102,14 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         if context is None:
             return super().transform(
                 object_to_transform,
                 parent_object,
-                TransformerContext(),
+                ReadTransformerContext(),
                 event_listeners,
             )
         else:

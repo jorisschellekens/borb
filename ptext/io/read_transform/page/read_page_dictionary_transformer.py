@@ -5,7 +5,7 @@ from typing import Optional, List, Any, Union, Dict
 from ptext.exception.pdf_exception import PDFTypeError
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.types import (
     Dictionary,
@@ -31,7 +31,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 

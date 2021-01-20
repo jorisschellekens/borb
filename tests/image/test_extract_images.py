@@ -6,7 +6,6 @@ from ptext.functionality.image.simple_image_extraction import (
     SimpleImageExtraction,
 )
 from ptext.pdf.pdf import PDF
-
 from tests.test import Test
 
 logging.basicConfig(filename="../image/test-extract-images.log", level=logging.DEBUG)

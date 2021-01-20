@@ -3,8 +3,6 @@ from typing import List
 from ptext.functionality.structure.line.line_render_event import (
     LineRenderEvent,
 )
-from ptext.pdf.canvas.event.event_listener import Event
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 
 

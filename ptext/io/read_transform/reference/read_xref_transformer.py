@@ -7,7 +7,7 @@ from typing import Union, Optional, Any
 from ptext.exception.pdf_exception import PDFCommentTokenNotFoundError
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.types import AnyPDFType, Dictionary
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
@@ -32,7 +32,7 @@ class DefaultXREFTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
@@ -91,7 +91,7 @@ class DefaultXREFTransformer(ReadBaseTransformer):
         # return
         return context.root_object
 
-    def _remove_prefix(self, context: TransformerContext) -> None:
+    def _remove_prefix(self, context: ReadTransformerContext) -> None:
 
         assert context is not None
         assert context.source is not None
@@ -121,7 +121,7 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             context.source = io.BytesIO(bts)
             context.tokenizer.io_source = context.source
 
-    def _check_header(self, context: TransformerContext) -> None:
+    def _check_header(self, context: ReadTransformerContext) -> None:
         """
         This function checks whether or not the first bytes in the document contain the text %PDF
         :param context: the TransformerContext (containing the io source)
@@ -142,7 +142,7 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             raise PDFCommentTokenNotFoundError(byte_offset=0)
 
     def _read_xref(
-        self, context: TransformerContext, initial_offset: Optional[int] = None
+        self, context: ReadTransformerContext, initial_offset: Optional[int] = None
     ) -> None:
         """
         This function attempts to read the XREF table, first as plaintext, then as a stream

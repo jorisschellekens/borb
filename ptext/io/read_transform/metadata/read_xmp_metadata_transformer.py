@@ -5,7 +5,7 @@ from typing import Optional, Any, Union
 
 from ptext.io.read_transform.object.read_stream_transformer import ReadStreamTransformer
 from ptext.io.read_transform.read_base_transformer import (
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.types import (
     AnyPDFType,
@@ -30,7 +30,7 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 

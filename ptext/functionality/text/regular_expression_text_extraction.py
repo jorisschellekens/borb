@@ -39,9 +39,8 @@ class RegularExpressionTextExtraction(EventListener):
             self.text_render_info_events_per_page[self.current_page] = []
 
         # append TextRenderInfo
-        self.text_render_info_events_per_page[self.current_page].append(
-            text_render_info
-        )
+        for e in text_render_info.split_on_glyphs():
+            self.text_render_info_events_per_page[self.current_page].append(e)
 
     def _begin_page(self, page: Page):
         self.current_page += 1
@@ -56,7 +55,7 @@ class RegularExpressionTextExtraction(EventListener):
         )
 
         # remove no-op
-        tris = [x for x in tris if len(x.get_text_per_page().replace(" ", "")) != 0]
+        tris = [x for x in tris if len(x.get_text().replace(" ", "")) != 0]
 
         # skip empty
         if len(tris) == 0:
@@ -78,15 +77,15 @@ class RegularExpressionTextExtraction(EventListener):
                 if text.endswith(" "):
                     text = text[0:-1]
                 text += "\n"
-                text += t.get_text_per_page()
+                text += t.get_text()
                 last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
                 last_baseline_bottom = t.get_baseline().y0
                 poss.append(len(text))
                 continue
 
             # check text
-            if t.get_text_per_page().startswith(" ") or text.endswith(" "):
-                text += t.get_text_per_page()
+            if t.get_text().startswith(" ") or text.endswith(" "):
+                text += t.get_text()
                 last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
                 poss.append(len(text))
                 continue
@@ -97,7 +96,7 @@ class RegularExpressionTextExtraction(EventListener):
             text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
-            text += t.get_text_per_page()
+            text += t.get_text()
             last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
             poss.append(len(text))
             continue

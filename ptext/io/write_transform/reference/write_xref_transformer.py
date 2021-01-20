@@ -1,3 +1,4 @@
+import typing
 from typing import Optional
 
 from ptext.io.read_transform.types import (
@@ -9,7 +10,7 @@ from ptext.io.read_transform.types import (
 )
 from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
-    TransformerWriteContext,
+    WriteTransformerContext,
 )
 from ptext.pdf.xref.xref import XREF
 
@@ -21,7 +22,7 @@ class WriteXREFTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[TransformerWriteContext] = None,
+        context: Optional[WriteTransformerContext] = None,
     ):
         assert isinstance(object_to_transform, XREF)
         assert "Trailer" in object_to_transform
@@ -41,7 +42,13 @@ class WriteXREFTransformer(WriteBaseTransformer):
                 object_to_transform["Trailer"]["Info"], context
             )
         # /Size
-        trailer_out[Name("Size")] = object_to_transform["Trailer"]["Size"]
+        if (
+            "Trailer" in object_to_transform
+            and "Size" in object_to_transform["Trailer"]
+        ):
+            trailer_out[Name("Size")] = object_to_transform["Trailer"]["Size"]
+        else:
+            trailer_out[Name("Size")] = Decimal(0)
         # /ID
         if "ID" in object_to_transform["Trailer"]:
             trailer_out[Name("ID")] = self.get_reference(
@@ -83,7 +90,9 @@ class WriteXREFTransformer(WriteBaseTransformer):
                     )
 
         # update Size
-        trailer_out[Name("Size")] = Decimal(len(context.indirect_objects))
+        trailer_out[Name("Size")] = Decimal(
+            sum([len(v) for k, v in context.indirect_objects.items()])
+        )
 
         # write Trailer
         context.destination.write(bytes("trailer\n", "latin1"))
@@ -96,12 +105,17 @@ class WriteXREFTransformer(WriteBaseTransformer):
         # write EOF
         context.destination.write(bytes("%%EOF", "latin1"))
 
-    def _section_xref(self, context: Optional[TransformerWriteContext] = None):
+    def _section_xref(self, context: Optional[WriteTransformerContext] = None):
         assert context is not None
 
         # get all references
-        references = []
-        for obj in context.indirect_objects:
+        indirect_objects: typing.List[AnyPDFType] = [
+            item
+            for sublist in [v for k, v in context.indirect_objects.items()]
+            for item in sublist
+        ]
+        references: typing.List[Reference] = []
+        for obj in indirect_objects:
             ref = obj.get_reference()  # type: ignore [union-attr]
             if ref is not None:
                 references.append(ref)

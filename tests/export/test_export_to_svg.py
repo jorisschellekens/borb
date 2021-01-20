@@ -22,6 +22,9 @@ class TestExportToSVG(Test):
     def test_corpus(self):
         super(TestExportToSVG, self).test_corpus()
 
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0118.pdf"))
+
     def test_document(self, file):
 
         # create output directory if it does not exist yet

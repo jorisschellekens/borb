@@ -3,7 +3,7 @@ from typing import Optional
 from ptext.io.read_transform.types import AnyPDFType, Boolean
 from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
-    TransformerWriteContext,
+    WriteTransformerContext,
 )
 
 
@@ -14,7 +14,7 @@ class WriteBooleanTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[TransformerWriteContext] = None,
+        context: Optional[WriteTransformerContext] = None,
     ):
         assert context is not None
         assert context.destination is not None

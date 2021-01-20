@@ -11,7 +11,7 @@ from ptext.io.read_transform.types import (
 )
 from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
-    TransformerWriteContext,
+    WriteTransformerContext,
 )
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class WriteStreamTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[TransformerWriteContext] = None,
+        context: Optional[WriteTransformerContext] = None,
     ):
         assert context is not None
         assert context.destination is not None
@@ -59,7 +59,7 @@ class WriteStreamTransformer(WriteBaseTransformer):
                 isinstance(v, Dictionary)
                 or isinstance(v, List)
                 or isinstance(v, Stream)
-            ) and v.can_be_referenced():
+            ) and v.can_be_referenced():  # type: ignore [union-attr]
                 stream_dictionary[k] = self.get_reference(v, context)
                 queue.append(v)
             else:

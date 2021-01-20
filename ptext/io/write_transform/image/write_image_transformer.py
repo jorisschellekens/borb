@@ -6,7 +6,7 @@ from PIL.Image import Image  # type: ignore [import]
 from ptext.io.read_transform.types import AnyPDFType, Name, Stream, Decimal, Reference
 from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
-    TransformerWriteContext,
+    WriteTransformerContext,
 )
 
 
@@ -17,16 +17,31 @@ class WriteImageTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[TransformerWriteContext] = None,
+        context: Optional[WriteTransformerContext] = None,
     ):
         assert context is not None
         assert context.destination is not None
         assert isinstance(object_to_transform, Image)
 
+        # check whether image has alpha
+        # IF image has alpha --> write image as PNG
+        # ELSE --> write image as JPEG
+
+        has_alpha = False
+        if object_to_transform.mode == "RGBA":
+            has_alpha = True
+        if object_to_transform.mode == "P":
+            transparency_index = object_to_transform.info.get("transparency", -1)
+            for _, index in object_to_transform.getcolors():
+                if index == transparency_index:
+                    has_alpha = True
+                    break
+
         # get image bytes
+        format = "PNG" if has_alpha else "JPEG"
         contents = None
         with io.BytesIO() as output:
-            object_to_transform.save(output, format="JPEG")
+            object_to_transform.save(output, format=format)
             contents = output.getvalue()
 
         # build corresponding Stream (XObject)
@@ -37,6 +52,8 @@ class WriteImageTransformer(WriteBaseTransformer):
         out_value[Name("Height")] = Decimal(object_to_transform.height)
         out_value[Name("Length")] = Decimal(len(contents))
         out_value[Name("Filter")] = Name("DCTDecode")
+        out_value[Name("BitsPerComponent")] = Decimal(8)
+        out_value[Name("ColorSpace")] = Name("DeviceRGB")
         out_value[Name("Bytes")] = contents
 
         # copy reference

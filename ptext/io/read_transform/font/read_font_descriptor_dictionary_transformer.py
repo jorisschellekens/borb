@@ -7,7 +7,7 @@ from ptext.io.read_transform.object.read_dictionary_transformer import (
 )
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.event.event_listener import EventListener
@@ -28,13 +28,13 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
         # convert like regular dictionary
         if isinstance(parent_object, Font):
-            for t in self.get_root_transformer().handlers:
+            for t in self.get_root_transformer().children:
                 if isinstance(t, ReadDictionaryTransformer):
                     return t.transform(
                         object_to_transform, parent_object, context, event_listeners

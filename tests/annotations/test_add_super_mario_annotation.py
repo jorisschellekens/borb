@@ -17,7 +17,7 @@ class TestAddSuperMarioAnnotation(Test):
         self.output_dir = Path("../annotations/test-add-super-mario-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0113.pdf"))
 
     def test_corpus(self):
         super(TestAddSuperMarioAnnotation, self).test_corpus()

@@ -2,10 +2,9 @@ import json
 import multiprocessing
 import os
 import time
+import typing
 import unittest
 from pathlib import Path
-
-import typing
 
 
 class TestResult:
@@ -26,39 +25,35 @@ class Test(unittest.TestCase):
         self.input_dir = Path("/home/joris/Code/pdf-corpus/")
         self.test_results: typing.List[TestResult] = []
 
-    def test_single_document_in_thread_wrapper(
-        self, input_file: Path, queue: multiprocessing.Queue
-    ):
-        before = time.time()
-        try:
-            val = self.test_document(input_file)
-            delta = time.time() - before
-            queue.put(
-                TestResult(
-                    input_file,
-                    delta,
-                    val,
-                    False,
-                    None,
-                )
-            )
-        except Exception as e:
-            queue.put(
-                TestResult(input_file, time.time() - before, False, False, str(e))
-            )
-
     def test_document(self, input_file: Path) -> bool:
         return False
 
     def test_corpus(self):
+        pdf_file_names = os.listdir(self.input_dir)
+        pdfs = [(self.input_dir / x) for x in pdf_file_names if x.endswith(".pdf")]
+        self._test_list_of_documents(pdfs)
+
+    def test_previous_fails(self):
+        json_file = self._get_json_file()
+        previous_fails = []
+        try:
+            with open(json_file, "r") as json_file_handle:
+                previous_fails = [
+                    self.input_dir / (x["file"] + ".pdf")
+                    for x in json.loads(json_file_handle.read())["per_document"]
+                    if not x["passed"]
+                ]
+        except:
+            pass
+        self._test_list_of_documents(previous_fails)
+
+    def _test_list_of_documents(self, documents: typing.List[Path]):
         n = 0
-        m = len(os.listdir(self.input_dir))
-        for pdf_file in os.listdir(self.input_dir):
-            if not pdf_file.endswith(".pdf"):
-                continue
+        m = len(documents)
+        for pdf_file in documents:
             print("Processing %s .. [%d / %d]" % (pdf_file, n, m))
             n += 1
-            self.test_single_document_wrapper(self.input_dir / pdf_file)
+            self.test_single_document_wrapper(pdf_file)
 
     def test_single_document_wrapper(self, input_file: Path):
 
@@ -88,7 +83,37 @@ class Test(unittest.TestCase):
         # call to processing method
         self.process_test_results()
 
-    def process_test_results(self):
+    def test_single_document_in_thread_wrapper(
+        self, input_file: Path, queue: multiprocessing.Queue
+    ):
+        before = time.time()
+        try:
+            val = self.test_document(input_file)
+            delta = time.time() - before
+            queue.put(
+                TestResult(
+                    input_file,
+                    delta,
+                    val,
+                    False,
+                    None,
+                )
+            )
+        except BaseException as e:
+            queue.put(
+                TestResult(input_file, time.time() - before, False, False, str(e))
+            )
+
+    def _get_json_file(self):
+        test_folder = Path(__file__)
+        while test_folder.name != "tests":
+            test_folder = test_folder.parent
+        json_path = (
+            test_folder / "results" / (self.__class__.__name__.lower() + ".json")
+        )
+        return json_path
+
+    def get_test_results_as_json(self):
         if len(self.test_results) == 0:
             return
         d = [
@@ -129,14 +154,11 @@ class Test(unittest.TestCase):
             "average_time_in_seconds": average_time_in_seconds,
             "count": number_of_tests,
         }
-        test_folder = Path(__file__)
-        while test_folder.name != "tests":
-            test_folder = test_folder.parent
-        json_path = (
-            test_folder / "results" / (self.__class__.__name__.lower() + ".json")
-        )
 
-        with open(json_path, "w") as json_file_handle:
+        return {"per_document": d, "summary": s}
+
+    def process_test_results(self):
+        with open(self._get_json_file(), "w") as json_file_handle:
             json_file_handle.write(
-                json.dumps({"per_document": d, "summary": s}, indent=4)
+                json.dumps(self.get_test_results_as_json(), indent=4)
             )

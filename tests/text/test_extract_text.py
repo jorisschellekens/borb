@@ -18,12 +18,12 @@ class TestExtractText(Test):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("test-extract-text")
+        self.output_dir = Path("../text/test-extract-text")
 
     def test_corpus(self):
         super(TestExtractText, self).test_corpus()
 
-    def _test_document(self, file):
+    def test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():

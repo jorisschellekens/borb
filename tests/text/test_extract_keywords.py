@@ -21,7 +21,7 @@ class TestExtractKeywords(Test):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("test-extract-keywords")
+        self.output_dir = Path("../text/test-extract-keywords")
 
     def test_corpus(self):
         super(TestExtractKeywords, self).test_corpus()

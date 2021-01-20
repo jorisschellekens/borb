@@ -1,6 +1,4 @@
-import typing
-
-from ptext.io.read_transform.types import Dictionary, Decimal, List, Name, AnyPDFType
+from ptext.io.read_transform.types import Dictionary, Decimal, List, Name
 from ptext.pdf.page.page import Page
 from ptext.pdf.trailer.document_info import DocumentInfo
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
@@ -10,28 +8,8 @@ class Document(Dictionary):
     def get_document_info(self) -> DocumentInfo:
         return DocumentInfo(self)
 
-    def get_page(self, page_number) -> Page:
-        # list to hold Page objects (in order)
-        pages_in_order: typing.List[Page] = []
-        # stack to explore Page(s) DFS
-        stack_to_handle: typing.List[AnyPDFType] = []
-        stack_to_handle.extend(self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"])
-        # DFS
-        while len(stack_to_handle) > 0:
-            obj = stack_to_handle.pop(0)
-            if isinstance(obj, Page):
-                pages_in_order.append(obj)
-            if (
-                isinstance(obj, Dictionary)
-                and "Type" in obj
-                and obj["Type"] == "Pages"
-                and "Kids" in obj
-                and isinstance(obj["Kids"], List)
-            ):
-                for k in obj["Kids"]:
-                    stack_to_handle.insert(0, k)
-        # return
-        return pages_in_order[page_number]
+    def get_page(self, page_number: int) -> Page:
+        return self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"][page_number]
 
     def append_document(self, document: "Document") -> "Document":
         number_of_pages_in_other = int(
@@ -99,3 +77,9 @@ class Document(Dictionary):
 
         # return
         return self
+
+    def has_signatures(self):
+        return False
+
+    def check_signatures(self):
+        pass

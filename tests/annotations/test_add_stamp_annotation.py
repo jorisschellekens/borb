@@ -2,6 +2,7 @@ import logging
 from decimal import Decimal
 from pathlib import Path
 
+from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -14,6 +15,9 @@ class TestAddStampAnnotation(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path("../annotations/test-add-stamp-annotation")
+
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
 
     def test_corpus(self):
         super(TestAddStampAnnotation, self).test_corpus()
@@ -35,8 +39,10 @@ class TestAddStampAnnotation(Test):
 
         # add annotation
         doc.get_page(0).append_stamp_annotation(
-            name="Approved",
-            rectangle=(Decimal(266), Decimal(116), Decimal(64), Decimal(64)),
+            name="Confidential",
+            contents="Approved by Joris Schellekens",
+            color=X11Color("White"),
+            rectangle=(Decimal(128), Decimal(128), Decimal(32), Decimal(64)),
         )
 
         # attempt to store PDF

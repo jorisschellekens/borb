@@ -7,7 +7,7 @@ from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 
-class TransformerContext:
+class ReadTransformerContext:
     def __init__(
         self,
         source: Optional[Union[io.BufferedIOBase, io.RawIOBase]] = None,
@@ -27,10 +27,10 @@ class ReadBaseTransformer:
     """
 
     def __init__(self):
-        self.handlers = []
+        self.children = []
         self.parent = None
 
-    def add_child_transformer(self, handler: "ReadBaseTransformer") -> "ReadBaseTransformer":  # type: ignore[name-defined]
+    def add_child_transformer(self, child_transformer: "ReadBaseTransformer") -> "ReadBaseTransformer":  # type: ignore[name-defined]
         """
         Add a child ReadBaseTransformer to this ReadBaseTransformer.
         Child transformers can be used to encapsulate specific object-creation/transformation logic.
@@ -38,8 +38,8 @@ class ReadBaseTransformer:
         :param handler: the ReadBaseTransformer implementation to be added
         :type handler:  ReadBaseTransformer
         """
-        self.handlers.append(handler)
-        handler.parent = self
+        self.children.append(child_transformer)
+        child_transformer.parent = self
         return self
 
     def get_root_transformer(self) -> "ReadBaseTransformer":  # type: ignore[name-defined]
@@ -57,10 +57,10 @@ class ReadBaseTransformer:
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
-        for h in self.handlers:
+        for h in self.children:
             if h.can_be_transformed(object_to_transform):
                 return h.transform(
                     object_to_transform,

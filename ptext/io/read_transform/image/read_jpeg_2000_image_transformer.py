@@ -5,9 +5,10 @@ from typing import Optional, Any, Union
 
 from PIL import Image  # type: ignore [import]
 
+from ptext.io.read_transform.image.read_jpeg_image_transformer import image_hash_method
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
-    TransformerContext,
+    ReadTransformerContext,
 )
 from ptext.io.read_transform.types import add_base_methods, AnyPDFType, Stream
 from ptext.pdf.canvas.event.event_listener import EventListener
@@ -37,7 +38,7 @@ class ReadJPEG2000ImageTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[TransformerContext] = None,
+        context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
@@ -58,6 +59,9 @@ class ReadJPEG2000ImageTransformer(ReadBaseTransformer):
 
         # add base methods
         add_base_methods(tmp.__class__)
+
+        # add hash method
+        setattr(tmp.__class__, "__hash__", image_hash_method)
 
         # set parent
         tmp.set_parent(parent_object)

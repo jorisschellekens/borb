@@ -36,6 +36,20 @@ from ptext.pdf.canvas.operator.marked_content.begin_marked_content_with_property
 from ptext.pdf.canvas.operator.marked_content.end_marked_content import (
     EndMarkedContent,
 )
+from ptext.pdf.canvas.operator.path_construction.append_cubic_bezier import (
+    AppendCubicBezierCurve1,
+    AppendCubicBezierCurve2,
+    AppendCubicBezierCurve3,
+)
+from ptext.pdf.canvas.operator.path_construction.append_line_segment import (
+    AppendLineSegment,
+)
+from ptext.pdf.canvas.operator.path_construction.begin_subpath import BeginSubpath
+from ptext.pdf.canvas.operator.path_construction.close_subpath import CloseSubpath
+from ptext.pdf.canvas.operator.path_painting.close_and_stroke_path import (
+    CloseAndStrokePath,
+)
+from ptext.pdf.canvas.operator.path_painting.stroke_path import StrokePath
 from ptext.pdf.canvas.operator.state.modify_transformation_matrix import (
     ModifyTransformationMatrix,
 )
@@ -72,7 +86,6 @@ from ptext.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
     ShowTextWithGlyphPositioning,
 )
 from ptext.pdf.canvas.operator.xobject.do import Do
-from ptext.util.profiler_annotations import profile
 
 logger = logging.getLogger(__name__)
 
@@ -98,6 +111,16 @@ class Canvas(Dictionary):
             BeginMarkedContent(),
             BeginMarkedContentWithPropertyList(),
             EndMarkedContent(),
+            # path construction
+            AppendCubicBezierCurve1(),
+            AppendCubicBezierCurve2(),
+            AppendCubicBezierCurve3(),
+            AppendLineSegment(),
+            BeginSubpath(),
+            CloseSubpath(),
+            # path painting
+            CloseAndStrokePath(),
+            StrokePath(),
             # state
             ModifyTransformationMatrix(),
             PopGraphicsState(),

@@ -149,10 +149,60 @@ class String(str):
                     txt += "\b"
                 elif c == "f":
                     txt += "\f"
-                elif c == "(":
-                    txt += "("
-                elif c == ")":
-                    txt += ")"
+
+                elif c == "(" or c == ")" or c == "\\":
+                    txt += c
+                    i += 2
+                    continue
+
+                elif c == "\r":
+                    if i + 2 < len(self):
+                        if self[i + 2] == "\n":
+                            i += 3
+                        else:
+                            i += 2
+                    continue
+
+                elif c == "\n":
+                    i += 2
+                    continue
+
+                else:
+                    # We have read <SLASH>
+                    # Is the next character <OCTAL> ?
+                    # YES:  continue reading as <OCTAL> (max 2 more chars)
+                    # NO:   do not process next char
+                    if c < "0" or c > "7":
+                        txt += c
+                        i += 2  # processed <SLASH> <any> (pretend it's a useless escape sequence)
+                        continue
+
+                    # we have read <SLASH> <OCTAL>
+                    # Is the next character <OCTAL> ?
+                    # YES:  continue reading <OCTAL> (max 1 more char)
+                    # NO:   do not process next char
+                    octal = ord(c) - ord("0")
+                    c = self[i + 2]
+
+                    if c < "0" or c > "7":
+                        txt += chr(octal)
+                        i += 2  # processed <SLASH> <OCTAL>
+                        continue
+
+                    # we have read <SLASH> <OCTAL> <OCTAL>
+                    octal = (octal << 3) + ord(c) - ord("0")
+                    c = self[i + 3]
+                    if c < "0" or c > "7":
+                        txt += chr(octal)
+                        i += 3  # processed <SLASH> <OCTAL> <OCTAL>
+                        continue
+
+                    # we have read <SLASH> <OCTAL> <OCTAL> <OCTAL>
+                    octal = (octal << 3) + ord(c) - ord("0")
+                    txt += chr(octal)
+                    i += 4
+                    continue
+
                 i += 2
                 continue
             txt += self[i]
@@ -223,12 +273,20 @@ class HexadecimalString(String):
 
 @add_base_methods
 class List(list):
-    pass
+    def __hash__(self):
+        hashcode: int = 1
+        for e in self:
+            hashcode = 31 * hashcode + (0 if e is None else hash(e))
+        return hashcode
 
 
 @add_base_methods
 class Dictionary(dict):
-    pass
+    def __hash__(self):
+        hashcode: int = 1
+        for e in self:
+            hashcode = 31 * hashcode + (0 if e is None else hash(e))
+        return hashcode
 
 
 @add_base_methods
