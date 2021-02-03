@@ -7,20 +7,20 @@ from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(
-    filename="../annotations/test-add-stamp-annotation.log", level=logging.DEBUG
+    filename="../annotations/test-add-polygon-annotation.log", level=logging.DEBUG
 )
 
 
-class TestAddStampAnnotation(Test):
+class TestAddPolygonAnnotation(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../annotations/test-add-stamp-annotation")
+        self.output_dir = Path("../annotations/add-polygon-annotations")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
-        super(TestAddStampAnnotation, self).test_corpus()
+        super(TestAddPolygonAnnotation, self).test_corpus()
 
     def test_document(self, file):
 
@@ -38,11 +38,13 @@ class TestAddStampAnnotation(Test):
             doc = PDF.loads(in_file_handle)
 
         # add annotation
-        doc.get_page(0).append_stamp_annotation(
-            name="Confidential",
-            contents="Approved by Joris Schellekens",
-            color=X11Color("White"),
-            rectangle=(Decimal(128), Decimal(128), Decimal(32), Decimal(64)),
+        doc.get_page(0).append_polygon_annotation(
+            points=[
+                (Decimal(72), Decimal(390)),
+                (Decimal(242), Decimal(500)),
+                (Decimal(156), Decimal(390)),
+            ],
+            color=X11Color("Crimson"),
         )
 
         # attempt to store PDF

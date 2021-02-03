@@ -3,7 +3,6 @@ import logging
 import os
 import typing
 
-from ptext.exception.pdf_exception import IllegalGraphicsStateError
 from ptext.io.read_transform.types import (
     Dictionary,
     List,
@@ -94,59 +93,63 @@ class Canvas(Dictionary):
     def __init__(self):
         super(Canvas, self).__init__()
         # initialize operators
-        self.canvas_operators = [
-            # color
-            SetCMYKNonStroking(),
-            SetCMYKStroking(),
-            SetColorNonStroking(self),
-            SetColorStroking(self),
-            SetGrayNonStroking(),
-            SetGrayStroking(),
-            SetRGBNonStroking(),
-            SetRGBStroking(),
-            # compatibility
-            BeginCompatibilitySection(),
-            EndCompatibilitySection(),
-            # marked content
-            BeginMarkedContent(),
-            BeginMarkedContentWithPropertyList(),
-            EndMarkedContent(),
-            # path construction
-            AppendCubicBezierCurve1(),
-            AppendCubicBezierCurve2(),
-            AppendCubicBezierCurve3(),
-            AppendLineSegment(),
-            BeginSubpath(),
-            CloseSubpath(),
-            # path painting
-            CloseAndStrokePath(),
-            StrokePath(),
-            # state
-            ModifyTransformationMatrix(),
-            PopGraphicsState(),
-            PushGraphicsState(),
-            SetLineWidth(),
-            # text
-            BeginTextObject(),
-            EndTextObject(),
-            MoveTextPosition(),
-            MoveTextPositionSetLeading(),
-            MoveToNextLineShowText(),
-            MoveToNextLine(),
-            SetCharacterSpacing(),
-            SetFontAndSize(),
-            SetHorizontalScaling(),
-            SetSpacingMoveToNextLineShowText(),
-            SetTextLeading(),
-            SetTextMatrix(),
-            SetTextRenderingMode(),
-            SetTextRise(),
-            SetWordSpacing(),
-            ShowText(),
-            ShowTextWithGlyphPositioning(),
-            # xobject
-            Do(),
-        ]
+        self.canvas_operators = {
+            x.get_text(): x
+            for x in [
+                # color
+                SetCMYKNonStroking(),
+                SetCMYKStroking(),
+                SetColorNonStroking(self),
+                SetColorStroking(self),
+                SetGrayNonStroking(),
+                SetGrayStroking(),
+                SetRGBNonStroking(),
+                SetRGBStroking(),
+                # compatibility
+                BeginCompatibilitySection(),
+                EndCompatibilitySection(),
+                # marked content
+                BeginMarkedContent(),
+                BeginMarkedContentWithPropertyList(),
+                EndMarkedContent(),
+                # path construction
+                AppendCubicBezierCurve1(),
+                AppendCubicBezierCurve2(),
+                AppendCubicBezierCurve3(),
+                AppendLineSegment(),
+                BeginSubpath(),
+                CloseSubpath(),
+                # path painting
+                CloseAndStrokePath(),
+                StrokePath(),
+                # state
+                ModifyTransformationMatrix(),
+                PopGraphicsState(),
+                PushGraphicsState(),
+                SetLineWidth(),
+                # text
+                BeginTextObject(),
+                EndTextObject(),
+                MoveTextPosition(),
+                MoveTextPositionSetLeading(),
+                MoveToNextLineShowText(),
+                MoveToNextLine(),
+                SetCharacterSpacing(),
+                SetFontAndSize(),
+                SetHorizontalScaling(),
+                SetSpacingMoveToNextLineShowText(),
+                SetTextLeading(),
+                SetTextMatrix(),
+                SetTextRenderingMode(),
+                SetTextRise(),
+                SetWordSpacing(),
+                ShowText(),
+                ShowTextWithGlyphPositioning(),
+                # xobject
+                Do(),
+            ]
+        }
+
         # compatibility mode
         self.in_compatibility_section = False
         # set initial graphics state
@@ -160,7 +163,7 @@ class Canvas(Dictionary):
         """
         This method adds a generic EventListener to this Canvas
         """
-        self.listeners.append(event_listener)  # type: ignore [attr-defined]
+        self._event_listeners.append(event_listener)  # type: ignore [attr-defined]
         return self
 
     def read(self, io_source: io.IOBase) -> "Canvas":
@@ -175,6 +178,8 @@ class Canvas(Dictionary):
         operand_stk = []
         while canvas_tokenizer.tell() != length:
 
+            # print("<canvas pos='%d' length='%d' percentage='%d'/>" % ( canvas_tokenizer.tell(), length, int(canvas_tokenizer.tell() * 100 / length)))
+
             # attempt to read object
             obj = canvas_tokenizer.read_object()
             if obj is None:
@@ -186,64 +191,49 @@ class Canvas(Dictionary):
                 continue
 
             # process operator
-            candidate_ops = [
-                x for x in self.canvas_operators if x.get_text() == str(obj)
-            ]
-            if len(candidate_ops) == 1:
-                operator = candidate_ops[0]
-                if len(operand_stk) < operator.get_number_of_operands():
-                    # if we are in a compatibility section ignore any possible mistake
-                    if self.in_compatibility_section:
-                        continue
-                    raise IllegalGraphicsStateError(
-                        message="Unable to execute operator %s. Expected %d arguments, received %d."
-                        % (
-                            operator.text,
-                            operator.get_number_of_operands(),
-                            len(operand_stk),
-                        )
-                    )
-                operands: typing.List["CanvasOperator"] = []  # type: ignore [name-defined]
-                for _ in range(0, operator.get_number_of_operands()):
-                    operands.insert(0, operand_stk.pop(-1))
+            operator = self.canvas_operators.get(obj, None)
+            if operator is None:
+                logger.debug("Missing operator %s" % obj)
+                continue
 
-                # append
-                if "Instructions" not in self:
-                    self["Instructions"] = List().set_parent(self)  # type: ignore [attr-defined]
+            if not self.in_compatibility_section:
+                assert len(operand_stk) >= operator.get_number_of_operands()
+            operands: typing.List["CanvasOperator"] = []  # type: ignore [name-defined]
+            for _ in range(0, operator.get_number_of_operands()):
+                operands.insert(0, operand_stk.pop(-1))
 
-                instruction_number = len(self["Instructions"])
-                instruction_dictionary = Dictionary()
-                instruction_dictionary["Name"] = operator.get_text()
-                instruction_dictionary["Args"] = List().set_parent(  # type: ignore [attr-defined]
-                    instruction_dictionary
+            # append
+            if "Instructions" not in self:
+                self["Instructions"] = List().set_parent(self)  # type: ignore [attr-defined]
+
+            instruction_number = len(self["Instructions"])
+            instruction_dictionary = Dictionary()
+            instruction_dictionary["Name"] = operator.get_text()
+            instruction_dictionary["Args"] = List().set_parent(  # type: ignore [attr-defined]
+                instruction_dictionary
+            )
+
+            if len(operands) > 0:
+                for i in range(0, len(operands)):
+                    instruction_dictionary["Args"].append(operands[i])
+            self["Instructions"].append(instruction_dictionary)
+
+            # debug
+            logger.debug(
+                "%d %s %s"
+                % (
+                    instruction_number,
+                    operator.text,
+                    str([str(x) for x in operands]),
                 )
+            )
 
-                if len(operands) > 0:
-                    for i in range(0, len(operands)):
-                        instruction_dictionary["Args"].append(operands[i])
-                self["Instructions"].append(instruction_dictionary)
-
-                # debug
-                logger.debug(
-                    "%d %s %s"
-                    % (
-                        instruction_number,
-                        operator.text,
-                        str([str(x) for x in operands]),
-                    )
-                )
-
-                # invoke
-                try:
-                    operator.invoke(self, operands)
-                except Exception as e:
-                    if not self.in_compatibility_section:
-                        raise e
-
-            # unknown operator
-            if len(candidate_ops) == 0:
-                # print("Missing OPERATOR %s" % obj)
-                pass
+            # invoke
+            try:
+                operator.invoke(self, operands)
+            except Exception as e:
+                if not self.in_compatibility_section:
+                    raise e
 
         # return
         return self

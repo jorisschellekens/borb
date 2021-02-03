@@ -121,3 +121,98 @@ class DocumentInfo:
             return self.document["XRef"]["Trailer"]["Root"]["Lang"]
         except:
             return None
+
+
+class XMPDocumentInfo(DocumentInfo):
+    def __init__(self, document: "Document"):  # type: ignore [name-defined]
+        super(XMPDocumentInfo, self).__init__(document)
+
+    def get_creation_date(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}CreateDate")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_modification_date(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}ModifyDate")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_metadata_date(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}MetadataDate")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_title(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}title")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_creator(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}creator")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_publisher(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}publisher")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_instance_id(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}InstanceID")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_original_document_id(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}OriginalDocumentID")[0]
+                .text
+            )
+        except:
+            return None
+
+    def get_document_id(self) -> Optional[str]:
+        try:
+            return (
+                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}DocumentID")[0]
+                .text
+            )
+        except:
+            return None

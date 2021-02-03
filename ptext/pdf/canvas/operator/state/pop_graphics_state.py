@@ -1,6 +1,5 @@
 from typing import List
 
-from ptext.exception.pdf_exception import IllegalGraphicsStateError
 from ptext.io.read_transform.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -16,8 +15,5 @@ class PopGraphicsState(CanvasOperator):
         super().__init__("Q", 0)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
-        if len(canvas.graphics_state_stack) == 0:
-            raise IllegalGraphicsStateError(
-                message="Not possible to execute Q operator. Graphics state is empty."
-            )
+        assert len(canvas.graphics_state_stack) > 0
         canvas.graphics_state = canvas.graphics_state_stack.pop(-1)

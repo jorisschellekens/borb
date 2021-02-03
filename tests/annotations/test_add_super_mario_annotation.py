@@ -3,6 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -76,11 +77,11 @@ class TestAddSuperMarioAnnotation(Test):
                     page=Decimal(0),
                     color=c[m[i][j]],
                     location_on_page="Fit",
-                    rectangle=(
+                    rectangle=Rectangle(
                         Decimal(x),
                         Decimal(y),
-                        Decimal(x + pixel_size),
-                        Decimal(y + pixel_size),
+                        Decimal(pixel_size),
+                        Decimal(pixel_size),
                     ),
                 )
 

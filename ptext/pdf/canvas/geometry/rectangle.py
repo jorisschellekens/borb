@@ -10,6 +10,8 @@ class Rectangle:
     """
 
     def __init__(self, x: Decimal, y: Decimal, width: Decimal, height: Decimal):
+        assert width >= 0
+        assert height >= 0
         self.x = x
         self.y = y
         self.width = width

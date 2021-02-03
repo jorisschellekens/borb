@@ -1,12 +1,15 @@
 from ptext.io.read_transform.types import Dictionary, Decimal, List, Name
 from ptext.pdf.page.page import Page
-from ptext.pdf.trailer.document_info import DocumentInfo
+from ptext.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
 
 
 class Document(Dictionary):
     def get_document_info(self) -> DocumentInfo:
         return DocumentInfo(self)
+
+    def get_xmp_document_info(self) -> XMPDocumentInfo:
+        return XMPDocumentInfo(self)
 
     def get_page(self, page_number: int) -> Page:
         return self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"][page_number]

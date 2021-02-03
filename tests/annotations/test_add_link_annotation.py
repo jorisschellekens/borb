@@ -3,6 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -42,7 +43,7 @@ class TestAddLinkAnnotation(Test):
             page=Decimal(0),
             location_on_page="Fit",
             color=X11Color("AliceBlue"),
-            rectangle=(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
+            rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
         )
 
         # attempt to store PDF

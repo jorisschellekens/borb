@@ -43,7 +43,7 @@ class TestTextRenderEventPosition(Test):
         self.max_distance = 2
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0322_page_0.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0014_page_0.pdf"))
 
     def test_corpus(self):
         super(TestTextRenderEventPosition, self).test_corpus()
@@ -92,6 +92,10 @@ class TestTextRenderEventPosition(Test):
                 != ground_truth_results[pos_in_gt_array]["text"]
             ):
                 print("text inequality %d %d !!" % (pos_in_gt_array, pos_in_test_array))
+                print(
+                    "\tground truth: %s" % ground_truth_results[pos_in_gt_array]["text"]
+                )
+                print("\ttest        : %s" % l.measurands[pos_in_test_array]["text"])
                 return False
 
             x_delta = abs(

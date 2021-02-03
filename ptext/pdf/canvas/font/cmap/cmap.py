@@ -119,7 +119,7 @@ class CMap:
 
     def _hex_string_to_int_or_tuple(
         self, token: HexadecimalString
-    ) -> Union[int, Tuple[int, int]]:
+    ) -> Union[int, Tuple[int, ...]]:
         uc_hex = token.replace(" ", "")
         uc = [int(uc_hex[k : k + 4], 16) for k in range(0, int(len(uc_hex)), 4)]
         return tuple(uc) if len(uc) > 1 else uc[0]

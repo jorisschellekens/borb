@@ -1,5 +1,6 @@
 import logging
 import unittest
+from pathlib import Path
 
 from ptext.functionality.color.color_spectrum_extraction import (
     ColorSpectrumExtraction,
@@ -17,6 +18,9 @@ class TestExtractColors(Test):
 
     def test_corpus(self):
         super(TestExtractColors, self).test_corpus()
+
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0066.pdf"))
 
     def test_document(self, file):
 

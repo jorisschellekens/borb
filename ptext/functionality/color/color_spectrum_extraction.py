@@ -16,6 +16,9 @@ class ColorSpectrumExtraction(EventListener):
     """
 
     def __init__(self, maximum_number_of_colors: Optional[int] = None):
+        """
+        Constructs a new ColorSpectrumExtraction
+        """
         self.maximum_number_of_colors = 64
         if maximum_number_of_colors is not None:
             self.maximum_number_of_colors = maximum_number_of_colors

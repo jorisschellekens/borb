@@ -2,7 +2,6 @@ import io
 from decimal import Decimal
 from typing import Optional, Union
 
-from ptext.exception.pdf_exception import PDFTypeError, PDFValueError
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read_transform.types import Reference, Stream, Dictionary, List
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
@@ -38,26 +37,16 @@ class StreamXREF(XREF):
             self._seek_to_xref_token(io_source, tokenizer)
 
         xref_stream = tokenizer.read_object()
-        if not isinstance(xref_stream, Stream):
-            raise PDFTypeError(
-                received_type=xref_stream.__class__,
-                expected_type=Stream,
-            )
+        assert isinstance(xref_stream, Stream)
 
         # check widths
-        if "W" not in xref_stream:
-            raise PDFTypeError(expected_type=list, received_type=None)
-        if any(
+        assert "W" in xref_stream
+        assert all(
             [
-                not isinstance(xref_stream["W"][x], Decimal)
+                isinstance(xref_stream["W"][x], Decimal)
                 for x in range(0, len(xref_stream["W"]))
             ]
-        ):
-            raise PDFValueError(
-                expected_value_description="[Decimal]",
-                received_value_description=str([str(x) for x in xref_stream["W"]]),
-            )
-
+        )
         # decode widths
         widths = [int(xref_stream["W"][x]) for x in range(0, len(xref_stream["W"]))]
         total_entry_width = sum(widths)
@@ -76,13 +65,8 @@ class StreamXREF(XREF):
         ]
 
         # check size
-        if "Size" not in xref_stream:
-            raise PDFTypeError(expected_type=Decimal, received_type=None)
-        if not isinstance(xref_stream["Size"], Decimal):
-            raise PDFTypeError(
-                expected_type=Decimal,
-                received_type=xref_stream["Size"].__class__,
-            )
+        assert "Size" in xref_stream
+        assert isinstance(xref_stream["Size"], Decimal)
 
         # get size
         number_of_objects = int(xref_stream["Size"])

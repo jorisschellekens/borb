@@ -9,7 +9,14 @@ from ptext.pdf.page.page import Page
 
 
 class SimpleImageExtraction(EventListener):
+    """
+    This implementation of EventListener extracts all Image objects on a Page
+    """
+
     def __init__(self):
+        """
+        Constructs a new SimpleImageExtraction
+        """
         self.image_render_info_per_page = {}
         self.current_page = -1
 
@@ -19,7 +26,7 @@ class SimpleImageExtraction(EventListener):
         if isinstance(event, ImageRenderEvent):
             self._render_image(event)
 
-    def get_images_per_page(self, page_nr: int) -> List[Image]:
+    def get_images_per_page(self, page_nr: int) -> List[Image.Image]:
         return (
             self.image_render_info_per_page[page_nr]
             if page_nr in self.image_render_info_per_page

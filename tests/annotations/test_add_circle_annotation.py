@@ -3,6 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -14,10 +15,10 @@ logging.basicConfig(
 class TestAddCircleAnnotation(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../annotations/add-circle-annotations")
+        self.output_dir = Path("../annotations/add-circle-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0041.pdf"))
 
     def test_corpus(self):
         super(TestAddCircleAnnotation, self).test_corpus()
@@ -39,9 +40,9 @@ class TestAddCircleAnnotation(Test):
 
         # add annotation
         doc.get_page(0).append_circle_annotation(
-            rectangle=(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
-            interior_color=X11Color("Plum"),
-            color=X11Color("Crimson"),
+            rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
+            stroke_color=X11Color("Plum"),
+            fill_color=X11Color("Crimson"),
         )
 
         # attempt to store PDF

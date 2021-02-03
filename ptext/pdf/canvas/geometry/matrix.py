@@ -77,6 +77,16 @@ class Matrix:
             self.mtx[2][2],
         )
 
+    def determinant(self) -> Decimal:
+        return (
+            self.mtx[0][0]
+            * (self.mtx[1][1] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][1])
+            - self.mtx[0][1]
+            * (self.mtx[1][0] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][0])
+            + self.mtx[0][2]
+            * (self.mtx[1][0] * self.mtx[2][1] - self.mtx[1][1] * self.mtx[2][0])
+        )
+
     def __deepcopy__(self, memodict={}):
         m = Matrix()
         m.mtx = [

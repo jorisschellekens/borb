@@ -1,0 +1,42 @@
+{
+    "per_document": [
+        {
+            "file": "0066",
+            "time_in_seconds": 4.1759467124938965,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0578_page_0",
+            "time_in_seconds": 0.3269314765930176,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0094",
+            "time_in_seconds": 0.027840137481689453,
+            "passed": false,
+            "exception": "password-protected PDFs are currently not supported",
+            "timed_out": false
+        },
+        {
+            "file": "0348_page_0",
+            "time_in_seconds": 0.3106956481933594,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        }
+    ],
+    "summary": {
+        "passed_count": 3,
+        "passed_percentage": 0.75,
+        "failed_count": 1,
+        "failed_percentage": 0.25,
+        "timed_out_count": 0,
+        "timed_out_percentage": 0.0,
+        "average_time_in_seconds": 1.6045246124267578,
+        "count": 4
+    }
+}

@@ -2,7 +2,6 @@ import io
 import typing
 from typing import Optional, List, Any, Union, Dict
 
-from ptext.exception.pdf_exception import PDFTypeError
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
@@ -56,11 +55,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
         tmp.event_occurred(BeginPageEvent(tmp))
 
         # set up canvas
-        if "Contents" not in tmp:
-            raise PDFTypeError(
-                expected_type=Union[List, Dictionary],
-                received_type=None,
-            )
+        assert "Contents" in tmp
         contents = tmp["Contents"]
         if contents is not None:
             canvas = Canvas().set_parent(tmp)  # type: ignore [attr-defined]

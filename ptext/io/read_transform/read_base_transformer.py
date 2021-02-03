@@ -1,8 +1,9 @@
 import io
+import sys
 import typing
 from typing import Optional, Any, Union
 
-from ptext.io.read_transform.types import AnyPDFType
+from ptext.io.read_transform.types import AnyPDFType, Reference
 from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.pdf.canvas.event.event_listener import EventListener
 
@@ -17,7 +18,7 @@ class ReadTransformerContext:
         self.source = source
         self.tokenizer = tokenizer
         self.root_object = root_object
-        self.indirect_reference_chain: typing.List[str] = []
+        self.indirect_reference_chain: typing.Set[Reference] = set()
 
 
 class ReadBaseTransformer:
@@ -29,6 +30,8 @@ class ReadBaseTransformer:
     def __init__(self):
         self.children = []
         self.parent = None
+        self.level = 0
+        self.invocation_count = 0
 
     def add_child_transformer(self, child_transformer: "ReadBaseTransformer") -> "ReadBaseTransformer":  # type: ignore[name-defined]
         """
@@ -62,10 +65,16 @@ class ReadBaseTransformer:
     ) -> Any:
         for h in self.children:
             if h.can_be_transformed(object_to_transform):
-                return h.transform(
+                # print("%s<%s level='%d' invocation='%d'>" % ("   " * self.level, h.__class__.__name__, self.level, self.invocation_count), flush=True)
+                self.level += 1
+                self.invocation_count += 1
+                out = h.transform(
                     object_to_transform,
                     parent_object=parent_object,
                     context=context,
                     event_listeners=event_listeners,
                 )
+                self.level -= 1
+                # print("%s</%s>" % ("   " * self.level, h.__class__.__name__))
+                return out
         return None

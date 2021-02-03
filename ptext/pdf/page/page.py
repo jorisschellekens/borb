@@ -1,10 +1,12 @@
 import datetime
+import typing
 from decimal import Decimal
 from typing import Optional, Tuple
 
 from ptext.io.read_transform.types import Decimal as pDecimal
 from ptext.io.read_transform.types import Dictionary, Name, List, String, Boolean
-from ptext.pdf.canvas.color.color import Color
+from ptext.pdf.canvas.color.color import Color, X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page_info import PageInfo
 
 
@@ -13,7 +15,7 @@ class Page(Dictionary):
         super(Page, self).__init__()
 
         # size: A4 portrait
-        self[Name("MediaBox")] = List().set_can_be_referenced(False)
+        self[Name("MediaBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         self["MediaBox"].append(pDecimal(0))
         self["MediaBox"].append(pDecimal(0))
         self["MediaBox"].append(pDecimal(595))
@@ -36,7 +38,7 @@ class Page(Dictionary):
 
     def _create_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
+        rectangle: Rectangle,
         contents: Optional[str] = None,
         color: Optional[Color] = None,
         border_horizontal_corner_radius: Optional[Decimal] = None,
@@ -52,10 +54,10 @@ class Page(Dictionary):
         # (Required) The annotation rectangle, defining the location of the
         # annotation on the page in default user space units.
         annot[Name("Rect")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["Rect"].append(pDecimal(rectangle[0]))
-        annot["Rect"].append(pDecimal(rectangle[1]))
-        annot["Rect"].append(pDecimal(rectangle[2]))
-        annot["Rect"].append(pDecimal(rectangle[3]))
+        annot["Rect"].append(pDecimal(rectangle.get_x()))
+        annot["Rect"].append(pDecimal(rectangle.get_y()))
+        annot["Rect"].append(pDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["Rect"].append(pDecimal(rectangle.get_y() + rectangle.get_height()))
 
         # (Optional) Text that shall be displayed for the annotation or, if this type of
         # annotation does not display text, an alternate description of the
@@ -165,7 +167,7 @@ class Page(Dictionary):
 
     def append_text_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
+        rectangle: Rectangle,
         contents: str,
         open: Optional[bool] = None,
         color: Optional[Color] = None,
@@ -215,7 +217,7 @@ class Page(Dictionary):
 
     def append_link_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
+        rectangle: Rectangle,
         page: Decimal,
         location_on_page: str,
         left: Optional[Decimal] = None,
@@ -231,6 +233,7 @@ class Page(Dictionary):
         “Destinations”) or an action to be performed (12.6, “Actions”). Table 173 shows the annotation dictionary
         entries specific to this type of annotation.
         """
+
         # create generic annotation
         annot = self._create_annotation(rectangle=rectangle, color=color)
 
@@ -354,23 +357,113 @@ class Page(Dictionary):
         this type of annotation. 12.7.3.3, “Variable Text” describes the process of using these entries to generate the
         appearance of the text in these annotations.
         """
+
         # TODO
         return self
 
-    def append_line_annotation(self) -> "Page":
+    def append_line_annotation(
+        self,
+        start_point: Tuple[Decimal, Decimal],
+        end_point: Tuple[Decimal, Decimal],
+        left_line_end_style: Optional[str] = None,
+        right_line_end_style: Optional[str] = None,
+        stroke_color: Color = X11Color("Black"),
+    ) -> "Page":
         """
         The purpose of a line annotation (PDF 1.3) is to display a single straight line on the page. When opened, it shall
         display a pop-up window containing the text of the associated note. Table 175 shows the annotation dictionary
         entries specific to this type of annotation.
         """
-        # TODO
+
+        x = min([start_point[0], end_point[0]])
+        y = min([start_point[1], end_point[1]])
+        w = max([start_point[0], end_point[0]]) - x
+        h = max([start_point[1], end_point[1]]) - y
+
+        # create generic annotation
+        annot = self._create_annotation(
+            rectangle=Rectangle(x, y, w, h), color=stroke_color
+        )
+
+        # (Required) The type of annotation that this dictionary describes; shall be
+        # Line for a line annotation.
+        annot[Name("Subtype")] = Name("Line")
+
+        # (Required) An array of four numbers, [ x 1 y 1 x 2 y 2 ], specifying the
+        # starting and ending coordinates of the line in default user space.
+        # If the LL entry is present, this value shall represent the endpoints of the
+        # leader lines rather than the endpoints of the line itself; see Figure 60.
+        annot[Name("L")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        annot["L"].append(start_point[0])
+        annot["L"].append(start_point[1])
+        annot["L"].append(end_point[0])
+        annot["L"].append(end_point[1])
+
+        # (Optional; PDF 1.4) An array of two names specifying the line ending
+        # styles that shall be used in drawing the line. The first and second
+        # elements of the array shall specify the line ending styles for the endpoints
+        # defined, respectively, by the first and second pairs of coordinates, (x 1 , y 1 )
+        # and (x 2 , y 2 ), in the L array. Table 176 shows the possible values. Default
+        # value: [ /None /None ].
+        annot[Name("LE")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        if left_line_end_style is not None:
+            assert left_line_end_style in [
+                "Square",
+                "Circle",
+                "Diamond",
+                "OpenArrow",
+                "ClosedArrow",
+                "None",
+                "Butt",
+                "ROpenArrow",
+                "RClosedArrow",
+                "Slash",
+            ]
+            annot["LE"].append(Name(left_line_end_style))
+        else:
+            annot["LE"].append(Name("None"))
+        if right_line_end_style is not None:
+            assert right_line_end_style in [
+                "Square",
+                "Circle",
+                "Diamond",
+                "OpenArrow",
+                "ClosedArrow",
+                "None",
+                "Butt",
+                "ROpenArrow",
+                "RClosedArrow",
+                "Slash",
+            ]
+            annot["LE"].append(Name(right_line_end_style))
+        else:
+            annot["LE"].append(Name("None"))
+
+        # (Optional; PDF 1.4) An array of numbers that shall be in the range 0.0 to
+        # 1.0 and shall specify the interior color with which to fill the annotation’s
+        # rectangle or ellipse. The number of array elements determines the colour
+        # space in which the colour shall be defined
+        if stroke_color is not None:
+            color_max = pDecimal(256)
+            annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            annot["IC"].append(pDecimal(stroke_color.to_rgb().red / color_max))
+            annot["IC"].append(pDecimal(stroke_color.to_rgb().green / color_max))
+            annot["IC"].append(pDecimal(stroke_color.to_rgb().blue / color_max))
+
+        # append to /Annots
+        if "Annots" not in self:
+            self[Name("Annots")] = List()
+        assert isinstance(self["Annots"], List)
+        self["Annots"].append(annot)
+
+        # return
         return self
 
     def append_square_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
-        color: Color,
-        interior_color: Optional[Color] = None,
+        rectangle: Rectangle,
+        stroke_color: Color,
+        fill_color: Optional[Color] = None,
         rectangle_difference: Optional[
             Tuple[Decimal, Decimal, Decimal, Decimal]
         ] = None,
@@ -383,7 +476,7 @@ class Page(Dictionary):
         """
 
         # create generic annotation
-        annot = self._create_annotation(rectangle=rectangle, color=color)
+        annot = self._create_annotation(rectangle=rectangle, color=stroke_color)
 
         # (Required) The type of annotation that this dictionary describes; shall be
         # Square or Circle for a square or circle annotation, respectively.
@@ -401,12 +494,12 @@ class Page(Dictionary):
         # 1.0 and shall specify the interior color with which to fill the annotation’s
         # rectangle or ellipse. The number of array elements determines the colour
         # space in which the colour shall be defined
-        if interior_color is not None:
+        if fill_color is not None:
             color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(interior_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(interior_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(interior_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
 
         # (Optional; PDF 1.5) A border effect dictionary describing an effect applied
         # to the border described by the BS entry (see Table 167).
@@ -442,12 +535,12 @@ class Page(Dictionary):
 
     def append_circle_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
-        color: Color,
+        rectangle: Rectangle,
+        stroke_color: Color,
         rectangle_difference: Optional[
             Tuple[Decimal, Decimal, Decimal, Decimal]
         ] = None,
-        interior_color: Optional[Color] = None,
+        fill_color: Optional[Color] = None,
     ) -> "Page":
         """
         Square and circle annotations (PDF 1.3) shall display, respectively, a rectangle or an ellipse on the page. When
@@ -457,7 +550,7 @@ class Page(Dictionary):
         """
 
         # create generic annotation
-        annot = self._create_annotation(rectangle=rectangle, color=color)
+        annot = self._create_annotation(rectangle=rectangle, color=stroke_color)
 
         # (Required) The type of annotation that this dictionary describes; shall be
         # Square or Circle for a square or circle annotation, respectively.
@@ -475,12 +568,12 @@ class Page(Dictionary):
         # 1.0 and shall specify the interior color with which to fill the annotation’s
         # rectangle or ellipse. The number of array elements determines the colour
         # space in which the colour shall be defined
-        if interior_color is not None:
+        if fill_color is not None:
             color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(interior_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(interior_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(interior_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
 
         # (Optional; PDF 1.5) A border effect dictionary describing an effect applied
         # to the border described by the BS entry (see Table 167).
@@ -514,22 +607,178 @@ class Page(Dictionary):
         # return
         return self
 
-    def append_polygon_annotation(self) -> "Page":
-        # TODO
+    def append_polygon_annotation(
+        self,
+        points: typing.List[Tuple[Decimal, Decimal]],
+        stroke_color: Color,
+        contents: Optional[str] = None,
+    ) -> "Page":
+        """
+        Polygon annotations (PDF 1.5) display closed polygons on the page. Such polygons may have any number of
+        vertices connected by straight lines. Polyline annotations (PDF 1.5) are similar to polygons, except that the first
+        and last vertex are not implicitly connected.
+        """
+
+        # must be at least 3 points
+        assert len(points) >= 3
+
+        # bounding box
+        min_x = points[0][0]
+        min_y = points[0][1]
+        max_x = min_x
+        max_y = min_y
+        for p in points:
+            min_x = min(min_x, p[0])
+            min_y = min(min_y, p[1])
+            max_x = max(max_x, p[0])
+            max_y = max(max_y, p[1])
+
+        # create generic annotation
+        annot = self._create_annotation(
+            rectangle=Rectangle(min_x, min_y, max_x - min_x, max_y - min_y),
+            color=stroke_color,
+            contents=contents,
+        )
+
+        annot[Name("Subtype")] = Name("Polygon")
+
+        annot[Name("CA")] = pDecimal(1)
+
+        annot[Name("Vertices")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        for p in points:
+            annot["Vertices"].append(pDecimal(p[0]))
+            annot["Vertices"].append(pDecimal(p[1]))
+
+        # (Optional; PDF 1.4) An array of two names specifying the line ending
+        # styles that shall be used in drawing the line. The first and second
+        # elements of the array shall specify the line ending styles for the endpoints
+        # defined, respectively, by the first and second pairs of coordinates, (x 1 , y 1 )
+        # and (x 2 , y 2 ), in the L array. Table 176 shows the possible values. Default
+        # value: [ /None /None ].
+        annot[Name("LE")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        annot["LE"].append(Name("None"))
+        annot["LE"].append(Name("None"))
+
+        # append to /Annots
+        if "Annots" not in self:
+            self[Name("Annots")] = List()
+        assert isinstance(self["Annots"], List)
+        self["Annots"].append(annot)
+
+        # return
         return self
 
-    def append_polyline_annotation(self) -> "Page":
-        # TODO
+    def append_polyline_annotation(
+        self,
+        points: typing.List[Tuple[Decimal, Decimal]],
+        stroke_color: Color,
+        left_line_end_style: Optional[str] = None,
+        right_line_end_style: Optional[str] = None,
+        fill_color: Optional[Color] = None,
+        contents: Optional[str] = None,
+    ) -> "Page":
+        """
+        Polygon annotations (PDF 1.5) display closed polygons on the page. Such polygons may have any number of
+        vertices connected by straight lines. Polyline annotations (PDF 1.5) are similar to polygons, except that the first
+        and last vertex are not implicitly connected.
+        """
+
+        # must be at least 3 points
+        assert len(points) >= 3
+
+        # bounding box
+        min_x = points[0][0]
+        min_y = points[0][1]
+        max_x = min_x
+        max_y = min_y
+        for p in points:
+            min_x = min(min_x, p[0])
+            min_y = min(min_y, p[1])
+            max_x = max(max_x, p[0])
+            max_y = max(max_y, p[1])
+
+        # create generic annotation
+        annot = self._create_annotation(
+            rectangle=Rectangle(min_x, min_y, max_x - min_x, max_y - min_y),
+            color=stroke_color,
+            contents=contents,
+        )
+
+        annot[Name("Subtype")] = Name("PolyLine")
+
+        annot[Name("CA")] = pDecimal(1)
+
+        annot[Name("Vertices")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        for p in points:
+            annot["Vertices"].append(pDecimal(p[0]))
+            annot["Vertices"].append(pDecimal(p[1]))
+
+        # (Optional; PDF 1.4) An array of two names specifying the line ending
+        # styles that shall be used in drawing the line. The first and second
+        # elements of the array shall specify the line ending styles for the endpoints
+        # defined, respectively, by the first and second pairs of coordinates, (x 1 , y 1 )
+        # and (x 2 , y 2 ), in the L array. Table 176 shows the possible values. Default
+        # value: [ /None /None ].
+        annot[Name("LE")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        if left_line_end_style is not None:
+            assert left_line_end_style in [
+                "Square",
+                "Circle",
+                "Diamond",
+                "OpenArrow",
+                "ClosedArrow",
+                "None",
+                "Butt",
+                "ROpenArrow",
+                "RClosedArrow",
+                "Slash",
+            ]
+            annot["LE"].append(Name(left_line_end_style))
+        else:
+            annot["LE"].append(Name("None"))
+        if right_line_end_style is not None:
+            assert right_line_end_style in [
+                "Square",
+                "Circle",
+                "Diamond",
+                "OpenArrow",
+                "ClosedArrow",
+                "None",
+                "Butt",
+                "ROpenArrow",
+                "RClosedArrow",
+                "Slash",
+            ]
+            annot["LE"].append(Name(right_line_end_style))
+        else:
+            annot["LE"].append(Name("None"))
+
+        if fill_color is not None:
+            color_max = pDecimal(256)
+            annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
+
+        # append to /Annots
+        if "Annots" not in self:
+            self[Name("Annots")] = List()
+        assert isinstance(self["Annots"], List)
+        self["Annots"].append(annot)
+
+        # return
         return self
 
     def append_highlight_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
-        color: Color,
+        rectangle: Rectangle,
+        color: Color = X11Color("Yellow"),
+        contents: Optional[str] = None,
     ) -> "Page":
         # create generic annotation
-        annot = self._create_annotation(rectangle=rectangle, color=color)
-        annot.pop("Rect")
+        annot = self._create_annotation(
+            rectangle=rectangle, color=color, contents=contents
+        )
 
         # (Required) The type of annotation that this dictionary describes; shall
         # be Highlight, Underline, Squiggly, or StrikeOut for a highlight,
@@ -541,12 +790,49 @@ class Page(Dictionary):
         # encompasses a word or group of contiguous words in the text
         # underlying the annotation. The coordinates for each quadrilateral shall
         # be given in the order
-        # x 1 y 1 x 2 y 2 x 3 y 3 x 4 y 4
+        # x1 y1 x2 y2 x3 y3 x4 y4
         annot[Name("QuadPoints")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        # x1, y1
+        annot["QuadPoints"].append(pDecimal(rectangle.get_x()))
+        annot["QuadPoints"].append(pDecimal(rectangle.get_y()))
+        # x4, y4
+        annot["QuadPoints"].append(pDecimal(rectangle.get_x()))
+        annot["QuadPoints"].append(pDecimal(rectangle.get_y() + rectangle.get_height()))
+        # x2, y2
+        annot["QuadPoints"].append(pDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["QuadPoints"].append(pDecimal(rectangle.get_y()))
+        # x3, y3
+        annot["QuadPoints"].append(pDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["QuadPoints"].append(pDecimal(rectangle.get_y() + rectangle.get_height()))
 
+        # border
+        annot[Name("Border")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        annot["Border"].append(pDecimal(0))
+        annot["Border"].append(pDecimal(0))
+        annot["Border"].append(pDecimal(1))
+
+        # CA
+        annot[Name("CA")] = pDecimal(1)
+
+        # append to /Annots
+        if "Annots" not in self:
+            self[Name("Annots")] = List()
+        assert isinstance(self["Annots"], List)
+        self["Annots"].append(annot)
+
+        # return
         return self
 
-    def append_underline_annotation(self) -> "Page":
+    def append_underline_annotation(
+        self,
+        rectangle: Rectangle,
+        color: Color = X11Color("Yellow"),
+        contents: Optional[str] = None,
+    ) -> "Page":
+
+        # TODO
+
+        # return
         return self
 
     def append_squiggly_annotation(self) -> "Page":
@@ -557,7 +843,7 @@ class Page(Dictionary):
 
     def append_stamp_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
+        rectangle: Rectangle,
         contents: Optional[str] = None,
         color: Optional[Color] = None,
         name: Optional[str] = None,
@@ -630,7 +916,7 @@ class Page(Dictionary):
 
     def append_watermark_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
+        rectangle: Rectangle,
         contents: str,
     ) -> "Page":
         # create generic annotation
@@ -653,10 +939,10 @@ class Page(Dictionary):
 
     def append_redact_annotation(
         self,
-        rectangle: Tuple[Decimal, Decimal, Decimal, Decimal],
+        rectangle: Rectangle,
         overlay_text: Optional[str] = None,
         repeat_overlay_text: Optional[bool] = None,
-        interior_color: Optional[Color] = None,
+        fill_color: Optional[Color] = None,
     ) -> "Page":
         """
         A redaction annotation (PDF 1.7) identifies content that is intended to be removed from the document. The
@@ -689,12 +975,12 @@ class Page(Dictionary):
         # content has been removed. If this entry is absent, the interior of the
         # redaction region is left transparent. This entry is ignored if the RO
         # entry is present.
-        if interior_color is not None:
+        if fill_color is not None:
             color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(interior_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(interior_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(interior_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
 
         # (Optional) A text string specifying the overlay text that should be
         # drawn over the redacted region after the affected content has been

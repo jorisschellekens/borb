@@ -3,9 +3,9 @@ import logging
 from decimal import Decimal
 from typing import Union, Optional
 
+import typing
+
 from ptext.exception.pdf_exception import (
-    StartXREFTokenNotFoundError,
-    PDFTypeError,
     PDFSyntaxError,
 )
 from ptext.io.filter.stream_decode_util import decode_stream
@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 class XREF(Dictionary):
     def __init__(self):
         super(XREF, self).__init__()
-        self.entries = []
+        self.entries: typing.List[Reference] = []
+        self.cache: typing.Dict[Reference, AnyPDFType] = {}
 
     ##
     ## LOWLEVEL IO
@@ -59,8 +60,7 @@ class XREF(Dictionary):
         # find "startxref" text
         start_of_xref_token_byte_offset = self._find_backwards(src, tok, "startxref")
         assert start_of_xref_token_byte_offset is not None
-        if start_of_xref_token_byte_offset == -1:
-            raise StartXREFTokenNotFoundError()
+        assert start_of_xref_token_byte_offset != -1
 
         # set tokenizer to "startxref"
         src.seek(start_of_xref_token_byte_offset)
@@ -117,9 +117,12 @@ class XREF(Dictionary):
     ) -> Optional[AnyPDFType]:
 
         # cache
-        obj = None
+        cached_obj = self.cache.get(indirect_reference, None)
+        if cached_obj is not None:
+            return cached_obj
 
         # lookup Reference object for int
+        obj = None
         if isinstance(indirect_reference, int) or isinstance(
             indirect_reference, Decimal
         ):
@@ -164,15 +167,8 @@ class XREF(Dictionary):
                 indirect_reference.parent_stream_object_number, src, tok
             )
             assert isinstance(stream_object, Stream)
-            if "Length" not in stream_object:
-                raise PDFTypeError(
-                    expected_type=Union[Decimal, Reference], received_type=None
-                )
-
-            if "First" not in stream_object:
-                raise PDFTypeError(
-                    expected_type=Union[Decimal, Reference], received_type=None
-                )
+            assert "Length" in stream_object
+            assert "First" in stream_object
 
             # Length may be Reference
             if isinstance(stream_object["Length"], Reference):
@@ -207,6 +203,9 @@ class XREF(Dictionary):
                 obj = list_of_objs[-1]
             else:
                 obj = None
+
+        # update cache
+        self.cache[indirect_reference] = obj
 
         # return
         return obj

@@ -3,6 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -17,7 +18,7 @@ class TestAddRedactAnnotation(Test):
         self.output_dir = Path("../annotations/test-add-redact-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
         super(TestAddRedactAnnotation, self).test_corpus()
@@ -41,8 +42,10 @@ class TestAddRedactAnnotation(Test):
         doc.get_page(0).append_redact_annotation(
             overlay_text="Lorem Ipsum",
             repeat_overlay_text=True,
-            interior_color=X11Color("AliceBlue"),
-            rectangle=(Decimal(256), Decimal(256), Decimal(128), Decimal(128)),
+            fill_color=X11Color("AliceBlue"),
+            rectangle=Rectangle(
+                Decimal(72.86), Decimal(486.82), Decimal(129), Decimal(13)
+            ),
         )
 
         # attempt to store PDF

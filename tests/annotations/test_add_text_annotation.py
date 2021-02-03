@@ -3,6 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -40,7 +41,7 @@ class TestAddTextAnnotation(Test):
         # add annotation
         doc.get_page(0).append_text_annotation(
             contents="The quick brown fox ate the lazy mouse",
-            rectangle=(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
+            rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
             name_of_icon="Key",
             open=True,
             color=X11Color("Orange"),

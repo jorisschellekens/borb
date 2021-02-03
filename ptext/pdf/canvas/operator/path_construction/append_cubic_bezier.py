@@ -9,20 +9,23 @@ from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 def _bezier(p0, p1, p2, p3) -> typing.List[LineSegment]:
     pts = []
-    for t in [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
+    ONE = Decimal(1)
+    for t in [
+        Decimal(x) for x in [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    ]:
         x = (
-            (1 - t) ** 3 * p0[0]
-            + 3 * t * (1 - t) ** 2 * p1[0]
-            + 3 * t ** 2 * (1 - t) * p2[0]
+            (ONE - t) ** 3 * p0[0]
+            + 3 * t * (ONE - t) ** 2 * p1[0]
+            + 3 * t ** 2 * (ONE - t) * p2[0]
             + t ** 3 * p3[0]
         )
         y = (
-            (1 - t) ** 3 * p0[1]
-            + 3 * t * (1 - t) ** 2 * p1[1]
-            + 3 * t ** 2 * (1 - t) * p2[1]
+            (ONE - t) ** 3 * p0[1]
+            + 3 * t * (ONE - t) ** 2 * p1[1]
+            + 3 * t ** 2 * (ONE - t) * p2[1]
             + t ** 3 * p3[1]
         )
-    pts.append((x, y))
+        pts.append((x, y))
 
     # build List of LineSegments
     out: typing.List[LineSegment] = []

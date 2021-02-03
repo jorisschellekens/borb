@@ -56,16 +56,16 @@ class WriteArrayTransformer(WriteBaseTransformer):
         if ref is not None:
             assert isinstance(ref, Reference)
             assert ref.object_number is not None
-            if ref in context.duplicate_references:
+            if ref in context.resolved_references:
                 logger.debug(
-                    "skip writing object %d %d R (duplicate)"
+                    "skip writing object %d %d R (already resolved)"
                     % (ref.object_number, ref.generation_number or 0)
                 )
                 return
             if ref.object_number is not None and ref.byte_offset is None:
                 started_object = True
                 self.start_object(object_to_transform, context)
-            context.duplicate_references.append(ref)
+            context.resolved_references.append(ref)
 
         # write dictionary at current location
         context.destination.write(bytes("[", "latin1"))

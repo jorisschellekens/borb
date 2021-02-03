@@ -2,6 +2,7 @@ import logging
 from decimal import Decimal
 from pathlib import Path
 
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -36,7 +37,7 @@ class TestAddWatermarkAnnotation(Test):
         # add annotation
         doc.get_page(0).append_watermark_annotation(
             contents="pText",
-            rectangle=(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
+            rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
         )
 
         # attempt to store PDF

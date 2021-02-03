@@ -51,9 +51,8 @@ class TextRenderEvent(Event):
 
     def split_on_glyphs(self) -> typing.List["TextRenderEvent"]:
         split_events = []
-        y: Decimal = self.get_baseline().y0
-        x0: Decimal = min(self.get_baseline().x0, self.get_baseline().x1)
-        x1: Decimal = x0
+        y: Decimal = self.graphics_state.text_rise
+        prev_x: Decimal = Decimal(0)
         for g in self.glyph_line.glyphs:
             e = TextRenderEvent(self.graphics_state, String(" "))
             e.glyph_line = GlyphLine([g])
@@ -67,16 +66,26 @@ class TextRenderEvent(Event):
             e.space_character_width = self.space_character_width
 
             # calculate end of LineSegment
-            x1 = x0 + (g.width / Decimal(1000)) * e.font_size
+            w = (
+                Decimal(g.width)
+                * Decimal(self.graphics_state.font_size)
+                * Decimal(0.001)
+                * Decimal(self.graphics_state.horizontal_scaling / 100)
+                + (self.graphics_state.word_spacing if g == " " else Decimal(0))
+                + self.graphics_state.character_spacing
+            )
 
             # set LineSegment
-            e.baseline = LineSegment(x0=x0, y0=y, x1=x1, y1=y)
+            e.baseline = LineSegment(x0=prev_x, y0=y, x1=(prev_x + w), y1=y)
+            prev_x += w
+
+            # transform to user space
+            e.baseline = e.baseline.transform_by(
+                self.text_to_user_space_transform_matrix
+            )
 
             # append
             split_events.append(e)
-
-            # prepare for next iteration
-            x0 = x1
 
         return split_events
 

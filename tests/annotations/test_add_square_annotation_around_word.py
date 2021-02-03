@@ -7,6 +7,7 @@ from ptext.functionality.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -22,7 +23,7 @@ class TestAddSquareAnnotationAroundWord(Test):
         self.output_dir = Path("../annotations/test-add-square-annotation-around-word")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0003.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
         super(TestAddSquareAnnotationAroundWord, self).test_corpus()
@@ -63,13 +64,13 @@ class TestAddSquareAnnotationAroundWord(Test):
         for e in l.get_matched_text_render_info_events_per_page(0):
             baseline = e.get_baseline()
             doc.get_page(0).append_square_annotation(
-                rectangle=(
+                rectangle=Rectangle(
                     Decimal(baseline.x0),
                     Decimal(baseline.y0 - 2),
-                    Decimal(baseline.x1),
-                    Decimal(baseline.y0 + 12),
+                    Decimal(baseline.x1 - baseline.x0),
+                    Decimal(12),
                 ),
-                color=X11Color("Firebrick"),
+                stroke_color=X11Color("Firebrick"),
             )
 
         # attempt to store PDF

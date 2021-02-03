@@ -77,8 +77,9 @@ The result should be something like this (keep in mind the rendering of the rubb
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with pText.
 
+### 2.1 Annotations
 
-### 2.1 Adding multiple annotations (shaped like super Mario) to an existing PDF
+### 2.1.1 Adding multiple annotations (shaped like super Mario) to an existing PDF
 
 From the spec:
 
@@ -172,7 +173,9 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with pText.
 
-### 2.2 Exporting an existing PDF as SVG image      
+### 2.2 Exporting a PDF
+
+### 2.2.1 Exporting an existing PDF as SVG image      
 
 Scalable Vector Graphics (SVG) is an Extensible Markup Language (XML)-based vector image format for two-dimensional graphics with support for interactivity and animation. The SVG specification is an open standard developed by the World Wide Web Consortium (W3C) since 1999.
 

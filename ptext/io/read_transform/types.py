@@ -156,11 +156,10 @@ class String(str):
                     continue
 
                 elif c == "\r":
-                    if i + 2 < len(self):
-                        if self[i + 2] == "\n":
-                            i += 3
-                        else:
-                            i += 2
+                    if i + 2 < len(self) and self[i + 2] == "\n":
+                        i += 3
+                    else:
+                        i += 2
                     continue
 
                 elif c == "\n":
@@ -336,6 +335,40 @@ class Reference:
         self.byte_offset = byte_offset
         self.is_in_use = is_in_use
         self.document = document
+
+    def __hash__(self):
+        hashcode: int = 1
+        hashcode = hashcode * 31 + (
+            self.object_number if self.object_number is not None else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.generation_number if self.generation_number is not None else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.parent_stream_object_number
+            if self.parent_stream_object_number is not None
+            else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.index_in_parent_stream
+            if self.index_in_parent_stream is not None
+            else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.byte_offset if self.byte_offset is not None else 0
+        )
+        return hashcode
+
+    def __eq__(self, other):
+        if not isinstance(other, Reference):
+            return False
+        return (
+            self.object_number == other.object_number
+            and self.generation_number == other.generation_number
+            and self.parent_stream_object_number == other.parent_stream_object_number
+            and self.index_in_parent_stream == other.index_in_parent_stream
+            and self.byte_offset == other.byte_offset
+        )
 
 
 AnyPDFType = Union[

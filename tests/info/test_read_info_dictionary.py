@@ -17,7 +17,7 @@ class TestReadDocumentInfo(Test):
         super(TestReadDocumentInfo, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0267.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0337.pdf"))
 
     def test_document(self, file) -> bool:
         with open(file, "rb") as pdf_file_handle:

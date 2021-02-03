@@ -2,8 +2,6 @@ import io
 from typing import Optional, List, Union
 
 from ptext.exception.pdf_exception import (
-    XREFTokenNotFoundError,
-    PDFValueError,
     PDFSyntaxError,
 )
 from ptext.io.read_transform.types import Reference, Dictionary
@@ -51,8 +49,7 @@ class PlainTextXREF(XREF):
         # now we should be back to the start of XREF
         token = tok.next_non_comment_token()
         assert token is not None
-        if token.text != "xref":
-            raise XREFTokenNotFoundError()
+        assert token.text == "xref"
 
         # read xref sections
         while True:
@@ -77,18 +74,8 @@ class PlainTextXREF(XREF):
         if tokens[0].text in ["trailer", "startxref"]:
             src.seek(tokens[0].byte_offset)
             return []
-        if tokens[0].token_type != TokenType.NUMBER:
-            raise PDFValueError(
-                byte_offset=tokens[0].byte_offset,
-                expected_value_description="number",
-                received_value_description=tokens[0].text,
-            )
-        if tokens[1].token_type != TokenType.NUMBER:
-            raise PDFValueError(
-                byte_offset=tokens[1].byte_offset,
-                expected_value_description="number",
-                received_value_description=tokens[1].text,
-            )
+        assert tokens[0].token_type == TokenType.NUMBER
+        assert tokens[1].token_type == TokenType.NUMBER
 
         start_object_number = int(tokens[0].text)
         number_of_objects = int(tokens[1].text)

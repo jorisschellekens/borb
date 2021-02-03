@@ -31,6 +31,9 @@ class RGBColor(Color):
     """
 
     def __init__(self, r: Decimal, g: Decimal, b: Decimal):
+        assert r >= 0
+        assert g >= 0
+        assert b >= 0
         self.red = r
         self.green = g
         self.blue = b

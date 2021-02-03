@@ -139,6 +139,7 @@ class WriteXREFTransformer(WriteBaseTransformer):
         for i in range(1, len(references)):
             ref = references[i]
             prev_object_number = sections[-1][-1].object_number
+            assert prev_object_number is not None
             if ref.object_number == prev_object_number + 1:
                 sections[-1].append(ref)
             else:

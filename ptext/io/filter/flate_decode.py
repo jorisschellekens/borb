@@ -2,8 +2,6 @@ import copy
 import zlib
 from typing import List
 
-from ptext.exception.pdf_exception import PDFValueError
-
 
 class FlateDecode:
     """
@@ -29,18 +27,10 @@ class FlateDecode:
             return bytes_in
 
         # check \Predictor
-        if predictor not in [1, 2, 10, 11, 12, 13, 14, 15]:
-            raise PDFValueError(
-                expected_value_description="[1, 2, 10, 11, 12, 13, 14, 15]",
-                received_value_description=str(predictor),
-            )
+        assert predictor in [1, 2, 10, 11, 12, 13, 14, 15]
 
         # check \BitsPerComponent
-        if bits_per_component not in [1, 2, 4, 8]:
-            raise PDFValueError(
-                expected_value_description="[1, 2, 4, 8]",
-                received_value_description=str(bits_per_component),
-            )
+        assert bits_per_component in [1, 2, 4, 8]
 
         # initial transform
         bytes_after_zlib = zlib.decompress(bytes_in, bufsize=4092)

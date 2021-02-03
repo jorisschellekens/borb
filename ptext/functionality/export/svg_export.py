@@ -21,6 +21,9 @@ class SVGExport(EventListener):
         include_document_information: bool = False,
         default_page_size: Optional[Tuple[int, int]] = PageSize.A4_PORTRAIT.value,
     ):
+        """
+        Constructs a new SVGExport
+        """
         self.svg_element_per_page: typing.Dict[int, ET.Element] = {}
 
         # global settings

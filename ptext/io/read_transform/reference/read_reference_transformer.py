@@ -13,8 +13,7 @@ from ptext.pdf.xref.xref import XREF
 
 class DefaultReferenceTransformer(ReadBaseTransformer):
     def __init__(self):
-        self.cache = {}
-        self.ref_count = {}
+        self.cache: typing.Dict[Reference, AnyPDFType] = {}
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType]
@@ -31,27 +30,15 @@ class DefaultReferenceTransformer(ReadBaseTransformer):
 
         assert isinstance(object_to_transform, Reference)
 
-        # canonic reference
-        ref_uuid = ""
-        if object_to_transform.object_number is not None:
-            ref_uuid = "%d" % object_to_transform.object_number
-        if (
-            object_to_transform.parent_stream_object_number is not None
-            and object_to_transform.index_in_parent_stream is not None
-        ):
-            ref_uuid = "%d/%d" % (
-                object_to_transform.parent_stream_object_number,
-                object_to_transform.index_in_parent_stream,
-            )
-
         # check for circular reference
         assert context is not None
-        if ref_uuid in context.indirect_reference_chain:
+        if object_to_transform in context.indirect_reference_chain:
             return None
 
         # lookup in cache
-        if ref_uuid in self.cache:
-            return self.cache[ref_uuid]
+        ref_from_cache = self.cache.get(object_to_transform, None)
+        if ref_from_cache is not None:
+            return ref_from_cache
 
         # lookup xref
         assert context.root_object is not None
@@ -72,15 +59,15 @@ class DefaultReferenceTransformer(ReadBaseTransformer):
 
         # transform
         assert referenced_object is not None
-        context.indirect_reference_chain.append(ref_uuid)
+        context.indirect_reference_chain.add(object_to_transform)
         transformed_referenced_object = self.get_root_transformer().transform(
             referenced_object, parent_object, context, event_listeners
         )
-        context.indirect_reference_chain.pop(-1)
+        context.indirect_reference_chain.remove(object_to_transform)
 
         # update cache
         if transformed_referenced_object is not None:
-            self.cache[ref_uuid] = transformed_referenced_object
+            self.cache[object_to_transform] = transformed_referenced_object
 
         # return
         return transformed_referenced_object

@@ -11,10 +11,18 @@ class WriteTransformerContext:
         destination: Optional[typing.Union[io.BufferedIOBase, io.RawIOBase]] = None,
         root_object: Optional[AnyPDFType] = None,
     ):
-        self.destination = destination
-        self.root_object: Optional[AnyPDFType] = root_object
-        self.indirect_objects: typing.Dict[int, typing.List[AnyPDFType]] = {}
-        self.duplicate_references: typing.List[Reference] = []
+        self.destination = (
+            destination  # this is the destination to write to (file, byte-buffer, etc)
+        )
+        self.root_object: Optional[
+            AnyPDFType
+        ] = root_object  # this is the root object (PDF)
+        self.indirect_objects: typing.Dict[
+            int, typing.List[AnyPDFType]
+        ] = {}  # these are all the indirect objects
+        self.resolved_references: typing.List[
+            Reference
+        ] = []  # these references have already been written
 
 
 class WriteBaseTransformer:

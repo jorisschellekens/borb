@@ -20,6 +20,9 @@ class TestExtractImages(Test):
         super().__init__(methodName)
         self.output_dir = Path("../image/test-extract-images")
 
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+
     def test_corpus(self):
         super(TestExtractImages, self).test_corpus()
 

@@ -25,6 +25,9 @@ class AudioExport(EventListener):
         slow: bool = False,
         default_page_size: Tuple[int, int] = PageSize.A4_PORTRAIT.value,
     ):
+        """
+        Constructs a new AudioExport
+        """
 
         # tts info
         self.include_position = include_position

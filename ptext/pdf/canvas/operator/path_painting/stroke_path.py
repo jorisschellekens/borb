@@ -1,7 +1,7 @@
 from typing import List
 
-from ptext.functionality.structure.line.line_render_event import LineRenderEvent
 from ptext.io.read_transform.types import AnyPDFType
+from ptext.pdf.canvas.event.line_render_event import LineRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -20,7 +20,7 @@ class StrokePath(CanvasOperator):
 
         # notify listeners
         for l in gs.path:
-            canvas.event_occurred(LineRenderEvent(l))
+            canvas.event_occurred(LineRenderEvent(gs, l))
 
         # clear path
         gs.path = []

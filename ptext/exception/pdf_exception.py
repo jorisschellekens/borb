@@ -86,30 +86,6 @@ class PDFCommentTokenNotFoundError(PDFTokenNotFoundError):
         )
 
 
-class StartXREFTokenNotFoundError(PDFTokenNotFoundError):
-    """
-    StartXREFTokenNotFoundError is thrown when a PDF does not contain the token 'startxref'
-    """
-
-    def __init__(self, byte_offset: Optional[int] = None):
-        super(StartXREFTokenNotFoundError, self).__init__(
-            byte_offset=byte_offset,
-            message="No startxref token found",
-        )
-
-
-class XREFTokenNotFoundError(PDFTokenNotFoundError):
-    """
-    XREFTokenNotFoundError is thrown when a PDF does not contain the token 'xref'
-    """
-
-    def __init__(self, byte_offset: Optional[int] = None):
-        super(XREFTokenNotFoundError, self).__init__(
-            byte_offset=byte_offset,
-            message="No xref token found",
-        )
-
-
 class PDFEOFError(PDFException, EOFError):
     """
     PDFEOFError is thrown when the input (unexpectedly) hits the end-of-file condition.
@@ -118,13 +94,4 @@ class PDFEOFError(PDFException, EOFError):
     def __init__(self, byte_offset: Optional[int] = None):
         super(PDFEOFError, self).__init__(
             byte_offset=byte_offset, message="Unexpectedly reached EOF"
-        )
-
-
-class IllegalGraphicsStateError(PDFException):
-    def __init__(
-        self, byte_offset: Optional[int] = None, message: Optional[str] = None
-    ):
-        super(IllegalGraphicsStateError, self).__init__(
-            byte_offset=byte_offset, message=message
         )

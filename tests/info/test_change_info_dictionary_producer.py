@@ -24,9 +24,13 @@ class TestChangeInfoDictionaryProducer(Test):
         super(TestChangeInfoDictionaryProducer, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0080_page_0.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_document(self, file) -> bool:
+
+        # create output directory if it does not exist yet
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
         doc = None
         with open(file, "rb") as pdf_file_handle:
@@ -48,7 +52,7 @@ class TestChangeInfoDictionaryProducer(Test):
         # determine output location
         out_file = self.output_dir / (file.stem + "_out.pdf")
         with open(out_file, "wb") as pdf_file_handle:
-            PDF.dumps(out_file, doc)
+            PDF.dumps(pdf_file_handle, doc)
 
         return True
 
