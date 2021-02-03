@@ -1,5 +1,6 @@
 import logging
 import typing
+import xml.etree.ElementTree as ET
 from typing import Optional
 
 from PIL.Image import Image  # type: ignore [import]
@@ -47,6 +48,7 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
                 or isinstance(v, List)
                 or isinstance(v, Stream)
                 or isinstance(v, Image)
+                or isinstance(v, ET.Element)
             ) and v.can_be_referenced():  # type: ignore [union-attr]
                 out_value[k] = self.get_reference(v, context)
                 queue.append(v)

@@ -1,5 +1,4 @@
 import io
-import sys
 import typing
 from typing import Optional, Any, Union
 

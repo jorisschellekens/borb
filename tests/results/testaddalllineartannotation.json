@@ -1,0 +1,98 @@
+{
+    "per_document": [
+        {
+            "file": "0553",
+            "time_in_seconds": 28.609508514404297,
+            "passed": false,
+            "exception": "dictionary key must be a name",
+            "timed_out": false
+        },
+        {
+            "file": "0490_page_0",
+            "time_in_seconds": 1.6342036724090576,
+            "passed": false,
+            "exception": "unexpected end of dictionary",
+            "timed_out": false
+        },
+        {
+            "file": "0360_page_0",
+            "time_in_seconds": 2.5171658992767334,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0190",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0246_page_0",
+            "time_in_seconds": 2.876809597015381,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0311",
+            "time_in_seconds": 14.925570964813232,
+            "passed": false,
+            "exception": "unexpected end of dictionary",
+            "timed_out": false
+        },
+        {
+            "file": "0426",
+            "time_in_seconds": 0.31563305854797363,
+            "passed": false,
+            "exception": "element indices must be integers",
+            "timed_out": false
+        },
+        {
+            "file": "0550",
+            "time_in_seconds": 18.032406091690063,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0229",
+            "time_in_seconds": 1.9454267024993896,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0548_page_0",
+            "time_in_seconds": 2.4042868614196777,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0113_page_0",
+            "time_in_seconds": 2.32511305809021,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0336",
+            "time_in_seconds": 4.756269216537476,
+            "passed": false,
+            "exception": "dictionary key must be a name",
+            "timed_out": false
+        }
+    ],
+    "summary": {
+        "passed_count": 6,
+        "passed_percentage": 0.5,
+        "failed_count": 6,
+        "failed_percentage": 0.5,
+        "timed_out_count": 1,
+        "timed_out_percentage": 0.08333333333333333,
+        "average_time_in_seconds": 5.016868034998576,
+        "count": 12
+    }
+}

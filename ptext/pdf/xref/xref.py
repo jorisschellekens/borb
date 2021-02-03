@@ -1,9 +1,8 @@
 import io
 import logging
+import typing
 from decimal import Decimal
 from typing import Union, Optional
-
-import typing
 
 from ptext.exception.pdf_exception import (
     PDFSyntaxError,

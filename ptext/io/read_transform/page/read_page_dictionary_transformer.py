@@ -1,6 +1,6 @@
 import io
 import typing
-from typing import Optional, List, Any, Union, Dict
+from typing import Optional, Any, Union, Dict
 
 from ptext.io.read_transform.read_base_transformer import (
     ReadBaseTransformer,
@@ -8,7 +8,6 @@ from ptext.io.read_transform.read_base_transformer import (
 )
 from ptext.io.read_transform.types import (
     Dictionary,
-    List,
     AnyPDFType,
 )
 from ptext.pdf.canvas.canvas import Canvas

@@ -9,7 +9,6 @@ from ptext.io.write_transform.write_any_object_transformer import (
 )
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.document import Document
-from ptext.profiling.profiler_annotations import profile
 
 
 class PDF:
@@ -29,7 +28,6 @@ class PDF:
     """
 
     @staticmethod
-    @profile
     def loads(
         file: Union[io.BufferedIOBase, io.RawIOBase],
         event_listeners: List[EventListener] = [],

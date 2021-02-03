@@ -38,6 +38,7 @@ from ptext.io.write_transform.write_base_transformer import (
     WriteBaseTransformer,
 )
 from ptext.io.write_transform.write_pdf_transformer import WritePDFTransformer
+from ptext.io.write_transform.xmp.write_xmp_transformer import WriteXMPTransformer
 
 
 class WriteAnyObjectTransformer(WriteBaseTransformer):
@@ -53,6 +54,7 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
         self.add_child_transformer(WriteStreamTransformer())
         self.add_child_transformer(WriteDictionaryTransformer())
         self.add_child_transformer(WriteImageTransformer())
+        self.add_child_transformer(WriteXMPTransformer())
         # primitives
         self.add_child_transformer(WriteNameTransformer())
         self.add_child_transformer(WriteStringTransformer())

@@ -12,9 +12,6 @@ from ptext.io.read_transform.types import (
     AnyPDFType,
     Stream,
     add_base_methods,
-    Dictionary,
-    Name,
-    String,
 )
 from ptext.pdf.canvas.event.event_listener import EventListener
 
