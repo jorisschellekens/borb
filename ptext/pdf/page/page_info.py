@@ -1,6 +1,6 @@
 from typing import Optional, Tuple
 
-from ptext.io.read_transform.types import Dictionary
+from ptext.io.read.types import Dictionary
 from ptext.pdf.page.page_size import PageSize
 
 

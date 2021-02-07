@@ -2,7 +2,7 @@ import copy
 import io
 import typing
 
-from ptext.io.read_transform.types import Decimal
+from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent

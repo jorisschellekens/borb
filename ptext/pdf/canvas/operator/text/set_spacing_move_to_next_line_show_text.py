@@ -1,6 +1,6 @@
 from typing import List
 
-from ptext.io.read_transform.types import AnyPDFType
+from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.text.move_to_next_line_show_text import (
     MoveToNextLineShowText,

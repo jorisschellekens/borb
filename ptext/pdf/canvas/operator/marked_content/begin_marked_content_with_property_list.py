@@ -1,6 +1,6 @@
 from typing import List
 
-from ptext.io.read_transform.types import AnyPDFType, Name
+from ptext.io.read.types import AnyPDFType, Name
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 

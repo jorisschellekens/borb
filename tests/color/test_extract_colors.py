@@ -2,7 +2,7 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.functionality.color.color_spectrum_extraction import (
+from ptext.toolkit.color.color_spectrum_extraction import (
     ColorSpectrumExtraction,
 )
 from ptext.pdf.pdf import PDF

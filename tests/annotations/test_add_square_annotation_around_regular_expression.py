@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.functionality.text.regular_expression_text_extraction import (
+from ptext.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
 from ptext.pdf.canvas.color.color import X11Color

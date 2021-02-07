@@ -2,7 +2,7 @@ from typing import List
 
 import PIL  # type: ignore [import]
 
-from ptext.io.read_transform.types import AnyPDFType, Name
+from ptext.io.read.types import AnyPDFType, Name
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 

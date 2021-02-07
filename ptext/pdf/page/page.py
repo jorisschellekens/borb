@@ -3,8 +3,8 @@ import typing
 from decimal import Decimal
 from typing import Optional, Tuple
 
-from ptext.io.read_transform.types import Decimal as pDecimal
-from ptext.io.read_transform.types import Dictionary, Name, List, String, Boolean
+from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Dictionary, Name, List, String, Boolean
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page_info import PageInfo
@@ -13,6 +13,9 @@ from ptext.pdf.page.page_info import PageInfo
 class Page(Dictionary):
     def __init__(self):
         super(Page, self).__init__()
+
+        # type
+        self[Name("Type")] = Name("Page")
 
         # size: A4 portrait
         self[Name("MediaBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
@@ -829,10 +832,6 @@ class Page(Dictionary):
         color: Color = X11Color("Yellow"),
         contents: Optional[str] = None,
     ) -> "Page":
-
-        # TODO
-
-        # return
         return self
 
     def append_squiggly_annotation(self) -> "Page":
@@ -919,19 +918,6 @@ class Page(Dictionary):
         rectangle: Rectangle,
         contents: str,
     ) -> "Page":
-        # create generic annotation
-        annot = self._create_annotation(rectangle=rectangle, contents=contents)
-
-        # specific for text annotations
-        annot[Name("Subtype")] = Name("Watermark")
-
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
-        # return
         return self
 
     def append_3d_annotation(self) -> "Page":
@@ -1004,3 +990,6 @@ class Page(Dictionary):
 
         # return
         return self
+
+    def apply_redact_annotations(self):
+        pass

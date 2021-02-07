@@ -1,6 +1,6 @@
 from typing import List
 
-from ptext.io.read_transform.types import AnyPDFType
+from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.path_construction.close_subpath import CloseSubpath
 from ptext.pdf.canvas.operator.path_painting.stroke_path import StrokePath

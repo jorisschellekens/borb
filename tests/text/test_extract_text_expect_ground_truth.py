@@ -3,7 +3,7 @@ import os
 import unittest
 from pathlib import Path
 
-from ptext.functionality.text.simple_text_extraction import (
+from ptext.toolkit.text.simple_text_extraction import (
     SimpleTextExtraction,
 )
 from ptext.pdf.pdf import PDF
@@ -22,7 +22,7 @@ class TestExtractTextExpectGroundTruth(Test):
         self.output_dir = Path("../text/test-text-extract-text-expect-ground-truth")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0322_page_0.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
         pdf_file_names = os.listdir(self.input_dir)

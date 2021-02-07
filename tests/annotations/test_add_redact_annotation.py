@@ -40,8 +40,6 @@ class TestAddRedactAnnotation(Test):
 
         # add annotation
         doc.get_page(0).append_redact_annotation(
-            overlay_text="Lorem Ipsum",
-            repeat_overlay_text=True,
             fill_color=X11Color("AliceBlue"),
             rectangle=Rectangle(
                 Decimal(72.86), Decimal(486.82), Decimal(129), Decimal(13)

@@ -793,3 +793,160 @@ In my example document, this was the output:
     ...
 
 ### 3.4 Extract all keywords from a PDF using `TFIDFKeywordExtraction`
+
+## 4. PDF Creation
+
+### 4.1 Creating an empty PDF
+
+        # create empty document
+        pdf: Document = Document()
+
+        # create empty page
+        page: Page = Page()
+
+        # add page to document
+        pdf.append_page(page)
+
+        # write
+        with open("output.pdf", "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+
+### 4.2 Creating a 'Hello World' PDF
+
+This example describes how to create a PDF from scratch. 
+This example focuses on giving the reader an understanding of the underlying PDF syntax. 
+This is definitely not the easiest way to write a PDF.
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+This is where the actual content generation begins. To get content on a page we need to alter its content-stream.
+First we'll create a content stream, and then we'll set its bytes to the appropriate operators to write 'Hello World!'
+
+        # create content stream
+        content_stream = Stream()
+        content_stream[
+            Name("DecodedBytes")
+        ] = b"""
+            q
+            BT
+            /F1 24 Tf            
+            100 742 Td            
+            (Hello World!) Tj
+            ET
+            Q
+        """
+
+The `q` and `Q` operator define a context in which we can work. these operators respectively push and pop the entire graphics state unto/from a stack.
+By doing so, we can ensure our content will not interfere with other content that may exist on the page.
+
+Next we have the `BT` (begin text) and `ET` (end text) operators. They set up everything to enable us to write text.
+`Tf` sets the font (in this case `F1`) and font-size.
+
+`Td` determines the position at which we will draw text.
+`Tj` writes a string (enclosed in round brackets) to the PDF.
+
+Next we need to set the properties of the content-stream to match its content. 
+In this example we'll encode the bytes using `FlateDecode`. 
+Thus we need to provide a `Filter` property (so the reader knows which decompression algorithm to use), 
+and provide a `Length` (so the reader knows how long our encoded byte-stream is).
+
+
+        content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
+        content_stream[Name("Filter")] = Name("FlateDecode")
+        content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+
+Next we can set this `Stream` to be the `Contents` of the `Page`
+
+        # set content of page
+        page[Name("Contents")] = content_stream
+
+In the following code-snippet, we set every property related to the font we used.
+We need to specify the font used by the `Tj` operator in the `Resources` dictionary of the `Page`.
+
+        # set Font
+        page[Name("Resources")] = Dictionary()
+        page["Resources"][Name("Font")] = Dictionary()
+        page["Resources"]["Font"][Name("F1")] = Dictionary()
+        page["Resources"]["Font"]["F1"][Name("Type")] = Name("Font")
+        page["Resources"]["Font"]["F1"][Name("Subtype")] = Name("Type1")
+        page["Resources"]["Font"]["F1"][Name("Name")] = Name("F1")
+        page["Resources"]["Font"]["F1"][Name("BaseFont")] = Name("Helvetica")
+        page["Resources"]["Font"]["F1"][Name("Encoding")] = Name("MacRomanEncoding")
+
+In this example I chose Helvetica, because the reader is supposed to know all the details of this font (width of every glyph, bouding box, etc).
+That means we don't have to specify all the details. In the above code-snippet, we only really mentioned the name and character encoding.
+
+Next we store the PDF.
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+
+### 4.3 Creating a 'Hello World' PDF, the easier way
+
+Luckily, there is an easier way to get content on a PDF.
+Let's look at the convenience classes `pText` provides.
+
+We'll start similar to our previous example, by creating an empty `Document` and `Page`.
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+Now instead of having to figure out all these instructions ourselves, we can let `pText` do the heavy lifting.
+Here we add a `ChunkOfText` to the `Page`, but other classes allow you to add lines of text, paragraphs, tables, etc.
+
+        ChunkOfText(
+            "Hello World!", font_size=Decimal(24), color=X11Color("YellowGreen")
+        ).layout(
+            page, Rectangle(Decimal(100), Decimal(724), Decimal(100), Decimal(100))
+        )
+
+`ChunkOfText` allows us to specify the `font_size`, `Color` and `font`. If not provided, `ChunkOfText` defaults to black Helvetica, size 12.
+We then call `layout` on this object to have it put on the `Page`.
+
+Finally, we can store the PDF.
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+
+### 4.4 Creating a colorful 'Hello World' PDF
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        for i, c in enumerate(
+            [
+                X11Color("Red"),
+                X11Color("Orange"),
+                X11Color("Yellow"),
+                X11Color("YellowGreen"),
+                X11Color("Blue"),
+                X11Color("Purple"),
+            ]
+        ):
+            ChunkOfText("Hello World!", font_size=Decimal(24), color=c).layout(
+                page,
+                Rectangle(
+                    Decimal(100 + i * 30), Decimal(724 - i * 30), Decimal(100), Decimal(100)
+                ),
+            )
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)

@@ -8,9 +8,9 @@ from ptext.exception.pdf_exception import (
     PDFSyntaxError,
 )
 from ptext.io.filter.stream_decode_util import decode_stream
-from ptext.io.read_transform.types import Dictionary, Reference, AnyPDFType, Stream
-from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.tokenize.low_level_tokenizer import TokenType
+from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.read.tokenize.low_level_tokenizer import TokenType
+from ptext.io.read.types import Dictionary, Reference, AnyPDFType, Stream
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class XREF(Dictionary):
     def __init__(self):
         super(XREF, self).__init__()
         self.entries: typing.List[Reference] = []
-        self.cache: typing.Dict[Reference, AnyPDFType] = {}
+        self.cache: typing.Dict[Reference, Union[AnyPDFType, None]] = {}
 
     ##
     ## LOWLEVEL IO
@@ -27,7 +27,7 @@ class XREF(Dictionary):
 
     def _find_backwards(
         self,
-        src: io.IOBase,
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
         text_to_find: str,
     ) -> int:
@@ -54,7 +54,11 @@ class XREF(Dictionary):
         # raise error
         return -1
 
-    def _seek_to_xref_token(self, src: io.IOBase, tok: HighLevelTokenizer):
+    def _seek_to_xref_token(
+        self,
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        tok: HighLevelTokenizer,
+    ):
 
         # find "startxref" text
         start_of_xref_token_byte_offset = self._find_backwards(src, tok, "startxref")
@@ -111,14 +115,15 @@ class XREF(Dictionary):
     def get_object(
         self,
         indirect_reference: Union[Reference, int],
-        src: Union[io.BufferedIOBase, io.RawIOBase],
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> Optional[AnyPDFType]:
 
         # cache
-        cached_obj = self.cache.get(indirect_reference, None)
-        if cached_obj is not None:
-            return cached_obj
+        if isinstance(indirect_reference, Reference):
+            cached_obj = self.cache.get(indirect_reference, None)
+            if cached_obj is not None:
+                return cached_obj
 
         # lookup Reference object for int
         obj = None

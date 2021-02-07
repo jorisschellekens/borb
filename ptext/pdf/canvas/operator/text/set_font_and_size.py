@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from ptext.io.read_transform.types import AnyPDFType, Decimal
+from ptext.io.read.types import AnyPDFType, Decimal
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 

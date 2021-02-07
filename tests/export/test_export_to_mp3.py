@@ -2,8 +2,8 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.functionality.export.audio_export import AudioExport
-from ptext.functionality.structure.simple_structure_extraction import (
+from ptext.toolkit.export.audio_export import AudioExport
+from ptext.toolkit.structure.simple_structure_extraction import (
     SimpleStructureExtraction,
 )
 from ptext.pdf.pdf import PDF

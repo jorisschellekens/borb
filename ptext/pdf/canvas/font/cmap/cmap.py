@@ -1,9 +1,9 @@
 import io
 from typing import Union, List, Optional, Tuple
 
-from ptext.io.read_transform.types import HexadecimalString
-from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.tokenize.low_level_tokenizer import Token
+from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.read.tokenize.low_level_tokenizer import Token
+from ptext.io.read.types import HexadecimalString
 
 
 class CMap:
@@ -35,7 +35,7 @@ class CMap:
         return self._code_to_unicode.get(character_code, None)
 
     def _add_symbol(
-        self, character_code: int, unicode: Union[int, Tuple[int, int]]
+        self, character_code: int, unicode: Union[int, Tuple[int, ...]]
     ) -> "CMap":
         self._unicode_to_code[unicode] = character_code
         self._code_to_unicode[character_code] = unicode

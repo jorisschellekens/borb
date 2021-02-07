@@ -4,9 +4,9 @@ from typing import Optional, List, Union
 from ptext.exception.pdf_exception import (
     PDFSyntaxError,
 )
-from ptext.io.read_transform.types import Reference, Dictionary
-from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.tokenize.low_level_tokenizer import TokenType
+from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.read.tokenize.low_level_tokenizer import TokenType
+from ptext.io.read.types import Reference, Dictionary, Name
 from ptext.pdf.xref.xref import XREF
 
 
@@ -36,7 +36,7 @@ class PlainTextXREF(XREF):
 
     def read(
         self,
-        src: Union[io.BufferedIOBase, io.RawIOBase],
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
     ) -> "XREF":
@@ -61,12 +61,16 @@ class PlainTextXREF(XREF):
                     self.append(r)
 
         # process trailer
-        self["Trailer"] = self._read_trailer(src, tok)
+        self[Name("Trailer")] = self._read_trailer(src, tok)
 
         # return self
         return self
 
-    def _read_section(self, src: io.IOBase, tok: HighLevelTokenizer) -> List[Reference]:
+    def _read_section(
+        self,
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        tok: HighLevelTokenizer,
+    ) -> List[Reference]:
 
         tokens = [tok.next_non_comment_token() for _ in range(0, 2)]
         assert tokens[0] is not None
@@ -115,7 +119,11 @@ class PlainTextXREF(XREF):
         # return
         return indirect_references
 
-    def _read_trailer(self, src: io.IOBase, tok: HighLevelTokenizer) -> Dictionary:
+    def _read_trailer(
+        self,
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        tok: HighLevelTokenizer,
+    ) -> Dictionary:
 
         # return None if there is no trailer
         token = tok.next_non_comment_token()

@@ -3,8 +3,8 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.functionality.text.stop_words import ENGLISH_STOP_WORDS
-from ptext.functionality.text.tf_idf_keyword_extraction import (
+from ptext.toolkit.text.stop_words import ENGLISH_STOP_WORDS
+from ptext.toolkit.text.tf_idf_keyword_extraction import (
     TFIDFKeywordExtraction,
 )
 from ptext.pdf.pdf import PDF
@@ -25,6 +25,9 @@ class TestExtractKeywords(Test):
 
     def test_corpus(self):
         super(TestExtractKeywords, self).test_corpus()
+
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_document(self, file):
 

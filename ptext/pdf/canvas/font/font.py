@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from typing import Optional
 
-from ptext.io.read_transform.types import Dictionary, HexadecimalString
+from ptext.io.read.types import Dictionary, HexadecimalString
 from ptext.pdf.canvas.font.cmap.cmap import CMap
 from ptext.pdf.canvas.font.glyph_line import GlyphLine, Glyph
 from ptext.pdf.canvas.font.latin_text_encoding import (

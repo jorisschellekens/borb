@@ -3,12 +3,9 @@ import os
 import pathlib
 import re
 import typing
-from decimal import Decimal
 from typing import Optional
 
-from ptext.io.read_transform.types import (
-    List,
-)
+from ptext.io.read.types import List, Name, Decimal
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.font_descriptor import FontDescriptor
 
@@ -73,62 +70,76 @@ class AdobeFontMetrics:
 
         # FontDescriptor
         out_font_descriptor = FontDescriptor().set_parent(out_font)  # type: ignore [attr-defined]
-        out_font_descriptor["FontName"] = AdobeFontMetrics._find_and_parse_as_string(
-            lines, "FontName"
+        out_font_descriptor[Name("FontName")] = Name(
+            AdobeFontMetrics._find_and_parse_as_string(lines, "FontName")
         )
-        out_font_descriptor["FontFamily"] = AdobeFontMetrics._find_and_parse_as_string(
-            lines, "FamilyName"
+        out_font_descriptor[Name("FontFamily")] = Name(
+            AdobeFontMetrics._find_and_parse_as_string(lines, "FamilyName")
         )
         # FontStretch
         # FontWeight
         # Flags
         # FontBBox
         # ItalicAngle
-        out_font_descriptor["Ascent"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "Ascender"
-        )
-        out_font_descriptor["Descent"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "Descender"
-        )
+        # Ascent
+        ascent = AdobeFontMetrics._find_and_parse_as_float(lines, "Ascender")
+        if ascent:
+            out_font_descriptor[Name("Ascent")] = Decimal(ascent)
+        # Descent
+        descent = AdobeFontMetrics._find_and_parse_as_float(lines, "Descender")
+        if descent:
+            out_font_descriptor[Name("Descent")] = Decimal(descent)
         # Leading
-        out_font_descriptor["CapHeight"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "CapHeight"
-        )
-        out_font_descriptor["XHeight"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "XHeight"
-        )
+        # CapHeight
+        capheight = AdobeFontMetrics._find_and_parse_as_float(lines, "CapHeight")
+        if capheight:
+            out_font_descriptor[Name("CapHeight")] = Decimal(capheight)
+        # XHeight
+        xheight = AdobeFontMetrics._find_and_parse_as_float(lines, "XHeight")
+        if xheight:
+            out_font_descriptor[Name("XHeight")] = Decimal(xheight)
+
         # StemV
-        out_font_descriptor["StemV"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "StemV"
-        )
+        stemv = AdobeFontMetrics._find_and_parse_as_float(lines, "StemV")
+        if stemv:
+            assert stemv is not None
+            out_font_descriptor[Name("StemV")] = Decimal(stemv)
+
         # StemH
-        out_font_descriptor["StemH"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "StemH"
-        )
+        stemh = AdobeFontMetrics._find_and_parse_as_float(lines, "StemH")
+        if stemh:
+            assert stemh is not None
+            out_font_descriptor[Name("StemH")] = Decimal(stemh)
+
         # AvgWidth
-        out_font_descriptor["AvgWidth"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "AvgWidth"
-        )
+        avgwidth = AdobeFontMetrics._find_and_parse_as_float(lines, "AvgWidth")
+        if avgwidth:
+            assert avgwidth is not None
+            out_font_descriptor[Name("AvgWidth")] = Decimal(avgwidth)
+
         # MaxWidth
-        out_font_descriptor["MaxWidth"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "MaxWidth"
-        )
+        maxwidth = AdobeFontMetrics._find_and_parse_as_float(lines, "MaxWidth")
+        if maxwidth:
+            assert maxwidth is not None
+            out_font_descriptor[Name("MaxWidth")] = Decimal(maxwidth)
+
         # MissingWidth
-        out_font_descriptor["MissingWidth"] = AdobeFontMetrics._find_and_parse_as_float(
-            lines, "MissingWidth"
-        )
-        # FontFile
-        # FontFile2
-        # FontFile3
-        out_font_descriptor["CharSet"] = AdobeFontMetrics._find_and_parse_as_integer(
-            lines, "Characters"
-        )
+        missingwidth = AdobeFontMetrics._find_and_parse_as_float(lines, "MissingWidth")
+        if missingwidth:
+            assert missingwidth is not None
+            out_font_descriptor[Name("MissingWidth")] = Decimal(missingwidth)
+
+        # CharSet
+        charset = AdobeFontMetrics._find_and_parse_as_float(lines, "CharSet")
+        if charset:
+            assert charset is not None
+            out_font_descriptor[Name("CharSet")] = Decimal(charset)
 
         # Font
-        out_font["Type"] = "Font"
-        out_font["Subtype"] = "Type1"
-        out_font["Name"] = out_font_descriptor["FontName"]
-        out_font["BaseFont"] = out_font_descriptor["FontName"]
+        out_font[Name("Type")] = Name("Font")
+        out_font[Name("Subtype")] = Name("Type1")
+        out_font[Name("Name")] = out_font_descriptor["FontName"]
+        out_font[Name("BaseFont")] = out_font_descriptor["FontName"]
 
         widths = List().set_parent(out_font)  # type: ignore [attr-defined]
         avg_char_width: float = 0
@@ -172,27 +183,27 @@ class AdobeFontMetrics:
         assert first_char is not None
         assert last_char is not None
 
-        out_font["FirstChar"] = Decimal(first_char)
-        out_font["LastChar"] = Decimal(last_char)
-        out_font["Widths"] = widths
+        out_font[Name("FirstChar")] = Decimal(first_char)
+        out_font[Name("LastChar")] = Decimal(last_char)
+        out_font[Name("Widths")] = widths
 
-        if out_font_descriptor["AvgWidth"] is None:
-            out_font_descriptor["AvgWidth"] = round(
-                Decimal(avg_char_width / avg_char_width_norm), 2
+        if avgwidth is None:
+            out_font_descriptor[Name("AvgWidth")] = Decimal(
+                round(Decimal(avg_char_width / avg_char_width_norm), 2)
             )
-        if out_font_descriptor["MaxWidth"] is None:
-            out_font_descriptor["MaxWidth"] = max(widths)
-        out_font["FontDescriptor"] = out_font_descriptor
+        if maxwidth is None:
+            out_font_descriptor[Name("MaxWidth")] = Decimal(max(widths))
+        out_font[Name("FontDescriptor")] = out_font_descriptor
 
         # return
         return out_font
 
     @staticmethod
     def _find_line(lines: typing.List[str], key: str) -> Optional[str]:
-        relevant_line = [x for x in lines if x.startswith(key)]
-        if len(relevant_line) == 0:
+        relevant_lines: typing.List[str] = [x for x in lines if x.startswith(key)]
+        if len(relevant_lines) == 0:
             return None
-        relevant_line = relevant_line[0][len(key) :]
+        relevant_line = relevant_lines[0][len(key) :]
         # trim white space
         while relevant_line[0] in [" ", "\t"]:
             relevant_line = relevant_line[1:]

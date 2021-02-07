@@ -2,8 +2,8 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.functionality.export.markdown_export import MarkdownExport
-from ptext.functionality.structure.simple_structure_extraction import (
+from ptext.toolkit.export.markdown_export import MarkdownExport
+from ptext.toolkit.structure.simple_structure_extraction import (
     SimpleStructureExtraction,
 )
 from ptext.pdf.pdf import PDF

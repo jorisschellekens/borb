@@ -3,7 +3,7 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.functionality.text.regular_expression_text_extraction import (
+from ptext.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
 from ptext.pdf.pdf import PDF

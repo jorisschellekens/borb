@@ -3,7 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from ptext.functionality.export.svg_export import SVGExport
+from ptext.toolkit.export.svg_export import SVGExport
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 

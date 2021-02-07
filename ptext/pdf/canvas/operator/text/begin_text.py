@@ -1,6 +1,6 @@
 from typing import List
 
-from ptext.io.read_transform.types import AnyPDFType
+from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.event.begin_text_event import BeginTextEvent
 from ptext.pdf.canvas.geometry.matrix import Matrix
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator

@@ -2,7 +2,7 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.io.read_transform.types import String, Name, Dictionary
+from ptext.io.read.types import String, Name, Dictionary
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 

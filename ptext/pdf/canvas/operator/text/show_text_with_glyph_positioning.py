@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from ptext.io.read_transform.types import AnyPDFType, String
+from ptext.io.read.types import AnyPDFType, String
 from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 

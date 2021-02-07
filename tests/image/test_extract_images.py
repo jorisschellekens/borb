@@ -2,7 +2,7 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.functionality.image.simple_image_extraction import (
+from ptext.toolkit.image.simple_image_extraction import (
     SimpleImageExtraction,
 )
 from ptext.pdf.pdf import PDF

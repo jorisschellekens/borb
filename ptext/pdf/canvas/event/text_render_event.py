@@ -2,7 +2,7 @@ import copy
 import typing
 from decimal import Decimal
 
-from ptext.io.read_transform.types import String
+from ptext.io.read.types import String
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.event.event_listener import Event
 from ptext.pdf.canvas.font.glyph_line import GlyphLine

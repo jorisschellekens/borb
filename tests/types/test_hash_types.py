@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from ptext.io.read_transform.types import Dictionary, Name, Reference, Boolean, List
+from ptext.io.read.types import Dictionary, Name, Reference, Boolean, List
 
 
 class TestHashTypes(unittest.TestCase):

@@ -1,6 +1,7 @@
 import logging
+from pathlib import Path
 
-from ptext.functionality.text.font_extraction import FontExtraction
+from ptext.toolkit.text.font_extraction import FontExtraction
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 
@@ -10,6 +11,9 @@ logging.basicConfig(filename="../font/test-extract-font-names.log", level=loggin
 class TestExtractFontNames(Test):
     def test_corpus(self):
         super(TestExtractFontNames, self).test_corpus()
+
+    def test_exact_document(self):
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_document(self, file):
         with open(file, "rb") as pdf_file_handle:

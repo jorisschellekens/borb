@@ -1,10 +1,10 @@
 import io
 from typing import List, Union
 
-from ptext.io.read_transform.read_any_object_transformer import (
+from ptext.io.read.read_any_object_transformer import (
     ReadAnyObjectTransformer,
 )
-from ptext.io.write_transform.write_any_object_transformer import (
+from ptext.io.write.write_any_object_transformer import (
     WriteAnyObjectTransformer,
 )
 from ptext.pdf.canvas.event.event_listener import EventListener

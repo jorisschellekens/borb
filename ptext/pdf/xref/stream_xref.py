@@ -3,8 +3,8 @@ from decimal import Decimal
 from typing import Optional, Union
 
 from ptext.io.filter.stream_decode_util import decode_stream
-from ptext.io.read_transform.types import Reference, Stream, Dictionary, List
-from ptext.io.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
+from ptext.io.read.types import Reference, Stream, Dictionary, List, Name
 from ptext.pdf.xref.xref import XREF
 
 
@@ -26,7 +26,7 @@ class StreamXREF(XREF):
 
     def read(
         self,
-        io_source: Union[io.BufferedIOBase, io.RawIOBase],
+        io_source: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tokenizer: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
     ) -> "XREF":
@@ -207,7 +207,7 @@ class StreamXREF(XREF):
             self.append(r)
 
         # initialize trailer
-        self["Trailer"] = Dictionary(xref_stream)
+        self[Name("Trailer")] = Dictionary(xref_stream)
 
         # return
         return self

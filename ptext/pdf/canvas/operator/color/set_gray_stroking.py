@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from ptext.io.read_transform.types import AnyPDFType
+from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.color.color import GrayColor
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
