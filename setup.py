@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="ptext-joris-schellekens", # Replace with your own username
-    version="1.1.0",
+    version="1.3.0",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="pText is a library for reading, creating and manipulating PDF files in python.",
