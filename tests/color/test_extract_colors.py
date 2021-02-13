@@ -2,10 +2,10 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.color.color_spectrum_extraction import (
     ColorSpectrumExtraction,
 )
-from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(filename="../color/test-extract-colors.log", level=logging.DEBUG)

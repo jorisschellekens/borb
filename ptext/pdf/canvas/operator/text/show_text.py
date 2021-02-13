@@ -14,6 +14,9 @@ class ShowText(CanvasOperator):
         super().__init__("Tj", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the Tj operator
+        """
         assert isinstance(operands[0], String)
         tri = TextRenderEvent(canvas.graphics_state, operands[0])
         # render

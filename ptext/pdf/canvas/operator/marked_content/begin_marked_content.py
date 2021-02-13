@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from typing import List
 
 from ptext.io.read.types import AnyPDFType, Name
@@ -15,5 +17,8 @@ class BeginMarkedContent(CanvasOperator):
         super().__init__("BMC", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the BMC operator
+        """
         assert isinstance(operands[0], Name)
         canvas.marked_content_stack.append(operands[0])

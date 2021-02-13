@@ -18,6 +18,9 @@ class SetRGBStroking(CanvasOperator):
         super().__init__("RG", 3)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the RG operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)

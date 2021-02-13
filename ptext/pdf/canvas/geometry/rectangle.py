@@ -9,11 +9,17 @@ class Rectangle:
     The term oblong is occasionally used to refer to a non-square rectangle.
     """
 
-    def __init__(self, x: Decimal, y: Decimal, width: Decimal, height: Decimal):
+    def __init__(
+        self,
+        lower_left_x: Decimal,
+        lower_left_y: Decimal,
+        width: Decimal,
+        height: Decimal,
+    ):
         assert width >= 0
         assert height >= 0
-        self.x = x
-        self.y = y
+        self.x = lower_left_x
+        self.y = lower_left_y
         self.width = width
         self.height = height
 

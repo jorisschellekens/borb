@@ -25,9 +25,11 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
         super().__init__("TJ", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the TJ operator
+        """
 
         assert isinstance(operands[0], List)
-
         for i in range(0, len(operands[0])):
             obj = operands[0][i]
 

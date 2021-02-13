@@ -3,11 +3,11 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.stop_words import ENGLISH_STOP_WORDS
 from ptext.toolkit.text.tf_idf_keyword_extraction import (
     TFIDFKeywordExtraction,
 )
-from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(filename="../text/test-extract-keywords.log", level=logging.DEBUG)

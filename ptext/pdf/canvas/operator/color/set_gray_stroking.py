@@ -18,5 +18,8 @@ class SetGrayStroking(CanvasOperator):
         super().__init__("G", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the G operator
+        """
         assert isinstance(operands[0], Decimal)
         canvas.graphics_state.stroke_color = GrayColor(operands[0])

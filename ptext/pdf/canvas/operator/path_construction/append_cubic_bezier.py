@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import typing
 from decimal import Decimal
 from typing import List
@@ -49,6 +51,9 @@ class AppendCubicBezierCurve1(CanvasOperator):
         super().__init__("c", 6)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invokes the c operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)
@@ -86,6 +91,9 @@ class AppendCubicBezierCurve2(CanvasOperator):
         super().__init__("v", 4)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invokes the v operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)
@@ -120,6 +128,9 @@ class AppendCubicBezierCurve3(CanvasOperator):
         super().__init__("y", 4)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invokes the y operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)

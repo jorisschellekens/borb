@@ -1,6 +1,5 @@
 import typing
 
-from ptext.exception.pdf_exception import PDFValueError
 from ptext.io.filter.ascii85_decode import ASCII85Decode
 from ptext.io.filter.flate_decode import FlateDecode
 from ptext.io.filter.lzw_decode import LZWDecode
@@ -63,10 +62,7 @@ def decode_stream(s: Stream) -> Stream:
             continue
 
         # unknown filter
-        raise PDFValueError(
-            expected_value_description="[/ASCII85Decode, /FlateDecode, /Fl, /LZWDecode, /RunLengthDecode]",
-            received_value_description=str(filter_name),
-        )
+        assert False
 
     # set DecodedBytes
     s[Name("DecodedBytes")] = transformed_bytes

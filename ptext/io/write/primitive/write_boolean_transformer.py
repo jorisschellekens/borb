@@ -8,6 +8,10 @@ from ptext.io.write.write_base_transformer import (
 
 
 class WriteBooleanTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing booleans
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, Boolean)
 

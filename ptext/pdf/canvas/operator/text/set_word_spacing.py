@@ -16,5 +16,8 @@ class SetWordSpacing(CanvasOperator):
         super().__init__("Tw", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the Tw operator
+        """
         assert isinstance(operands[0], Decimal)
         canvas.graphics_state.word_spacing = operands[0]

@@ -2,12 +2,12 @@ import typing
 from functools import cmp_to_key
 from typing import List, Tuple
 
-from ptext.toolkit.structure.line.line_render_event import (
-    LineRenderEvent,
-)
 from ptext.pdf.canvas.event.text_render_event import (
     TextRenderEvent,
     LeftToRightComparator,
+)
+from ptext.toolkit.structure.line.line_render_event import (
+    LineRenderEvent,
 )
 
 

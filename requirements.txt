@@ -1,2 +1,2 @@
-Pillow==7.0.0
+Pillow>=7.1.0
 setuptools~=51.1.1

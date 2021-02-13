@@ -21,6 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 class WriteDictionaryTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing Dictionary objects
+    """
+
     def __init__(self):
         self.queue: typing.List[AnyPDFType] = []
 

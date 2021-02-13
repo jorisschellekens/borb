@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 class WriteStreamTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing Streams
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, Stream)
 

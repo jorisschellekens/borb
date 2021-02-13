@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from typing import List
 
 from ptext.toolkit.structure.paragraph.paragraph_render_event import (

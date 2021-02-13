@@ -2,10 +2,10 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.simple_text_extraction import (
     SimpleTextExtraction,
 )
-from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(filename="../text/test-extract-text.log", level=logging.DEBUG)

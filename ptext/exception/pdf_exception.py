@@ -47,45 +47,6 @@ class PDFTypeError(PDFException, TypeError):
         )
 
 
-class PDFValueError(PDFException, ValueError):
-    """
-    PDFValueError is thrown when a function's argument is of an inappropriate type.
-    """
-
-    def __init__(
-        self,
-        received_value_description: str,
-        expected_value_description: str,
-        byte_offset: Optional[int] = None,
-    ):
-        super(PDFValueError, self).__init__(
-            byte_offset=byte_offset,
-            message="must be %s, not %s"
-            % (expected_value_description, received_value_description),
-        )
-
-
-class PDFTokenNotFoundError(PDFException):
-    def __init__(
-        self, byte_offset: Optional[int] = None, message: Optional[str] = None
-    ):
-        super(PDFTokenNotFoundError, self).__init__(
-            byte_offset=byte_offset, message=message
-        )
-
-
-class PDFCommentTokenNotFoundError(PDFTokenNotFoundError):
-    """
-    PDFCommentTokenNotFoundError is thrown when a PDF does not contain the magic comment '%PDF-X.X'
-    """
-
-    def __init__(self, byte_offset: Optional[int] = None):
-        super(PDFCommentTokenNotFoundError, self).__init__(
-            byte_offset=byte_offset,
-            message="No token found that starts with %PDF-",
-        )
-
-
 class PDFEOFError(PDFException, EOFError):
     """
     PDFEOFError is thrown when the input (unexpectedly) hits the end-of-file condition.

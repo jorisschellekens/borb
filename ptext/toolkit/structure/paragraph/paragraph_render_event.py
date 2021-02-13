@@ -1,9 +1,9 @@
 from typing import List
 
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.toolkit.structure.line.line_render_event import (
     LineRenderEvent,
 )
-from ptext.pdf.canvas.geometry.rectangle import Rectangle
 
 
 class ParagraphRenderEvent(LineRenderEvent):

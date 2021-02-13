@@ -125,30 +125,12 @@ class TextRenderEvent(Event):
         """
         Get the width of a String in text space units
         """
-        total_width = Decimal(0)
-        for g in self.glyph_line:
-            character_width = (
-                Decimal(g.width) * Decimal(graphics_state.font_size) * Decimal(0.001)
-            )
-
-            # add word spacing where applicable
-            if g.unicode == " ":
-                character_width += Decimal(graphics_state.word_spacing)
-
-            # horizontal scaling
-            character_width *= Decimal(graphics_state.horizontal_scaling / 100)
-
-            # add character spacing to character_width
-            character_width += graphics_state.character_spacing
-
-            # add character width to total
-            total_width += character_width
-
-        # subtract character spacing once (there are only N-1 spacings in a string of N characters)
-        total_width -= Decimal(graphics_state.character_spacing)
-
-        # return
-        return total_width
+        return self.glyph_line.get_width_in_text_space(
+            font_size=self.font_size,
+            character_spacing=self.graphics_state.character_spacing,
+            word_spacing=self.graphics_state.word_spacing,
+            horizontal_scaling=self.graphics_state.horizontal_scaling,
+        )
 
 
 class LeftToRightComparator:

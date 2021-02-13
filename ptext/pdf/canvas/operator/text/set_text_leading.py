@@ -16,5 +16,8 @@ class SetTextLeading(CanvasOperator):
         super().__init__("TL", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the TL operator
+        """
         assert isinstance(operands[0], Decimal)
         canvas.graphics_state.leading = operands[0]

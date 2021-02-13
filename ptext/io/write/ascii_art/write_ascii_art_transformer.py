@@ -9,6 +9,10 @@ from ptext.io.write.write_base_transformer import (
 
 
 class WriteASCIIArtTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing ASCII art in every PDF
+    """
+
     def __init__(self):
         super().__init__()
         self.has_been_used = False

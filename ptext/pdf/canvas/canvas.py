@@ -3,12 +3,12 @@ import logging
 import os
 import typing
 
+from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.types import (
     Dictionary,
     List,
     CanvasOperatorName,
 )
-from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
 from ptext.pdf.canvas.operator.color.set_cmyk_stroking import SetCMYKStroking

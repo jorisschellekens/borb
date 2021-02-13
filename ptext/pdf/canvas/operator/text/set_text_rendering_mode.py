@@ -14,5 +14,7 @@ class SetTextRenderingMode(CanvasOperator):
         super().__init__("Tr", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
-        # TODO implement 'Tr' operator
+        """
+        Invoke the Tr operator
+        """
         pass

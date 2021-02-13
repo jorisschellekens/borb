@@ -1,8 +1,8 @@
 import logging
 from pathlib import Path
 
-from ptext.toolkit.text.font_extraction import FontExtraction
 from ptext.pdf.pdf import PDF
+from ptext.toolkit.text.font_extraction import FontExtraction
 from tests.test import Test
 
 logging.basicConfig(filename="../font/test-extract-font-names.log", level=logging.DEBUG)

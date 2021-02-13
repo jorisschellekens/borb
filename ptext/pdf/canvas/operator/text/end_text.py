@@ -14,6 +14,9 @@ class EndTextObject(CanvasOperator):
         super().__init__("ET", 0)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the ET operator
+        """
         canvas.graphics_state.text_matrix = None
         canvas.graphics_state.text_line_matrix = None
         canvas.event_occurred(EndTextEvent())

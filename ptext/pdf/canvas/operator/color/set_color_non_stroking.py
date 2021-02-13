@@ -16,6 +16,10 @@ class SetColorNonStroking(CanvasOperator):
         self.canvas = canvas
 
     def get_number_of_operands(self) -> int:
+        """
+        This function returns the number of operands for the scn operator.
+        The number of operands and their interpretation depends on the colour space.
+        """
         none_stroke_color_space = self.canvas.graphics_state.stroke_color_space
         if none_stroke_color_space == "DeviceCMYK":
             return 4
@@ -26,6 +30,9 @@ class SetColorNonStroking(CanvasOperator):
         return self.number_of_operands
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the scn operator
+        """
         non_stroke_color_space = self.canvas.graphics_state.non_stroke_color_space
         if non_stroke_color_space == "DeviceCMYK":
             assert isinstance(operands[0], Decimal)

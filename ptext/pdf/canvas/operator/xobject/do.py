@@ -24,6 +24,10 @@ class Do(CanvasOperator):
         super().__init__("Do", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the Do operator
+        """
+
         # get Page
         page = canvas.get_parent()  # type: ignore [attr-defined]
 

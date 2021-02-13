@@ -1,4 +1,5 @@
-import io
+#!/usr/bin/env python
+
 import os
 import pathlib
 import re
@@ -28,17 +29,17 @@ class AdobeFontMetrics:
 
         # find all available afm files
         parent_dir = pathlib.Path(__file__).parent
-        available_font_metrics = [
-            (re.sub("[^A-Z]+", "", x.upper()[:-4]), x)
+        available_font_metrics = {
+            re.sub("[^A-Z]+", "", x.upper()[:-4]): x
             for x in os.listdir(parent_dir)
             if x.endswith(".afm")
-        ]
+        }
 
         # check whether given name is present
-        afm_file_name = [x for x in available_font_metrics if x[0] == canonical_name]
-        afm_file_name = None if len(afm_file_name) == 0 else afm_file_name[0][1]
+        afm_file_name: Optional[str] = available_font_metrics.get(canonical_name, None)
         if afm_file_name is None:
             return None
+        assert afm_file_name is not None
 
         # read file
         if afm_file_name not in AdobeFontMetrics._font_cache:
@@ -55,7 +56,7 @@ class AdobeFontMetrics:
         return None
 
     @staticmethod
-    def _read_file(input: io.BufferedIOBase) -> Optional[Font]:
+    def _read_file(input: typing.TextIO) -> Optional[Font]:
         lines: typing.List[str] = [x for x in input.readlines()]
         lines = [x for x in lines if not x.startswith("Comment")]
         lines = [x[:-1] if x.endswith("\n") else x for x in lines]

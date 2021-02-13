@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 class WriteXMPTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing XMPs
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, ET.Element)
 

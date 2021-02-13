@@ -3,7 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.free_space.free_space_finder import FreeSpaceFinder
+from ptext.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test

@@ -1,14 +1,14 @@
 import logging
 from pathlib import Path
 
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.structure.paragraph.paragraph_render_event import (
     ParagraphRenderEvent,
 )
 from ptext.toolkit.structure.simple_structure_extraction import (
     SimpleStructureExtraction,
 )
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(

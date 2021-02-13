@@ -39,6 +39,9 @@ class RGBColor(Color):
         self.blue = b
 
     def to_rgb(self):
+        """
+        This method returns the RGB representation of this Color
+        """
         return self
 
     def __deepcopy__(self, memodict={}):
@@ -70,6 +73,9 @@ class CMYKColor(Color):
         self.key = k
 
     def to_rgb(self) -> "RGBColor":
+        """
+        This method returns the RGB representation of this Color
+        """
         ONE = Decimal(1)
         r = (ONE - self.cyan) * (ONE - self.key)
         g = (ONE - self.magenta) * (ONE - self.key)
@@ -85,6 +91,9 @@ class GrayColor(Color):
         self.gray_level = g
 
     def to_rgb(self) -> "RGBColor":
+        """
+        This method returns the RGB representation of this Color
+        """
         return RGBColor(self.gray_level, self.gray_level, self.gray_level)
 
     def __deepcopy__(self, memodict={}):
@@ -110,6 +119,13 @@ class HexColor(RGBColor):
 
 
 class X11Color(HexColor):
+    """
+    In computing, on the X Window System, X11 color names are represented in a simple text file,
+    which maps certain strings to RGB color values.
+    It was traditionally shipped with every X11 installation,
+    hence the name, and is usually located in <X11root>/lib/X11/rgb.txt.
+    The web colors list is descended from it but differs for certain color names.
+    """
 
     COLOR_DEFINITION = {
         "AliceBlue": "#FFF0F8FF",

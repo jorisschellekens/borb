@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from decimal import Decimal
 from typing import List
 
@@ -16,6 +18,9 @@ class AppendLineSegment(CanvasOperator):
         super().__init__("l", 2)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invokes the l operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
 

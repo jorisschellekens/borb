@@ -8,9 +8,12 @@ from ptext.pdf.canvas.geometry.rectangle import Rectangle
 
 class LineArtFactory:
     @staticmethod
-    def right_sided_triangle(
+    def right_angled_triangle(
         bounding_box: Rectangle,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a right-angled triangle that fits in the given bounding box
+        """
         return [
             (bounding_box.x, bounding_box.y),
             (bounding_box.x + bounding_box.width, bounding_box.y),
@@ -23,6 +26,9 @@ class LineArtFactory:
     def regular_n_gon(
         bounding_box: Rectangle, n: int
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a regular n-gon that fits in the given bounding box
+        """
         r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r
@@ -38,10 +44,16 @@ class LineArtFactory:
     def isosceles_triangle(
         bounding_box: Rectangle,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an isosceles triangle that fits in the given bounding box
+        """
         return LineArtFactory.regular_n_gon(bounding_box, 3)
 
     @staticmethod
     def parallelogram(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a parallelogram that fits in the given bounding box
+        """
         return [
             (bounding_box.x, bounding_box.y),
             (
@@ -62,6 +74,9 @@ class LineArtFactory:
 
     @staticmethod
     def trapezoid(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a trapezoid that fits in the given bounding box
+        """
         return [
             (bounding_box.x, bounding_box.y),
             (bounding_box.x + bounding_box.width, bounding_box.y),
@@ -79,6 +94,9 @@ class LineArtFactory:
 
     @staticmethod
     def diamond(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a diomond that fits in the given bounding box
+        """
         HALF: Decimal = Decimal(0.5)
         return [
             (
@@ -106,18 +124,30 @@ class LineArtFactory:
 
     @staticmethod
     def pentagon(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a pentagon that fits in the given bounding box
+        """
         return LineArtFactory.regular_n_gon(bounding_box, 5)
 
     @staticmethod
     def hexagon(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a hexagon that fits in the given bounding box
+        """
         return LineArtFactory.regular_n_gon(bounding_box, 6)
 
     @staticmethod
     def heptagon(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a heptagon that fits in the given bounding box
+        """
         return LineArtFactory.regular_n_gon(bounding_box, 7)
 
     @staticmethod
     def octagon(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an octagon that fits in the given bounding box
+        """
         return LineArtFactory.regular_n_gon(bounding_box, 8)
 
     @staticmethod
@@ -125,6 +155,9 @@ class LineArtFactory:
         bounding_box: Rectangle,
         fraction: Decimal,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a circle-slice that fits in the given bounding box
+        """
         r = Decimal(min(bounding_box.width, bounding_box.height)) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r
@@ -142,14 +175,23 @@ class LineArtFactory:
     def three_quarters_of_circle(
         bounding_box: Rectangle,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a circle-slice of 270 degrees that fits in the given bounding box
+        """
         return LineArtFactory.fraction_of_circle(bounding_box, Decimal(0.75))
 
     @staticmethod
     def half_of_circle(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a circle-slice of 180 degrees that fits in the given bounding box
+        """
         return LineArtFactory.fraction_of_circle(bounding_box, Decimal(0.5))
 
     @staticmethod
     def droplet(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a droplet that fits in the given bounding box
+        """
         r = Decimal(min(bounding_box.width, bounding_box.height)) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r
@@ -167,24 +209,36 @@ class LineArtFactory:
     def four_pointed_star(
         bounding_box: Rectangle,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a four point star that fits in the given bounding box
+        """
         return LineArtFactory.n_pointed_star(bounding_box, 4)
 
     @staticmethod
     def five_pointed_star(
         bounding_box: Rectangle,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a five point star that fits in the given bounding box
+        """
         return LineArtFactory.n_pointed_star(bounding_box, 5)
 
     @staticmethod
     def six_pointed_star(
         bounding_box: Rectangle,
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a six point star that fits in the given bounding box
+        """
         return LineArtFactory.n_pointed_star(bounding_box, 6)
 
     @staticmethod
     def n_pointed_star(
         bounding_box: Rectangle, n: int
     ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an n-point star that fits in the given bounding box
+        """
         assert n >= 3
         r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         mid_x = bounding_box.x + r
@@ -206,6 +260,9 @@ class LineArtFactory:
 
     @staticmethod
     def arrow_left(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an arrow pointing left that fits in the given bounding box
+        """
         return [
             (
                 bounding_box.x,
@@ -244,6 +301,9 @@ class LineArtFactory:
 
     @staticmethod
     def arrow_right(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an arrow pointing right that fits in the given bounding box
+        """
         return [
             (
                 bounding_box.x + bounding_box.width,
@@ -282,6 +342,9 @@ class LineArtFactory:
 
     @staticmethod
     def arrow_up(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an arrow pointing up that fits in the given bounding box
+        """
         return [
             (
                 bounding_box.x + bounding_box.width * Decimal(0.5),
@@ -310,6 +373,9 @@ class LineArtFactory:
 
     @staticmethod
     def arrow_down(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for an arrow pointing down that fits in the given bounding box
+        """
         return [
             (bounding_box.x + bounding_box.width * Decimal(0.5), bounding_box.y),
             (
@@ -338,6 +404,9 @@ class LineArtFactory:
 
     @staticmethod
     def heart(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a heart that fits in the given bounding box
+        """
         r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         points: typing.List[Tuple[Decimal, Decimal]] = []
         # first arc
@@ -374,6 +443,9 @@ class LineArtFactory:
 
     @staticmethod
     def sticky_note(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a sticky note that fits in the given bounding box
+        """
         turn_up: Decimal = Decimal(0.10)
         turn_up_inv: Decimal = Decimal(1) - turn_up
         return [

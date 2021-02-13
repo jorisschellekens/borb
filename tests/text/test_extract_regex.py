@@ -3,10 +3,10 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(

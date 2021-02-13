@@ -1,16 +1,18 @@
+#!/usr/bin/env python
+
 import typing
 from decimal import Decimal
 from typing import Tuple
 
 from gtts import gTTS  # type: ignore [import]
 
-from ptext.toolkit.structure.paragraph.paragraph_render_event import (
-    ParagraphRenderEvent,
-)
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.page.page import Page
 from ptext.pdf.page.page_size import PageSize
+from ptext.toolkit.structure.paragraph.paragraph_render_event import (
+    ParagraphRenderEvent,
+)
 
 
 class AudioExport(EventListener):
@@ -109,6 +111,9 @@ class AudioExport(EventListener):
         self.text_to_speak_for_page[self.current_page] += text_to_speak_for_paragraph
 
     def get_audio_file_per_page(self, page_number: int, path: str):
+        """
+        This function creates and then returns the audio-file for the text spoken at the given page
+        """
         sound = gTTS(text=self.text_to_speak_for_page[page_number], lang=self.language)
         sound.save(path)
         return path

@@ -16,6 +16,10 @@ from ptext.pdf.xref.xref import XREF
 
 
 class WriteXREFTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing XRefs
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, XREF)
 

@@ -4,7 +4,6 @@ import typing
 from decimal import Decimal
 from typing import Union, Optional, Any
 
-from ptext.exception.pdf_exception import PDFCommentTokenNotFoundError
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
@@ -138,10 +137,8 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             for t in [context.tokenizer.next_token() for _ in range(0, 10)]
             if t is not None
         ]
-        if len(arr) == 0:
-            raise PDFCommentTokenNotFoundError(byte_offset=0)
-        if not any([t.text.startswith("%PDF") for t in arr]):
-            raise PDFCommentTokenNotFoundError(byte_offset=0)
+        assert len(arr) > 0
+        assert any([t.text.startswith("%PDF") for t in arr])
 
     def _read_xref(
         self, context: ReadTransformerContext, initial_offset: Optional[int] = None

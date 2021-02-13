@@ -24,6 +24,9 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
         super().__init__('"', 3)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the " operator
+        """
         SetWordSpacing().invoke(canvas, [operands[0]])
         SetCharacterSpacing().invoke(canvas, [operands[1]])
         MoveToNextLineShowText().invoke(canvas, [operands[2]])

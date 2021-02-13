@@ -16,5 +16,8 @@ class CloseAndStrokePath(CanvasOperator):
         super().__init__("s", 0)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the s operator
+        """
         CloseSubpath().invoke(canvas, [])
         StrokePath().invoke(canvas, [])

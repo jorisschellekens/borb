@@ -41,6 +41,39 @@ class GlyphLine:
             self.glyphs.append(g)
         return self
 
+    def get_width_in_text_space(
+        self,
+        font_size: Decimal,
+        character_spacing: Decimal = Decimal(0),
+        word_spacing: Decimal = Decimal(0),
+        horizontal_scaling: Decimal = Decimal(100),
+    ) -> Decimal:
+        """
+        Get the width of a String in text space units
+        """
+        total_width = Decimal(0)
+        for g in self.glyphs:
+            character_width = Decimal(g.width) * font_size * Decimal(0.001)
+
+            # add word spacing where applicable
+            if g.unicode == " ":
+                character_width += word_spacing
+
+            # horizontal scaling
+            character_width *= horizontal_scaling / Decimal(100)
+
+            # add character spacing to character_width
+            character_width += character_spacing
+
+            # add character width to total
+            total_width += character_width
+
+        # subtract character spacing once (there are only N-1 spacings in a string of N characters)
+        total_width -= character_spacing
+
+        # return
+        return total_width
+
     def __len__(self):
         return len(self.glyphs)
 

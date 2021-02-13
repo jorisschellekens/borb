@@ -2,11 +2,11 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.export.audio_export import AudioExport
 from ptext.toolkit.structure.simple_structure_extraction import (
     SimpleStructureExtraction,
 )
-from ptext.pdf.pdf import PDF
 from tests.test import Test
 
 logging.basicConfig(filename="../export/test_export_to_mp3.log", level=logging.DEBUG)

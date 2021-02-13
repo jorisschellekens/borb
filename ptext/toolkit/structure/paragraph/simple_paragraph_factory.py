@@ -1,14 +1,14 @@
 from typing import List, Optional, Tuple
 
+from ptext.io.read.types import Decimal
+from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
+from ptext.pdf.canvas.geometry.line_segment import LineSegment
 from ptext.toolkit.structure.line.line_render_event import (
     LineRenderEvent,
 )
 from ptext.toolkit.structure.paragraph.paragraph_render_event import (
     ParagraphRenderEvent,
 )
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
-from ptext.pdf.canvas.geometry.line_segment import LineSegment
 
 
 class SimpleParagraphFactory:

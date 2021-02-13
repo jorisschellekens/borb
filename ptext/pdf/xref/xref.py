@@ -91,10 +91,16 @@ class XREF(Dictionary):
     ##
 
     def append(self, r: Reference) -> "XREF":
+        """
+        Add a new Reference to this XREF
+        """
         self.entries.append(r)
         return self
 
     def merge(self, other_xref: "XREF") -> "XREF":
+        """
+        Merge this XREF with another XREF
+        """
         for r in other_xref.entries:
             duplicate_entries = []
             if r.object_number is not None:

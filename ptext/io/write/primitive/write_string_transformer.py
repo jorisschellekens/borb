@@ -8,6 +8,10 @@ from ptext.io.write.write_base_transformer import (
 
 
 class WriteStringTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing Strings
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, String) or isinstance(any, HexadecimalString)
 

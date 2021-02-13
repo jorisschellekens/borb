@@ -11,6 +11,10 @@ from ptext.io.write.write_base_transformer import (
 
 
 class WriteImageTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing Image objects
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, Image)
 
@@ -23,26 +27,21 @@ class WriteImageTransformer(WriteBaseTransformer):
         assert context.destination is not None
         assert isinstance(object_to_transform, Image)
 
-        # check whether image has alpha
-        # IF image has alpha --> write image as PNG
-        # ELSE --> write image as JPEG
-
-        has_alpha = False
-        if object_to_transform.mode == "RGBA":
-            has_alpha = True
-        if object_to_transform.mode == "P":
-            transparency_index = object_to_transform.info.get("transparency", -1)
-            for _, index in object_to_transform.getcolors():
-                if index == transparency_index:
-                    has_alpha = True
-                    break
-
         # get image bytes
-        format = "PNG" if has_alpha else "JPEG"
         contents = None
-        with io.BytesIO() as output:
-            object_to_transform.save(output, format=format)
-            contents = output.getvalue()
+        try:
+            with io.BytesIO() as output:
+                object_to_transform.save(output, format="JPEG")
+                contents = output.getvalue()
+        except:
+            pass
+
+        try:
+            with io.BytesIO() as output:
+                object_to_transform.save(output, format="PNG")
+                contents = output.getvalue()
+        except:
+            pass
 
         # build corresponding Stream (XObject)
         out_value = Stream()

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ptext.pdf.canvas.event.event_listener import Event
 
 

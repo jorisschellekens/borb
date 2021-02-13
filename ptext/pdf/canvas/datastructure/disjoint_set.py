@@ -17,6 +17,9 @@ class disjointset:
         self.ranks = {}
 
     def find(self, x: Any) -> Any:
+        """
+        Find the root of an element in this disjointset
+        """
         if self.parents[x] == x:
             return x
         else:

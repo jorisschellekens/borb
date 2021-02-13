@@ -17,6 +17,9 @@ class BeginTextObject(CanvasOperator):
         super().__init__("BT", 0)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the BT operator
+        """
         canvas.graphics_state.text_matrix = Matrix.identity_matrix()
         canvas.graphics_state.text_line_matrix = Matrix.identity_matrix()
         canvas.event_occurred(BeginTextEvent())

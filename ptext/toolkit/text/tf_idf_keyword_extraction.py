@@ -3,8 +3,8 @@ import typing
 from math import log
 from typing import List, Optional
 
-from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
 from ptext.pdf.page.page import Page
+from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
 class TFIDFKeyword:

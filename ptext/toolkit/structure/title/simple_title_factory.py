@@ -1,12 +1,12 @@
 import typing
 from typing import List, Tuple
 
+from ptext.io.read.types import Decimal
 from ptext.toolkit.structure.line.line_render_event import LineRenderEvent
 from ptext.toolkit.structure.paragraph.paragraph_render_event import (
     ParagraphRenderEvent,
 )
 from ptext.toolkit.structure.title.title_render_event import TitleRenderEvent
-from ptext.io.read.types import Decimal
 
 
 class SimpleTitleFactory:

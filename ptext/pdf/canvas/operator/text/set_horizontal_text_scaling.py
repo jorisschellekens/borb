@@ -16,5 +16,8 @@ class SetHorizontalScaling(CanvasOperator):
         super().__init__("Tz", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+        """
+        Invoke the Tz operator
+        """
         assert isinstance(operands[0], Decimal)
         canvas.graphics_state.horizontal_scaling = operands[0]
