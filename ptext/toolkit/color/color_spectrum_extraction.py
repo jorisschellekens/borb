@@ -6,7 +6,7 @@ from ptext.pdf.canvas.color.color import RGBColor
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.page.page import Page
 
 
@@ -30,7 +30,7 @@ class ColorSpectrumExtraction(EventListener):
     def event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
-        if isinstance(event, TextRenderEvent):
+        if isinstance(event, ChunkOfTextRenderEvent):
             self._render_text(event)
         if isinstance(event, ImageRenderEvent):
             self._render_image(event)
@@ -39,12 +39,11 @@ class ColorSpectrumExtraction(EventListener):
         self.current_page += 1
         self.colors_per_page[self.current_page] = {}
 
-    def _render_text(self, event: TextRenderEvent):
+    def _render_text(self, event: ChunkOfTextRenderEvent):
         assert event is not None
-        w = event.get_baseline().length()
-        h = event.get_font_size()
-        c = event.get_font_color()
-        self._register_color(w * h, c)
+        s = int(event.get_bounding_box().width * event.get_bounding_box().height)
+        c = event.font_color.to_rgb()
+        self._register_color(s, c)
 
     def _render_image(self, event: ImageRenderEvent):
         w = event.get_width()

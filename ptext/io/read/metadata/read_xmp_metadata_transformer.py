@@ -69,7 +69,7 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
             # make copy so that we can add attributes like _parent and _listeners
             xml_root_out = Element(xml_root_orig.tag)
             xml_root_out.set_parent(parent_object)  # type: ignore [attr-defined]
-            for e in xml_root_orig.getchildren():
+            for e in xml_root_orig:
                 xml_root_out.append(e)
 
         except Exception as ex:

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    (PDF 1.2) Same as SCN but used for nonstroking operations.
+"""
 from decimal import Decimal
 from typing import List
 

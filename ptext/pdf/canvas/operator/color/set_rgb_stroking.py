@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Set the stroking colour space to DeviceRGB (or the DefaultRGB colour
+    space; see 8.6.5.6, "Default Colour Spaces") and set the colour to use for
+    stroking operations. Each operand shall be a number between 0.0
+    (minimum intensity) and 1.0 (maximum intensity).
+"""
 from decimal import Decimal
 from typing import List
 

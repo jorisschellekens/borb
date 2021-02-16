@@ -1,12 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Xref tables are part of the original PDF file specification
+    and one of the features which gives the PDF file format its flexibility.
+    A PDF consists of lots of objects and this tells you where they are located in the file.
+    This is actually very useful, as a PDF Reader just has to read these values
+    and then it loads the objects only when they are needed.
+    It does not need to parse or load the whole file.
+"""
 import io
 import logging
 import typing
 from decimal import Decimal
 from typing import Union, Optional
 
-from ptext.exception.pdf_exception import (
-    PDFSyntaxError,
-)
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import TokenType
@@ -16,6 +24,15 @@ logger = logging.getLogger(__name__)
 
 
 class XREF(Dictionary):
+    """
+    Xref tables are part of the original PDF file specification
+    and one of the features which gives the PDF file format its flexibility.
+    A PDF consists of lots of objects and this tells you where they are located in the file.
+    This is actually very useful, as a PDF Reader just has to read these values
+    and then it loads the objects only when they are needed.
+    It does not need to parse or load the whole file.
+    """
+
     def __init__(self):
         super(XREF, self).__init__()
         self.entries: typing.List[Reference] = []
@@ -78,11 +95,7 @@ class XREF(Dictionary):
         if token.text == "startxref":
             token = tok.next_non_comment_token()
             assert token is not None
-            if token.token_type != TokenType.NUMBER:
-                raise PDFSyntaxError(
-                    byte_offset=token.byte_offset, message="invalid XREF"
-                )
-
+            assert token.token_type == TokenType.NUMBER
             start_of_xref_offset = int(token.text)
             src.seek(start_of_xref_offset)
 

@@ -7,7 +7,7 @@ from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.text_render_event import (
-    TextRenderEvent,
+    ChunkOfTextRenderEvent,
     LeftToRightComparator,
 )
 from ptext.pdf.page.page import Page
@@ -22,7 +22,7 @@ class RegularExpressionTextExtraction(EventListener):
         self.current_page = -1
 
     def event_occurred(self, event: Event) -> None:
-        if isinstance(event, TextRenderEvent):
+        if isinstance(event, ChunkOfTextRenderEvent):
             self._render_text(event)
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
@@ -32,7 +32,7 @@ class RegularExpressionTextExtraction(EventListener):
     def get_text_per_page(self, page_nr: int) -> str:
         return self.text_per_page[page_nr] if page_nr in self.text_per_page else ""
 
-    def _render_text(self, text_render_info: TextRenderEvent):
+    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
 
         # init if needed
         if self.current_page not in self.text_render_info_events_per_page:
@@ -55,7 +55,7 @@ class RegularExpressionTextExtraction(EventListener):
         )
 
         # remove no-op
-        tris = [x for x in tris if len(x.get_text().replace(" ", "")) != 0]
+        tris = [x for x in tris if len(x.text.replace(" ", "")) != 0]
 
         # skip empty
         if len(tris) == 0:
@@ -67,37 +67,41 @@ class RegularExpressionTextExtraction(EventListener):
         poss = []
 
         # iterate over the TextRenderInfo objects to get the text
-        last_baseline_bottom = tris[0].get_baseline().y0
-        last_baseline_right = tris[0].get_baseline().x0
+        last_baseline_bottom = tris[0].get_baseline().y
+        last_baseline_right = tris[0].get_baseline().x
         text = ""
         for t in tris:
 
             # add newline if needed
-            if abs(t.get_baseline().y0 - last_baseline_bottom) > 10 and len(text) > 0:
+            if abs(t.get_baseline().y - last_baseline_bottom) > 10 and len(text) > 0:
                 if text.endswith(" "):
                     text = text[0:-1]
                 text += "\n"
-                text += t.get_text()
-                last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
-                last_baseline_bottom = t.get_baseline().y0
+                text += t.text
+                last_baseline_right = (
+                    t.get_bounding_box().x + t.get_bounding_box().width
+                )
+                last_baseline_bottom = t.get_baseline().y
                 poss.append(len(text))
                 continue
 
             # check text
-            if t.get_text().startswith(" ") or text.endswith(" "):
-                text += t.get_text()
-                last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
+            if t.text.startswith(" ") or text.endswith(" "):
+                text += t.text
+                last_baseline_right = (
+                    t.get_bounding_box().x + t.get_bounding_box().width
+                )
                 poss.append(len(text))
                 continue
 
             # add space if needed
-            delta = abs(last_baseline_right - t.get_baseline().x0)
-            space_width = round(t.get_space_character_width_in_text_space(), 1)
+            delta = abs(last_baseline_right - t.get_bounding_box().x)
+            space_width = round(t.get_space_character_width_estimate(), 1)
             text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
-            text += t.get_text()
-            last_baseline_right = max(t.get_baseline().x0, t.get_baseline().x1)
+            text += t.text
+            last_baseline_right = t.get_bounding_box().x + t.get_bounding_box().width
             poss.append(len(text))
             continue
 
@@ -117,7 +121,7 @@ class RegularExpressionTextExtraction(EventListener):
 
     def get_matched_text_render_info_events_per_page(
         self, page_number: int
-    ) -> List[TextRenderEvent]:
+    ) -> List[ChunkOfTextRenderEvent]:
         if page_number not in self.matched_text_render_info_events_per_page:
             return []
         return self.matched_text_render_info_events_per_page[page_number]

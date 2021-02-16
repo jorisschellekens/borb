@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    A conforming reader shall maintain an internal data structure called the graphics state that holds current
+    graphics control parameters. These parameters define the global framework within which the graphics
+    operators execute.
+"""
 import copy
 import typing
 from decimal import Decimal

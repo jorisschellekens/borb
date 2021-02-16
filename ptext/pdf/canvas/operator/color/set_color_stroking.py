@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    (PDF 1.2) Same as SC but also supports Pattern, Separation, DeviceN
+    and ICCBased colour spaces.
+"""
 from decimal import Decimal
 from typing import List
 

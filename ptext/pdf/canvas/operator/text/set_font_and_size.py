@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Set the text font, T f , to font and the text font size, T fs , to size. font shall be
+    the name of a font resource in the Font subdictionary of the current
+    resource dictionary; size shall be a number representing a scale factor.
+    There is no initial value for either font or size; they shall be specified
+    explicitly by using Tf before any text is shown.
+"""
 from typing import List, Optional
 
 from ptext.io.read.types import AnyPDFType, Decimal

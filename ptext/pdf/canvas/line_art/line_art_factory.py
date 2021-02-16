@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class provides static convenience methods for generating points of common line-art in electronic documents,
+    such as arrows, rectangles, triangles, regular n-gons, stars, etc
+"""
 import math
 import typing
 from decimal import Decimal
@@ -7,6 +14,24 @@ from ptext.pdf.canvas.geometry.rectangle import Rectangle
 
 
 class LineArtFactory:
+    """
+    This class provides static convenience methods for generating points of common line-art in electronic documents,
+    such as arrows, rectangles, triangles, regular n-gons, stars, etc
+    """
+
+    @staticmethod
+    def rectangle(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a rectangle that matches the given bounding box
+        """
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (bounding_box.x, bounding_box.y),
+        ]
+
     @staticmethod
     def right_angled_triangle(
         bounding_box: Rectangle,

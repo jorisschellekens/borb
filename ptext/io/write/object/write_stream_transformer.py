@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing Stream objects
+"""
 import logging
 import typing
 from typing import Optional
@@ -19,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 class WriteStreamTransformer(WriteBaseTransformer):
     """
-    This implementation of WriteBaseTransformer is responsible for writing Streams
+    This implementation of WriteBaseTransformer is responsible for writing Stream objects
     """
 
     def can_be_transformed(self, any: AnyPDFType):

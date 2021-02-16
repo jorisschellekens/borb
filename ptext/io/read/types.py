@@ -39,26 +39,41 @@ def add_base_methods(cls):
         return tmp
 
     def set_reference(self, reference: "Reference"):
+        """
+        This method sets the Reference for this Object
+        """
         setattr(self, "_reference", reference)
         return self
 
     def get_reference(self):
+        """
+        This function returns the Reference for this Object
+        """
         if not hasattr(self, "_reference"):
             setattr(self, "_reference", None)
         return getattr(self, "_reference")
 
     def can_be_referenced(self):
+        """
+        This function returns whether this Object can
+        be referenced. If not, this Object is always immediately
+        written to the output stream
+        """
         if not hasattr(self, "_can_be_referenced"):
             setattr(self, "_can_be_referenced", True)
         return getattr(self, "_can_be_referenced")
 
     def set_can_be_referenced(self, a_flag: bool):
+        """
+        This method sets a flag, indicating whether this Object
+        can be referenced
+        """
         setattr(self, "_can_be_referenced", a_flag)
         return self
 
     def add_event_listener(self, event_listener):
         """
-        Add an EventListener to this object
+        This method adds an EventListener to this Object
         """
         if not hasattr(self, "_event_listeners"):
             setattr(self, "_event_listeners", [])
@@ -67,7 +82,7 @@ def add_base_methods(cls):
 
     def event_occurred(self, event):
         """
-        Notify the EventListeners registered
+        This method notifies the EventListeners registered
         to this object that an Event has occurred
         """
         if not hasattr(self, "_event_listeners"):
@@ -122,6 +137,8 @@ def add_base_methods(cls):
 
 @add_base_methods
 class Decimal(Decimal):  # type: ignore [no-redef]
+    """Floating point class for decimal arithmetic."""
+
     pass
 
 

@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Paint the specified XObject. The operand name shall appear as a key in
+    the XObject subdictionary of the current resource dictionary (see 7.8.3,
+    "Resource Dictionaries"). The associated value shall be a stream whose
+    Type entry, if present, is XObject.
+"""
 from typing import List
 
 import PIL  # type: ignore [import]

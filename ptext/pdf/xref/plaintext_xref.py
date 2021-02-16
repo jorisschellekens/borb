@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    The cross-reference table contains information that permits random access to indirect objects within the file so
+    that the entire file need not be read to locate any particular object.
+"""
 import io
 from typing import Optional, List, Union
 
-from ptext.exception.pdf_exception import (
-    PDFSyntaxError,
-)
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import TokenType
 from ptext.io.read.types import Reference, Dictionary, Name
@@ -89,23 +93,15 @@ class PlainTextXREF(XREF):
         for i in range(0, number_of_objects):
             tokens = [tok.next_non_comment_token() for _ in range(0, 3)]
             assert tokens[0] is not None
+            assert tokens[0].text not in ["trailer", "startxref"]
+            assert tokens[0].token_type == TokenType.NUMBER
+
             assert tokens[1] is not None
+            assert tokens[1].token_type == TokenType.NUMBER
+
             assert tokens[2] is not None
-            if tokens[0].text in ["trailer", "startxref"]:
-                raise PDFSyntaxError(
-                    byte_offset=tokens[0].byte_offset,
-                    message="unexpected EOF while processing XREF",
-                )
-            if (
-                tokens[0].token_type != TokenType.NUMBER
-                or tokens[1].token_type != TokenType.NUMBER
-                or tokens[2].token_type != TokenType.OTHER
-                or tokens[2].text not in ["f", "n"]
-            ):
-                raise PDFSyntaxError(
-                    byte_offset=tokens[0].byte_offset,
-                    message="invalid XREF line",
-                )
+            assert tokens[2].token_type == TokenType.OTHER
+            assert tokens[2].text in ["f", "n"]
 
             indirect_references.append(
                 Reference(
@@ -134,11 +130,7 @@ class PlainTextXREF(XREF):
         # if there is a keyword "trailer" the next token should be TokenType.START_DICT
         token = tok.next_non_comment_token()
         assert token is not None
-        if token.token_type != TokenType.START_DICT:
-            raise PDFSyntaxError(
-                byte_offset=tok.tell(),
-                message="invalid XREF trailer",
-            )
+        assert token.token_type == TokenType.START_DICT
 
         # go back 2 chars "<<"
         src.seek(-2, io.SEEK_CUR)
@@ -149,11 +141,8 @@ class PlainTextXREF(XREF):
         # process startxref
         token = tok.next_non_comment_token()
         assert token is not None
-        if token.token_type != TokenType.OTHER or token.text != "startxref":
-            raise PDFSyntaxError(
-                byte_offset=token.byte_offset,
-                message="start of XREF not found",
-            )
+        assert token.token_type == TokenType.OTHER
+        assert token.text == "startxref"
 
         # return
         return trailer_dict

@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+ASCII text-based font format developed by Adobe; stores font metric data for a Type 1 PostScript file;
+contains the master design of a specific font, which defines the way each character of the font looks.
+"""
 
 import os
 import pathlib
@@ -6,7 +12,7 @@ import re
 import typing
 from typing import Optional
 
-from ptext.io.read.types import List, Name, Decimal
+from ptext.io.read.types import List, Name, Decimal, String
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.font_descriptor import FontDescriptor
 
@@ -74,27 +80,58 @@ class AdobeFontMetrics:
         out_font_descriptor[Name("FontName")] = Name(
             AdobeFontMetrics._find_and_parse_as_string(lines, "FontName")
         )
-        out_font_descriptor[Name("FontFamily")] = Name(
+        out_font_descriptor[Name("FontFamily")] = String(
             AdobeFontMetrics._find_and_parse_as_string(lines, "FamilyName")
         )
+
         # FontStretch
+
         # FontWeight
+
         # Flags
+
         # FontBBox
+        fontbbox = [
+            Decimal(x)
+            for x in AdobeFontMetrics._find_and_parse_as_string(
+                lines, "FontBBox"
+            ).split(" ")
+        ]
+        out_font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)
+        for x in fontbbox:
+            out_font_descriptor[Name("FontBBox")].append(x)
+
         # ItalicAngle
+        out_font_descriptor[Name("ItalicAngle")] = Decimal(
+            AdobeFontMetrics._find_and_parse_as_float(lines, "ItalicAngle")
+        )
+
         # Ascent
         ascent = AdobeFontMetrics._find_and_parse_as_float(lines, "Ascender")
         if ascent:
             out_font_descriptor[Name("Ascent")] = Decimal(ascent)
+        else:
+            out_font_descriptor[Name("Ascent")] = Decimal(0)
+
         # Descent
         descent = AdobeFontMetrics._find_and_parse_as_float(lines, "Descender")
         if descent:
             out_font_descriptor[Name("Descent")] = Decimal(descent)
+        else:
+            out_font_descriptor[Name("Descent")] = Decimal(0)
+
+        # Flags
+        out_font_descriptor[Name("Flags")] = Decimal(131104)
+
         # Leading
+
         # CapHeight
         capheight = AdobeFontMetrics._find_and_parse_as_float(lines, "CapHeight")
         if capheight:
             out_font_descriptor[Name("CapHeight")] = Decimal(capheight)
+        else:
+            out_font_descriptor[Name("CapHeight")] = Decimal(0)
+
         # XHeight
         xheight = AdobeFontMetrics._find_and_parse_as_float(lines, "XHeight")
         if xheight:
@@ -105,12 +142,15 @@ class AdobeFontMetrics:
         if stemv:
             assert stemv is not None
             out_font_descriptor[Name("StemV")] = Decimal(stemv)
-
+        else:
+            out_font_descriptor[Name("StemV")] = Decimal(0)
         # StemH
         stemh = AdobeFontMetrics._find_and_parse_as_float(lines, "StemH")
         if stemh:
             assert stemh is not None
             out_font_descriptor[Name("StemH")] = Decimal(stemh)
+        else:
+            out_font_descriptor[Name("StemH")] = Decimal(0)
 
         # AvgWidth
         avgwidth = AdobeFontMetrics._find_and_parse_as_float(lines, "AvgWidth")

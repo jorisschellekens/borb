@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Move to the next line and show a text string. This operator shall have the
+    same effect as the code
+    T*
+    string Tj
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
@@ -18,5 +27,8 @@ class MoveToNextLineShowText(CanvasOperator):
         super().__init__("'", 1)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the ' operator
+        """
         MoveToNextLine().invoke(canvas, [])
         ShowText().invoke(canvas, operands)

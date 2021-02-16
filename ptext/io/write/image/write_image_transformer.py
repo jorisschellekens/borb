@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing Image objects
+"""
 import io
 from typing import Optional
 
@@ -36,12 +42,13 @@ class WriteImageTransformer(WriteBaseTransformer):
         except:
             pass
 
-        try:
-            with io.BytesIO() as output:
-                object_to_transform.save(output, format="PNG")
-                contents = output.getvalue()
-        except:
-            pass
+        if contents is None:
+            try:
+                with io.BytesIO() as output:
+                    object_to_transform.save(output, format="PNG")
+                    contents = output.getvalue()
+            except:
+                pass
 
         # build corresponding Stream (XObject)
         out_value = Stream()

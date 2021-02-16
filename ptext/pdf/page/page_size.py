@@ -1,7 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This Enum provides a convenient way of getting all common paper page sizes
+"""
 import enum
 
 
 class PageSize(enum.Enum):
+    """
+    This Enum provides a convenient way of getting all common paper page sizes
+    """
 
     A0_PORTRAIT = (2384, 3370)
     A0_LANDSCAPE = (3370, 2384)

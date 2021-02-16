@@ -2,8 +2,6 @@ import enum
 import io
 from typing import Optional
 
-from ptext.exception.pdf_exception import PDFEOFError, PDFSyntaxError
-
 
 class TokenType(enum.IntEnum):
     NUMBER = 1
@@ -112,12 +110,8 @@ class LowLevelTokenizer:
         if ch == ">":
             out_pos = self.io_source.tell() - 1
             ch = self._next_char()
-            # UNEXPECTED CHARACTER AFTER >
-            if ch != ">":
-                raise PDFSyntaxError(
-                    message="invalid character, expected >, received %s" % ch,
-                    byte_offset=self.io_source.tell(),
-                )
+            # CHECK UNEXPECTED CHARACTER AFTER >
+            assert ch == ">"
             return Token(out_pos, TokenType.END_DICT, ">>")
 
         # COMMENT
@@ -187,13 +181,8 @@ class LowLevelTokenizer:
                 out_str += ch
                 if bracket_nesting_level == 0:
                     break
-            if len(ch) == 0:
-                raise PDFEOFError()
-            if out_str.endswith("\\"):
-                raise PDFSyntaxError(
-                    message="unterminated escape sequence",
-                    byte_offset=self.io_source.tell(),
-                )
+            assert len(ch) != 0
+            assert not out_str.endswith("\\")
             return Token(out_pos, TokenType.STRING, out_str)
 
         # OTHER

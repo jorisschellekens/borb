@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+In mathematics, a matrix (plural matrices) is a rectangular array or table of numbers,
+symbols, or expressions, arranged in rows and columns.
+"""
 from decimal import Decimal
 from typing import List
 
@@ -15,6 +22,9 @@ class Matrix:
     """
 
     def __init__(self):
+        """
+        Initialize a new Matrix
+        """
         self.mtx = [[], [], []]
 
     @staticmethod
@@ -42,6 +52,10 @@ class Matrix:
         return m
 
     def mul(self, y: "Matrix") -> "Matrix":
+        """
+        This function multiplies this Matrix with another Matrix,
+        returning the result
+        """
         m_vals = [
             [Decimal(0), Decimal(0), Decimal(0)],
             [Decimal(0), Decimal(0), Decimal(0)],
@@ -56,6 +70,11 @@ class Matrix:
         return m
 
     def cross(self, x: Decimal, y: Decimal, z: Decimal):
+        """
+        This method calculates the dot-product of this Matrix
+        with an input vector (represented by 3 input Decimal objects)
+        and returns the result
+        """
         x2 = x * self[0][0] + y * self[1][0] + z * self[2][0]
         y2 = x * self[0][1] + y * self[1][1] + z * self[2][1]
         z2 = x * self[0][2] + y * self[1][2] + z * self[2][2]
@@ -78,6 +97,14 @@ class Matrix:
         )
 
     def determinant(self) -> Decimal:
+        """
+        In linear algebra, the determinant is a scalar value that can be computed from the elements of a square matrix
+        and encodes certain properties of the linear transformation described by the matrix.
+        The determinant of a matrix A is denoted det(A), det A, or |A|.
+        Geometrically, it can be viewed as the volume scaling factor of the linear transformation described by the matrix.
+        This is also the signed volume of the n-dimensional parallelepiped spanned by the column or row vectors of the matrix.
+        The determinant is positive or negative according to whether the linear transformation preserves or reverses the orientation of a real vector space.
+        """
         return (
             self.mtx[0][0]
             * (self.mtx[1][1] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][1])

@@ -1,6 +1,12 @@
-import copy
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from ptext.exception.pdf_exception import PDFSyntaxError
+"""
+    Decompresses data encoded using the LZW (Lempel-Ziv-
+    Welch) adaptive compression method, reproducing the original
+    text or binary data.
+"""
+import copy
 
 
 class LZWDecode:
@@ -42,7 +48,7 @@ class LZWDecode:
                 entry = copy.deepcopy(w)
                 entry.append(w[0])
             else:
-                raise PDFSyntaxError("malformed lzw byte stream")
+                assert False
             bytes_out.extend(entry)
 
             # Add w+entry[0] to the dictionary.

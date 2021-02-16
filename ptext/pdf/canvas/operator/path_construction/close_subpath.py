@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Close the current subpath by appending a straight line
+    segment from the current point to the starting point of the
+    subpath. If the current subpath is already closed, h shall do
+    nothing.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType

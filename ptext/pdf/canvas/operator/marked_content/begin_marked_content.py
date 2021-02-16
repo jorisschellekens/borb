@@ -1,5 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""
+    Begin a marked-content sequence terminated by a balancing EMC
+    operator. tag shall be a name object indicating the role or significance of
+    the sequence.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType, Name

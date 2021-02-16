@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing Name objects
+"""
 from typing import Optional
 
 from ptext.io.read.types import AnyPDFType, Name

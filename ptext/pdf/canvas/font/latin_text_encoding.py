@@ -1,4 +1,3 @@
-from ptext.exception.pdf_exception import PDFSyntaxError
 from ptext.pdf.canvas.font.adobe_glyph_dictionary import ADOBE_GLYPH_DICTIONARY
 
 
@@ -230,5 +229,5 @@ def get_encoding(encoding_name: str) -> Encoding:
         return MacRoman()
     elif encoding_upper in ["WINGDINGS"]:
         return WingDings()
-    else:
-        raise PDFSyntaxError("unknown byte-to-char encoding %s" % encoding_name)
+    # default
+    assert False

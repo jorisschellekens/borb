@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    End a text object, discarding the text matrix.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType

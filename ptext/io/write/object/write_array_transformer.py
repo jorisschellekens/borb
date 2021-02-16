@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing List objects
+"""
 import logging
 import typing
 from typing import Optional
@@ -20,6 +26,10 @@ logger = logging.getLogger(__name__)
 
 
 class WriteArrayTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing List objects
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, List)
 

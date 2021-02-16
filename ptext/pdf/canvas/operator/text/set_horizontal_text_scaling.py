@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Set the horizontal scaling, Th , to (scale ÷ 100). scale shall be a number
+    specifying the percentage of the normal width. Initial value: 100 (normal
+    width).
+"""
 from decimal import Decimal
 from typing import List
 

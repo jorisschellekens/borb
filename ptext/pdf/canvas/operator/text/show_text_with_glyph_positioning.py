@@ -1,8 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Show one or more text strings, allowing individual glyph positioning. Each
+    element of array shall be either a string or a number.
+"""
 from decimal import Decimal
 from typing import List
 
 from ptext.io.read.types import AnyPDFType, String
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -36,11 +43,11 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
             # display string
             if isinstance(obj, String):
                 assert isinstance(obj, String)
-                tri = TextRenderEvent(canvas.graphics_state, obj)
+                tri = ChunkOfTextRenderEvent(canvas.graphics_state, obj)
                 # render
                 canvas.event_occurred(tri)
                 # update text rendering location
-                canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().length()
+                canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width
                 continue
 
             # adjust

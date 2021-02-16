@@ -2,7 +2,7 @@ import typing
 
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 
 
 class LocationFilter(EventListener):
@@ -23,11 +23,10 @@ class LocationFilter(EventListener):
 
     def event_occurred(self, event: "Event") -> None:
         # filter TextRenderEvent
-        if isinstance(event, TextRenderEvent):
-            baseline = event.get_baseline()
-            min_x = min(baseline.x0, baseline.x1)
-            min_y = min(baseline.y0, baseline.y1)
-            if self.x0 < min_x < self.x1 and self.y0 < min_y < self.y1:
+        if isinstance(event, ChunkOfTextRenderEvent):
+            x = event.get_bounding_box().x
+            y = event.get_baseline().y
+            if self.x0 < x < self.x1 and self.y0 < y < self.y1:
                 for l in self.listeners:
                     l.event_occurred(event)
             return

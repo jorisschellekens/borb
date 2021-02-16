@@ -85,9 +85,15 @@ class DocumentInfo:
             return None
 
     def get_number_of_pages(self) -> Optional[int]:
+        """
+        This function returns the number of pages in the Document
+        """
         return self.document["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
 
     def get_file_size(self) -> Optional[int]:
+        """
+        This function returns the filesize (in bytes) of this Document
+        """
         return int(self.document("FileSize"))
 
     def get_ids(self) -> Optional[List[str]]:
@@ -128,6 +134,10 @@ class XMPDocumentInfo(DocumentInfo):
         super(XMPDocumentInfo, self).__init__(document)
 
     def get_creation_date(self) -> Optional[str]:
+        """
+        (Optional) The date and time the document was created, in human-
+        readable form (see 7.9.4, “Dates”).
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -138,6 +148,11 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_modification_date(self) -> Optional[str]:
+        """
+        Required if PieceInfo is present in the document catalogue;
+        otherwise optional; PDF 1.1) The date and time the document was
+        most recently modified, in human-readable form (see 7.9.4, “Dates”).
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -158,6 +173,9 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_title(self) -> Optional[str]:
+        """
+        (Optional; PDF 1.1) The document’s title.
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]

@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Modify the current transformation matrix (CTM) by concatenating
+    the specified matrix (see 8.3.2, "Coordinate Spaces"). Although the
+    operands specify a matrix, they shall be written as six separate
+    numbers, not as an array.
+"""
 from decimal import Decimal
 from typing import List
 
@@ -18,6 +27,9 @@ class ModifyTransformationMatrix(CanvasOperator):
         super().__init__("cm", 6)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the cm operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)

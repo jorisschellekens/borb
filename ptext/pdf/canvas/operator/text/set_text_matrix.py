@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Set the text matrix, Tm , and the text line matrix, Tlm :
+    Tm = Tlm = [[a,b,0], [c,d,0],[e,f,1]]
+"""
 import copy
 from decimal import Decimal
 from typing import List
@@ -11,10 +18,12 @@ class SetTextMatrix(CanvasOperator):
     """
     Set the text matrix, Tm , and the text line matrix, Tlm :
     Tm = Tlm = [[a,b,0], [c,d,0],[e,f,1]]
+
     The operands shall all be numbers, and the initial value for Tm and Tlm
     shall be the identity matrix, [ 1 0 0 1 0 0 ]. Although the operands
     specify a matrix, they shall be passed to Tm as six separate numbers, not
     as an array.
+
     The matrix specified by the operands shall not be concatenated onto the
     current text matrix, but shall replace it.
     """

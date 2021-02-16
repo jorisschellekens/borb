@@ -1,8 +1,15 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    A composite font, also called a Type 0 font, is one whose glyphs are obtained from a fontlike object called a
+    CIDFont. A composite font shall be represented by a font dictionary whose Subtype value is Type0. The Type
+    0 font is known as the root font, and its associated CIDFont is called its descendant.
+"""
 import copy
 from decimal import Decimal
 from typing import Optional
 
-from ptext.exception.pdf_exception import PDFTypeError
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.glyph_line import GlyphLine
 
@@ -15,35 +22,63 @@ class FontType0(Font):
     """
 
     def get_average_character_width(self) -> Optional[Decimal]:
+        """
+        (Optional) The average width of glyphs in the font. Default value: 0.
+        """
         return self.get_descendant_font().get_average_character_width()
 
     def get_ascent(self) -> Optional[Decimal]:
+        """
+        (Required, except for Type 3 fonts) The maximum height above the
+        baseline reached by glyphs in this font. The height of glyphs for
+        accented characters shall be excluded.
+        """
         return self.get_descendant_font().get_ascent()
 
     def get_descent(self) -> Optional[Decimal]:
+        """
+        (Required, except for Type 3 fonts) The maximum depth below the
+        baseline reached by glyphs in this font. The value shall be a negative
+        number.
+        """
         return self.get_descendant_font().get_descent()
 
     def get_single_character_width(self, character_code: int) -> Optional[Decimal]:
+        """
+        Get the width (in text space) of a given character code.
+        Returns None if the character code can not be represented in this Font.
+        """
         return self.get_descendant_font().get_single_character_width(character_code)
 
     def get_missing_character_width(self) -> Decimal:
+        """
+        (Optional) The width to use for character codes whose widths are not
+        specified in a font dictionary’s Widths array. This shall have a
+        predictable effect only if all such codes map to glyphs whose actual
+        widths are the same as the value of the MissingWidth entry. Default
+        value: 0.
+        """
         return self.get_descendant_font().get_missing_character_width()
 
     def get_font_name(self) -> Optional[str]:
+        """
+        (Required) The PostScript name of the font. For Type 1 fonts, this is
+        always the value of the FontName entry in the font program; for more
+        information, see Section 5.2 of the PostScript Language Reference,
+        Third Edition. The PostScript name of the font may be used to find the
+        font program in the conforming reader or its environment. It is also the
+        name that is used when printing to a PostScript output device.
+        """
         return self.get_descendant_font().get_font_name()
 
     def get_descendant_font(self) -> Font:
-        if "DescendantFonts" not in self:
-            raise PDFTypeError(expected_type=list, received_type=None)
+        assert "DescendantFonts" in self
         if isinstance(self["DescendantFonts"], list):
-            if not isinstance(self["DescendantFonts"][0], Font):
-                raise PDFTypeError(
-                    expected_type=Font, received_type=self["DescendantFonts"][0]
-                )
+            assert isinstance(self["DescendantFonts"][0], Font)
             return self["DescendantFonts"][0]
         if isinstance(self["DescendantFonts"], Font):
             return self["DescendantFonts"]
-        raise PDFTypeError(expected_type=Font, received_type=None)
+        assert False
 
     def build_glyph_line(self, content) -> GlyphLine:
         if self._font_encoding is None:

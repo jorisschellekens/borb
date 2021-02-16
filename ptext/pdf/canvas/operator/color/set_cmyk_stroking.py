@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Set the stroking colour space to DeviceCMYK (or the DefaultCMYK
+    colour space; see 8.6.5.6, "Default Colour Spaces") and set the colour to
+    use for stroking operations. Each operand shall be a number between 0.0
+    (zero concentration) and 1.0 (maximum concentration). The behaviour of
+    this operator is affected by the overprint mode (see 8.6.7, "Overprint
+    Control").
+"""
 from decimal import Decimal
 from typing import List
 
@@ -20,6 +31,9 @@ class SetCMYKStroking(CanvasOperator):
         super().__init__("K", 4)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the K operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)

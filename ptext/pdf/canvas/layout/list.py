@@ -8,11 +8,23 @@ from ptext.pdf.page.page import Page
 
 
 class UnorderedList(LayoutElement):
-    def __init__(self):
+    def __init__(self, parent: typing.Optional["LayoutElement"] = None):
+        self.parent = parent
         self.items: typing.List[LayoutElement] = []
 
-    def add(self, element: LayoutElement):
+    def add(self, element: LayoutElement) -> "UnorderedList":
         self.items.append(element)
+        element.parent = self
+        return self
+
+    def _determine_level(self, layout_element: LayoutElement) -> int:
+        level = 0
+        e = layout_element
+        while e.parent is not None:
+            if isinstance(e, UnorderedList):
+                level += 1
+            e = e.parent
+        return level
 
     def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
         last_item_bottom: Decimal = bounding_box.y + bounding_box.height
@@ -20,9 +32,12 @@ class UnorderedList(LayoutElement):
         for i in self.items:
             # bullet character
             ChunkOfText(
-                text="0",
-                font_size=Decimal(12),
-                font_color=X11Color("Black"),  # TODO use bullet character
+                text=["l", "m", "n"][
+                    self._determine_level(i) % 3
+                ],  # this is 006C in MacRoman encoding, which maps to ● in Zapf Dingbats
+                font_size=Decimal(8),
+                font_color=X11Color("Black"),
+                font="Zapfdingbats",
             ).layout(
                 page=page,
                 bounding_box=Rectangle(
@@ -44,12 +59,18 @@ class UnorderedList(LayoutElement):
             )
             # set new last_item_bottom
             last_item_bottom = item_rect.y
-        return Rectangle(
+        layout_rect = Rectangle(
             bounding_box.x,
             last_item_bottom,
             bounding_box.width,
             bounding_box.y + bounding_box.height - last_item_bottom,
         )
+
+        # set bounding box
+        self.set_bounding_box(layout_rect)
+
+        # return
+        return layout_rect
 
 
 class OrderedList(LayoutElement):
@@ -57,8 +78,9 @@ class OrderedList(LayoutElement):
         self.items: typing.List[LayoutElement] = []
         self.index_offset = index_offset
 
-    def add(self, element: LayoutElement):
+    def add(self, element: LayoutElement) -> "OrderedList":
         self.items.append(element)
+        return self
 
     def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
         last_item_bottom: Decimal = bounding_box.y + bounding_box.height
@@ -90,9 +112,16 @@ class OrderedList(LayoutElement):
             )
             # set new last_item_bottom
             last_item_bottom = item_rect.y
-        return Rectangle(
+
+        layout_rect = Rectangle(
             bounding_box.x,
             last_item_bottom,
             bounding_box.width,
             bounding_box.y + bounding_box.height - last_item_bottom,
         )
+
+        # set bounding box
+        self.set_bounding_box(layout_rect)
+
+        # return
+        return layout_rect

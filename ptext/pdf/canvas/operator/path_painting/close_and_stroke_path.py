@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Close and stroke the path. This operator shall have the same effect as the
+    sequence h S.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType

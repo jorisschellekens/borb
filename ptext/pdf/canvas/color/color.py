@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module provides implementations of various colors and their respective colormodels,
+    including: RGB, CMYK, grayscale, hex and X11
+"""
 from decimal import Decimal
 
 
@@ -87,6 +94,14 @@ class CMYKColor(Color):
 
 
 class GrayColor(Color):
+    """
+    In digital photography, computer-generated imagery, and colorimetry,
+    a grayscale or image is one in which the value of each pixel is a single sample representing only an amount of light;
+    that is, it carries only intensity information.
+    Grayscale images, a kind of black-and-white or gray monochrome, are composed exclusively of shades of gray.
+    The contrast ranges from black at the weakest intensity to white at the strongest.
+    """
+
     def __init__(self, g: Decimal):
         self.gray_level = g
 
@@ -101,6 +116,20 @@ class GrayColor(Color):
 
 
 class HexColor(RGBColor):
+    """
+    A hex triplet is a six-digit, three-byte hexadecimal number used in HTML, CSS, SVG, and other computing applications to represent colors.
+    The bytes represent the red, green, and blue components of the color.
+    One byte represents a number in the range 00 to FF (in hexadecimal notation), or 0 to 255 in decimal notation.
+    This represents the least (0) to the most (255) intensity of each of the color components.
+
+    Thus web colors specify colors in the 24-bit RGB color scheme.
+
+    The hex triplet is formed by concatenating three bytes in hexadecimal notation, in the following order:
+    - Byte 1: red value (color type red)
+    - Byte 2: green value (color type green)
+    - Byte 3: blue value (color type blue)
+    """
+
     def __init__(self, hex_string: str):
         if hex_string.startswith("#"):
             hex_string = hex_string[1:]

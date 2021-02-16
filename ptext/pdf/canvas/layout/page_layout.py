@@ -1,4 +1,3 @@
-import typing
 import zlib
 
 from ptext.io.read.types import Decimal, Name

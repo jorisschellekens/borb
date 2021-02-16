@@ -4,6 +4,8 @@ from ptext.io.read.types import AnyPDFType
 
 
 class CanvasOperator:
+    """"""
+
     def __init__(self, text: str, number_of_operands: int):
         self.text = text
         self.number_of_operands = number_of_operands

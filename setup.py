@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains the build information for this project
+"""
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -5,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="ptext-joris-schellekens", # Replace with your own username
-    version="1.3.0",
+    version="1.4.0",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="pText is a library for reading, creating and manipulating PDF files in python.",

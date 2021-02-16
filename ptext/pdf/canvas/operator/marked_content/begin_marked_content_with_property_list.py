@@ -1,4 +1,14 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Begin a marked-content sequence with an associated property list,
+    terminated by a balancing EMC operator. tag shall be a name object
+    indicating the role or significance of the sequence. properties shall be
+    either an inline dictionary containing the property list or a name object
+    associated with it in the Properties subdictionary of the current resource
+    dictionary (see 14.6.2, “Property Lists”).
+"""
 
 from typing import List
 

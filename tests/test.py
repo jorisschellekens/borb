@@ -1,7 +1,9 @@
 import json
 import multiprocessing
 import os
+import sys
 import time
+import traceback
 import typing
 import unittest
 from pathlib import Path
@@ -100,17 +102,20 @@ class Test(unittest.TestCase):
                 )
             )
         except BaseException as e:
-            queue.put(
-                TestResult(input_file, time.time() - before, False, False, str(e))
+            _, _, tb = sys.exc_info()
+            traceback.print_tb(tb)  # Fixed format
+            tb_info = traceback.extract_tb(tb)
+            filename, line, func, text = tb_info[-1]
+            msg = "An error occurred on line {} in file {} when calling {}".format(
+                line, filename, func
             )
+            queue.put(TestResult(input_file, time.time() - before, False, False, msg))
 
     def _get_json_file(self):
         test_folder = Path(__file__)
         while test_folder.name != "tests":
             test_folder = test_folder.parent
-        json_path = (
-            test_folder / "results" / (self.__class__.__name__.lower() + ".json")
-        )
+        json_path = test_folder / "output" / (self.__class__.__name__.lower() + ".json")
         return json_path
 
     def get_test_results_as_json(self):

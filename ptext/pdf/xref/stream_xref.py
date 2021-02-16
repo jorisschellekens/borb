@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Beginning with PDF 1.5, cross-reference information may be stored in a cross-reference stream instead of in a
+    cross-reference table.
+"""
 import io
 from decimal import Decimal
 from typing import Optional, Union

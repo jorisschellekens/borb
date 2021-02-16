@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    A font descriptor specifies metrics and other attributes of a simple font or a CIDFont as a whole, as distinct from
+    the metrics of individual glyphs. These font metrics provide information that enables a conforming reader to
+    synthesize a substitute font or select a similar font when the font program is unavailable. The font descriptor
+    may also be used to embed the font program in the PDF file.
+"""
 import copy
 
 from ptext.io.read.types import Dictionary

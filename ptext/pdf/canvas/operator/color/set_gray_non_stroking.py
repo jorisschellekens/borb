@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Same as G but used for nonstroking operations.
+"""
 from decimal import Decimal
 from typing import List
 

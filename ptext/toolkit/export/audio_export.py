@@ -1,21 +1,24 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"""
+This implementation of EventListener exports a Page as an mp3 file, essentially reading the text on the Page
+"""
 import typing
 from decimal import Decimal
-from typing import Tuple
 
 from gtts import gTTS  # type: ignore [import]
 
-from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.page.page import Page
-from ptext.pdf.page.page_size import PageSize
-from ptext.toolkit.structure.paragraph.paragraph_render_event import (
-    ParagraphRenderEvent,
+
+from ptext.toolkit.structure.simple_paragraph_extraction import (
+    SimpleParagraphExtraction,
 )
 
 
-class AudioExport(EventListener):
+class AudioExport(SimpleParagraphExtraction):
     """
     This implementation of EventListener exports a Page as an mp3 file, essentially reading the text on the Page
     """
@@ -25,11 +28,11 @@ class AudioExport(EventListener):
         include_position: bool = True,
         language: str = "en",
         slow: bool = False,
-        default_page_size: Tuple[int, int] = PageSize.A4_PORTRAIT.value,
     ):
         """
         Constructs a new AudioExport
         """
+        super(AudioExport, self).__init__()
 
         # tts info
         self.include_position = include_position
@@ -38,77 +41,66 @@ class AudioExport(EventListener):
 
         # page info
         self.text_to_speak_for_page: typing.Dict[int, str] = {}
-        self.current_paragraph = -1
-        self.current_page: int = -1
-        self.current_page_size: typing.Optional[Tuple[int, int]] = None
-        self.default_page_size: Tuple[int, int] = default_page_size
 
-    def event_occurred(self, event: "Event") -> None:
-        if isinstance(event, BeginPageEvent):
-            self._begin_page(event.get_page())
-        if isinstance(event, ParagraphRenderEvent):
-            self._speak_paragraph(event)
-
-    def _begin_page(self, page: "Page"):
-        self.current_page += 1
-        self.current_page = 0
-        self.current_page_size = (
-            page.get_page_info().get_size() or self.default_page_size
+    def _end_page(self, page: Page):
+        super(AudioExport, self)._end_page(page)
+        self.text_to_speak_for_page[self.current_page_number] = "".join(
+            [
+                self._get_text_for_paragraph(p, i, self.current_page_number)
+                for i, p in enumerate(
+                    self.paragraphs_per_page[self.current_page_number]
+                )
+            ]
         )
 
-    def _speak_paragraph(self, event: "ParagraphRenderEvent"):
-        self.current_paragraph += 1
+    def _get_text_for_x(self, bounding_box: Rectangle) -> str:
+        w = self.current_page.get_page_info().get_width()
+        assert w is not None
+        xs = [Decimal(0), w * Decimal(0.33), w * Decimal(0.66), w]
+        x = bounding_box.x + bounding_box.width * Decimal(0.5)
+        if xs[0] <= x <= xs[1]:
+            return "left"
+        if xs[1] <= x <= xs[2]:
+            return "center"
+        if xs[2] <= x <= xs[3]:
+            return "right"
+
+    def _get_text_for_y(self, bounding_box: Rectangle) -> str:
+        h = self.current_page.get_page_info().get_height()
+        assert h is not None
+        ys = [h, h * Decimal(0.66), h * Decimal(0.33), Decimal(0)]
+        y = bounding_box.y
+        if ys[1] <= y <= ys[0]:
+            return "top"
+        if ys[2] <= y <= ys[1]:
+            return "middle"
+        if ys[3] <= y <= ys[2]:
+            return "bottom"
+
+    def _get_text_for_paragraph(
+        self, paragraph: Paragraph, paragraph_number: int, page_number: int
+    ):
 
         # text to speak
         text_to_speak_for_paragraph = ""
 
         # position
-        assert self.current_page_size is not None
         if self.include_position:
-            mid_x = (
-                event.get_bounding_box().x
-                + event.get_bounding_box().height / Decimal(2)
+            text_to_speak_for_paragraph += "Page %d, paragraph %d, %s %s." % (
+                page_number + 1,
+                paragraph_number + 1,
+                self._get_text_for_y(paragraph.bounding_box),
+                self._get_text_for_x(paragraph.bounding_box),
             )
-            mid_y = (
-                event.get_bounding_box().y + event.get_bounding_box().width / Decimal(2)
-            )
+        # text of paragraph
+        text_to_speak_for_paragraph += paragraph.text
 
-            xs = [
-                0,
-                int(self.current_page_size[0] / 3),
-                2 * int(self.current_page_size[0] / 3),
-                int(self.current_page_size[0]),
-            ]
-            xs_names = ["left", "middle", "right"]
+        # force period if needed
+        if text_to_speak_for_paragraph[-1] not in ["?", "!", "."]:
+            text_to_speak_for_paragraph += ". "
 
-            ys = [
-                0,
-                int(self.current_page_size[1] / 3),
-                2 * int(self.current_page_size[1] / 3),
-                int(self.current_page_size[1]),
-            ]
-            ys_names = ["top", "middle", "bottom"]
-
-            x_name = None
-            y_name = None
-            for i in range(0, len(xs) - 1):
-                if xs[i] <= mid_x <= xs[i + 1]:
-                    x_name = xs_names[i]
-            for i in range(0, len(ys) - 1):
-                if ys[i] <= mid_y <= ys[i + 1]:
-                    y_name = ys_names[i]
-
-            text_to_speak_for_paragraph += (
-                "Page %d, paragraph %d, located at %s %s. "
-                % (self.current_page + 1, self.current_paragraph, x_name, y_name)
-            )
-
-        text_to_speak_for_paragraph += event.get_text()
-
-        # append to text_to_speak_for_page
-        if self.current_page not in self.text_to_speak_for_page:
-            self.text_to_speak_for_page[self.current_page] = ""
-        self.text_to_speak_for_page[self.current_page] += text_to_speak_for_paragraph
+        # return
+        return text_to_speak_for_paragraph
 
     def get_audio_file_per_page(self, page_number: int, path: str):
         """

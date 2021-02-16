@@ -5,7 +5,7 @@ import typing
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page import Page
 
@@ -23,8 +23,8 @@ class FreeSpaceFinder(EventListener):
         y_grid = int(int(rectangle.y) / self.grid_resolution)
         w = int(int(rectangle.width) / self.grid_resolution)
         h = int(int(rectangle.height) / self.grid_resolution)
-        for i in range(x_grid, x_grid + w):
-            for j in range(y_grid, y_grid + h):
+        for i in range(x_grid - 1, x_grid + w + 1):
+            for j in range(y_grid - 1, y_grid + h + 1):
                 if i < 0 or i >= len(self.grid):
                     continue
                 if j < 0 or j >= len(self.grid[i]):
@@ -92,12 +92,6 @@ class FreeSpaceFinder(EventListener):
         )
 
     def event_occurred(self, event: Event) -> None:
-        if isinstance(event, TextRenderEvent):
-            assert isinstance(event, TextRenderEvent)
-            space = Rectangle(
-                event.get_baseline().x0,
-                event.get_baseline().y0,
-                event.get_baseline().x1,
-                Decimal(12),
-            )  # TODO: height
-            self._mark_as_unavailable(space)
+        if isinstance(event, ChunkOfTextRenderEvent):
+            assert isinstance(event, ChunkOfTextRenderEvent)
+            self._mark_as_unavailable(event.get_bounding_box())

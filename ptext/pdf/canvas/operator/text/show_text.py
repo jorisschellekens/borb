@@ -1,7 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Show a text string.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType, String
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -18,8 +24,8 @@ class ShowText(CanvasOperator):
         Invoke the Tj operator
         """
         assert isinstance(operands[0], String)
-        tri = TextRenderEvent(canvas.graphics_state, operands[0])
+        tri = ChunkOfTextRenderEvent(canvas.graphics_state, operands[0])
         # render
         canvas.event_occurred(tri)
         # update text rendering location
-        canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().length()
+        canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width

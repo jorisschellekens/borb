@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Stroke the path.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
@@ -14,6 +20,9 @@ class StrokePath(CanvasOperator):
         super().__init__("S", 0)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the S operator
+        """
 
         # get graphic state
         gs = canvas.graphics_state

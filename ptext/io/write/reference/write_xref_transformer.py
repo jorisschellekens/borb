@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing XREF objects
+"""
 import typing
 from typing import Optional
 
@@ -17,7 +23,7 @@ from ptext.pdf.xref.xref import XREF
 
 class WriteXREFTransformer(WriteBaseTransformer):
     """
-    This implementation of WriteBaseTransformer is responsible for writing XRefs
+    This implementation of WriteBaseTransformer is responsible for writing XREF objects
     """
 
     def can_be_transformed(self, any: AnyPDFType):

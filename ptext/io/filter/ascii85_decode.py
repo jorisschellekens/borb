@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Decodes data encoded in an ASCII base-85 representation,
+reproducing the original binary data.
+"""
+
 import base64
 
 

@@ -22,6 +22,7 @@ class LayoutElement:
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        parent: typing.Optional["LayoutElement"] = None,
     ):
         self.border_top = border_top
         self.border_right = border_right
@@ -30,6 +31,15 @@ class LayoutElement:
         assert border_width >= 0
         self.border_width = border_width
         self.border_color = border_color
+        self.parent = parent
+        self.bounding_box = typing.Optional[Rectangle]
+
+    def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
+        self.bounding_box = bounding_box
+        return self
+
+    def get_bounding_box(self) -> typing.Optional[Rectangle]:
+        return self.bounding_box
 
     def _initialize_page_content_stream(self, page: Page):
         if "Contents" in page:
@@ -53,8 +63,8 @@ class LayoutElement:
         content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
 
     def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-        ZERO = Decimal(0)
-        return Rectangle(ZERO, ZERO, ZERO, ZERO)
+        self.set_bounding_box(bounding_box)
+        return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
 
     def draw_border(self, page: Page, border_box: Rectangle):
         # border is not wanted on any side
@@ -106,7 +116,7 @@ class LayoutElement:
                 border_box.x,
                 border_box.y + border_box.height,
             )
-        content += " Q"
+        content += " Q "
         self._append_to_content_stream(page, content)
 
 
@@ -123,6 +133,7 @@ class ChunkOfText(LayoutElement):
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        parent: typing.Optional["LayoutElement"] = None,
     ):
         super(ChunkOfText, self).__init__(
             border_top=border_top,
@@ -131,6 +142,7 @@ class ChunkOfText(LayoutElement):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            parent=parent,
         )
         self.text = text
         if isinstance(font, str):
@@ -199,6 +211,9 @@ class ChunkOfText(LayoutElement):
         # draw border
         self.draw_border(page, layout_rect)
 
+        # set bounding box
+        self.set_bounding_box(layout_rect)
+
         # return
         return layout_rect
 
@@ -232,6 +247,7 @@ class LineOfText(ChunkOfText):
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        parent: typing.Optional["LayoutElement"] = None,
     ):
         super(LineOfText, self).__init__(
             text=text,
@@ -244,6 +260,7 @@ class LineOfText(ChunkOfText):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            parent=parent,
         )
         self.justification = justification
 
@@ -292,7 +309,11 @@ class LineOfText(ChunkOfText):
             for w in words:
                 s = w + " "
                 ChunkOfText(
-                    s, font=self.font, font_size=self.font_size, font_color=self.color
+                    s,
+                    font=self.font,
+                    font_size=self.font_size,
+                    font_color=self.font_color,
+                    parent=self,
                 ).layout(
                     page,
                     bounding_box=Rectangle(
@@ -310,6 +331,9 @@ class LineOfText(ChunkOfText):
 
         # draw border
         self.draw_border(page, layout_rect)
+
+        # set bounding box
+        self.set_bounding_box(layout_rect)
 
         # return
         return layout_rect
@@ -336,6 +360,7 @@ class Paragraph(LineOfText):
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        parent: typing.Optional["LayoutElement"] = None,
     ):
         super(Paragraph, self).__init__(
             text=text,
@@ -349,6 +374,7 @@ class Paragraph(LineOfText):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            parent=parent,
         )
 
     def layout(self, page: Page, bounding_box: Rectangle):
@@ -392,6 +418,7 @@ class Paragraph(LineOfText):
                 font_size=self.font_size,
                 justification=self.justification,
                 font_color=self.font_color,
+                parent=self,
             ).layout(
                 page,
                 bounding_box=Rectangle(
@@ -406,5 +433,12 @@ class Paragraph(LineOfText):
             max_x = max(r.x + r.width, max_x)
             max_y = max(r.y + r.height, max_y)
         layout_rect = Rectangle(min_x, min_y, max_x - min_x, max_y - min_y)
+
+        # draw border
         self.draw_border(page, layout_rect)
+
+        # set bounding box
+        self.set_bounding_box(layout_rect)
+
+        # return
         return layout_rect

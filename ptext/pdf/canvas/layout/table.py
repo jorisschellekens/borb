@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains everything needed to lay out tables
+"""
 import typing
 from decimal import Decimal
 
@@ -8,6 +14,10 @@ from ptext.pdf.page.page import Page
 
 
 class TableCell(LayoutElement):
+    """
+    This class represents a single cell of a table
+    """
+
     def __init__(
         self,
         layout_element: LayoutElement,
@@ -41,6 +51,10 @@ class TableCell(LayoutElement):
 
 
 class Table(LayoutElement):
+    """
+    This class represents a layout table
+    """
+
     def __init__(
         self,
         number_of_rows: int,
@@ -57,7 +71,7 @@ class Table(LayoutElement):
         self.column_widths = column_widths
         self.content: typing.List[TableCell] = []
 
-    def add(self, layout_element: LayoutElement):
+    def add(self, layout_element: LayoutElement) -> "Table":
         """
         Adds a LayoutElement to this Table
         """
@@ -66,15 +80,24 @@ class Table(LayoutElement):
             self.content.append(new_layout_element)
         else:
             self.content.append(layout_element)
+        return self
 
-    def set_border_width_on_all_cells(self, border_width: Decimal):
+    def set_border_width_on_all_cells(self, border_width: Decimal) -> "Table":
+        """
+        This method sets the border width on all TableCell objects in this Table
+        """
         assert border_width >= 0
         for e in self.content:
             e.border_width = border_width
+        return self
 
-    def set_border_color_on_all_cells(self, border_color: Color):
+    def set_border_color_on_all_cells(self, border_color: Color) -> "Table":
+        """
+        This method sets the border color on all TableCell objects in this Table
+        """
         for e in self.content:
             e.border_color = border_color
+        return self
 
     def set_borders_on_all_cells(
         self,
@@ -82,15 +105,23 @@ class Table(LayoutElement):
         border_right: bool,
         border_bottom: bool,
         border_left: bool,
-    ):
+    ) -> "Table":
+        """
+        This method sets the border(s) on all TableCell objects in this Table
+        """
         for e in self.content:
             e.border_top = border_top
             e.border_right = border_right
             e.border_bottom = border_bottom
             e.border_left = border_left
+        return self
 
-    def no_borders(self):
+    def no_borders(self) -> "Table":
+        """
+        This method unsets the border(s) on all TableCell objects in this Table
+        """
         self.set_borders_on_all_cells(False, False, False, False)
+        return self
 
     def layout(self, page: Page, bounding_box: Rectangle):
         # layout elements in grid
@@ -185,6 +216,9 @@ class Table(LayoutElement):
                     ),
                 )
                 already_drawn_border.append(e)
+
+        # set bounding box
+        self.set_bounding_box(layout_rect)
 
         # return
         return layout_rect

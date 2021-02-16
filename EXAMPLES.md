@@ -69,7 +69,6 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.1 Adding a circle annotation to an existing PDF
 
 We start by reading the PDF:
@@ -97,7 +96,6 @@ The end result (at least the annotations) should look something like this:
 ![adding an annotation to an existing pdf](readme_img/adding_a_circle_annotation_to_an_existing_pdf.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 1.2 Adding a highlight annotation to an existing PDF
 
@@ -129,7 +127,6 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.3 Adding a link annotation to an existing PDF
 
 We start by reading the PDF:
@@ -157,7 +154,6 @@ Now we can store the PDF `Document` again:
             PDF.dumps(out_file_handle, doc)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 1.4 Adding a polygon annotation to an existing PDF
 
@@ -189,7 +185,6 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.5 Adding a polyline annotation to an existing PDF
 
 We start by reading the PDF:
@@ -215,7 +210,6 @@ Now we can store the PDF `Document` again:
             PDF.dumps(out_file_handle, doc)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 1.6 Adding a redact annotation to an existing PDF
 
@@ -261,7 +255,6 @@ The result should be something like this (keep in mind the rendering of the rubb
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.8 Adding a square annotation to an existing PDF
 
 We start by reading the PDF:
@@ -290,7 +283,6 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.9 Adding a square annotation around a regular expression match to an existing PDF
 
 We start by reading the PDF:
@@ -307,14 +299,8 @@ The `RegularExpressionTextExtraction` implementation will use these instructions
 Next we are going to add annotations (in this case square annotations) around every `TextRenderEvent` that belongs to a regular expression match.
 
         for e in l.get_matched_text_render_info_events_per_page(0):
-            baseline = e.get_baseline()
             doc.get_page(0).append_square_annotation(
-                rectangle=Rectangle(
-                    Decimal(baseline.x0),
-                    Decimal(baseline.y0 - 2),
-                    Decimal(baseline.x1 - baseline.x0),
-                    Decimal(12),
-                ),
+                rectangle=e.get_baseline(),                
                 stroke_color=X11Color("Firebrick"),
             )
             
@@ -328,7 +314,6 @@ The end result (at least the annotations) should look something like this:
 ![adding an annotation to an existing pdf](readme_img/adding_an_annotation_around_a_regular_expression_match_to_an_existing_pdf.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 1.10 Adding a square annotation in the free space of a page to an existing PDF
 
@@ -387,7 +372,6 @@ Notice how our use of `FreeSpaceFinder` meant that the annotation did not collid
 ![adding an annotation to an existing pdf](readme_img/adding_a_square_annotation_in_free_space_to_an_existing_pdf.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 1.11 Adding a collection of annotations shaped like super mario to an existing PDF
 
@@ -483,7 +467,6 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.12 Adding a text annotation to an existing PDF
 
 We start by reading the PDF:
@@ -509,7 +492,6 @@ Finally, we need to store the resulting PDF `Document`.
             PDF.dumps(out_file_handle, doc)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 1.13 Adding a watermark annotation to an existing PDF
 
@@ -550,7 +532,6 @@ Now we can store the PDF `Document` again:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 1.15 Get all annotations from an existing PDF
 
 Getting all annotations from a PDF is easy, if you know where to look.
@@ -567,7 +548,6 @@ Let's check the first `Page`.
                 print("%s has %d annotations" % (file.stem, len(page["Annots"])))
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ## 2. Meta-information
 
@@ -603,7 +583,6 @@ This dictionary could contain an entry for `\Author`.
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 2.1 Getting all meta-information of an existing PDF using `DocumentInfo` 
 
 `DocumentInfo` represents a convenience class to easily extract all meta-information in the `Document` catalog's `\Info` dictionary.
@@ -620,7 +599,6 @@ You can use it to quickly query the meta-information.
             print("language : %s" % doc_info.get_language())
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 2.2 Changing the author of an existing PDF
 
@@ -654,7 +632,6 @@ Now we can store the PDF `Document` again:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 2.3 Changing the producer of an existing PDF
 
 Let's start by reading the PDF `Document`.
@@ -686,7 +663,6 @@ Now we can store the PDF `Document` again:
             PDF.dumps(out_file_handle, doc)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 2.4 Reading the XMP metadata of an existing PDF
 
@@ -726,7 +702,6 @@ I tried this on a `Document` with XMP meta-data, and it printed the following:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ## 3. Extracting Text
 
 ### 3.0 Extract text from a PDF using `SimpleTextExtraction`
@@ -749,7 +724,6 @@ Now that we've processed the `Page`, we can get the resulting text and store it.
                 txt_file_handle.write(l.get_text(0))
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 3.1 Extract text from a PDF using `SimpleNonLigatureTextExtraction`
 
@@ -776,7 +750,6 @@ Once the `Document` is done processing, we can easily obtain and store the text:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 3.2 Match a regular expression in a PDF using `RegularExpressionTextExtraction`
 
 We start by reading the PDF:
@@ -797,10 +770,10 @@ We can access this information in the following manner:
                 obj = [
                     {
                         "text": x.get_text(),
-                        "x0": int(x.get_baseline().x0),
-                        "y0": int(x.get_baseline().y0),
-                        "x1": int(x.get_baseline().x1),
-                        "y1": int(x.get_baseline().y1),
+                        "x": int(x.get_baseline().x),
+                        "y": int(x.get_baseline().y),
+                        "width": int(x.get_baseline().width),
+                        "height": int(x.get_baseline().height),
                     }
                     for x in l.get_matched_text_render_info_events_per_page(0)
                 ]
@@ -814,22 +787,22 @@ In my example `Document`, this was the output:
         "text": "S",
         "x0": 73,
         "y0": 265,
-        "x1": 78,
-        "y1": 265
+        "width": 5,
+        "height": 9
     },
     {
         "text": "o",
         "x0": 78,
         "y0": 265,
-        "x1": 84,
-        "y1": 265
+        "width": 5,
+        "height": 9
     },
     {
         "text": "r",
         "x0": 84,
         "y0": 265,
-        "x1": 87,
-        "y1": 265
+        "width": 3,
+        "height": 9
     },
     ...
 
@@ -838,6 +811,41 @@ Check out the `tests` directory to find more tests like this one, and discover w
 
 ### 3.3 Extract all keywords from a PDF using `TFIDFKeywordExtraction`
 
+We can easily extract all likely keywords from the `Document` using `TFIDFKeywordExtraction`.
+This class acts like a regular `EventListener` and will keep track of all text being parsed.
+Optionally, you can give this class a `List` of stop words (which it will then ignore).
+
+        with open("input.pdf", "rb") as pdf_file_handle:
+            l = TFIDFKeywordExtraction(ENGLISH_STOP_WORDS)
+            doc = PDF.loads(pdf_file_handle, [l])
+
+Now let's export the keywords in json format:
+
+            # export txt
+            with open("output.json", "w") as json_file_handle:
+                json_file_handle.write(
+                    json.dumps(
+                        [x.__dict__ for x in l.get_keywords_per_page(0, 5)], indent=4
+                    )
+                )
+
+For the document I picked, this gives me the following output:
+
+    [
+    {
+        "text": "CONSTIPATION",
+        "page_number": 0,
+        "words_on_page": 120,
+        "term_frequency": 5,
+        "occurs_on_pages": [
+            0,
+            1
+        ],
+        "number_of_pages": 2
+    },
+    ...
+    
+    
 ## 4. PDF Creation
 
 ### 4.0 Creating an empty PDF
@@ -935,7 +943,6 @@ Next we store the PDF.
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 4.2 Creating a 'Hello World' PDF, the easier way
 
 Luckily, there is an easier way to get content on a PDF.
@@ -969,7 +976,6 @@ Finally, we can store the PDF.
             PDF.dumps(in_file_handle, pdf)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 4.3 Creating a colorful 'Hello World' PDF
 
@@ -1008,6 +1014,7 @@ The result should be something like this:
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
             
             
+
 ### 4.4 Adding `LineOfText` objects, and using `Justification`
 
 By using `LineOfText` we can add justification (left, center, right, full) to our text.
@@ -1064,7 +1071,6 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 4.5 Adding `Paragraph` objects, and using `Justification`     
 
 This is by far the easiest way to add text to a page.
@@ -1115,7 +1121,6 @@ The result should be something like this:
 ![adding paragraph justified center](readme_img/adding_paragraph_justified_center.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 4.6 Adding a simple `Table`
 
@@ -1170,7 +1175,6 @@ The result should be something like this:
 ![adding a_simple_table](readme_img/adding_a_simple_table.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 4.7 Adding a `Table` with merged cells                                      
 
@@ -1259,7 +1263,6 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 4.9 Adding a nested ordered `List`
 
         # create document
@@ -1299,7 +1302,6 @@ The result should be something like this:
 ![adding a_nested_list](readme_img/adding_a_nested_list.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
-
 
 ### 4.10 Creating a realistic invoice
 
@@ -1553,7 +1555,6 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-
 ### 5.1 Using `MultiColumnLayout`
 
 `MultiColumnLayout` allows you to render text in multiple columns (top-to-bottom, left-to-right) on the `Page`
@@ -1600,3 +1601,105 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
             
+            
+## 6. Exporting a PDF
+
+Using `pText` you can also export your PDF `Document` to various formats.            
+Let's walk through some examples. 
+
+### 6.1 Exporting a PDF to JSON
+
+This scenario is particularly useful when debugging. It enables you to see the PDF `Document` in the same way `pText` sees it.
+
+We'll start by opening and reading the `Document`:
+
+    with open("input.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle)
+            output_file = self.output_dir / (file.stem + ".json")
+
+And that's all there is to it. Now we can call the method `to_json_serializable` on `Document`
+which will give you access to a `json` like structure.
+
+            # export to json
+            with open("output.json", "w") as json_file_handle:
+                json_file_handle.write(
+                    json.dumps(doc.to_json_serializable(doc), indent=4)
+                )
+                
+On my example input document, this yielded the following output:            
+
+    {
+    "null": {
+        "Trailer": {
+            "ID": [
+                "5e670a36ab70bb047b6c9eeed6ee3892",
+                "5e670a36ab70bb047b6c9eeed6ee3892"
+            ],
+            "Info": {
+                "CreationDate": "D:20190409213301+02'00'",
+                "ModDate": "D:20190409213301+02'00'",
+                "Producer": "iText\u00ae 7.1.5 \u00a92000-2019 iText Group NV \\(AGPL-version\\)"
+            },
+            "Root": {
+                "Pages": {
+                    "Count": 1.0,
+                    "Kids": [
+                        {
+                            "Type": "Page",
+                            "MediaBox": [
+                                0.0,
+                                0.0,
+                                878.221,
+                                637.276
+                            ],
+    ...
+    
+Here we can clearly see the xref table being persisted. 
+This table acts as the starting point of the document, it contains references to other data-structures that contain meta-information, information about each page, etc.
+
+### 6.2 Exporting a PDF to SVG
+
+Sometimes, all you need is an image. With `pText` you can easily convert any `Page` of a `Document` into an SVG image.                               
+
+As usual, we start by reading the `Document`:
+
+        with open("input.pdf", "rb") as pdf_file_handle:
+            l = SVGExport()
+            doc = PDF.loads(pdf_file_handle, [l])
+
+Here we are using `SVGExport` which acts like an `EventListener`.
+`EventListener` implementations are notified every time a rendering instruction is parsed.
+`SVGExport` uses that knowledge to convert the pdf-syntax rendering instructions to svg-syntax.
+            
+            with open("output.svg", "wb") as svg_file_handle:
+                svg_file_handle.write(ET.tostring(l.get_svg_per_page(0)))
+                
+The result turned something like this:
+
+![export_a_pdf_to_svg](readme_img/export_a_pdf_to_svg.png)
+
+This was the input document:
+
+![export_a_pdf_to_svg_original](readme_img/export_a_pdf_to_svg_original.png)
+
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+            
+### 6.3 Exporting a PDF to MP3                        
+
+For those with hearing-impairments, it can be very useful to be able to convert a PDF `Document` to an MP3 file.
+This is perfectly possible with `pText`.
+
+    with open("input.pdf", "rb") as pdf_file_handle:
+        l = AudioExport()
+        doc = PDF.loads(pdf_file_handle, [l])
+
+`AudioExport` then allows you to store an mp3 file for each page.         
+For this, you can use the `` method. You need to provide it with a `page_number` and `path`.
+        
+        l.get_audio_file_per_page(0, "output.mp3")
+        
+The constructor of `AudioExport` has some arguments that allow us to tweak the export.       
+
+- `include_position` : This should be set to `True` if you want the position of each `Paragraph` to be spoken as well. This results in output such as "page 1, paragraph 1, top left; once upon a time"
+- `language` : This is the 2-letter abbreviation of the language you expect the text to be in. Default is `en`
+- `slow`: This indicates whether you want the speaking-voice to go (extra) slow, or not

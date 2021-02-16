@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Set the word spacing, T w , to wordSpace, which shall be a number
+    expressed in unscaled text space units. Word spacing shall be used by
+    the Tj, TJ, and ' operators. Initial value: 0.
+"""
 from decimal import Decimal
 from typing import List
 

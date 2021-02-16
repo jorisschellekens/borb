@@ -1,4 +1,16 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains the basis for events and eventlisteners
+"""
+
+
 class Event:
+    """
+    This class represents a generic event
+    """
+
     pass
 
 
@@ -9,4 +21,8 @@ class EventListener:
     """
 
     def event_occurred(self, event: Event) -> None:
+        """
+        This method is called whenever a matching Event is fired from the Canvas.
+        EventListeners can then choose to act on those Event objects.
+        """
         pass

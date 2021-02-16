@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing booleans
+"""
 from typing import Optional
 
 from ptext.io.read.types import AnyPDFType, Boolean

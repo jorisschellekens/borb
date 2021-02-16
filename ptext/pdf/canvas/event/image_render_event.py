@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of Event is triggered when an Image has been processed using a Do instruction
+"""
 from decimal import Decimal
 
 from PIL import Image  # type: ignore [import]

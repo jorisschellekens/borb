@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    A CMap shall specify the mapping from character codes to character selectors. In PDF, the character selectors
+    shall be CIDs in a CIDFont (as mentioned earlier, PostScript CMaps can use names or codes as well). A CMap
+    serves a function analogous to the Encoding dictionary for a simple font. The CMap shall not refer directly to a
+    specific CIDFont; instead, it shall be combined with it as part of a CID-keyed font, represented in PDF as a
+    Type 0 font dictionary (see 9.7.6, "Type 0 Font Dictionaries"). Within the CMap, the character mappings shall
+    refer to the associated CIDFont by font number, which in PDF shall be 0.
+"""
 import io
 from typing import Union, List, Optional, Tuple
 

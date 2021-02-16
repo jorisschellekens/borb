@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    In computer science, a disjoint-set data structure, also called a union–find data structure or merge–find set,
+    is a data structure that stores a collection of disjoint (non-overlapping) sets.
+"""
 import typing
 from typing import List, Any
 
@@ -26,6 +33,10 @@ class disjointset:
             return self.find(self.parents[x])
 
     def union(self, x: Any, y: Any) -> "disjointset":
+        """
+        Mark two elements in this disjointset as equivalent,
+        propagating the equivalence throughout the disjointset
+        """
         x_parent = self.find(x)
         y_parent = self.find(y)
         if x_parent is y_parent:
@@ -40,15 +51,23 @@ class disjointset:
         return self
 
     def add(self, x: Any) -> "disjointset":
+        """
+        Add an element to this disjointset
+        """
         self.parents[x] = x
         self.ranks[x] = 0
         return self
 
     def pop(self, x: Any) -> "disjointset":
-        # TODO
+        """
+        Remove an element from this disjointset
+        """
         return self
 
     def sets(self) -> List[List[Any]]:
+        """
+        This function returns all equivalence sets in this disjointset
+        """
         cluster_parents: typing.Dict[Any, Any] = {}
         for x, _ in self.parents.items():
             p = self.find(x)
@@ -62,3 +81,6 @@ class disjointset:
 
     def __contains__(self, item):
         return item in self.parents
+
+    def __iter__(self):
+        return self.parents.__iter__()

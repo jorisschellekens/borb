@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    CID-keyed fonts provide a convenient and efficient method for defining multiple-byte character encodings and
+    fonts with a large number of glyphs. These capabilities provide great flexibility for representing text in writing
+    systems for languages with large character sets, such as Chinese, Japanese, and Korean (CJK).
+"""
 import copy
 from decimal import Decimal
 from typing import Optional
@@ -25,6 +33,10 @@ class CIDFontType2(TrueTypeFont):
         self._cached_widths = None
 
     def get_single_character_width(self, character_code: int) -> Optional[Decimal]:
+        """
+        Get the width (in text space) of a given character code.
+        Returns None if the character code can not be represented in this Font.
+        """
         if "W" not in self:
             if "DW" not in self:
                 self["DW"] = Decimal(1000)

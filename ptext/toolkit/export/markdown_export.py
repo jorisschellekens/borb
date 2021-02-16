@@ -1,6 +1,3 @@
-from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.page.page import Page
 from ptext.toolkit.structure.list.bullet_list_render_event import (
     BulletListRenderEvent,
 )
@@ -11,6 +8,10 @@ from ptext.toolkit.structure.paragraph.paragraph_render_event import (
     ParagraphRenderEvent,
 )
 from ptext.toolkit.structure.title.title_render_event import TitleRenderEvent
+
+from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.page.page import Page
 
 
 class MarkdownExport(EventListener):

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    End a marked-content sequence begun by a BMC or BDC operator.
+"""
 from typing import List
 
 from ptext.io.read.types import AnyPDFType

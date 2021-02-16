@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer acts as an aggregator for
+    its child transformers, allowing it to transform AnyPDFType
+"""
 import io
 from typing import Optional, Union
 
@@ -42,6 +49,11 @@ from ptext.io.write.xmp.write_xmp_transformer import WriteXMPTransformer
 
 
 class WriteAnyObjectTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer acts as an aggregator for
+    its child transformers, allowing it to transform AnyPDFType
+    """
+
     def __init__(self):
         super().__init__()
         # fun

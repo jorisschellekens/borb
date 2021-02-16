@@ -6,7 +6,7 @@ from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import TextRenderEvent
+from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.page.page import Page
 from ptext.pdf.page.page_size import PageSize
 
@@ -41,7 +41,7 @@ class SVGExport(EventListener):
             self._begin_page(event.get_page())
         if isinstance(event, EndPageEvent):
             self._end_page(event.get_page())
-        if isinstance(event, TextRenderEvent):
+        if isinstance(event, ChunkOfTextRenderEvent):
             self._render_text(event)
         if isinstance(event, ImageRenderEvent):
             self._render_image(event)
@@ -106,12 +106,12 @@ class SVGExport(EventListener):
     def get_svg_per_page(self, page_number: int) -> ET.Element:
         return self.svg_element_per_page[page_number]
 
-    def _render_text(self, text_render_info: TextRenderEvent):
+    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
 
-        if text_render_info.get_text() is None:
+        if text_render_info.text is None:
             return
 
-        if len(text_render_info.get_text().replace(" ", "")) == 0:
+        if len(text_render_info.text.replace(" ", "")) == 0:
             return
 
         # color
@@ -120,19 +120,19 @@ class SVGExport(EventListener):
         b = int(text_render_info.font_color.to_rgb().blue * 255)
 
         # font size
-        fs = text_render_info.get_font_size()
+        fs = text_render_info.font_size
 
         # COORDINATE TRANSFORM:
         # In PDF coordinate space the origin is at the bottom left of the page,
         # for SVG images, the origin is the top left.
         bl = text_render_info.get_baseline()
-        x = int(bl.x0)
-        y = int(self.current_page_height - bl.y0)
+        x = int(bl.x)
+        y = int(self.current_page_height - bl.y)
 
         # build text element
         text_element = ET.Element("text")
-        if text_render_info.get_font_family() is not None:
-            font_family_name = text_render_info.get_font_family()
+        if text_render_info.font.get_font_name() is not None:
+            font_family_name = text_render_info.font.get_font_name()
 
             # check whether the font is bold
             is_bold = False
@@ -184,17 +184,14 @@ class SVGExport(EventListener):
         text_element.set(
             "style", "fill:rgb(%d, %d, %d); font-size:%d px;" % (r, g, b, fs)
         )
-        if (
-            text_render_info.get_text().startswith(" ")
-            or "  " in text_render_info.get_text()
-        ):
+        if text_render_info.text.startswith(" ") or "  " in text_render_info.text:
             text_element.set("xml:space", "preserve")
             text_element.set(
                 "style",
                 "fill:rgb(%d, %d, %d); font-size:%d px; white-space: pre;"
                 % (r, g, b, int(fs)),
             )
-        text_element.text = text_render_info.get_text()
+        text_element.text = text_render_info.text
 
         # append to page
         assert self.current_page_svg_element is not None

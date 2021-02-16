@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class represents a single page in a PDF document
+"""
 import datetime
 import typing
 from decimal import Decimal
@@ -11,6 +17,10 @@ from ptext.pdf.page.page_info import PageInfo
 
 
 class Page(Dictionary):
+    """
+    This class represents a single page in a PDF document
+    """
+
     def __init__(self):
         super(Page, self).__init__()
 
@@ -25,9 +35,15 @@ class Page(Dictionary):
         self["MediaBox"].append(pDecimal(842))
 
     def get_page_info(self) -> PageInfo:
+        """
+        This function returns the PageInfo object for this Page
+        """
         return PageInfo(self)
 
     def get_document(self) -> "Document":  # type: ignore [name-defined]
+        """
+        This function returns the Document from which this Page came
+        """
         return self.get_root()  # type: ignore [attr-defined]
 
     #
@@ -35,6 +51,9 @@ class Page(Dictionary):
     #
 
     def get_annotations(self) -> List:
+        """
+        This function returns the annotation(s) on this Page
+        """
         if "Annots" not in self:
             self[Name("Annots")] = List()
         return self["Annots"]
@@ -778,6 +797,12 @@ class Page(Dictionary):
         color: Color = X11Color("Yellow"),
         contents: Optional[str] = None,
     ) -> "Page":
+        """
+        Text markup annotations shall appear as highlights, underlines, strikeouts (all PDF 1.3), or jagged (“squiggly”)
+        underlines (PDF 1.4) in the text of a document. When opened, they shall display a pop-up window containing
+        the text of the associated note. Table 179 shows the annotation dictionary entries specific to these types of
+        annotations.
+        """
         # create generic annotation
         annot = self._create_annotation(
             rectangle=rectangle, color=color, contents=contents
@@ -832,21 +857,47 @@ class Page(Dictionary):
         color: Color = X11Color("Yellow"),
         contents: Optional[str] = None,
     ) -> "Page":
+        """
+        Text markup annotations shall appear as highlights, underlines, strikeouts (all PDF 1.3), or jagged (“squiggly”)
+        underlines (PDF 1.4) in the text of a document. When opened, they shall display a pop-up window containing
+        the text of the associated note. Table 179 shows the annotation dictionary entries specific to these types of
+        annotations.
+        """
+        # TODO
         return self
 
     def append_squiggly_annotation(self) -> "Page":
+        """
+        Text markup annotations shall appear as highlights, underlines, strikeouts (all PDF 1.3), or jagged (“squiggly”)
+        underlines (PDF 1.4) in the text of a document. When opened, they shall display a pop-up window containing
+        the text of the associated note. Table 179 shows the annotation dictionary entries specific to these types of
+        annotations.
+        """
+        # TODO
         return self
 
     def append_strike_out_annotation(self) -> "Page":
+        """
+        Text markup annotations shall appear as highlights, underlines, strikeouts (all PDF 1.3), or jagged (“squiggly”)
+        underlines (PDF 1.4) in the text of a document. When opened, they shall display a pop-up window containing
+        the text of the associated note. Table 179 shows the annotation dictionary entries specific to these types of
+        annotations.
+        """
+        # TODO
         return self
 
     def append_stamp_annotation(
         self,
+        name: str,
         rectangle: Rectangle,
         contents: Optional[str] = None,
         color: Optional[Color] = None,
-        name: Optional[str] = None,
     ) -> "Page":
+        """
+        A rubber stamp annotation (PDF 1.3) displays text or graphics intended to look as if they were stamped on the
+        page with a rubber stamp. When opened, it shall display a pop-up window containing the text of the associated
+        note. Table 181 shows the annotation dictionary entries specific to this type of annotation.
+        """
         # create generic annotation
         annot = self._create_annotation(
             rectangle=rectangle, contents=contents, color=color
@@ -884,33 +935,97 @@ class Page(Dictionary):
         return self
 
     def append_caret_annotation(self) -> "Page":
+        """
+        A caret annotation (PDF 1.5) is a visual symbol that indicates the presence of text edits. Table 180 lists the
+        entries specific to caret annotations.
+        """
+        # TODO
         return self
 
     def append_ink_annotation(self) -> "Page":
+        """
+        An ink annotation (PDF 1.3) represents a freehand “scribble” composed of one or more disjoint paths. When
+        opened, it shall display a pop-up window containing the text of the associated note. Table 182 shows the
+        annotation dictionary entries specific to this type of annotation.
+        """
+        # TODO
         return self
 
     def append_popup_annotation(self) -> "Page":
+        """
+        A pop-up annotation (PDF 1.3) displays text in a pop-up window for entry and editing. It shall not appear alone
+        but is associated with a markup annotation, its parent annotation, and shall be used for editing the parent’s text.
+        It shall have no appearance stream or associated actions of its own and shall be identified by the Popup entry
+        in the parent’s annotation dictionary (see Table 174). Table 183 shows the annotation dictionary entries specific
+        to this type of annotation.
+        """
+        # TODO
         return self
 
     def append_file_attachment_annotation(self) -> "Page":
+        """
+        A file attachment annotation (PDF 1.3) contains a reference to a file, which typically shall be embedded in the
+        PDF file (see 7.11.4, “Embedded File Streams”).
+        """
+        # TODO
         return self
 
     def append_sound_annotation(self) -> "Page":
+        """
+        A sound annotation (PDF 1.2) shall analogous to a text annotation except that instead of a text note, it contains
+        sound recorded from the computer’s microphone or imported from a file. When the annotation is activated, the
+        sound shall be played. The annotation shall behave like a text annotation in most ways, with a different icon (by
+        default, a speaker) to indicate that it represents a sound. Table 185 shows the annotation dictionary entries
+        specific to this type of annotation. Sound objects are discussed in 13.3, “Sounds.”
+        """
+        # TODO
         return self
 
     def append_movie_annotation(self) -> "Page":
+        """
+        A movie annotation (PDF 1.2) contains animated graphics and sound to be presented on the computer screen
+        and through the speakers. When the annotation is activated, the movie shall be played. Table 186 shows the
+        annotation dictionary entries specific to this type of annotation. Movies are discussed in 13.4, “Movies.”
+        """
+        # TODO
         return self
 
     def append_widget_annotation(self) -> "Page":
+        """
+        Interactive forms (see 12.7, “Interactive Forms”) use widget annotations (PDF 1.2) to represent the appearance
+        of fields and to manage user interactions. As a convenience, when a field has only a single associated widget
+        annotation, the contents of the field dictionary (12.7.3, “Field Dictionaries”) and the annotation dictionary may
+        be merged into a single dictionary containing entries that pertain to both a field and an annotation.
+        """
+        # TODO
         return self
 
     def append_screen_annotation(self) -> "Page":
+        """
+        A screen annotation (PDF 1.5) specifies a region of a page upon which media clips may be played. It also
+        serves as an object from which actions can be triggered. 12.6.4.13, “Rendition Actions” discusses the
+        relationship between screen annotations and rendition actions. Table 187 shows the annotation dictionary
+        entries specific to this type of annotation.
+        """
+        # TODO
         return self
 
     def append_printer_mark_annotation(self) -> "Page":
+        """
+        A printer’s mark annotation (PDF 1.4) represents a graphic symbol, such as a registration target, colour bar, or
+        cut mark, that may be added to a page to assist production personnel in identifying components of a multiple-
+        plate job and maintaining consistent output during production. See 14.11.3, “Printer’s Marks,” for further
+        discussion.
+        """
+        # TODO
         return self
 
     def append_trap_net_annotation(self) -> "Page":
+        """
+        A trap network annotation (PDF 1.3) may be used to define the trapping characteristics for a page of a PDF
+        document.
+        """
+        # TODO
         return self
 
     def append_watermark_annotation(
@@ -918,6 +1033,13 @@ class Page(Dictionary):
         rectangle: Rectangle,
         contents: str,
     ) -> "Page":
+        """
+        A watermark annotation (PDF 1.6) shall be used to represent graphics that shall be printed at a fixed size and
+        position on a page, regardless of the dimensions of the printed page. The FixedPrint entry of a watermark
+        annotation dictionary (see Table 190) shall be a dictionary that contains values for specifying the size and
+        position of the annotation (see Table 191).
+        """
+        # TODO
         return self
 
     def append_3d_annotation(self) -> "Page":

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing XMP meta-data information
+"""
 import logging
 import xml.etree.ElementTree as ET
 import zlib
@@ -20,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class WriteXMPTransformer(WriteBaseTransformer):
     """
-    This implementation of WriteBaseTransformer is responsible for writing XMPs
+    This implementation of WriteBaseTransformer is responsible for writing XMP meta-data information
     """
 
     def can_be_transformed(self, any: AnyPDFType):

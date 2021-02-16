@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    In Euclidean plane geometry, a rectangle is a quadrilateral with four right angles.
+"""
 from decimal import Decimal
 
 
@@ -24,13 +30,25 @@ class Rectangle:
         self.height = height
 
     def get_x(self) -> Decimal:
+        """
+        This function returns the x-coordinate of the lower-left of this Rectangle
+        """
         return self.x
 
     def get_y(self) -> Decimal:
+        """
+        This function returns the y-coordinate of the lower-left of this Rectangle
+        """
         return self.y
 
     def get_width(self) -> Decimal:
+        """
+        This function returns the width of this Rectangle
+        """
         return self.width
 
     def get_height(self) -> Decimal:
+        """
+        This function returns the height of this Rectangle
+        """
         return self.height

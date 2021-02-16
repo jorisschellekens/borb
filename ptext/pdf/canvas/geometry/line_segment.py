@@ -13,12 +13,21 @@ class LineSegment:
         self.y1 = y1
 
     def length(self) -> Decimal:
+        """
+        This function returns the length of this LineSegment
+        """
         return Decimal(sqrt((self.x0 - self.x1) ** 2 + (self.y0 - self.y1) ** 2))
 
     def get_start(self) -> Tuple[Decimal, Decimal]:
+        """
+        This function returns the start of this LineSegment
+        """
         return (self.x0, self.y0)
 
     def get_end(self) -> Tuple[Decimal, Decimal]:
+        """
+        This function returns the end of this LineSegment
+        """
         return (self.x1, self.y1)
 
     def transform_by(self, matrix: Matrix) -> "LineSegment":

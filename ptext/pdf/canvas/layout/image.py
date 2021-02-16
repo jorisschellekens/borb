@@ -1,10 +1,9 @@
+from PIL import Image as PILImage  # type: ignore [import]
+
 from ptext.io.read.image.read_jpeg_image_transformer import image_hash_method
 from ptext.io.read.types import Name, Dictionary, add_base_methods
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import LayoutElement
-
-from PIL import Image as PILImage  # type: ignore [import]
-
 from ptext.pdf.page.page import Page
 
 
@@ -39,12 +38,7 @@ class Image(LayoutElement):
         image_resource_name = self.get_image_resource_name(self.image, page)
 
         # write Do operator
-        content = """
-        q
-        %f 0 0 %f %f %f cm
-        /%s do
-        Q
-        """ % (
+        content = " q %f 0 0 %f %f %f cm /%s do Q " % (
             bounding_box.width,
             bounding_box.height,
             bounding_box.x,
@@ -56,4 +50,4 @@ class Image(LayoutElement):
         self._append_to_content_stream(page, content)
 
         # return
-        return bounding_box
+        return bounding_box  # TODO : image may have been rescaled, this is not the actual bounding box

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Same as K but used for nonstroking operations.
+"""
 from decimal import Decimal
 from typing import List
 
@@ -15,6 +21,9 @@ class SetCMYKNonStroking(CanvasOperator):
         super().__init__("k", 4)
 
     def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invoke the k operator
+        """
         assert isinstance(operands[0], Decimal)
         assert isinstance(operands[1], Decimal)
         assert isinstance(operands[2], Decimal)

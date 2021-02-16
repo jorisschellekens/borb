@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of WriteBaseTransformer is responsible for writing Decimal objects
+"""
 from typing import Optional
 
 from ptext.io.read.types import AnyPDFType, Decimal
@@ -9,7 +15,7 @@ from ptext.io.write.write_base_transformer import (
 
 class WriteNumberTransformer(WriteBaseTransformer):
     """
-    This implementation of WriteBaseTransformer is responsible for writing Numbers
+    This implementation of WriteBaseTransformer is responsible for writing Decimal objects
     """
 
     def can_be_transformed(self, any: AnyPDFType):

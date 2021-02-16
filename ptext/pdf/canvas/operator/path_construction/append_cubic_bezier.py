@@ -1,4 +1,14 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+A Bézier curve is a parametric curve used in computer graphics and related fields.
+The curve, which is related to the Bernstein polynomial, is named after Pierre Bézier,
+who used it in the 1960s for designing curves for the bodywork of Renault cars.
+Other uses include the design of computer fonts and animation.
+Bézier curves can be combined to form a Bézier spline, or generalized to higher dimensions to form Bézier surfaces.
+The Bézier triangle is a special case of the latter.
+"""
 
 import typing
 from decimal import Decimal

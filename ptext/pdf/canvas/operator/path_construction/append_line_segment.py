@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Append a straight line segment from the current point to the
+point (x, y). The new current point shall be (x, y).
+"""
 
 from decimal import Decimal
 from typing import List

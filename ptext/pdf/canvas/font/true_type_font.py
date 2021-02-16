@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    The TrueType font format was developed by Apple Computer, Inc., and has been adopted as a standard font
+    format for the Microsoft Windows operating system. Specifications for the TrueType font file format are
+    available in Apple’s TrueType Reference Manual and Microsoft’s TrueType 1.0 Font Files Technical
+    Specification (see Bibliography).
+"""
 import copy
 
 from ptext.pdf.canvas.font.font_type_1 import FontType1

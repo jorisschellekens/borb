@@ -1,7 +1,6 @@
 import re
 from typing import Optional
 
-from ptext.exception.pdf_exception import PDFEOFError, PDFTypeError, PDFSyntaxError
 from ptext.io.read.tokenize.low_level_tokenizer import LowLevelTokenizer, TokenType
 from ptext.io.read.types import (
     List,
@@ -21,28 +20,20 @@ from ptext.io.read.types import (
 class HighLevelTokenizer(LowLevelTokenizer):
     def read_array(self) -> List:
         """
-        This method processes the next tokens and returns a PDFArray.
-        It fails and throws various errors if the next tokens do not represent a PDFArray.
+        This function processes the next tokens and returns a List.
+        It fails and throws various errors if the next tokens do not represent a List.
         """
         token = self.next_non_comment_token()
-        if token is None:
-            raise PDFEOFError()
-        if token.token_type != TokenType.START_ARRAY:
-            raise PDFSyntaxError(message="invalid array", byte_offset=token.byte_offset)
-
+        assert token is not None
+        assert token.token_type == TokenType.START_ARRAY
         out = List()
 
         while True:
             token = self.next_non_comment_token()
-            if token is None:
-                raise PDFEOFError()
+            assert token is not None
             if token.token_type == TokenType.END_ARRAY:
                 break
-            if token.token_type == TokenType.END_DICT:
-                raise PDFSyntaxError(
-                    message="unexpected end of dictionary",
-                    byte_offset=token.byte_offset,
-                )
+            assert token.token_type != TokenType.END_DICT
 
             # go back
             self.seek(token.byte_offset)
@@ -58,42 +49,29 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
     def read_dictionary(self) -> Dictionary:
         """
-        This method processes the next tokens and returns a PDFDictionary.
-        It fails and throws various errors if the next tokens do not represent a PDFDictionary.
+        This function processes the next tokens and returns a Dictionary.
+        It fails and throws various errors if the next tokens do not represent a Dictionary.
         """
         token = self.next_non_comment_token()
-        if token is None:
-            raise PDFEOFError()
-        if token.token_type != TokenType.START_DICT:
-            raise PDFSyntaxError(
-                message="invalid dictionary", byte_offset=token.byte_offset
-            )
+        assert token is not None
+        assert token.token_type == TokenType.START_DICT
 
         out_dict = Dictionary()
         while True:
 
             # attempt to read name token
             token = self.next_non_comment_token()
-            if token is None:
-                raise PDFEOFError()
+            assert token is not None
             if token.token_type == TokenType.END_DICT:
                 break
-            if token.token_type != TokenType.NAME:
-                raise PDFSyntaxError(
-                    message="dictionary key must be a name",
-                    byte_offset=token.byte_offset,
-                )
+            assert token.token_type == TokenType.NAME
 
             # store name
             name = Name(token.text[1:])
 
             # attempt to read value
             value = self.read_object()
-            if value is None:
-                raise PDFSyntaxError(
-                    message="unexpected end of dictionary",
-                    byte_offset=token.byte_offset,
-                )
+            assert value is not None
 
             # store in dict object
             if name is not None:
@@ -103,8 +81,8 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
     def read_indirect_object(self) -> Optional[AnyPDFType]:
         """
-        This method processes the next tokens and returns an indirect PDFObject.
-        It fails and throws various errors if the next tokens do not represent an indirect PDFObject.
+        This function processes the next tokens and returns an AnyPDFType.
+        It fails and throws various errors if the next tokens do not represent an indirect pdf object.
         """
 
         # read object number
@@ -145,7 +123,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
     def read_indirect_reference(self) -> Optional[Reference]:
         """
-        This method processes the next tokens and returns an indirect reference.
+        This function processes the next tokens and returns an indirect reference.
         It fails and throws various errors if the next tokens do not represent an indirect reference.
         """
 
@@ -180,7 +158,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
         )
 
     def read_object(self, xref: Optional["XREF"] = None) -> Optional[AnyPDFType]:  # type: ignore [name-defined]
-
+        """
+        This function processes the next tokens and returns an AnyPDFType.
+        It fails and throws various errors if the next tokens do not represent a pdf object.
+        """
         token = self.next_non_comment_token()
         if token is None or len(token.text) == 0:
             return None
@@ -249,7 +230,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
         return None
 
     def read_stream(self, xref: Optional["XREF"] = None) -> Optional[Stream]:  # type: ignore [name-defined]
-
+        """
+        This function processes the next tokens and returns a Stream.
+        It fails and throws various errors if the next tokens do not represent a Stream.
+        """
         byte_offset = self.tell()
 
         # attempt to read <number> <number> obj
@@ -267,8 +251,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
             return None
 
         # process \Length
-        if "Length" not in stream_dictionary:
-            raise PDFTypeError(received_type=None, expected_type=int)
+        assert "Length" in stream_dictionary
         length_of_stream = stream_dictionary["Length"]
         if isinstance(length_of_stream, Reference):
             if xref is None:
@@ -283,32 +266,18 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
         # process newline
         ch = self._next_char()
-        if ch not in ["\r", "\n"]:
-            raise PDFSyntaxError(
-                "The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone.",
-                byte_offset=self.tell(),
-            )
+        assert ch in ["\r", "\n"]
         if ch == "\r":
             ch = self._next_char()
-            if ch != "\n":
-                raise PDFSyntaxError(
-                    "The keyword stream that follows the stream dictionary shall be followed by an end-of-line marker consisting of either a CARRIAGE RETURN and a LINE FEED or just a LINE FEED, and not by a CARRIAGE RETURN alone.",
-                    byte_offset=self.tell(),
-                )
+            assert ch == "\n"
 
         bytes = self.io_source.read(int(length_of_stream))
 
         # attempt to read token "endstream"
         end_of_stream_token = self.next_non_comment_token()
         assert end_of_stream_token is not None
-        if (
-            end_of_stream_token.token_type != TokenType.OTHER
-            or end_of_stream_token.text != "endstream"
-        ):
-            raise PDFSyntaxError(
-                "A stream shall consist of a dictionary followed by zero or more bytes bracketed between the keywords stream (followed by newline) and endstream",
-                byte_offset=self.tell(),
-            )
+        assert end_of_stream_token.token_type == TokenType.OTHER
+        assert end_of_stream_token.text == "endstream"
 
         # set Bytes
         stream_dictionary[Name("Bytes")] = bytes

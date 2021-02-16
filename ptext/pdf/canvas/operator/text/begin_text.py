@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Begin a text object, initializing the text matrix, Tm , and the text line matrix,
+    Tlm , to the identity matrix. Text objects shall not be nested; a second BT shall
+    not appear before an ET.
+"""
+
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
