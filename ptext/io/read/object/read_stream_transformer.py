@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading Stream objects
+"""
 import io
 import typing
 from typing import Optional, Any, Union
@@ -16,6 +22,10 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class ReadStreamTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading Stream objects
+    """
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:

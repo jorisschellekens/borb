@@ -77,12 +77,12 @@ class AdobeFontMetrics:
 
         # FontDescriptor
         out_font_descriptor = FontDescriptor().set_parent(out_font)  # type: ignore [attr-defined]
-        out_font_descriptor[Name("FontName")] = Name(
-            AdobeFontMetrics._find_and_parse_as_string(lines, "FontName")
-        )
-        out_font_descriptor[Name("FontFamily")] = String(
-            AdobeFontMetrics._find_and_parse_as_string(lines, "FamilyName")
-        )
+        font_name = AdobeFontMetrics._find_and_parse_as_string(lines, "FontName")
+        if font_name:
+            out_font_descriptor[Name("FontName")] = Name(font_name)
+        font_family = AdobeFontMetrics._find_and_parse_as_string(lines, "FamilyName")
+        if font_family:
+            out_font_descriptor[Name("FontFamily")] = String(font_family)
 
         # FontStretch
 
@@ -91,20 +91,19 @@ class AdobeFontMetrics:
         # Flags
 
         # FontBBox
-        fontbbox = [
-            Decimal(x)
-            for x in AdobeFontMetrics._find_and_parse_as_string(
-                lines, "FontBBox"
-            ).split(" ")
-        ]
-        out_font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)
-        for x in fontbbox:
-            out_font_descriptor[Name("FontBBox")].append(x)
+        fontbbox_str = AdobeFontMetrics._find_and_parse_as_string(lines, "FontBBox")
+        if fontbbox_str:
+            fontbbox = [Decimal(x) for x in fontbbox_str.split(" ")]
+            out_font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            for x in fontbbox:
+                out_font_descriptor[Name("FontBBox")].append(x)
 
         # ItalicAngle
-        out_font_descriptor[Name("ItalicAngle")] = Decimal(
-            AdobeFontMetrics._find_and_parse_as_float(lines, "ItalicAngle")
-        )
+        italic_angle = AdobeFontMetrics._find_and_parse_as_float(lines, "ItalicAngle")
+        if italic_angle:
+            out_font_descriptor[Name("ItalicAngle")] = Decimal(italic_angle)
+        else:
+            out_font_descriptor[Name("ItalicAngle")] = Decimal(0)
 
         # Ascent
         ascent = AdobeFontMetrics._find_and_parse_as_float(lines, "Ascender")

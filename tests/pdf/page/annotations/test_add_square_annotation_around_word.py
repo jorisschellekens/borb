@@ -57,11 +57,11 @@ class TestAddSquareAnnotationAroundWord(Test):
         # add annotation
         print(
             "\tAdding %d annotations"
-            % len(l.get_matched_text_render_info_events_per_page(0))
+            % len(l.get_matched_chunk_of_text_render_events_per_page(0))
         )
-        for e in l.get_matched_text_render_info_events_per_page(0):
+        for e in l.get_matched_chunk_of_text_render_events_per_page(0):
             doc.get_page(0).append_square_annotation(
-                e.get_baseline(),
+                e.get_bounding_box(),
                 stroke_color=X11Color("Firebrick"),
             )
 

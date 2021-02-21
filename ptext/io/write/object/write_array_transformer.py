@@ -38,6 +38,9 @@ class WriteArrayTransformer(WriteBaseTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes a List to a byte stream
+        """
         assert isinstance(object_to_transform, List)
         assert context is not None
         assert context.destination is not None

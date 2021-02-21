@@ -42,6 +42,9 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes a Dictionary to a byte stream
+        """
         assert isinstance(object_to_transform, Dictionary)
         assert context is not None
         assert context.destination is not None

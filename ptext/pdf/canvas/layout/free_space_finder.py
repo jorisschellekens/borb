@@ -4,8 +4,8 @@ import typing
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.canvas import Canvas
+from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page import Page
 
@@ -94,4 +94,6 @@ class FreeSpaceFinder(EventListener):
     def event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
             assert isinstance(event, ChunkOfTextRenderEvent)
-            self._mark_as_unavailable(event.get_bounding_box())
+            bb: typing.Optional[Rectangle] = event.get_bounding_box()
+            if bb is not None:
+                self._mark_as_unavailable(bb)

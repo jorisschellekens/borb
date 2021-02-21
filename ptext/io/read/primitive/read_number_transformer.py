@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading Decimal objects
+"""
 import io
 import typing
 from typing import Optional, Any, Union
@@ -12,7 +18,7 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 
 class ReadNumberTransformer(ReadBaseTransformer):
     """
-    This implementation of BaseTransformer converts PDFInt and PDFFloat to Decimal
+    This implementation of ReadBaseTransformer is responsible for reading Decimal objects
     """
 
     def can_be_transformed(

@@ -77,7 +77,7 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             context.root_object["XRef"]["Trailer"],
             context.root_object,
             context,
-            [],
+            event_listeners=event_listeners,
         )
 
         assert trailer is not None

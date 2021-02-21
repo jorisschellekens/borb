@@ -44,6 +44,10 @@ class PlainTextXREF(XREF):
         tok: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
     ) -> "XREF":
+        """
+        This method attempts to read a plaintext XREF from the given io_source.
+        It will either throw an exception, or return this XREF
+        """
 
         if initial_offset is not None:
             src.seek(initial_offset)

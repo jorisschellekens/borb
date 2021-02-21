@@ -46,7 +46,7 @@ class TestExtractRegularExpression(Test):
                         "width": int(x.get_baseline().width),
                         "height": int(x.get_baseline().height),
                     }
-                    for x in l.get_matched_text_render_info_events_per_page(0)
+                    for x in l.get_matched_chunk_of_text_render_events_per_page(0)
                 ]
                 json_file_handle.write(json.dumps(obj, indent=4))
 

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of BaseTransformer converts a PDFArray to a List
+"""
 import io
 import typing
 from typing import Union, Any, Optional
@@ -40,7 +46,7 @@ class ReadArrayTransformer(ReadBaseTransformer):
         for i in range(0, len(object_to_transform)):
             tmp.append(
                 self.get_root_transformer().transform(
-                    object_to_transform[i], tmp, context, []
+                    object_to_transform[i], tmp, context, event_listeners
                 )
             )
 

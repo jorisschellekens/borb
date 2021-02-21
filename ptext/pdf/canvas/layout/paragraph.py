@@ -22,8 +22,14 @@ class LayoutElement:
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
+        # borders
         self.border_top = border_top
         self.border_right = border_right
         self.border_bottom = border_bottom
@@ -31,7 +37,24 @@ class LayoutElement:
         assert border_width >= 0
         self.border_width = border_width
         self.border_color = border_color
+
+        # padding
+        assert padding_top >= 0
+        assert padding_right >= 0
+        assert padding_bottom >= 0
+        assert padding_left >= 0
+        self.padding_top = padding_top
+        self.padding_right = padding_right
+        self.padding_bottom = padding_bottom
+        self.padding_left = padding_left
+
+        # background color
+        self.background_color = background_color
+
+        # linkage (for lists, tables, etc)
         self.parent = parent
+
+        # layout
         self.bounding_box = typing.Optional[Rectangle]
 
     def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
@@ -63,10 +86,83 @@ class LayoutElement:
         content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
 
     def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-        self.set_bounding_box(bounding_box)
+
+        # modify bounding box (to take into account padding)
+        modified_bounding_box = Rectangle(
+            bounding_box.x + self.padding_left,
+            bounding_box.y + self.padding_bottom,
+            bounding_box.width - self.padding_right - self.padding_left,
+            bounding_box.height - self.padding_top - self.padding_bottom,
+        )
+
+        # store previous contents
+        if "Contents" not in page:
+            self._initialize_page_content_stream(page)
+        previous_decoded_bytes = page["Contents"]["DecodedBytes"]
+
+        # layout without padding
+        layout_rect = self._layout_without_padding(page, modified_bounding_box)
+
+        # modify rectangle (to take into account padding)
+        modified_layout_rect = Rectangle(
+            layout_rect.x - self.padding_left,
+            layout_rect.y - self.padding_bottom,
+            layout_rect.width + self.padding_left + self.padding_right,
+            layout_rect.height + self.padding_top + self.padding_bottom,
+        )
+
+        if self.background_color is not None:
+            # restore page
+            content_stream = page["Contents"]
+            content_stream["DecodedBytes"] = previous_decoded_bytes
+            content_stream[Name("Bytes")] = zlib.compress(
+                content_stream["DecodedBytes"], 9
+            )
+            content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+
+            # draw background
+            self._draw_background(page, modified_layout_rect)
+
+            # layout again
+            self._layout_without_padding(page, modified_bounding_box)
+
+        # draw border (if needed)
+        self._draw_border(page, modified_layout_rect)
+
+        # return
+        return modified_layout_rect
+
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
         return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
 
-    def draw_border(self, page: Page, border_box: Rectangle):
+    def _draw_background(self, page: Page, border_box: Rectangle):
+        rgb_color = self.background_color.to_rgb()
+        COLOR_MAX = Decimal(255.0)
+        content = """
+                                q
+                                %f %f %f rg
+                                %f %f m
+                                %f %f l
+                                %f %f l
+                                %f %f l
+                                B
+                                Q
+                               """ % (
+            Decimal(rgb_color.red / COLOR_MAX),
+            Decimal(rgb_color.green / COLOR_MAX),
+            Decimal(rgb_color.blue / COLOR_MAX),
+            border_box.x,  # lower left corner
+            border_box.y,  # lower left corner
+            border_box.x + border_box.width,  # lower right corner
+            border_box.y,  # lower right corner
+            border_box.x + border_box.width,  # upper right corner
+            border_box.y + border_box.height,  # upper right corner
+            border_box.x,  # upper left corner
+            border_box.y + border_box.height,  # upper left corner
+        )
+        self._append_to_content_stream(page, content)
+
+    def _draw_border(self, page: Page, border_box: Rectangle):
         # border is not wanted on any side
         if (
             self.border_top
@@ -133,6 +229,11 @@ class ChunkOfText(LayoutElement):
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
         super(ChunkOfText, self).__init__(
@@ -142,6 +243,11 @@ class ChunkOfText(LayoutElement):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
             parent=parent,
         )
         self.text = text
@@ -157,7 +263,7 @@ class ChunkOfText(LayoutElement):
         self.font_color = font_color
         self.font_size = font_size
 
-    def get_font_resource_name(self, font: Font, page: Page):
+    def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed
         if "Resources" not in page:
             page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
@@ -175,7 +281,7 @@ class ChunkOfText(LayoutElement):
             page["Resources"]["Font"][Name("F%d" % font_index)] = font
             return Name("F%d" % font_index)
 
-    def layout(self, page: Page, bounding_box: Rectangle):
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self.font
         rgb_color = self.font_color.to_rgb()
         COLOR_MAX = Decimal(255.0)
@@ -184,19 +290,21 @@ class ChunkOfText(LayoutElement):
             BT
             %f %f %f rg
             /%s %f Tf            
-            %f %f Td            
+            %f 0 0 %f %f %f Tm            
             (%s) Tj
             ET            
             Q
         """ % (
-            Decimal(rgb_color.red / COLOR_MAX),
-            Decimal(rgb_color.green / COLOR_MAX),
-            Decimal(rgb_color.blue / COLOR_MAX),
-            self.get_font_resource_name(self.font, page),
-            float(self.font_size),
-            float(bounding_box.x),
-            float(bounding_box.y + bounding_box.height - self.font_size),
-            self.text,
+            Decimal(rgb_color.red / COLOR_MAX),  # rg
+            Decimal(rgb_color.green / COLOR_MAX),  # rg
+            Decimal(rgb_color.blue / COLOR_MAX),  # rg
+            self._get_font_resource_name(self.font, page),  # Tf
+            Decimal(1),  # Tf
+            float(self.font_size),  # Tm
+            float(self.font_size),  # Tm
+            float(bounding_box.x),  # Tm
+            float(bounding_box.y + bounding_box.height - self.font_size),  # Tm
+            self.text,  # Tj
         )
         self._append_to_content_stream(page, content)
         layout_rect = Rectangle(
@@ -207,9 +315,6 @@ class ChunkOfText(LayoutElement):
             ),
             self.font_size,
         )
-
-        # draw border
-        self.draw_border(page, layout_rect)
 
         # set bounding box
         self.set_bounding_box(layout_rect)
@@ -247,6 +352,11 @@ class LineOfText(ChunkOfText):
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
         super(LineOfText, self).__init__(
@@ -260,14 +370,19 @@ class LineOfText(ChunkOfText):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
             parent=parent,
         )
         self.justification = justification
 
-    def layout(self, page: Page, bounding_box: Rectangle):
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self.font
         if self.justification == Justification.FLUSH_LEFT:
-            return super(LineOfText, self).layout(page, bounding_box)
+            return super(LineOfText, self)._layout_without_padding(page, bounding_box)
 
         # calculate width of glyph line
         glyph_line: GlyphLine = self.font.build_glyph_line(String(self.text))
@@ -275,7 +390,7 @@ class LineOfText(ChunkOfText):
         remaining_space = max(bounding_box.get_width() - glyph_line_width, Decimal(0))
 
         if self.justification == Justification.FLUSH_RIGHT:
-            layout_rect = super(LineOfText, self).layout(
+            layout_rect = super(LineOfText, self)._layout_without_padding(
                 page,
                 Rectangle(
                     bounding_box.x + remaining_space,
@@ -293,7 +408,7 @@ class LineOfText(ChunkOfText):
                 glyph_line_width,
                 bounding_box.height,
             )
-            layout_rect = super(LineOfText, self).layout(
+            layout_rect = super(LineOfText, self)._layout_without_padding(
                 page,
                 bounds,
             )
@@ -329,9 +444,6 @@ class LineOfText(ChunkOfText):
                 bounding_box.x, bounding_box.y, bounding_box.width, self.font_size
             )
 
-        # draw border
-        self.draw_border(page, layout_rect)
-
         # set bounding box
         self.set_bounding_box(layout_rect)
 
@@ -350,6 +462,7 @@ class Paragraph(LineOfText):
     def __init__(
         self,
         text: str,
+        respect_newlines_in_text: bool = False,
         font: Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
         justification: Justification = Justification.FLUSH_LEFT,
@@ -360,6 +473,11 @@ class Paragraph(LineOfText):
         border_left: bool = False,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
         super(Paragraph, self).__init__(
@@ -374,13 +492,20 @@ class Paragraph(LineOfText):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
             parent=parent,
         )
+        self.respect_newlines_in_text = respect_newlines_in_text
 
-    def layout(self, page: Page, bounding_box: Rectangle):
-        # easy case
-        if len(self.text) == 0:
-            return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
+    def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
+        # split on newlines
+        if self.respect_newlines_in_text:
+            return [x.strip() for x in self.text.split("\n")]
+
         # determine how to break text to fit
         lines_of_text = []
         last_line_of_text = ""
@@ -405,13 +530,21 @@ class Paragraph(LineOfText):
         if len(last_line_of_text) > 0:
             lines_of_text.append(last_line_of_text)
 
+        # return
+        return [x.strip() for x in lines_of_text]
+
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
+        # easy case
+        if len(self.text) == 0:
+            return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
+
         # delegate
         min_x: Decimal = Decimal(2048)
         min_y: Decimal = Decimal(2048)
         max_x: Decimal = Decimal(0)
         max_y: Decimal = Decimal(0)
         leading: Decimal = self.font_size * Decimal(1.3)
-        for i, l in enumerate(lines_of_text):
+        for i, l in enumerate(self._split_text(bounding_box)):
             r = LineOfText(
                 l,
                 font=self.font,
@@ -433,9 +566,6 @@ class Paragraph(LineOfText):
             max_x = max(r.x + r.width, max_x)
             max_y = max(r.y + r.height, max_y)
         layout_rect = Rectangle(min_x, min_y, max_x - min_x, max_y - min_y)
-
-        # draw border
-        self.draw_border(page, layout_rect)
 
         # set bounding box
         self.set_bounding_box(layout_rect)

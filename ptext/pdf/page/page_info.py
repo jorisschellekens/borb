@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Optional, Tuple
 
 from ptext.io.read.types import Dictionary
@@ -9,7 +10,7 @@ class PageInfo(Dictionary):
         super(PageInfo, self).__init__()
         self.page = page
 
-    def get_width(self) -> Optional[int]:
+    def get_width(self) -> Optional[Decimal]:
         """
         Return the width of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
         expressed in default user space units, that shall define the
@@ -18,7 +19,7 @@ class PageInfo(Dictionary):
         """
         return self.page["MediaBox"][2]
 
-    def get_height(self) -> Optional[int]:
+    def get_height(self) -> Optional[Decimal]:
         """
         Return the height of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
         expressed in default user space units, that shall define the
@@ -27,8 +28,8 @@ class PageInfo(Dictionary):
         """
         return self.page["MediaBox"][3]
 
-    def get_size(self) -> Tuple[int, int]:
-        return self.get_width() or 0, self.get_height() or 0
+    def get_size(self) -> Tuple[Decimal, Decimal]:
+        return self.get_width() or Decimal(0), self.get_height() or Decimal(0)
 
     def get_size_as_enum(self) -> Optional[PageSize]:
         """
@@ -50,12 +51,12 @@ class PageInfo(Dictionary):
                     pass
         return None
 
-    def get_page_number(self) -> Optional[int]:
+    def get_page_number(self) -> Optional[Decimal]:
         kids = self.page.get_parent()
         l = int(self.page.get_parent().get("Length"))
         for i in range(0, l):
             if kids.get(i) == self:
-                return i
+                return Decimal(i)
         return None
 
     def uses_color_images(self) -> Optional[bool]:

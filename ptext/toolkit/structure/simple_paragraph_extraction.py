@@ -3,7 +3,7 @@ import typing
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.paragraph import Paragraph, LayoutElement
 from ptext.pdf.page.page import Page
 from ptext.toolkit.structure.simple_line_of_text_extraction import (
     SimpleLineOfTextExtraction,
@@ -11,10 +11,16 @@ from ptext.toolkit.structure.simple_line_of_text_extraction import (
 
 
 class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
-    def __init__(self):
+    def __init__(
+        self,
+        minimum_horizontal_overlap_percentage: Decimal = Decimal(0.80),
+        maximum_multiplied_leading: Decimal = Decimal(1.40),
+    ):
         super(SimpleParagraphExtraction, self).__init__()
-        self.minimum_overlap_percentage = Decimal(0.80)
-        self.maximum_multiplied_leading = Decimal(1.40)
+        self.minimum_horizontal_overlap_percentage = (
+            minimum_horizontal_overlap_percentage
+        )
+        self.maximum_multiplied_leading = maximum_multiplied_leading
         self.paragraphs_per_page: typing.Dict[int, typing.List[Paragraph]] = {}
 
     def _end_page(self, page: Page):
@@ -46,7 +52,7 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
                 )
 
                 if (
-                    overlap_percentage >= self.minimum_overlap_percentage
+                    overlap_percentage >= self.minimum_horizontal_overlap_percentage
                     and leading <= self.maximum_multiplied_leading
                 ):
                     line_of_text_disjoint_set.union(l0, l1)
@@ -61,33 +67,30 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
             txt = "".join([x.text + "\n" for x in lines_of_text])[:-1]
 
             # create / append paragraph
-            paragraphs.append(
-                Paragraph(
-                    text=txt,
-                    font=lines_of_text[0].font,
-                    font_color=lines_of_text[0].font_color,
-                    font_size=lines_of_text[0].font_size,
-                ).set_bounding_box(
-                    Rectangle(
-                        min([l.bounding_box.x for l in lines_of_text]),
-                        min([l.bounding_box.y for l in lines_of_text]),
-                        max(
-                            [
-                                l.bounding_box.x + l.bounding_box.width
-                                for l in lines_of_text
-                            ]
-                        )
-                        - min([l.bounding_box.x for l in lines_of_text]),
-                        max(
-                            [
-                                l.bounding_box.y + l.bounding_box.height
-                                for l in lines_of_text
-                            ]
-                        )
-                        - min([l.bounding_box.y for l in lines_of_text]),
+            p: LayoutElement = Paragraph(
+                text=txt,
+                font=lines_of_text[0].font,
+                font_color=lines_of_text[0].font_color,
+                font_size=lines_of_text[0].font_size,
+            ).set_bounding_box(
+                Rectangle(
+                    min([l.bounding_box.x for l in lines_of_text]),
+                    min([l.bounding_box.y for l in lines_of_text]),
+                    max(
+                        [l.bounding_box.x + l.bounding_box.width for l in lines_of_text]
                     )
+                    - min([l.bounding_box.x for l in lines_of_text]),
+                    max(
+                        [
+                            l.bounding_box.y + l.bounding_box.height
+                            for l in lines_of_text
+                        ]
+                    )
+                    - min([l.bounding_box.y for l in lines_of_text]),
                 )
             )
+            assert isinstance(p, Paragraph)
+            paragraphs.append(p)
 
         # add to dict
         self.paragraphs_per_page[self.current_page_number] = paragraphs

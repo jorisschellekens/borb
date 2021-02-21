@@ -137,7 +137,10 @@ class XREF(Dictionary):
         src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> Optional[AnyPDFType]:
-
+        """
+        This function looks up an object in this XREF table.
+        Objects can be looked up by Reference, or object number.
+        """
         # cache
         if isinstance(indirect_reference, Reference):
             cached_obj = self.cache.get(indirect_reference, None)

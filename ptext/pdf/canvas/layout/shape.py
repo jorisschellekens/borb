@@ -1,8 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class represents a generic shape (specified by a List of points).
+    It has convenience methods to calculate width and height, perform scaling, etc
+"""
 import typing
 from typing import Tuple
 
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import Color
+from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import LayoutElement
 from ptext.pdf.page.page import Page
@@ -24,8 +31,8 @@ class Shape(LayoutElement):
     ):
         assert len(points) >= 3
         self.points = points
-        self.stroke_color = stroke_color
-        self.fill_color = fill_color
+        self.stroke_color = stroke_color or X11Color("Black")
+        self.fill_color = fill_color or X11Color("Black")
         self.line_width = line_width
         self.preserve_aspect_ratio = preserve_aspect_ratio
 
@@ -61,6 +68,9 @@ class Shape(LayoutElement):
         return self
 
     def translate_to_align(self, lower_left_x: Decimal, lower_left_y: Decimal):
+        """
+        This method translates this Shape so its lower left corner aligns with the given coordinates
+        """
         min_x = min([x[0] for x in self.points])
         min_y = min([x[1] for x in self.points])
         delta_x = lower_left_x - min_x

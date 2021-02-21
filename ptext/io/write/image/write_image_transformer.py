@@ -29,6 +29,9 @@ class WriteImageTransformer(WriteBaseTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes an Image to a byte stream
+        """
         assert context is not None
         assert context.destination is not None
         assert isinstance(object_to_transform, Image)
@@ -49,6 +52,7 @@ class WriteImageTransformer(WriteBaseTransformer):
                     contents = output.getvalue()
             except:
                 pass
+        assert contents is not None
 
         # build corresponding Stream (XObject)
         out_value = Stream()

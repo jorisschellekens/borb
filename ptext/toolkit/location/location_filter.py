@@ -1,8 +1,9 @@
 import typing
 
+from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 
 
 class LocationFilter(EventListener):
@@ -24,9 +25,9 @@ class LocationFilter(EventListener):
     def event_occurred(self, event: "Event") -> None:
         # filter TextRenderEvent
         if isinstance(event, ChunkOfTextRenderEvent):
-            x = event.get_bounding_box().x
-            y = event.get_baseline().y
-            if self.x0 < x < self.x1 and self.y0 < y < self.y1:
+            bb: typing.Optional[Rectangle] = event.get_bounding_box()
+            assert bb is not None
+            if self.x0 < bb.x < self.x1 and self.y0 < bb.y < self.y1:
                 for l in self.listeners:
                     l.event_occurred(event)
             return

@@ -37,6 +37,9 @@ class WriteXMPTransformer(WriteBaseTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes an ET.Element (representing XMP meta information) to a byte stream
+        """
         assert isinstance(object_to_transform, ET.Element)
         assert context is not None
         assert context.destination is not None

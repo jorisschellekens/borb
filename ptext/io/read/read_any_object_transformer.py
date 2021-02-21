@@ -51,9 +51,6 @@ from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.reference.read_indirect_object_transformer import (
-    DefaultIndirectObjectTransformer,
-)
 from ptext.io.read.reference.read_reference_transformer import (
     DefaultReferenceTransformer,
 )
@@ -83,7 +80,6 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self.add_child_transformer(ReadRootDictionaryTransformer())
         self.add_child_transformer(ReadPageDictionaryTransformer())
         # references
-        self.add_child_transformer(DefaultIndirectObjectTransformer())
         self.add_child_transformer(DefaultReferenceTransformer())
         # primitives
         self.add_child_transformer(ReadStreamTransformer())

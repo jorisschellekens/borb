@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    A metadata stream may be attached to a document through the Metadata entry in the document catalogue
+    (see 7.7.2, “Document Catalog”). The metadata framework provides a date stamp for metadata expressed in
+    the framework. If this date stamp is equal to or later than the document modification date recorded in the
+    document information dictionary, the metadata stream shall be taken as authoritative. If, however, the
+    document modification date recorded in the document information dictionary is later than the metadata
+    stream’s date stamp, the document has likely been saved by a writer that is not aware of metadata streams. In
+    this case, information stored in the document information dictionary shall be taken to override any semantically
+    equivalent items in the metadata stream. In addition, PDF document components represented as a stream or
+    dictionary may have a Metadata entry (see Table 316).
+"""
 import io
 import logging
 import typing

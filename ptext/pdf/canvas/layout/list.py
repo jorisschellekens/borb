@@ -1,14 +1,42 @@
 import typing
 from decimal import Decimal
 
-from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.color.color import X11Color, Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import LayoutElement, ChunkOfText
 from ptext.pdf.page.page import Page
 
 
 class UnorderedList(LayoutElement):
-    def __init__(self, parent: typing.Optional["LayoutElement"] = None):
+    def __init__(
+        self,
+        border_top: bool = False,
+        border_right: bool = False,
+        border_bottom: bool = False,
+        border_left: bool = False,
+        border_color: Color = X11Color("Black"),
+        border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
+        parent: typing.Optional["LayoutElement"] = None,
+    ):
+        super(UnorderedList, self).__init__(
+            border_top=border_top,
+            border_right=border_right,
+            border_bottom=border_bottom,
+            border_left=border_left,
+            border_color=border_color,
+            border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
+            parent=parent,
+        )
         self.parent = parent
         self.items: typing.List[LayoutElement] = []
 
@@ -26,7 +54,7 @@ class UnorderedList(LayoutElement):
             e = e.parent
         return level
 
-    def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
         last_item_bottom: Decimal = bounding_box.y + bounding_box.height
         bullet_margin: Decimal = Decimal(20)
         for i in self.items:
@@ -74,15 +102,44 @@ class UnorderedList(LayoutElement):
 
 
 class OrderedList(LayoutElement):
-    def __init__(self, index_offset: int = 0):
+    def __init__(
+        self,
+        border_top: bool = False,
+        border_right: bool = False,
+        border_bottom: bool = False,
+        border_left: bool = False,
+        border_color: Color = X11Color("Black"),
+        border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
+        parent: typing.Optional["LayoutElement"] = None,
+    ):
+        super(OrderedList, self).__init__(
+            border_top=border_top,
+            border_right=border_right,
+            border_bottom=border_bottom,
+            border_left=border_left,
+            border_color=border_color,
+            border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
+            parent=parent,
+        )
+        self.parent = parent
+        self.index_offset = 0
         self.items: typing.List[LayoutElement] = []
-        self.index_offset = index_offset
 
     def add(self, element: LayoutElement) -> "OrderedList":
         self.items.append(element)
         return self
 
-    def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
         last_item_bottom: Decimal = bounding_box.y + bounding_box.height
         bullet_margin: Decimal = Decimal(20)
         for index, i in enumerate(self.items):

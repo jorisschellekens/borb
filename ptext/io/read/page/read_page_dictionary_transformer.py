@@ -46,7 +46,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
             # avoid circular reference
             if k == "Parent":
                 continue
-            v = self.get_root_transformer().transform(v, tmp, context, [])
+            v = self.get_root_transformer().transform(v, tmp, context, event_listeners)
             if v is not None:
                 tmp[k] = v
 

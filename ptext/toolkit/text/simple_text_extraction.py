@@ -2,12 +2,12 @@ from decimal import Decimal
 from functools import cmp_to_key
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.canvas.event.text_render_event import (
+from ptext.pdf.canvas.event.chunk_of_text_render_event import (
     ChunkOfTextRenderEvent,
     LeftToRightComparator,
 )
+from ptext.pdf.canvas.event.end_page_event import EndPageEvent
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.page.page import Page
 
 
@@ -19,16 +19,16 @@ class SimpleTextExtraction(EventListener):
 
     def event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
-            self.render_text(event)
+            self._render_text(event)
         if isinstance(event, BeginPageEvent):
-            self.begin_page(event.get_page())
+            self._begin_page(event.get_page())
         if isinstance(event, EndPageEvent):
-            self.end_page(event.get_page())
+            self._end_page(event.get_page())
 
     def get_text(self, page_nr: int) -> str:
         return self.text_per_page[page_nr] if page_nr in self.text_per_page else ""
 
-    def render_text(self, text_render_info: ChunkOfTextRenderEvent):
+    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
 
         # init if needed
         if self.current_page not in self.text_render_info_per_page:
@@ -37,10 +37,10 @@ class SimpleTextExtraction(EventListener):
         # append TextRenderInfo
         self.text_render_info_per_page[self.current_page].append(text_render_info)
 
-    def begin_page(self, page: Page):
+    def _begin_page(self, page: Page):
         self.current_page += 1
 
-    def end_page(self, page: Page):
+    def _end_page(self, page: Page):
 
         # get TextRenderInfo objects on page
         tris = (

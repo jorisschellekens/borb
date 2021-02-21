@@ -85,6 +85,10 @@ class Document(Dictionary):
         return self
 
     def pop_page(self, index: int) -> "Document":  # type: ignore [name-specified]
+        """
+        This method removes a Page from this Document at a given index.
+        It then returns this Document.
+        """
         if "XRef" not in self:
             return self
         if "Trailer" not in self["XRef"]:
@@ -111,7 +115,10 @@ class Document(Dictionary):
         # return
         return self
 
-    def has_signatures(self):
+    def has_signatures(self) -> bool:
+        """
+        This function returns True if this Document has signatures, False otherwise
+        """
         return False
 
     def check_signatures(self):

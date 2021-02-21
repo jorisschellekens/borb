@@ -29,6 +29,11 @@ class TableCell(LayoutElement):
         border_left: bool = True,
         border_color: Color = X11Color("Black"),
         border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
     ):
         super(TableCell, self).__init__(
             border_top=border_top,
@@ -37,6 +42,11 @@ class TableCell(LayoutElement):
             border_left=border_left,
             border_color=border_color,
             border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
         )
         self.layout_element = layout_element
         assert row_span >= 1
@@ -46,8 +56,14 @@ class TableCell(LayoutElement):
         self.row_span = row_span
         self.col_span = col_span
 
-    def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-        return self.layout_element.layout(page, bounding_box)
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+        return self.layout_element._layout_without_padding(page, bounding_box)
+
+    def _draw_border(self, page: Page, border_box: Rectangle):
+        pass
+
+    def _draw_border_after_layout(self, page: Page, border_box: Rectangle):
+        super(TableCell, self)._draw_border(page, border_box)
 
 
 class Table(LayoutElement):
@@ -60,7 +76,31 @@ class Table(LayoutElement):
         number_of_rows: int,
         number_of_columns: int,
         column_widths: typing.List[Decimal] = [],
+        border_top: bool = False,
+        border_right: bool = False,
+        border_bottom: bool = False,
+        border_left: bool = False,
+        border_color: Color = X11Color("Black"),
+        border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
     ):
+        super(Table, self).__init__(
+            border_top=border_top,
+            border_right=border_right,
+            border_bottom=border_bottom,
+            border_left=border_left,
+            border_color=border_color,
+            border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
+        )
         assert number_of_rows >= 1
         assert number_of_columns >= 1
         if len(column_widths) == 0:
@@ -99,6 +139,23 @@ class Table(LayoutElement):
             e.border_color = border_color
         return self
 
+    def set_padding_on_all_cells(
+        self,
+        padding_top: Decimal,
+        padding_right: Decimal,
+        padding_bottom: Decimal,
+        padding_left: Decimal,
+    ) -> "Table":
+        """
+        This method sets the padding on all TableCell objects in this Table
+        """
+        for e in self.content:
+            e.padding_top = padding_top
+            e.padding_right = padding_right
+            e.padding_bottom = padding_bottom
+            e.padding_left = padding_left
+        return self
+
     def set_borders_on_all_cells(
         self,
         border_top: bool,
@@ -123,7 +180,7 @@ class Table(LayoutElement):
         self.set_borders_on_all_cells(False, False, False, False)
         return self
 
-    def layout(self, page: Page, bounding_box: Rectangle):
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
         # layout elements in grid
         mtx = [
             [-1 for _ in range(0, self.number_of_columns)]
@@ -206,7 +263,7 @@ class Table(LayoutElement):
                 e = self.content[mtx[r][c]]
                 if e in already_drawn_border:
                     continue
-                e.draw_border(
+                e._draw_border_after_layout(
                     page,
                     Rectangle(
                         column_boundaries[c],

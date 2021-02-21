@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading a jpeg2000 image object
+"""
 import io
 import logging
 import typing
@@ -17,6 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 class ReadJPEG2000ImageTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading a jpeg2000 image object
+    """
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:

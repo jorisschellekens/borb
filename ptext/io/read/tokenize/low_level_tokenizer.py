@@ -1,9 +1,21 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains everything needed to perform low-level tokenization against PDF syntax.
+    Low-level tokenization aims to separate numbers, strings, names, comments, start of dictionary, start of array, etc
+    The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
+"""
 import enum
 import io
 from typing import Optional
 
 
 class TokenType(enum.IntEnum):
+    """
+    This enum represents the various kinds of Token objects the PDF parser can encounter
+    """
+
     NUMBER = 1
     STRING = 2
     HEX_STRING = 3
@@ -21,6 +33,13 @@ class TokenType(enum.IntEnum):
 
 
 class Token:
+    """
+    This class represents a token in PDF syntax.
+    A lexical token or simply token is a string with an assigned and thus identified meaning.
+    It is structured as a pair consisting of a token name and an optional token value.
+    The token name is a category of lexical unit.
+    """
+
     def __init__(self, byte_offset: int, token_type: TokenType, text: str):
         self.byte_offset = byte_offset
         self.token_type = token_type

@@ -26,6 +26,9 @@ class WriteNumberTransformer(WriteBaseTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes a Decimal to a byte stream
+        """
         assert context is not None
         assert context.destination is not None
         assert isinstance(object_to_transform, Decimal)

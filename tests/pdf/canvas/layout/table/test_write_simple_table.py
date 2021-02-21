@@ -64,6 +64,7 @@ class TestWriteSimpleTable(unittest.TestCase):
         t.add(Paragraph("Java"))
         t.add(Paragraph("1,752,877"))
         t.set_border_width_on_all_cells(Decimal(0.2))
+        t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
 
         table_rect = t.layout(
             page,

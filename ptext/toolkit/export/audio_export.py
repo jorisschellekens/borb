@@ -12,7 +12,6 @@ from gtts import gTTS  # type: ignore [import]
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.page.page import Page
-
 from ptext.toolkit.structure.simple_paragraph_extraction import (
     SimpleParagraphExtraction,
 )
@@ -54,9 +53,10 @@ class AudioExport(SimpleParagraphExtraction):
         )
 
     def _get_text_for_x(self, bounding_box: Rectangle) -> str:
+        assert self.current_page
         w = self.current_page.get_page_info().get_width()
         assert w is not None
-        xs = [Decimal(0), w * Decimal(0.33), w * Decimal(0.66), w]
+        xs: typing.List[Decimal] = [Decimal(0), w * Decimal(0.33), w * Decimal(0.66), w]
         x = bounding_box.x + bounding_box.width * Decimal(0.5)
         if xs[0] <= x <= xs[1]:
             return "left"
@@ -64,11 +64,14 @@ class AudioExport(SimpleParagraphExtraction):
             return "center"
         if xs[2] <= x <= xs[3]:
             return "right"
+        return ""
 
     def _get_text_for_y(self, bounding_box: Rectangle) -> str:
+        assert self.current_page
         h = self.current_page.get_page_info().get_height()
         assert h is not None
-        ys = [h, h * Decimal(0.66), h * Decimal(0.33), Decimal(0)]
+        assert h is not None
+        ys: typing.List[Decimal] = [h, h * Decimal(0.66), h * Decimal(0.33), Decimal(0)]
         y = bounding_box.y
         if ys[1] <= y <= ys[0]:
             return "top"
@@ -76,6 +79,7 @@ class AudioExport(SimpleParagraphExtraction):
             return "middle"
         if ys[3] <= y <= ys[2]:
             return "bottom"
+        return ""
 
     def _get_text_for_paragraph(
         self, paragraph: Paragraph, paragraph_number: int, page_number: int

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading a Dictionary object
+"""
 import io
 import typing
 from typing import Optional, Any, Union
@@ -12,7 +18,7 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 
 class ReadDictionaryTransformer(ReadBaseTransformer):
     """
-    This implementation of BaseTransformer converts a PDFDictionary to a Dictionary
+    This implementation of ReadBaseTransformer is responsible for reading a Dictionary object
     """
 
     def can_be_transformed(
@@ -39,7 +45,7 @@ class ReadDictionaryTransformer(ReadBaseTransformer):
         # transform key/value pair(s)
         for k, v in object_to_transform.items():
             v = self.get_root_transformer().transform(
-                v, object_to_transform, context, []
+                v, object_to_transform, context, event_listeners
             )
             if v is not None:
                 object_to_transform[k] = v

@@ -3,10 +3,10 @@ import xml.etree.ElementTree as ET
 from typing import Optional, Tuple
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
+from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.page.page import Page
 from ptext.pdf.page.page_size import PageSize
 

@@ -296,9 +296,9 @@ Notice that we are passing an `EventListener` instance to the `PDF.loads` method
 This `EventListener` will be notified every time a rendering instruction takes place.
 The `RegularExpressionTextExtraction` implementation will use these instructions to determine whether a given regular expression has been matched.
 
-Next we are going to add annotations (in this case square annotations) around every `TextRenderEvent` that belongs to a regular expression match.
+Next we are going to add annotations (in this case square annotations) around every `ChunkOfTextRenderEvent` that belongs to a regular expression match.
 
-        for e in l.get_matched_text_render_info_events_per_page(0):
+        for e in l.get_matched_chunk_of_text_render_events_per_page(0):
             doc.get_page(0).append_square_annotation(
                 rectangle=e.get_baseline(),                
                 stroke_color=X11Color("Firebrick"),
@@ -775,7 +775,7 @@ We can access this information in the following manner:
                         "width": int(x.get_baseline().width),
                         "height": int(x.get_baseline().height),
                     }
-                    for x in l.get_matched_text_render_info_events_per_page(0)
+                    for x in l.get_matched_chunk_of_text_render_events_per_page(0)
                 ]
                 json_file_handle.write(json.dumps(obj, indent=4))
             
@@ -1234,7 +1234,91 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-### 4.8 Adding an ordered `List`
+
+### 4.8 Adding padding to `TableCell` objects
+
+Padding can make a `Table` a lot more legible. Let's have a look at how you'd set the padding on a `Table` in `pText`
+
+We'll start by creating an empty `Document`:
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+We'll use a layout manager to make things easy on ourselves:
+
+        # set layout
+        layout = SingleColumnLayout(page)
+
+This data comes from a StackOverflow question. The author of the question wanted to display this data in a `Table` and use colors on each `TableCell` depending on the value.
+
+        my_dict= {' ': ['A Error', 'B Error', 'C Error', 'D Error'],
+                  'lab1': [0.34, 0.23, 0.80, 0.79],
+                  'lab2': [0.53, 0.38, 0.96, 1.25],
+                  'lab3': [0.40, 0.27, 0.68, 0.93]}
+
+        colors = {0: X11Color("Green"),
+                  0.25: X11Color("Yellow"),
+                  0.5: X11Color("Orange"),
+                  0.75: X11Color("Red")}
+
+Now we can start building the `Table`:
+
+        table = Table(number_of_rows=4, number_of_columns=5)
+        
+First we'll add the header row:
+        
+        table.add(Paragraph(" "))
+        for h in my_dict[" "]:
+            table.add(Paragraph(text=h, font="Helvetica-Bold", font_size=Decimal(12)))
+
+Now we can add the data-rows:
+            
+        for name, row in [(k,v) for k,v in my_dict.items() if k != " "]:
+            table.add(Paragraph(name))
+            for v in row:
+                c = X11Color("Green")
+                for b,bc in colors.items():
+                    if v > b:
+                        c = bc
+                table.add(Paragraph(str(v),
+                                    font_color=c,
+                                    justification=Justification.CENTERED))
+
+We're going to make the border on each cell a bit thinner than the default:
+
+        # set border
+        table.set_border_width_on_all_cells(Decimal(0.2))
+
+Just like with borders, we could set them on each `TableCell` individually.
+But `Table` offers a convenience-method to set the padding on each of its `TableCell`objects:
+
+        # set padding
+        table.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
+
+Finally we add an explanatory `Paragraph` and the `Table`
+
+        # add to layout
+        layout.add(Paragraph("This table contains all measurands for 3 lab-sessions:"))
+        layout.add(table)
+
+Now we can store the PDF
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+The result should be something like this:
+
+![using_padding_on_a_table](readme_img/using_padding_on_a_table.png)
+
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+
+
+### 4.9 Adding an ordered `List`
 
         # create document
         pdf = Document()
@@ -1263,7 +1347,7 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-### 4.9 Adding a nested ordered `List`
+### 4.10 Adding a nested ordered `List`
 
         # create document
         pdf = Document()
@@ -1303,7 +1387,7 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-### 4.10 Creating a realistic invoice
+### 4.11 Creating a realistic invoice
 
 Let's combine everything we've learned so far and create a realistic looking invoice.
 
@@ -1505,6 +1589,163 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
+### 4.12 Forcing a split on `Paragraph`
+
+Sometimes you'd like to force a certain split on a `Paragraph`.
+The default behaviour for `Paragraph` is to ignore whitespaces, and decide
+(based on the bounding box of the layout) where to start a new line.
+
+But, by tweaking the setting `respect_newlines_in_text` we can tell the `Paragraph` to respect newlines.
+
+We'll start by creating a new `Document`:
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+Now we can add the title `Paragraph`
+
+        layout = MultiColumnLayout(page, number_of_columns=2)
+        layout.add(Paragraph("The Raven", font_size=Decimal(20), font="Helvetica-Oblique", font_color=HexColor("708090")))
+
+Finally, we add the `Paragraph`        
+        
+        layout.add(Paragraph("""Once upon a midnight dreary, while I pondered, weak and weary,
+                                Over many a quaint and curious volume of forgotten lore-
+                                While I nodded, nearly napping, suddenly there came a tapping,
+                                As of some one gently rapping, rapping at my chamber door.
+                                'Tis some visitor,' I muttered, 'tapping at my chamber door-
+                                Only this and nothing more.'""",
+                             justification=Justification.CENTERED,
+                             font_size=Decimal(8),
+                             respect_newlines_in_text=True))
+
+Now we can store the `Document`
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+
+### 4.13 Using `Image` objects
+
+Let's start by creating an empty `Document` and adding a `Page` to it.
+
+        pdf: Document = Document()
+        page: Page = Page()
+        pdf.append_page(page)
+
+We'll use the `SingleColumnLayout` to make things a bit easier for ourselves.
+
+        layout = SingleColumnLayout(page)
+
+Let's add an `Image`.
+I have an import for `PIL` at the top of my file like this:
+
+    from PIL import Image as PILImage
+
+That way I can easily differentiate between `pText` `Image` objects and `PIL`.
+
+        im = PILImage.open(requests.get("https://images.unsplash.com/photo-1597826368522-9f4cb5a6ba48?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw", stream=True).raw)
+        layout.add(Image(im, width=Decimal(256)))
+
+You can specify a `width` and `height` for the `Image`.
+If you don't specify anything, `pText` will use the original width and height of the `Image`.
+If you specify only one, `pText` will derive the missing parameter by scaling the original width/height by the same ratio.
+If you specify both, `pText` will stick to the dimensions you've given.
+
+Finally, we can write the `Document`:
+
+        with open("output.pdf", "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+
+The result should be something like this:
+
+![adding_an_image](readme_img/adding_an_image.png)
+
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+
+### 4.14 Adding `Image` objects to a `Table`
+
+Let's start by defining a convenience method for adding an `Image` to a `Table`.
+This method will accept the URL of the `Image`, and a `Table` as arguments:
+
+    def _add_image_to_table(self, url: str, table: Table):
+        im = PILImage.open(
+            requests.get(
+                url,
+                stream=True,
+            ).raw
+        )
+        table.add(Image(im, width=Decimal(128), height=Decimal(128)))
+
+Now we can get to work. We'll begin by creating an empty `Document` with an empty `Page`
+
+        pdf = Document()
+        page = Page()
+        pdf.append_page(page)
+
+I want to add a `Table` with 3 rows (2 rows for data, 1 header):
+
+        t = Table(number_of_rows=3, number_of_columns=3)
+        
+I'm going to start the `Table` by writing the header
+        
+        t.add(Paragraph(" "))
+        t.add(
+            Paragraph(
+                "Close-up",
+                font_color=X11Color("SteelBlue"),
+                font_size=Decimal(20),
+                justification=Justification.CENTERED,
+            )
+        )
+        t.add(
+            Paragraph(
+                "Panoramic",
+                font_color=X11Color("SteelBlue"),
+                font_size=Decimal(20),
+                justification=Justification.CENTERED,
+            )
+        )
+
+The first entry in this row is the row header, followed by two `Image` objects, which we'll add using our utility method
+
+        t.add(Paragraph("Nature"))
+        self._add_image_to_table("https://images.unsplash.com/photo-1520860560195-0f14c411476e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw", t)
+        self._add_image_to_table("https://images.unsplash.com/photo-1613480123595-c5582aa551b9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw", t)
+
+Same for the second row:
+
+        t.add(Paragraph("Architecture"))
+        self._add_image_to_table("https://images.unsplash.com/photo-1611321569296-1305a38ebd74?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw", t)
+        self._add_image_to_table("https://images.unsplash.com/photo-1613262666714-acebcc37f11e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw", t)
+
+Finally, I want to set padding and borders:
+
+        t.set_border_width_on_all_cells(Decimal(0.2))
+        t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
+
+And use a `PageLayout` to add everything to a `Page`
+
+        layout = SingleColumnLayout(page)
+        layout.add(t)
+
+And now we can store the `Document`
+
+        with open("output.pdf", "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+The result should be something like this:
+
+![adding_image_objects_to_a_table](readme_img/adding_image_objects_to_a_table.png)
+
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+
+
 ## 5. Using a `PageLayout`
 
 You can add all `LayoutElement` objects a precise locations.
@@ -1602,6 +1843,7 @@ The result should be something like this:
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
             
             
+
 ## 6. Exporting a PDF
 
 Using `pText` you can also export your PDF `Document` to various formats.            
@@ -1694,7 +1936,7 @@ This is perfectly possible with `pText`.
         doc = PDF.loads(pdf_file_handle, [l])
 
 `AudioExport` then allows you to store an mp3 file for each page.         
-For this, you can use the `` method. You need to provide it with a `page_number` and `path`.
+For this, you can use the `get_audio_file_per_page` method. You need to provide it with a `page_number` and `path`.
         
         l.get_audio_file_per_page(0, "output.mp3")
         

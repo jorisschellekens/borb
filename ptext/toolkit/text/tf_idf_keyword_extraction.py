@@ -70,8 +70,8 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         self.number_of_pages = 0
         self.minimum_term_frequency = minimum_term_frequency
 
-    def end_page(self, page: Page):
-        super().end_page(page)
+    def _end_page(self, page: Page):
+        super()._end_page(page)
 
         # update number of pages
         self.number_of_pages += 1

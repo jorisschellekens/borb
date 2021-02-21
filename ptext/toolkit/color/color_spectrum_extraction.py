@@ -4,9 +4,10 @@ from typing import Optional
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import RGBColor
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
+from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
-from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
+from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page import Page
 
 
@@ -41,7 +42,8 @@ class ColorSpectrumExtraction(EventListener):
 
     def _render_text(self, event: ChunkOfTextRenderEvent):
         assert event is not None
-        s = int(event.get_bounding_box().width * event.get_bounding_box().height)
+        bb: typing.Optional[Rectangle] = event.get_bounding_box()
+        s = 0 if bb is None else int(bb.width * bb.height)
         c = event.font_color.to_rgb()
         self._register_color(s, c)
 

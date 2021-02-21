@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    In computer science and visualization, a canvas is a container that holds various drawing elements
+    (lines, shapes, text, frames containing other elements, etc.).
+    It takes its name from the canvas used in visual arts.
+"""
 import io
 import logging
 import os
@@ -90,6 +98,12 @@ logger = logging.getLogger(__name__)
 
 
 class Canvas(Dictionary):
+    """
+    In computer science and visualization, a canvas is a container that holds various drawing elements
+    (lines, shapes, text, frames containing other elements, etc.).
+    It takes its name from the canvas used in visual arts.
+    """
+
     def __init__(self):
         super(Canvas, self).__init__()
         # initialize operators
@@ -167,7 +181,9 @@ class Canvas(Dictionary):
         return self
 
     def read(self, io_source: io.IOBase) -> "Canvas":
-
+        """
+        This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
+        """
         io_source.seek(0, os.SEEK_END)
         length = io_source.tell()
         io_source.seek(0)

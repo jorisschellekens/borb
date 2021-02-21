@@ -37,6 +37,10 @@ class StreamXREF(XREF):
         tokenizer: HighLevelTokenizer,
         initial_offset: Optional[int] = None,
     ) -> "XREF":
+        """
+        This method attempts to read a stream XREF from the given io_source.
+        It will either throw an exception, or return this XREF
+        """
 
         if initial_offset is not None:
             io_source.seek(initial_offset)

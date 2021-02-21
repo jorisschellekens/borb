@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading a Font object
+"""
 import io
 import typing
 from typing import Optional, Any, Union
@@ -18,6 +24,10 @@ from ptext.pdf.canvas.font.true_type_font import TrueTypeFont
 
 
 class ReadFontDictionaryTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading a Font object
+    """
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:

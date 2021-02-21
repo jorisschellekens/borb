@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This function decodes a Stream, applying the filters specified in the Filter entry
+    of its stream dictionary
+"""
 import typing
 
 from ptext.io.filter.ascii85_decode import ASCII85Decode
@@ -8,7 +15,10 @@ from ptext.io.read.types import Stream, List, Decimal, Dictionary, Name
 
 
 def decode_stream(s: Stream) -> Stream:
-
+    """
+    This function decodes a Stream, applying the filters specified in the Filter entry
+    of its stream dictionary
+    """
     assert isinstance(s, Stream)
     assert "Bytes" in s
 

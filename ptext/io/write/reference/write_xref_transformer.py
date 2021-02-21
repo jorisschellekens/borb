@@ -34,6 +34,9 @@ class WriteXREFTransformer(WriteBaseTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes an XREF to a byte stream
+        """
         assert isinstance(object_to_transform, XREF)
         assert "Trailer" in object_to_transform
         assert isinstance(object_to_transform["Trailer"], Dictionary)

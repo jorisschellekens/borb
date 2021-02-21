@@ -4,8 +4,8 @@ import re
 import unittest
 from pathlib import Path
 
+from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.canvas.event.text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.pdf import PDF
 from tests.test import Test
 

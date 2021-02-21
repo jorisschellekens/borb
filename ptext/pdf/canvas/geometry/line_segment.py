@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class represents a line segment
+"""
 from decimal import Decimal
 from math import sqrt
 from typing import Tuple

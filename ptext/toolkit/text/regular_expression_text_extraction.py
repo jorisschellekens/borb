@@ -4,12 +4,12 @@ from functools import cmp_to_key
 from typing import List
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
-from ptext.pdf.canvas.event.text_render_event import (
+from ptext.pdf.canvas.event.chunk_of_text_render_event import (
     ChunkOfTextRenderEvent,
     LeftToRightComparator,
 )
+from ptext.pdf.canvas.event.end_page_event import EndPageEvent
+from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.page.page import Page
 
 
@@ -119,7 +119,7 @@ class RegularExpressionTextExtraction(EventListener):
                 tris[tri_start_index : (tri_stop_index + 1)]
             )
 
-    def get_matched_text_render_info_events_per_page(
+    def get_matched_chunk_of_text_render_events_per_page(
         self, page_number: int
     ) -> List[ChunkOfTextRenderEvent]:
         if page_number not in self.matched_text_render_info_events_per_page:

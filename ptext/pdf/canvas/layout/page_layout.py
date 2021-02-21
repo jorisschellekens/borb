@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains various implementations of `PageLayout`.
+    `PageLayout` can be used to add `LayoutElement` objects to a `Page` without
+    having to specify coordinates.
+"""
 import zlib
 
 from ptext.io.read.types import Decimal, Name
@@ -12,10 +20,22 @@ from ptext.pdf.page.page import Page
 
 
 class PageLayout:
+    """
+    This class acts as a layoutmanager for `Document` objects.
+    Instead of adding `LayoutElements` to a `Page` by calling `layout` (and needing to know the precise coordinates)
+    you can simply use this class and its `add` method.
+    Any implementation of `PageLayout` should keep track of where `LayoutElement` objects are placed,
+    and what the remaining free space is.
+    """
+
     def __init__(self, page: Page):
         self.page = page
 
     def add(self, layout_element: LayoutElement) -> "PageLayout":
+        """
+        This method adds a `LayoutElement` to the current `Page`.
+        The specific implementation of `PageLayout` should decide where the `LayoutElement` will be placed.
+        """
         return self
 
 
@@ -37,6 +57,7 @@ class SingleColumnLayout(PageLayout):
 
     def add(self, layout_element: LayoutElement):
         # calculate next available rectangle
+        assert self.page_width
         next_available_rect: Rectangle = Rectangle(
             self.horizontal_margin,
             self.vertical_margin,
@@ -96,6 +117,7 @@ class MultiColumnLayout(PageLayout):
         available_height: Decimal = (
             self.previous_y - self.vertical_margin - self.previous_leading
         )
+        assert self.page_height
         if available_height < 0:
             self.column_index += Decimal(1)
             self.previous_y = self.page_height - self.vertical_margin
@@ -135,7 +157,7 @@ class MultiColumnLayout(PageLayout):
         self.previous_leading = self._calculate_leading(layout_element)
 
         # return
-        self
+        return self
 
     def _calculate_leading(self, layout_element: LayoutElement) -> Decimal:
         if isinstance(layout_element, ChunkOfText):
