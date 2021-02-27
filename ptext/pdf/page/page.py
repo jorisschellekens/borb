@@ -21,7 +21,7 @@ class Page(Dictionary):
     This class represents a single page in a PDF document
     """
 
-    def __init__(self):
+    def __init__(self, width: Decimal = Decimal(595), height: Decimal = Decimal(842)):
         super(Page, self).__init__()
 
         # type
@@ -31,8 +31,8 @@ class Page(Dictionary):
         self[Name("MediaBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         self["MediaBox"].append(pDecimal(0))
         self["MediaBox"].append(pDecimal(0))
-        self["MediaBox"].append(pDecimal(595))
-        self["MediaBox"].append(pDecimal(842))
+        self["MediaBox"].append(pDecimal(width))
+        self["MediaBox"].append(pDecimal(height))
 
     def get_page_info(self) -> PageInfo:
         """
@@ -241,11 +241,11 @@ class Page(Dictionary):
         self,
         rectangle: Rectangle,
         page: Decimal,
-        location_on_page: str,
-        left: Optional[Decimal] = None,
-        bottom: Optional[Decimal] = None,
-        right: Optional[Decimal] = None,
+        destination_type: str,
         top: Optional[Decimal] = None,
+        right: Optional[Decimal] = None,
+        bottom: Optional[Decimal] = None,
+        left: Optional[Decimal] = None,
         zoom: Optional[Decimal] = None,
         highlighting_mode: Optional[str] = None,
         color: Optional[Color] = None,
@@ -269,7 +269,7 @@ class Page(Dictionary):
         # (Optional; not permitted if an A entry is present) A destination that shall
         # be displayed when the annotation is activated (see 12.3.2,
         # “Destinations”).
-        assert location_on_page in [
+        assert destination_type in [
             "XYZ",
             "Fit",
             "FitH",
@@ -281,8 +281,8 @@ class Page(Dictionary):
         ]
         destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         destination.append(pDecimal(page))
-        destination.append(Name(location_on_page))
-        if location_on_page == "XYZ":
+        destination.append(Name(destination_type))
+        if destination_type == "XYZ":
             assert (
                 left is not None
                 and bottom is None
@@ -293,7 +293,7 @@ class Page(Dictionary):
             destination.append(pDecimal(left))
             destination.append(pDecimal(top))
             destination.append(pDecimal(zoom))
-        if location_on_page == "Fit":
+        if destination_type == "Fit":
             assert (
                 left is None
                 and bottom is None
@@ -301,7 +301,7 @@ class Page(Dictionary):
                 and top is None
                 and zoom is None
             )
-        if location_on_page == "FitH":
+        if destination_type == "FitH":
             assert (
                 left is None
                 and bottom is None
@@ -310,7 +310,7 @@ class Page(Dictionary):
                 and zoom is None
             )
             destination.append(pDecimal(top))
-        if location_on_page == "FitV":
+        if destination_type == "FitV":
             assert (
                 left is not None
                 and bottom is None
@@ -319,7 +319,7 @@ class Page(Dictionary):
                 and zoom is None
             )
             destination.append(pDecimal(left))
-        if location_on_page == "FitR":
+        if destination_type == "FitR":
             assert (
                 left is not None
                 and bottom is not None
@@ -331,7 +331,7 @@ class Page(Dictionary):
             destination.append(pDecimal(bottom))
             destination.append(pDecimal(right))
             destination.append(pDecimal(top))
-        if location_on_page == "FitBH":
+        if destination_type == "FitBH":
             assert (
                 left is None
                 and bottom is None
@@ -340,7 +340,7 @@ class Page(Dictionary):
                 and zoom is None
             )
             destination.append(pDecimal(top))
-        if location_on_page == "FitBV":
+        if destination_type == "FitBV":
             assert (
                 left is not None
                 and bottom is None

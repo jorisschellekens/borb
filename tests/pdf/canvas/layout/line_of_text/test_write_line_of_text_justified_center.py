@@ -48,7 +48,6 @@ class TestWriteLineOfTextJustifiedCenter(unittest.TestCase):
             r = LineOfText(
                 s,
                 font_size=Decimal(20),
-                font_color=X11Color("YellowGreen"),
                 justification=Justification.CENTERED,
             ).layout(
                 page,

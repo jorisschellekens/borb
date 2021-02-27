@@ -26,9 +26,10 @@ class Shape(LayoutElement):
         points: typing.List[Tuple[Decimal, Decimal]],
         stroke_color: typing.Optional[Color],
         fill_color: typing.Optional[Color],
-        line_width: typing.Optional[Decimal],
+        line_width: Decimal = Decimal(0),
         preserve_aspect_ratio: bool = True,
     ):
+        super(Shape, self).__init__()
         assert len(points) >= 3
         self.points = points
         self.stroke_color = stroke_color or X11Color("Black")
@@ -77,7 +78,7 @@ class Shape(LayoutElement):
         delta_y = lower_left_y - min_y
         self.points = [(x[0] + delta_x, x[1] + delta_y) for x in self.points]
 
-    def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
 
         # scale to fit
         self.scale_to_fit(bounding_box.width, bounding_box.height)

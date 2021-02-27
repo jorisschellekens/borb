@@ -38,18 +38,22 @@ class WriteImageTransformer(WriteBaseTransformer):
 
         # get image bytes
         contents = None
+        filter_name: Optional[Name] = None
         try:
             with io.BytesIO() as output:
                 object_to_transform.save(output, format="JPEG")
                 contents = output.getvalue()
-        except:
+            filter_name = Name("DCTDecode")
+        except Exception as e:
             pass
 
         if contents is None:
             try:
+                # TODO : store PNG
                 with io.BytesIO() as output:
-                    object_to_transform.save(output, format="PNG")
+                    object_to_transform.convert("RGB").save(output, format="JPEG")
                     contents = output.getvalue()
+                filter_name = Name("DCTDecode")
             except:
                 pass
         assert contents is not None
@@ -61,7 +65,7 @@ class WriteImageTransformer(WriteBaseTransformer):
         out_value[Name("Width")] = Decimal(object_to_transform.width)
         out_value[Name("Height")] = Decimal(object_to_transform.height)
         out_value[Name("Length")] = Decimal(len(contents))
-        out_value[Name("Filter")] = Name("DCTDecode")
+        out_value[Name("Filter")] = filter_name
         out_value[Name("BitsPerComponent")] = Decimal(8)
         out_value[Name("ColorSpace")] = Name("DeviceRGB")
         out_value[Name("Bytes")] = contents

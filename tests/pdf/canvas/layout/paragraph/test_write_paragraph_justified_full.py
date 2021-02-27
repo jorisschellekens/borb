@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import X11Color, HexColor
+from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import (
     Justification,
@@ -41,17 +41,16 @@ class TestWriteParagraphJustifiedFull(unittest.TestCase):
         Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
-            font_color=HexColor("#5dbb46"),
             justification=Justification.JUSTIFIED,
         ).layout(
             page,
-            Rectangle(Decimal(20), Decimal(600), Decimal(300), Decimal(124)),
+            Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),
         )
 
         # add rectangle annotation
         page.append_square_annotation(
             stroke_color=X11Color("Red"),
-            rectangle=Rectangle(Decimal(20), Decimal(600), Decimal(300), Decimal(124)),
+            rectangle=Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),
         )
 
         # determine output location

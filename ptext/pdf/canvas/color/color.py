@@ -51,6 +51,11 @@ class RGBColor(Color):
         """
         return self
 
+    def to_hex_string(self):
+        return "#{:02x}{:02x}{:02x}".format(
+            int(self.red), int(self.green), int(self.blue)
+        )
+
     def __deepcopy__(self, memodict={}):
         return RGBColor(self.red, self.green, self.blue)
 

@@ -94,9 +94,16 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         self._graphics_state = graphics_state
 
     def get_space_character_width_estimate(self):
+        """
+        This function returns the width (in user space) of the space-character.
+        """
         return self.space_character_width_estimate
 
     def get_baseline(self) -> Rectangle:
+        """
+        This function returns the bounding box of this ChunkOfTextRenderEvent,
+        starting at the baseline (not at the descent)
+        """
         return self.baseline_bounding_box
 
     def split_on_glyphs(self) -> typing.List["ChunkOfTextRenderEvent"]:

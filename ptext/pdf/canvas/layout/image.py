@@ -1,6 +1,8 @@
+import typing
 from decimal import Decimal
 from typing import Optional
 
+import requests
 from PIL import Image as PILImage  # type: ignore [import]
 
 from ptext.io.read.image.read_jpeg_image_transformer import image_hash_method
@@ -13,10 +15,17 @@ from ptext.pdf.page.page import Page
 class Image(LayoutElement):
     def __init__(
         self,
-        image: PILImage,
+        image: typing.Union[str, PILImage.Image],
         width: Optional[Decimal] = None,
         height: Optional[Decimal] = None,
     ):
+        if isinstance(image, str):
+            image = PILImage.open(
+                requests.get(
+                    image,
+                    stream=True,
+                ).raw
+            )
         super(Image, self).__init__()
         add_base_methods(image.__class__)
         setattr(image.__class__, "__hash__", image_hash_method)
@@ -61,15 +70,13 @@ class Image(LayoutElement):
 
         # adjust width to bounding box
         if self.width > bounding_box.width:
-            scale: Decimal = bounding_box.width / self.width
+            self.height = self.height * (bounding_box.width / self.width)
             self.width = bounding_box.width
-            self.height = self.height * scale
 
         # adjust height to bounding box
         if self.height > bounding_box.height:
-            scale: Decimal = bounding_box.height / self.height
+            self.width = self.width * (bounding_box.height / self.height)
             self.height = bounding_box.height
-            self.width = self.width * scale
 
         # write Do operator
         content = " q %f 0 0 %f %f %f cm /%s Do Q " % (

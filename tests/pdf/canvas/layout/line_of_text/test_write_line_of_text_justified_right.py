@@ -47,7 +47,6 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
             LineOfText(
                 s,
                 font_size=Decimal(20),
-                font_color=X11Color("YellowGreen"),
                 justification=Justification.FLUSH_RIGHT,
             ).layout(
                 page,

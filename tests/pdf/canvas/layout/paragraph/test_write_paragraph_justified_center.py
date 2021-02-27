@@ -42,7 +42,6 @@ class TestWriteParagraphJustifiedCenter(unittest.TestCase):
         Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
-            font_color=X11Color("YellowGreen"),
             justification=Justification.CENTERED,
         ).layout(
             page,

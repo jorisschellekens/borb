@@ -42,13 +42,7 @@ class TestWriteParagraphJustifiedRight(unittest.TestCase):
         Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
-            font_color=X11Color("YellowGreen"),
             justification=Justification.FLUSH_RIGHT,
-            border_color=X11Color("SteelBlue"),
-            border_top=True,
-            border_bottom=True,
-            border_right=True,
-            border_left=True,
         ).layout(
             page,
             Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),

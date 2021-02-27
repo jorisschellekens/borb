@@ -43,7 +43,6 @@ class TestWriteParagraphJustifiedCenterWithPadding(unittest.TestCase):
         layout_rect = Paragraph(
             "Once upon a midnight dreary,\nwhile I pondered weak and weary,\nover many a quaint and curious\nvolume of forgotten lore",
             font_size=Decimal(20),
-            font_color=X11Color("YellowGreen"),
             justification=Justification.CENTERED,
             respect_newlines_in_text=True,
             padding_top=padding,

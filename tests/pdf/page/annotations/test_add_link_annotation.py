@@ -18,7 +18,7 @@ class TestAddLinkAnnotation(Test):
         self.output_dir = Path("../../../output/test-add-link-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
         super(TestAddLinkAnnotation, self).test_corpus()
@@ -41,8 +41,8 @@ class TestAddLinkAnnotation(Test):
         # add annotation
         doc.get_page(0).append_link_annotation(
             page=Decimal(0),
-            location_on_page="Fit",
-            color=X11Color("AliceBlue"),
+            destination_type="Fit",
+            color=X11Color("Red"),
             rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
         )
 

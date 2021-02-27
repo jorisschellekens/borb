@@ -40,20 +40,14 @@ class TestAddPolylineAnnotation(Test):
             doc = PDF.loads(in_file_handle)
 
         # add annotation
-        for i, color in enumerate(
-            [
-                X11Color("Red"),
-                X11Color("Orange"),
-                X11Color("Yellow"),
-                X11Color("Green"),
-                X11Color("Blue"),
-                X11Color("Violet"),
-            ]
-        ):
-            doc.get_page(0).append_polyline_annotation(
-                points=self.arc(200 + 4 * i, 200, 64 - 2 * i),
-                stroke_color=color,
-            )
+        doc.get_page(0).append_polyline_annotation(
+            points=[
+                (Decimal(72), Decimal(390)),
+                (Decimal(242), Decimal(500)),
+                (Decimal(156), Decimal(390)),
+            ],
+            stroke_color=X11Color("Crimson"),
+        )
 
         # attempt to store PDF
         with open(out_file, "wb") as out_file_handle:

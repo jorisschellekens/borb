@@ -76,7 +76,7 @@ class TestAddSuperMarioAnnotation(Test):
                 doc.get_page(0).append_link_annotation(
                     page=Decimal(0),
                     color=c[m[i][j]],
-                    location_on_page="Fit",
+                    destination_type="Fit",
                     rectangle=Rectangle(
                         Decimal(x),
                         Decimal(y),

@@ -2,9 +2,8 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.list import UnorderedList
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -49,12 +48,9 @@ class TestWriteNestedUnorderedList(unittest.TestCase):
         ul2.add(Paragraph(text="Ipsum"))
         ul2.add(Paragraph(text="Dolor"))
         ul2.add(ul1)
-        ul2.layout(
-            page,
-            bounding_box=Rectangle(
-                Decimal(100), Decimal(600), Decimal(200), Decimal(124)
-            ),
-        )
+
+        layout = SingleColumnLayout(page)
+        layout.add(ul2)
 
         # determine output location
         out_file = self.output_dir / ("output.pdf")

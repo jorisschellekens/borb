@@ -16,6 +16,7 @@ from ptext.pdf.canvas.layout.paragraph import (
     LineOfText,
     Paragraph,
 )
+from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 
 
@@ -109,6 +110,35 @@ class MultiColumnLayout(PageLayout):
         self.previous_leading = Decimal(0)
         self.column_index = Decimal(0)
 
+    def switch_to_next_column(self) -> "PageLayout":
+        self.column_index += Decimal(1)
+        if self.column_index == self.number_of_columns:
+            return self.switch_to_next_page()
+        assert self.page_height
+        self.previous_y = self.page_height - self.vertical_margin
+        self.previous_leading = Decimal(0)
+        return self
+
+    def switch_to_next_page(self) -> "PageLayout":
+        self.column_index = Decimal(0)
+        assert self.page_height
+        self.previous_y = self.page_height - self.vertical_margin
+        self.previous_leading = Decimal(0)
+
+        # find Document
+        doc = self.page
+        while doc is not None and not isinstance(doc, Document):
+            doc = doc.get_parent()  # type: ignore [attr-defined]
+        assert isinstance(doc, Document)
+
+        # create new Page
+        new_page = Page(width=self.page_width, height=self.page_height)
+        self.page = new_page
+        doc.append_page(new_page)
+
+        # return
+        return self
+
     def add(self, layout_element: LayoutElement) -> "PageLayout":
         if self.column_index >= self.number_of_columns:
             return self
@@ -119,9 +149,7 @@ class MultiColumnLayout(PageLayout):
         )
         assert self.page_height
         if available_height < 0:
-            self.column_index += Decimal(1)
-            self.previous_y = self.page_height - self.vertical_margin
-            self.previous_leading = Decimal(0)
+            self.switch_to_next_column()
             return self.add(layout_element)
 
         next_available_rect: Rectangle = Rectangle(
@@ -146,11 +174,8 @@ class MultiColumnLayout(PageLayout):
                 content_stream["DecodedBytes"], 9
             )
             content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
-            self.column_index += Decimal(1)
-            self.previous_y = self.page_height - self.vertical_margin
-            self.previous_leading = Decimal(0)
-            self.add(layout_element)
-            return self
+            self.switch_to_next_column()
+            return self.add(layout_element)
 
         # calculate previous_y
         self.previous_y = layout_rect.y

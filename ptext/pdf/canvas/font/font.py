@@ -95,6 +95,7 @@ class Font(Dictionary):
         estimates based on the metrics of other characters)
         Returns None if the space character width could not be estimated.
         """
+        # TODO
         space_width = self.get_single_character_width(32)
 
         # missing character width

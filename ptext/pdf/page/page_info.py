@@ -52,10 +52,10 @@ class PageInfo(Dictionary):
         return None
 
     def get_page_number(self) -> Optional[Decimal]:
-        kids = self.page.get_parent()
-        l = int(self.page.get_parent().get("Length"))
+        kids = self.page.get_parent().get("Kids")
+        l = int(self.page.get_parent().get("Count"))
         for i in range(0, l):
-            if kids.get(i) == self:
+            if kids[i] == self.page:
                 return Decimal(i)
         return None
 

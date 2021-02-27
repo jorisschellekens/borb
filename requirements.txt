@@ -1,2 +1,6 @@
 Pillow>=7.1.0
+python-barcode>=0.13.1
+qrcode[pil]>=6.1
+git+git://github.com/ojii/pymaging.git
+git+git://github.com/ojii/pymaging-png.git
 setuptools~=51.1.1

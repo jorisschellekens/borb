@@ -4,7 +4,10 @@
 """
     This class represents a PDF document
 """
-from ptext.io.read.types import Dictionary, Decimal, List, Name
+
+import typing
+
+from ptext.io.read.types import Dictionary, Decimal, List, Name, String
 from ptext.pdf.page.page import Page
 from ptext.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
@@ -48,22 +51,25 @@ class Document(Dictionary):
         """
         This method appends a page (from another Document) to this Document
         """
-        return self.insert_page(page, -1)
+        return self.insert_page(page)
 
-    def insert_page(self, page: Page, index: int = -1) -> "Document":  # type: ignore [name-defined]
+    def insert_page(self, page: Page, index: typing.Optional[int] = None) -> "Document":  # type: ignore [name-defined]
         """
         This method appends a page (from another Document) to this Document at a given index
         """
         # build XRef
         if "XRef" not in self:
             self["XRef"] = PlainTextXREF()
+            self["XRef"]._parent = self
         # build Trailer
         if "Trailer" not in self["XRef"]:
             self["XRef"]["Trailer"] = Dictionary()
             self["XRef"][Name("Size")] = Decimal(0)
+            self["XRef"]["Trailer"]._parent = self["XRef"]
         # build Root
         if "Root" not in self["XRef"]["Trailer"]:
             self["XRef"]["Trailer"][Name("Root")] = Dictionary()
+            self["XRef"]["Trailer"]["Root"]._parent = self["XRef"]["Trailer"]
         # build Pages
         if "Pages" not in self["XRef"]["Trailer"]["Root"]:
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")] = Dictionary()
@@ -71,16 +77,25 @@ class Document(Dictionary):
                 Name("Count")
             ] = Decimal(0)
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Kids")] = List()
+            self["XRef"]["Trailer"]["Root"]["Pages"]._parent = self["XRef"]["Trailer"][
+                "Root"
+            ]
+            self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]._parent = self["XRef"][
+                "Trailer"
+            ]["Root"]["Pages"]
         # update /Kids
         kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
         assert kids is not None
         assert isinstance(kids, List)
+        if index is None:
+            index = len(kids)
         kids.insert(index, page)
         # update /Count
         prev_count = self["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
         self["XRef"]["Trailer"]["Root"]["Pages"]["Count"] = Decimal(prev_count + 1)
         # set /Parent
         page[Name("Parent")] = self["XRef"]["Trailer"]["Root"]["Pages"]
+        page._parent = self["XRef"]["Trailer"]["Root"]["Pages"]  # type: ignore [attr-defined]
         # return
         return self
 
@@ -119,7 +134,195 @@ class Document(Dictionary):
         """
         This function returns True if this Document has signatures, False otherwise
         """
+        # TODO
         return False
 
-    def check_signatures(self):
-        pass
+    def check_signatures(self) -> bool:
+        """
+        This method verifies the signatures in the Document,
+        it returns True if the signatures match the digest of the Document
+        (or if the Document has no signatures), False otherwise
+        """
+        # TODO
+        return True
+
+    def has_outlines(self) -> bool:
+        try:
+            return (
+                "Outlines" in self["XRef"]["Trailer"]["Root"]
+                and "Count" in self["XRef"]["Trailer"]["Root"]["Outlines"]
+                and self["XRef"]["Trailer"]["Root"]["Outlines"]["Count"] > 0
+            )
+        except:
+            return False
+
+    def add_outline(
+        self,
+        text: str,
+        level: int,
+        destination_type: str,
+        page_nr: int,
+        top: typing.Optional[Decimal] = None,
+        right: typing.Optional[Decimal] = None,
+        bottom: typing.Optional[Decimal] = None,
+        left: typing.Optional[Decimal] = None,
+        zoom: typing.Optional[Decimal] = None,
+    ) -> "Document":
+
+        assert destination_type in [
+            "XYZ",
+            "Fit",
+            "FitH",
+            "FitV",
+            "FitR",
+            "FitB",
+            "FitBH",
+            "FitBV",
+        ]
+        destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        destination.append(Decimal(page_nr))
+        destination.append(Name(destination_type))
+        if destination_type == "XYZ":
+            assert (
+                left is not None
+                and bottom is None
+                and right is None
+                and top is not None
+                and zoom is not None
+            )
+            destination.append(Decimal(left))
+            destination.append(Decimal(top))
+            destination.append(Decimal(zoom))
+        if destination_type == "Fit":
+            assert (
+                left is None
+                and bottom is None
+                and right is None
+                and top is None
+                and zoom is None
+            )
+        if destination_type == "FitH":
+            assert (
+                left is None
+                and bottom is None
+                and right is None
+                and top is not None
+                and zoom is None
+            )
+            destination.append(Decimal(top))
+        if destination_type == "FitV":
+            assert (
+                left is not None
+                and bottom is None
+                and right is None
+                and top is None
+                and zoom is None
+            )
+            destination.append(Decimal(left))
+        if destination_type == "FitR":
+            assert (
+                left is not None
+                and bottom is not None
+                and right is not None
+                and top is not None
+                and zoom is None
+            )
+            destination.append(Decimal(left))
+            destination.append(Decimal(bottom))
+            destination.append(Decimal(right))
+            destination.append(Decimal(top))
+        if destination_type == "FitBH":
+            assert (
+                left is None
+                and bottom is None
+                and right is None
+                and top is not None
+                and zoom is None
+            )
+            destination.append(Decimal(top))
+        if destination_type == "FitBV":
+            assert (
+                left is not None
+                and bottom is None
+                and right is None
+                and top is None
+                and zoom is None
+            )
+            destination.append(Decimal(left))
+
+        # add \Outlines entry in \Root
+        if "Outlines" not in self["XRef"]["Trailer"]["Root"]:
+            outline_dictionary: Dictionary = Dictionary()
+            self["XRef"]["Trailer"]["Root"][Name("Outlines")] = outline_dictionary
+            outline_dictionary._parent = self["XRef"]["Trailer"]["Root"][  # type: ignore [attr-defined]
+                Name("Outlines")
+            ]
+            outline_dictionary[Name("Type")] = Name("Outlines")
+            outline_dictionary[Name("Count")] = Decimal(0)
+
+        # create entry
+        outline = Dictionary()
+        outline[Name("Dest")] = destination
+        outline[Name("Parent")] = None
+        outline[Name("Title")] = String(text)
+
+        # get \Outlines
+        outline_dictionary = self["XRef"]["Trailer"]["Root"]["Outlines"]
+
+        # if everything is empty, add the new entry as the only entry
+        if "First" not in outline_dictionary or "Last" not in outline_dictionary:
+            outline_dictionary[Name("First")] = outline
+            outline_dictionary[Name("Last")] = outline
+            outline_dictionary[Name("Count")] = Decimal(1)
+            outline[Name("Parent")] = outline_dictionary
+            return self
+
+        # helper function to make DFS easier
+        def _children(x: Dictionary):
+            if "First" not in x:
+                return []
+            children = [x["First"]]
+            while children[-1] != x["Last"]:
+                children.append(children[-1]["Next"])
+            return children
+
+        # DFS outline(s)
+        outlines_done: typing.List[typing.Tuple[int, Dictionary]] = []
+        outlines_todo: typing.List[typing.Tuple[int, Dictionary]] = [
+            (-1, outline_dictionary)
+        ]
+        while len(outlines_todo) > 0:
+            t = outlines_todo[0]
+            outlines_done.append(t)
+            outlines_todo.pop(0)
+            for c in _children(t[1]):
+                outlines_todo.append((t[0] + 1, c))
+
+        # find parent
+        parent = [x[1] for x in outlines_done if x[0] == level - 1][-1]
+
+        # update sibling-linking
+        if "Last" in parent:
+            sibling = parent["Last"]
+            sibling[Name("Next")] = outline
+
+        # update parent-linking
+        outline["Parent"] = parent
+        if "First" not in parent:
+            parent[Name("First")] = outline
+        if "Count" not in parent:
+            parent[Name("Count")] = Decimal(0)
+        parent[Name("Last")] = outline
+
+        # update count
+        outline_to_update_count = parent
+        while outline_to_update_count:
+            outline_to_update_count[Name("Count")] = Decimal(
+                outline_to_update_count["Count"] + Decimal(1)
+            )
+            if "Parent" in outline_to_update_count:
+                outline_to_update_count = outline_to_update_count["Parent"]
+            else:
+                break
+
+        return self

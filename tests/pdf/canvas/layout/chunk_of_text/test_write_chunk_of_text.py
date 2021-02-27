@@ -3,7 +3,6 @@ import unittest
 from pathlib import Path
 
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import ChunkOfText
 from ptext.pdf.document import Document
@@ -15,7 +14,7 @@ logging.basicConfig(
 )
 
 
-class TestWriteChunkOfTextRainbow(unittest.TestCase):
+class TestWriteChunkOfText(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path("../../../../output/test-write-chunk-of-text")
@@ -33,9 +32,7 @@ class TestWriteChunkOfTextRainbow(unittest.TestCase):
         page = Page()
         pdf.append_page(page)
 
-        ChunkOfText(
-            "Hello World!", font_size=Decimal(24), font_color=X11Color("YellowGreen")
-        ).layout(
+        ChunkOfText("Hello World!", font_size=Decimal(24)).layout(
             page, Rectangle(Decimal(100), Decimal(600), Decimal(100), Decimal(100))
         )
 

@@ -1,5 +1,6 @@
 import typing
 import xml.etree.ElementTree as ET
+from decimal import Decimal
 from typing import Optional, Tuple
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -19,7 +20,9 @@ class SVGExport(EventListener):
     def __init__(
         self,
         include_document_information: bool = False,
-        default_page_size: Optional[Tuple[int, int]] = PageSize.A4_PORTRAIT.value,
+        default_page_size: Optional[
+            Tuple[Decimal, Decimal]
+        ] = PageSize.A4_PORTRAIT.value,
     ):
         """
         Constructs a new SVGExport
@@ -31,8 +34,8 @@ class SVGExport(EventListener):
         self.default_page_size = default_page_size
 
         # page being rendered
-        self.current_page_width: Optional[float] = None
-        self.current_page_height: Optional[float] = None
+        self.current_page_width: Optional[Decimal] = None
+        self.current_page_height: Optional[Decimal] = None
         self.current_page_svg_element = None
         self.current_page = -1
 
@@ -125,6 +128,7 @@ class SVGExport(EventListener):
         # COORDINATE TRANSFORM:
         # In PDF coordinate space the origin is at the bottom left of the page,
         # for SVG images, the origin is the top left.
+        assert self.current_page_height
         bl = text_render_info.get_baseline()
         x = int(bl.x)
         y = int(self.current_page_height - bl.y)
@@ -132,7 +136,7 @@ class SVGExport(EventListener):
         # build text element
         text_element = ET.Element("text")
         if text_render_info.font.get_font_name() is not None:
-            font_family_name = text_render_info.font.get_font_name()
+            font_family_name = text_render_info.font.get_font_name() or "Helvetica"
 
             # check whether the font is bold
             is_bold = False

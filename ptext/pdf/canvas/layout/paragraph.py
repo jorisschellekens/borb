@@ -10,6 +10,7 @@ from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.font_type_1 import FontType1
 from ptext.pdf.canvas.font.glyph_line import GlyphLine
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 
 
@@ -136,6 +137,9 @@ class LayoutElement:
         return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
 
     def _draw_background(self, page: Page, border_box: Rectangle):
+        if not self.background_color:
+            return
+        assert self.background_color
         rgb_color = self.background_color.to_rgb()
         COLOR_MAX = Decimal(255.0)
         content = """
@@ -236,7 +240,7 @@ class ChunkOfText(LayoutElement):
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
-        super(ChunkOfText, self).__init__(
+        super().__init__(
             border_top=border_top,
             border_right=border_right,
             border_bottom=border_bottom,
@@ -281,6 +285,35 @@ class ChunkOfText(LayoutElement):
             page["Resources"]["Font"][Name("F%d" % font_index)] = font
             return Name("F%d" % font_index)
 
+    def _write_bytes_in_simple_font(self) -> str:
+        """
+        This function escapes certain reserved characters in PDF strings.
+        """
+        if isinstance(self.font, FontType1):
+            sOut = ""
+            for c in self.text:
+                if c == "\r":
+                    sOut += "\\r"
+                elif c == "\n":
+                    sOut += "\\n"
+                elif c == "\t":
+                    sOut += "\\t"
+                elif c == "\b":
+                    sOut += "\\b"
+                elif c == "\f":
+                    sOut += "\\f"
+                elif c in ["(", ")", "\\"]:
+                    sOut += "\\" + c
+                elif 0 <= ord(c) < 8:
+                    sOut += "\\00" + oct(ord(c))[2:]
+                elif 8 <= ord(c) < 32:
+                    sOut += "\\0" + oct(ord(c))[2:]
+                else:
+                    sOut += c
+            return sOut
+        # default
+        return self.text
+
     def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self.font
         rgb_color = self.font_color.to_rgb()
@@ -304,7 +337,7 @@ class ChunkOfText(LayoutElement):
             float(self.font_size),  # Tm
             float(bounding_box.x),  # Tm
             float(bounding_box.y + bounding_box.height - self.font_size),  # Tm
-            self.text,  # Tj
+            self._write_bytes_in_simple_font(),  # Tj
         )
         self._append_to_content_stream(page, content)
         layout_rect = Rectangle(
@@ -359,7 +392,7 @@ class LineOfText(ChunkOfText):
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
-        super(LineOfText, self).__init__(
+        super().__init__(
             text=text,
             font=font,
             font_size=font_size,
@@ -480,7 +513,7 @@ class Paragraph(LineOfText):
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
-        super(Paragraph, self).__init__(
+        super().__init__(
             text=text,
             font=font,
             font_size=font_size,
@@ -572,3 +605,76 @@ class Paragraph(LineOfText):
 
         # return
         return layout_rect
+
+
+class Heading(Paragraph):
+    def __init__(
+        self,
+        text: str,
+        outline_text: typing.Optional[str] = None,
+        outline_level: int = 0,
+        respect_newlines_in_text: bool = False,
+        font: Union[Font, str] = "Helvetica",
+        font_size: Decimal = Decimal(12),
+        justification: Justification = Justification.FLUSH_LEFT,
+        font_color: Color = X11Color("Black"),
+        border_top: bool = False,
+        border_right: bool = False,
+        border_bottom: bool = False,
+        border_left: bool = False,
+        border_color: Color = X11Color("Black"),
+        border_width: Decimal = Decimal(1),
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
+        parent: typing.Optional["LayoutElement"] = None,
+    ):
+        super().__init__(
+            text=text,
+            respect_newlines_in_text=respect_newlines_in_text,
+            font=font,
+            font_size=font_size,
+            justification=justification,
+            font_color=font_color,
+            border_top=border_top,
+            border_right=border_right,
+            border_bottom=border_bottom,
+            border_left=border_left,
+            border_color=border_color,
+            border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            background_color=background_color,
+            parent=parent,
+        )
+        self.outline_text = outline_text or text
+        self.outline_level = outline_level
+        self.has_added_outline = False
+
+    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+        layout_rect = super(Heading, self)._layout_without_padding(page, bounding_box)
+        if not self.has_added_outline:
+            self._add_outline(page)
+        return layout_rect
+
+    def _add_outline(self, page: Page):
+        # fetch document
+        p = page
+        while p is not None and not isinstance(p, Document):
+            p = p.get_parent()  # type: ignore [attr-defined]
+        assert isinstance(p, Document)
+
+        # add outline to document
+        p.add_outline(
+            text=self.outline_text,
+            level=self.outline_level,
+            destination_type="Fit",
+            page_nr=int(page.get_page_info().get_page_number()),
+        )
+
+        # mark
+        self.has_added_outline = True

@@ -5,7 +5,7 @@
     This module contains everything needed to lay out tables
 """
 import typing
-from decimal import Decimal
+from decimal import Decimal, getcontext
 
 from ptext.pdf.canvas.color.color import X11Color, Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
@@ -181,6 +181,7 @@ class Table(LayoutElement):
         return self
 
     def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+
         # layout elements in grid
         mtx = [
             [-1 for _ in range(0, self.number_of_columns)]
@@ -257,6 +258,8 @@ class Table(LayoutElement):
         )
 
         # draw borders
+        previous_precision = getcontext().prec
+        getcontext().prec = 3
         already_drawn_border: typing.List[LayoutElement] = []
         for r in range(0, self.number_of_rows):
             for c in range(0, self.number_of_columns):
@@ -273,6 +276,7 @@ class Table(LayoutElement):
                     ),
                 )
                 already_drawn_border.append(e)
+        getcontext().prec = previous_precision
 
         # set bounding box
         self.set_bounding_box(layout_rect)

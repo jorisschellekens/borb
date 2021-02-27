@@ -2,9 +2,8 @@ import logging
 import unittest
 from pathlib import Path
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.list import OrderedList
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -39,12 +38,9 @@ class TestWriteSimpleOrderedList(unittest.TestCase):
         ul.add(Paragraph(text="Dolor"))
         ul.add(Paragraph(text="Sit"))
         ul.add(Paragraph(text="Amet"))
-        ul.layout(
-            page,
-            bounding_box=Rectangle(
-                Decimal(100), Decimal(600), Decimal(200), Decimal(124)
-            ),
-        )
+
+        layout = SingleColumnLayout(page)
+        layout.add(ul)
 
         # determine output location
         out_file = self.output_dir / ("output.pdf")
