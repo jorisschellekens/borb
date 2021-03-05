@@ -7,8 +7,10 @@
     having to specify coordinates.
 """
 import zlib
+from decimal import Decimal
 
-from ptext.io.read.types import Decimal, Name
+from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import (
     LayoutElement,
@@ -60,10 +62,12 @@ class SingleColumnLayout(PageLayout):
         # calculate next available rectangle
         assert self.page_width
         next_available_rect: Rectangle = Rectangle(
-            self.horizontal_margin,
-            self.vertical_margin,
-            self.page_width - Decimal(2) * self.horizontal_margin,
-            self.previous_y - self.vertical_margin - self.previous_leading,
+            Decimal(round(self.horizontal_margin)),
+            Decimal(round(self.vertical_margin)),
+            Decimal(round(self.page_width - Decimal(2) * self.horizontal_margin)),
+            Decimal(
+                round(self.previous_y - self.vertical_margin - self.previous_leading)
+            ),
         )
         # layout
         layout_rect = layout_element.layout(self.page, next_available_rect)
@@ -126,12 +130,12 @@ class MultiColumnLayout(PageLayout):
         self.previous_leading = Decimal(0)
 
         # find Document
-        doc = self.page
-        while doc is not None and not isinstance(doc, Document):
-            doc = doc.get_parent()  # type: ignore [attr-defined]
+        doc = self.page.get_root()  # type: ignore[attr-defined]
         assert isinstance(doc, Document)
 
         # create new Page
+        assert self.page_width
+        assert self.page_height
         new_page = Page(width=self.page_width, height=self.page_height)
         self.page = new_page
         doc.append_page(new_page)
@@ -169,11 +173,11 @@ class MultiColumnLayout(PageLayout):
         layout_rect = layout_element.layout(self.page, bounding_box=next_available_rect)
         if layout_rect.y < self.vertical_margin:
             content_stream = self.page["Contents"]
-            content_stream["DecodedBytes"] = previous_decoded_bytes
+            content_stream[Name("DecodedBytes")] = previous_decoded_bytes
             content_stream[Name("Bytes")] = zlib.compress(
                 content_stream["DecodedBytes"], 9
             )
-            content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+            content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
             self.switch_to_next_column()
             return self.add(layout_element)
 

@@ -64,7 +64,7 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
 
-        # delegate to super
+        # delegate to super (ReadStreamTransformer)
         out_value = super(ReadXMPMetadataTransformer, self).transform(
             object_to_transform=object_to_transform,
             parent_object=parent_object,

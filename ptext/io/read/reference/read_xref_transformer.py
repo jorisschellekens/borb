@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading the XRef object
+"""
 import io
 import os
 import typing
@@ -9,7 +15,7 @@ from ptext.io.read.read_base_transformer import (
     ReadTransformerContext,
 )
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.read.types import AnyPDFType, Dictionary
+from ptext.io.read.types import AnyPDFType, Dictionary, Name
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.document import Document
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
@@ -17,7 +23,11 @@ from ptext.pdf.xref.stream_xref import StreamXREF
 from ptext.pdf.xref.xref import XREF
 
 
-class DefaultXREFTransformer(ReadBaseTransformer):
+class ReadXREFTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading the XRef object
+    """
+
     def __init__(self):
         super().__init__()
         self.tokenizer = None
@@ -49,16 +59,16 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             context.root_object.add_event_listener(l)  # type: ignore [attr-defined]
 
         # remove prefix
-        self._remove_prefix(context)
+        ReadXREFTransformer._remove_prefix(context)
 
         # check header
-        self._check_header(context)
+        ReadXREFTransformer._check_header(context)
 
         # file size
         context.source.seek(0, os.SEEK_END)
         file_length = context.source.tell()
         context.source.seek(0)
-        context.root_object["FileSize"] = Decimal(file_length)
+        context.root_object[Name("FileSize")] = Decimal(file_length)
 
         # build XREF object
         self._read_xref(context)
@@ -68,21 +78,24 @@ class DefaultXREFTransformer(ReadBaseTransformer):
         assert xref is not None
         assert isinstance(xref, XREF)
 
+        # check for password protected PDF
         if "Trailer" in xref and "Encrypt" in xref["Trailer"]:
             # TODO
             raise NotImplementedError(
                 "password-protected PDFs are currently not supported"
             )
+
+        # transform \Trailer
         trailer = self.get_root_transformer().transform(
             context.root_object["XRef"]["Trailer"],
             context.root_object,
             context,
-            event_listeners=event_listeners,
+            [],
         )
 
         assert trailer is not None
         assert isinstance(trailer, Dictionary)
-        xref["Trailer"] = trailer
+        xref[Name("Trailer")] = trailer
         for k in ["DecodeParms", "Filter", "Index", "Length", "Prev", "W"]:
             if k in xref["Trailer"]:
                 xref["Trailer"].pop(k)
@@ -90,7 +103,8 @@ class DefaultXREFTransformer(ReadBaseTransformer):
         # return
         return context.root_object
 
-    def _remove_prefix(self, context: ReadTransformerContext) -> None:
+    @staticmethod
+    def _remove_prefix(context: ReadTransformerContext) -> None:
 
         assert context is not None
         assert context.source is not None
@@ -122,7 +136,8 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             context.source = io.BytesIO(bts)
             context.tokenizer.io_source = context.source
 
-    def _check_header(self, context: ReadTransformerContext) -> None:
+    @staticmethod
+    def _check_header(context: ReadTransformerContext) -> None:
         """
         This function checks whether or not the first bytes in the document contain the text %PDF
         :param context: the TransformerContext (containing the io source)
@@ -169,9 +184,9 @@ class DefaultXREFTransformer(ReadBaseTransformer):
             most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
             most_recent_xref.read(src, tok, initial_offset)
             if "XRef" in doc:
-                doc["XRef"] = doc["XRef"].merge(most_recent_xref)
+                doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
             else:
-                doc["XRef"] = most_recent_xref
+                doc[Name("XRef")] = most_recent_xref
         except Exception as ex0:
             most_recent_xref = None
             exceptions_to_rethrow.append(ex0)
@@ -184,9 +199,9 @@ class DefaultXREFTransformer(ReadBaseTransformer):
                 most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
                 most_recent_xref.read(src, tok, initial_offset)
                 if "XRef" in doc:
-                    doc["XRef"] = doc["XRef"].merge(most_recent_xref)
+                    doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
                 else:
-                    doc["XRef"] = most_recent_xref
+                    doc[Name("XRef")] = most_recent_xref
             except Exception as ex0:
                 raise ex0
 

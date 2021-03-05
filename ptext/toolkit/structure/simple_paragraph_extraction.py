@@ -1,6 +1,6 @@
 import typing
+from decimal import Decimal
 
-from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.datastructure.disjoint_set import disjointset
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import Paragraph, LayoutElement

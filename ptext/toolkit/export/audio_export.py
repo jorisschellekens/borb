@@ -90,6 +90,7 @@ class AudioExport(SimpleParagraphExtraction):
 
         # position
         if self.include_position:
+            assert paragraph.bounding_box is not None
             text_to_speak_for_paragraph += "Page %d, paragraph %d, %s %s." % (
                 page_number + 1,
                 paragraph_number + 1,

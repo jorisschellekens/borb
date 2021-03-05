@@ -9,7 +9,8 @@ from typing import Optional
 
 from PIL.Image import Image  # type: ignore [import]
 
-from ptext.io.read.types import AnyPDFType, Name, Stream, Decimal, Reference
+from ptext.io.read.types import AnyPDFType, Name, Stream, Reference
+from ptext.io.read.types import Decimal as pDecimal
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,
@@ -62,11 +63,11 @@ class WriteImageTransformer(WriteBaseTransformer):
         out_value = Stream()
         out_value[Name("Type")] = Name("XObject")
         out_value[Name("Subtype")] = Name("Image")
-        out_value[Name("Width")] = Decimal(object_to_transform.width)
-        out_value[Name("Height")] = Decimal(object_to_transform.height)
-        out_value[Name("Length")] = Decimal(len(contents))
+        out_value[Name("Width")] = pDecimal(object_to_transform.width)
+        out_value[Name("Height")] = pDecimal(object_to_transform.height)
+        out_value[Name("Length")] = pDecimal(len(contents))
         out_value[Name("Filter")] = filter_name
-        out_value[Name("BitsPerComponent")] = Decimal(8)
+        out_value[Name("BitsPerComponent")] = pDecimal(8)
         out_value[Name("ColorSpace")] = Name("DeviceRGB")
         out_value[Name("Bytes")] = contents
 

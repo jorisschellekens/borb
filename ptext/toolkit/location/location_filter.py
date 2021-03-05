@@ -23,7 +23,7 @@ class LocationFilter(EventListener):
         return self
 
     def event_occurred(self, event: "Event") -> None:
-        # filter TextRenderEvent
+        # filter ChunkOfTextRenderEvent
         if isinstance(event, ChunkOfTextRenderEvent):
             bb: typing.Optional[Rectangle] = event.get_bounding_box()
             assert bb is not None

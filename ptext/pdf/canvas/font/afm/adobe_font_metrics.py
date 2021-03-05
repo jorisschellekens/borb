@@ -26,12 +26,12 @@ class AdobeFontMetrics:
     _font_cache: typing.Dict[str, Optional[Font]] = {}
 
     @staticmethod
-    def get(name: str) -> Optional[Font]:
+    def get(name: typing.Union[str, Name]) -> Optional[Font]:
         """
         Get the Font (only the metrics will be filled in) with a given name
         """
         # standardize names
-        canonical_name = re.sub("[^A-Z]+", "", name.upper())
+        canonical_name = re.sub("[^A-Z]+", "", str(name).upper())
 
         # find all available afm files
         parent_dir = pathlib.Path(__file__).parent

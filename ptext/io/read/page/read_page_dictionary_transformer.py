@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading Page objects
+"""
 import io
 import typing
 from typing import Optional, Any, Union, Dict
@@ -18,6 +24,10 @@ from ptext.pdf.page.page import Page
 
 
 class ReadPageDictionaryTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading Page objects
+    """
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -46,7 +56,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
             # avoid circular reference
             if k == "Parent":
                 continue
-            v = self.get_root_transformer().transform(v, tmp, context, event_listeners)
+            v = self.get_root_transformer().transform(v, tmp, context, [])
             if v is not None:
                 tmp[k] = v
 

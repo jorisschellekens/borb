@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of LayoutElement represents an Image
+"""
 import typing
 from decimal import Decimal
 from typing import Optional
@@ -5,7 +11,6 @@ from typing import Optional
 import requests
 from PIL import Image as PILImage  # type: ignore [import]
 
-from ptext.io.read.image.read_jpeg_image_transformer import image_hash_method
 from ptext.io.read.types import Name, Dictionary, add_base_methods
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import LayoutElement
@@ -13,6 +18,10 @@ from ptext.pdf.page.page import Page
 
 
 class Image(LayoutElement):
+    """
+    This implementation of LayoutElement represents an Image
+    """
+
     def __init__(
         self,
         image: typing.Union[str, PILImage.Image],
@@ -27,8 +36,7 @@ class Image(LayoutElement):
                 ).raw
             )
         super(Image, self).__init__()
-        add_base_methods(image.__class__)
-        setattr(image.__class__, "__hash__", image_hash_method)
+        add_base_methods(image)
         self.image: PILImage = image
         self.width = width
         self.height = height

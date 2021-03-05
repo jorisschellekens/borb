@@ -1,3 +1,10 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer aggregates all other implementations
+    of ReadBaseTransformer
+"""
 import io
 import typing
 from typing import Optional, Union, Any
@@ -52,19 +59,24 @@ from ptext.io.read.read_base_transformer import (
     ReadTransformerContext,
 )
 from ptext.io.read.reference.read_reference_transformer import (
-    DefaultReferenceTransformer,
+    ReadReferenceTransformer,
 )
 from ptext.io.read.reference.read_xref_transformer import (
-    DefaultXREFTransformer,
+    ReadXREFTransformer,
 )
 from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class ReadAnyObjectTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer aggregates all other implementations
+    of ReadBaseTransformer
+    """
+
     def __init__(self):
         super().__init__()
-        self.add_child_transformer(DefaultXREFTransformer())
+        self.add_child_transformer(ReadXREFTransformer())
         # XMP
         self.add_child_transformer(ReadXMPMetadataTransformer())
         # fonts
@@ -80,7 +92,7 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self.add_child_transformer(ReadRootDictionaryTransformer())
         self.add_child_transformer(ReadPageDictionaryTransformer())
         # references
-        self.add_child_transformer(DefaultReferenceTransformer())
+        self.add_child_transformer(ReadReferenceTransformer())
         # primitives
         self.add_child_transformer(ReadStreamTransformer())
         self.add_child_transformer(ReadStringTransformer())

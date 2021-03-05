@@ -18,7 +18,7 @@ class TestAddSquareAnnotation(Test):
         self.output_dir = Path("../../../output/test-add-square-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0199.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0113.pdf"))
 
     def test_corpus(self):
         super(TestAddSquareAnnotation, self).test_corpus()

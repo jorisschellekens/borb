@@ -1,3 +1,6 @@
+import typing
+
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.font.adobe_glyph_dictionary import ADOBE_GLYPH_DICTIONARY
 
 
@@ -43,6 +46,16 @@ class Encoding:
 
 
 class WingDings(Encoding):
+    """
+    Wingdings is a series of dingbat fonts that render letters as a variety of symbols.
+    They were originally developed in 1990 by Microsoft by combining glyphs from Lucida Icons,
+    Arrows, and Stars licensed from Charles Bigelow and Kris Holmes.
+    Certain versions of the font's copyright string include an attribution to Type Solutions, Inc.,
+    the maker of a tool used to hint the font.
+    None of the characters were mapped to Unicode at the time;
+    however, Unicode approved the addition of many symbols in the Wingdings and Webdings fonts in Unicode 7.0.
+    """
+
     def __init__(self):
         super(WingDings, self).__init__()
         # fmt: off
@@ -187,6 +200,20 @@ class PDFDoc(Encoding):
 
 
 class MacRoman(Encoding):
+    """
+    Mac OS Roman is a character encoding primarily used by the classic Mac OS to represent text.
+    It encodes 256 characters, the first 128 of which are identical to ASCII, with the remaining characters including
+    mathematical symbols, diacritics, and additional punctuation marks.
+    It is suitable for English and several other Western languages. Mac OS Roman is a superset of the original Macintosh character set, used in System 1.
+
+    The Internet Assigned Numbers Authority identifies this encoding using the string "macintosh".
+    The MIME Content-Type for this encoding is therefore "text/plain; charset=macintosh".
+    Mac OS Roman is also referred to as MacRoman or the Apple Standard Roman character set.
+    The Microsoft Windows code page number is 10000. IBM uses code page/CCSID 1275.
+
+    Characters that were in ISO 8859-1 but not in Mac OS Roman were a source of trouble trying to display or edit web pages on Macintosh computers.
+    """
+
     def __init__(self):
         super().__init__()
         # TODO : right now this is a copy, replace by actual MacRoman encoding
@@ -219,8 +246,8 @@ class MacRoman(Encoding):
 #
 
 
-def get_encoding(encoding_name: str) -> Encoding:
-    encoding_upper = encoding_name.upper()
+def get_encoding(encoding_name: typing.Union[str, Name]) -> Encoding:
+    encoding_upper = str(encoding_name).upper()
     if encoding_upper in ["WINANSI", "WINANSIENCODING"]:
         return WinAnsi()
     elif encoding_upper in ["PDF", "PDFDOCENCODING"]:

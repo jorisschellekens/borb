@@ -54,10 +54,7 @@ class ReadJPEGImageTransformer(ReadBaseTransformer):
         tmp = Image.open(io.BytesIO(raw_byte_array))
 
         # add base methods
-        add_base_methods(tmp.__class__)
-
-        # add hash method
-        setattr(tmp.__class__, "__hash__", image_hash_method)
+        add_base_methods(tmp)
 
         # set parent
         tmp.set_parent(parent_object)
@@ -68,21 +65,3 @@ class ReadJPEGImageTransformer(ReadBaseTransformer):
 
         # return
         return tmp
-
-
-def image_hash_method(self):
-    w = self.width
-    h = self.height
-    pixels = [
-        self.getpixel((0, 0)),
-        self.getpixel((0, h - 1)),
-        self.getpixel((w - 1, 0)),
-        self.getpixel((w - 1, h - 1)),
-    ]
-    hashcode = 1
-    for p in pixels:
-        if isinstance(p, typing.List) or isinstance(p, typing.Tuple):
-            hashcode += 32 * hashcode + sum(p)
-        else:
-            hashcode += 32 * hashcode + p
-    return hashcode

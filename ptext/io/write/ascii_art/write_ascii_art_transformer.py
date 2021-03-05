@@ -47,11 +47,11 @@ class WriteASCIIArtTransformer(WriteBaseTransformer):
             ascii_logo[-1] += "\n"
 
         # convert to latin1
-        ascii_logo_bytes = [bytes("%    " + x, "latin1") for x in ascii_logo]
+        ascii_logo_bytes = [bytes("%    " + x, "utf8") for x in ascii_logo]
 
         self.has_been_used = True
         for x in ascii_logo_bytes:
             context.destination.write(x)
-        context.destination.write(bytes("\n", "latin1"))
+        context.destination.write(bytes("\n", "utf8"))
 
         self.get_root_transformer().transform(object_to_transform, context)

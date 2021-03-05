@@ -24,4 +24,5 @@ class SetTextRenderingMode(CanvasOperator):
         """
         Invoke the Tr operator
         """
+        # TODO
         pass

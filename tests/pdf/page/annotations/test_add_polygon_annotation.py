@@ -44,7 +44,7 @@ class TestAddPolygonAnnotation(Test):
                 (Decimal(242), Decimal(500)),
                 (Decimal(156), Decimal(390)),
             ],
-            color=X11Color("Crimson"),
+            stroke_color=X11Color("Crimson"),
         )
 
         # attempt to store PDF

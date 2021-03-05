@@ -43,6 +43,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
             + graphics_state.font.get_ascent() * Decimal(0.001),
             Decimal(1),
         )
+
         # set baseline box
         self.baseline_bounding_box = Rectangle(
             min(p0[0], p1[0]), min(p0[1], p1[1]), abs(p1[0] - p0[0]), abs(p1[1] - p0[1])
@@ -93,7 +94,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         # store graphics state
         self._graphics_state = graphics_state
 
-    def get_space_character_width_estimate(self):
+    def get_space_character_width_estimate(self) -> Decimal:
         """
         This function returns the width (in user space) of the space-character.
         """

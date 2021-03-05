@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 
-class TestWrite100Stars(unittest.TestCase):
+class TestWrite100StarShapes(unittest.TestCase):
 
     COLORS = [
         X11Color("Red"),

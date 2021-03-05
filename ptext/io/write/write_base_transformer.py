@@ -17,7 +17,8 @@ class WriteTransformerContext:
         self.root_object: Optional[
             AnyPDFType
         ] = root_object  # this is the root object (PDF)
-        self.indirect_objects: typing.Dict[
+        self.indirect_objects_by_id: typing.Dict[int, AnyPDFType] = {}
+        self.indirect_objects_by_hash: typing.Dict[
             int, typing.List[AnyPDFType]
         ] = {}  # these are all the indirect objects
         self.resolved_references: typing.List[
@@ -100,25 +101,49 @@ class WriteBaseTransformer:
         assert context.destination is not None
         context.destination.write(bytes("endobj\n\n", "latin1"))
 
+    @staticmethod
+    def _hash(obj: typing.Any) -> int:
+        h: Optional[int] = None
+        # hash
+        try:
+            h = hash(obj)
+        except:
+            pass
+        # __hash__
+        try:
+            h = obj.__hash__()
+        except:
+            pass
+        if h is None:
+            raise TypeError("unhashable type: %s" % obj.__class__.__name__)
+        return h
+
     def get_reference(
         self, object: AnyPDFType, context: WriteTransformerContext
     ) -> Reference:
 
-        # look through existing indirect objects
-        obj_hash: int = hash(object)
-        if obj_hash in context.indirect_objects:
-            for obj in context.indirect_objects[obj_hash]:
+        obj_id = id(object)
+        if obj_id in context.indirect_objects_by_id:
+            cached_indirect_object: AnyPDFType = context.indirect_objects_by_id[obj_id]
+            assert not isinstance(cached_indirect_object, Reference)
+            return cached_indirect_object.get_reference()  # type: ignore [union-attr]
+
+        # look through existing indirect object hashes
+        obj_hash: int = self._hash(object)
+        if obj_hash in context.indirect_objects_by_hash:
+            for obj in context.indirect_objects_by_hash[obj_hash]:
                 if obj == object:
                     ref = obj.get_reference()  # type: ignore [union-attr]
                     assert ref is not None
                     assert isinstance(ref, Reference)
+                    object.set_reference(ref)  # type: ignore [union-attr]
                     return ref
 
         # generate new object number
         existing_obj_numbers = set(
             [
                 item.get_reference().object_number  # type: ignore [union-attr]
-                for sublist in [v for k, v in context.indirect_objects.items()]
+                for sublist in [v for k, v in context.indirect_objects_by_hash.items()]
                 for item in sublist
             ]
         )
@@ -130,11 +155,14 @@ class WriteBaseTransformer:
         ref = Reference(object_number=obj_number)
         object.set_reference(ref)  # type: ignore [union-attr]
 
-        # insert into context
-        if obj_hash in context.indirect_objects:
-            context.indirect_objects[obj_hash].append(object)
+        # insert into context.indirect_objects_by_hash
+        if obj_hash in context.indirect_objects_by_hash:
+            context.indirect_objects_by_hash[obj_hash].append(object)
         else:
-            context.indirect_objects[obj_hash] = [object]
+            context.indirect_objects_by_hash[obj_hash] = [object]
+
+        # insert into context.indirect_objects_by_id
+        context.indirect_objects_by_id[obj_id] = object
 
         # return
         return ref

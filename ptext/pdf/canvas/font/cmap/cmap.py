@@ -102,12 +102,12 @@ class CMap:
                     c_start_token = tok.read_object()
                     assert c_start_token is not None
                     assert isinstance(c_start_token, HexadecimalString)
-                    c_start = int(c_start_token, 16)
+                    c_start = int(str(c_start_token), 16)
 
                     c_end_token = tok.read_object()
                     assert c_end_token is not None
                     assert isinstance(c_end_token, HexadecimalString)
-                    c_end = int(c_end_token, 16)
+                    c_end = int(str(c_end_token), 16)
 
                     tmp = tok.read_object()
                     if isinstance(tmp, HexadecimalString):
@@ -131,6 +131,6 @@ class CMap:
     def _hex_string_to_int_or_tuple(
         self, token: HexadecimalString
     ) -> Union[int, Tuple[int, ...]]:
-        uc_hex = token.replace(" ", "")
+        uc_hex = str(token).replace(" ", "")
         uc = [int(uc_hex[k : k + 4], 16) for k in range(0, int(len(uc_hex)), 4)]
         return tuple(uc) if len(uc) > 1 else uc[0]

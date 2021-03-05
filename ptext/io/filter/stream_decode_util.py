@@ -72,14 +72,14 @@ def decode_stream(s: Stream) -> Stream:
             continue
 
         # unknown filter
-        assert False
+        assert False, "Unknown /Filter %s" % filter_name
 
     # set DecodedBytes
     s[Name("DecodedBytes")] = transformed_bytes
 
     # set Type if not yet set
-    if "Type" not in s:
-        s[Name("Type")] = Name("Stream")
+    # if "Type" not in s:
+    #    s[Name("Type")] = Name("Stream")
 
     # return
     return s

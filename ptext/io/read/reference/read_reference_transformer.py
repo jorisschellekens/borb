@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading Reference objects
+    e.g. 97 0 R
+"""
 import io
 import typing
 from typing import Optional, Any, Union
@@ -11,8 +18,14 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.xref.xref import XREF
 
 
-class DefaultReferenceTransformer(ReadBaseTransformer):
+class ReadReferenceTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading Reference objects
+    e.g. 97 0 R
+    """
+
     def __init__(self):
+        super(ReadReferenceTransformer, self).__init__()
         self.cache: typing.Dict[Reference, AnyPDFType] = {}
 
     def can_be_transformed(
@@ -38,7 +51,15 @@ class DefaultReferenceTransformer(ReadBaseTransformer):
         # lookup in cache
         ref_from_cache = self.cache.get(object_to_transform, None)
         if ref_from_cache is not None:
-            return ref_from_cache
+            # check linkage
+            if ref_from_cache.get_parent() is None:  # type: ignore[union-attr]
+                ref_from_cache.set_parent(parent_object)  # type: ignore[union-attr]
+                return ref_from_cache
+            # copy because of linkage
+            if ref_from_cache.get_parent() != parent_object:  # type: ignore[union-attr]
+                ref_from_cache_copy = ref_from_cache
+                ref_from_cache_copy.set_parent(parent_object)  # type: ignore[union-attr]
+                return ref_from_cache_copy
 
         # lookup xref
         assert context.root_object is not None

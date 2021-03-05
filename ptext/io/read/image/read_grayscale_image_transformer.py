@@ -12,7 +12,6 @@ from typing import Optional, Any, Union
 from PIL import Image  # type: ignore [import]
 
 from ptext.io.filter.stream_decode_util import decode_stream
-from ptext.io.read.image.read_jpeg_image_transformer import image_hash_method
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
@@ -89,10 +88,7 @@ class ReadGrayscaleImageTransformer(ReadBaseTransformer):
                     pass
 
         # add base methods
-        add_base_methods(tmp.__class__)
-
-        # add hash method
-        setattr(tmp.__class__, "__hash__", image_hash_method)
+        add_base_methods(tmp)
 
         # set parent
         tmp.set_parent(parent_object)

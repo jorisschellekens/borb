@@ -1,3 +1,10 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Base Transformer implementation.
+    Add children to handle specific cases (transforming dictionaries, arrays, xref, etc)
+"""
 import io
 import typing
 from typing import Optional, Any, Union

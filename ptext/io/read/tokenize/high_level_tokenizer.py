@@ -283,4 +283,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         stream_dictionary[Name("Bytes")] = bytes
 
         # return
-        return Stream(stream_dictionary)
+        output: Stream = Stream()
+        for k, v in stream_dictionary.items():
+            output[k] = v
+        return output

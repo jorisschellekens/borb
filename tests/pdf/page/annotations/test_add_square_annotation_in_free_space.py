@@ -64,7 +64,7 @@ class TestAddSquareAnnotationInFreeSpace(Test):
         free_rect = space_finder.find_free_space(
             Rectangle(
                 Decimal(w / Decimal(2)),
-                Decimal(h * Decimal(0.1)),
+                Decimal(h * Decimal(2)),
                 Decimal(64),
                 Decimal(64),
             )

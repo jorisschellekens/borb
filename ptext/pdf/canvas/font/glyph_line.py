@@ -1,8 +1,27 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module defines glyps and glyplines.
+    In typography, a glyph /ɡlɪf/ is an elemental symbol within an agreed set of symbols,
+    intended to represent a readable character for the purposes of writing.
+    Glyphs are considered to be unique marks that collectively add up to the spelling
+    of a word or contribute to a specific meaning of what is written,
+    with that meaning dependent on cultural and social usage.
+"""
 from decimal import Decimal
 from typing import List, Optional, Union
 
 
 class Glyph:
+    """
+    In typography, a glyph /ɡlɪf/ is an elemental symbol within an agreed set of symbols,
+    intended to represent a readable character for the purposes of writing.
+    Glyphs are considered to be unique marks that collectively add up to the spelling
+    of a word or contribute to a specific meaning of what is written,
+    with that meaning dependent on cultural and social usage.
+    """
+
     def __init__(
         self, code: int, unicode: Union[int, List[int]], width: Optional[Decimal]
     ):

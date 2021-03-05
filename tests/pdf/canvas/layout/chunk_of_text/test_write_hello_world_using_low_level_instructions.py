@@ -3,7 +3,8 @@ import unittest
 import zlib
 from pathlib import Path
 
-from ptext.io.read.types import Stream, Decimal, Name, Dictionary
+from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Stream, Name, Dictionary
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -49,7 +50,7 @@ class TestWriteHelloWorldUsingLowLevelInstructions(unittest.TestCase):
         """
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
         content_stream[Name("Filter")] = Name("FlateDecode")
-        content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
 
         # set content of page
         page[Name("Contents")] = content_stream

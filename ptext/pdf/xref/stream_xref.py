@@ -218,7 +218,10 @@ class StreamXREF(XREF):
             self.append(r)
 
         # initialize trailer
-        self[Name("Trailer")] = Dictionary(xref_stream)
+        self[Name("Trailer")] = Dictionary()
+        for k, v in xref_stream.items():
+            self[Name("Trailer")][k] = v
+        self[Name("Trailer")].set_parent(self[Name("Trailer")])
 
         # return
         return self

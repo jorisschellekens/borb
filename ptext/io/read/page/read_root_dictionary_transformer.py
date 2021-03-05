@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of ReadBaseTransformer is responsible for reading the \Catalog object
+"""
 import io
 import typing
 from typing import Optional, List, Any, Union, Dict
@@ -14,6 +20,7 @@ from ptext.io.read.types import (
     List,
     AnyPDFType,
     Decimal,
+    Name,
 )
 from ptext.io.read.types import List as pList
 from ptext.pdf.canvas.event.event_listener import EventListener
@@ -21,6 +28,10 @@ from ptext.pdf.page.page import Page
 
 
 class ReadRootDictionaryTransformer(ReadBaseTransformer):
+    """
+    This implementation of ReadBaseTransformer is responsible for reading the \Catalog object
+    """
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -40,12 +51,16 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
 
         assert isinstance(object_to_transform, Dictionary)
 
+        # add listener(s)
+        for l in event_listeners:
+            object_to_transform.add_event_listener(l)  # type: ignore [attr-defined]
+
         # convert using Dictionary transformer
         transformed_root_dictionary: Optional[Dictionary] = None
         for t in self.get_root_transformer().children:
             if isinstance(t, ReadDictionaryTransformer):
                 transformed_root_dictionary = t.transform(
-                    object_to_transform, parent_object, context, event_listeners
+                    object_to_transform, parent_object, context, []
                 )
                 break
 
@@ -79,10 +94,12 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
                     stack_to_handle.insert(0, k)
 
         # change
-        transformed_root_dictionary["Pages"]["Kids"] = pList()
+        transformed_root_dictionary["Pages"][Name("Kids")] = pList()
         for p in pages_in_order:
             transformed_root_dictionary["Pages"]["Kids"].append(p)
-        transformed_root_dictionary["Pages"]["Count"] = Decimal(len(pages_in_order))
+        transformed_root_dictionary["Pages"][Name("Count")] = Decimal(
+            len(pages_in_order)
+        )
 
         # return
         return transformed_root_dictionary

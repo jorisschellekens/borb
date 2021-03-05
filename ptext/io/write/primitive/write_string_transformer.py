@@ -31,12 +31,16 @@ class WriteStringTransformer(WriteBaseTransformer):
         """
         assert context is not None
         assert context.destination is not None
-        assert isinstance(object_to_transform, str)
+        assert isinstance(object_to_transform, String)
 
         if isinstance(object_to_transform, HexadecimalString):
-            context.destination.write(bytes("<" + object_to_transform + ">", "latin1"))
+            context.destination.write(
+                bytes("<" + str(object_to_transform) + ">", "latin1")
+            )
             return
 
         if isinstance(object_to_transform, String):
-            context.destination.write(bytes("(" + object_to_transform + ")", "latin1"))
+            context.destination.write(
+                bytes("(" + str(object_to_transform) + ")", "latin1")
+            )
             return

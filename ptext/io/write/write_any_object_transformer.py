@@ -22,6 +22,8 @@ from ptext.io.write.object.write_dictionary_transformer import (
 from ptext.io.write.object.write_stream_transformer import (
     WriteStreamTransformer,
 )
+from ptext.io.write.page.write_page_transformer import WritePageTransformer
+from ptext.io.write.page.write_pages_transformer import WritePagesTransformer
 from ptext.io.write.primitive.write_boolean_transformer import (
     WriteBooleanTransformer,
 )
@@ -61,6 +63,8 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
         # special object types
         self.add_child_transformer(WritePDFTransformer())
         self.add_child_transformer(WriteXREFTransformer())
+        self.add_child_transformer(WritePagesTransformer())
+        self.add_child_transformer(WritePageTransformer())
         # object types
         self.add_child_transformer(WriteArrayTransformer())
         self.add_child_transformer(WriteStreamTransformer())

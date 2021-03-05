@@ -41,8 +41,8 @@ class TestExtractRegularExpression(Test):
                 obj = [
                     {
                         "text": x.text,
-                        "x0": int(x.get_baseline().x),
-                        "y0": int(x.get_baseline().y),
+                        "x": int(x.get_baseline().x),
+                        "y": int(x.get_baseline().y),
                         "width": int(x.get_baseline().width),
                         "height": int(x.get_baseline().height),
                     }

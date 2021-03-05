@@ -10,6 +10,7 @@ import copy
 from decimal import Decimal
 from typing import Optional
 
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.font.font import Font
 
 
@@ -80,11 +81,11 @@ class CIDFontType0(Font):
     def __deepcopy__(self, memodict={}):
         copy_out = CIDFontType0()
         for k in ["Type", "Subtype", "BaseFont"]:
-            copy_out[k] = self[k]
+            copy_out[Name(k)] = self[k]
         for k in ["CIDSystemInfo", "FontDescriptor"]:
-            copy_out[k] = copy.deepcopy(self[k], memodict)
+            copy_out[Name(k)] = copy.deepcopy(self[k], memodict)
         for k in ["DW", "W", "DW2", "W2", "CIDToGIDMap"]:
             if k in self:
-                copy_out[k] = copy.deepcopy(self.get(k), memodict)
+                copy_out[Name(k)] = copy.deepcopy(self.get(k), memodict)
         # return
         return copy_out

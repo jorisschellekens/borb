@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of EventListener keeps track of which space on a Page is available
+"""
 import copy
 import io
 import typing
@@ -11,7 +17,15 @@ from ptext.pdf.page.page import Page
 
 
 class FreeSpaceFinder(EventListener):
+    """
+    This implementation of EventListener keeps track of which space on a Page is available
+    """
+
     def __init__(self, page: Page):
+        self.page_width = page.get_page_info().get_width()
+        self.page_height = page.get_page_info().get_height()
+        assert self.page_width
+        assert self.page_height
         self.page = copy.deepcopy(page)
         self.grid_resolution = 10
         self.mock_canvas = Canvas().set_parent(self.page)  # type: ignore [attr-defined]
@@ -32,15 +46,15 @@ class FreeSpaceFinder(EventListener):
                 self.grid[i][j] = False
 
     def _render_canvas(self):
-        w = int(int(self.page.get_page_info().get_width()) / self.grid_resolution)
-        h = int(int(self.page.get_page_info().get_height()) / self.grid_resolution)
+        w = int(int(self.page_width) / self.grid_resolution)
+        h = int(int(self.page_height) / self.grid_resolution)
 
         # mark everything as available
         for i in range(0, w):
             self.grid.append([True for x in range(0, h)])
 
         # add listeners
-        self.mock_canvas.add_listener(self)
+        self.mock_canvas.add_event_listener(self)
 
         # process canvas
         contents = self.page["Contents"]

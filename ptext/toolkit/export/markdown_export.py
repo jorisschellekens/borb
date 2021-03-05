@@ -5,9 +5,6 @@ from ptext.pdf.page.page import Page
 
 class MarkdownExport(EventListener):
     def __init__(self):
-        """
-        Constructs a new MarkdownExport
-        """
         self.current_page = -1
         self.markdown_per_page = {}
 

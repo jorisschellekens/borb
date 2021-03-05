@@ -10,6 +10,7 @@ import copy
 from decimal import Decimal
 from typing import Optional
 
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.font.glyph_line import GlyphLine
 from ptext.pdf.canvas.font.true_type_font import TrueTypeFont
 
@@ -39,7 +40,7 @@ class CIDFontType2(TrueTypeFont):
         """
         if "W" not in self:
             if "DW" not in self:
-                self["DW"] = Decimal(1000)
+                self[Name("DW")] = Decimal(1000)
             return self["DW"]
         if self._cached_widths is None:
             i = 0
@@ -70,25 +71,25 @@ class CIDFontType2(TrueTypeFont):
         if self._font_encoding is None:
             self._init_font_encoding()
         if self._font_encoding is None:
-            self._font_encoding = self._parent._font_encoding  # type: ignore [attr-defined]
+            self._font_encoding = self.get_parent()._font_encoding  # type: ignore [attr-defined]
 
         # init ToUnicode
         if self._to_unicode_map is None:
             self._init_to_unicode_map()
         if self._to_unicode_map is None:
-            self._to_unicode_map = self._parent._to_unicode_map  # type: ignore [attr-defined]
+            self._to_unicode_map = self.get_parent()._to_unicode_map  # type: ignore [attr-defined]
 
         return super().build_glyph_line(content)
 
     def __deepcopy__(self, memodict={}):
         copy_out = CIDFontType2()
         for k in ["Type", "Subtype", "BaseFont"]:
-            copy_out[k] = self[k]
+            copy_out[Name(k)] = self[k]
         for k in ["Name", "FirstChar", "LastChar"]:
             if k in self:
-                copy_out[k] = self.get(k)
+                copy_out[Name(k)] = self.get(k)
         for k in ["Widths", "FontDescriptor", "Encoding", "ToUnicode"]:
             if k in self:
-                copy_out[k] = copy.deepcopy(self.get(k), memodict)
+                copy_out[Name(k)] = copy.deepcopy(self.get(k), memodict)
         # return
         return copy_out

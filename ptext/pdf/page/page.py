@@ -187,6 +187,15 @@ class Page(Dictionary):
         timestamp_str += "+00"
         return timestamp_str
 
+    def _append_annotation(self, annotation: Dictionary) -> "Page":
+        # append to /Annots
+        if "Annots" not in self:
+            self[Name("Annots")] = List()
+            self["Annots"].set_parent(self)
+        assert isinstance(self["Annots"], List)
+        self["Annots"].append(annotation)
+        return self
+
     def append_text_annotation(
         self,
         rectangle: Rectangle,
@@ -228,14 +237,8 @@ class Page(Dictionary):
         # annot[Name("State")] = None
         # annot[Name("StateModel")] = None
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_link_annotation(
         self,
@@ -362,14 +365,8 @@ class Page(Dictionary):
             assert highlighting_mode in ["N", "I", "O", "P"]
             annot[Name("H")] = String(highlighting_mode)
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_free_text_annotation(self) -> "Page":
         """
@@ -472,14 +469,8 @@ class Page(Dictionary):
             annot["IC"].append(pDecimal(stroke_color.to_rgb().green / color_max))
             annot["IC"].append(pDecimal(stroke_color.to_rgb().blue / color_max))
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_square_annotation(
         self,
@@ -546,14 +537,8 @@ class Page(Dictionary):
             annot["RD"].append(pDecimal(rectangle_difference[2]))
             annot["RD"].append(pDecimal(rectangle_difference[3]))
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_circle_annotation(
         self,
@@ -620,14 +605,8 @@ class Page(Dictionary):
             annot["RD"].append(pDecimal(rectangle_difference[2]))
             annot["RD"].append(pDecimal(rectangle_difference[3]))
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_polygon_annotation(
         self,
@@ -782,14 +761,8 @@ class Page(Dictionary):
             annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
             annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_highlight_annotation(
         self,
@@ -842,14 +815,8 @@ class Page(Dictionary):
         # CA
         annot[Name("CA")] = pDecimal(1)
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_underline_annotation(
         self,
@@ -925,14 +892,8 @@ class Page(Dictionary):
             ]
             annot[Name("Name")] = Name(name)
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_caret_annotation(self) -> "Page":
         """
@@ -1104,14 +1065,8 @@ class Page(Dictionary):
             assert overlay_text is not None
             annot[Name("Repeat")] = Boolean(repeat_overlay_text)
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def apply_redact_annotations(self):
         pass

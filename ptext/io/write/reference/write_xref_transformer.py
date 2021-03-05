@@ -43,7 +43,9 @@ class WriteXREFTransformer(WriteBaseTransformer):
         assert context is not None
         assert context.destination is not None
 
-        # transform Trailer dictionary (replacing objects by references)
+        # Transform the Trailer dictionary (replacing objects by references)
+        # we do this upfront because the normal write_dictionary_transformer will write the dictionary first,
+        # and the references afterwards. This would cause the \Trailer dictionary to not be the last.
         trailer_out = Dictionary()
         # /Root
         trailer_out[Name("Root")] = self.get_reference(
@@ -61,31 +63,25 @@ class WriteXREFTransformer(WriteBaseTransformer):
         ):
             trailer_out[Name("Size")] = object_to_transform["Trailer"]["Size"]
         else:
-            trailer_out[Name("Size")] = Decimal(0)
+            trailer_out[Name("Size")] = Decimal(
+                0
+            )  # we'll recalculate this later anyway
         # /ID
         if "ID" in object_to_transform["Trailer"]:
-            trailer_out[Name("ID")] = self.get_reference(
-                object_to_transform["Trailer"]["ID"], context
-            )
+            trailer_out[Name("ID")] = object_to_transform["Trailer"]["ID"]
 
-        # write Root object
+        # write /Root object
         self.get_root_transformer().transform(
             object_to_transform["Trailer"]["Root"], context
         )
 
-        # write Info object
+        # write /Info object
         if "Info" in object_to_transform["Trailer"]:
             self.get_root_transformer().transform(
                 object_to_transform["Trailer"]["Info"], context
             )
 
-        # write ID object
-        if "ID" in object_to_transform["Trailer"]:
-            self.get_root_transformer().transform(
-                object_to_transform["Trailer"]["ID"], context
-            )
-
-        # write XREF
+        # write /XREF
         start_of_xref = context.destination.tell()
         context.destination.write(bytes("xref\n", "latin1"))
         for section in self._section_xref(context):
@@ -95,19 +91,19 @@ class WriteXREFTransformer(WriteBaseTransformer):
             for r in section:
                 if r.is_in_use:
                     context.destination.write(
-                        bytes("{0:010d} 00000 n\n".format(r.byte_offset), "latin1")
+                        bytes("{0:010d} 00000 n\r\n".format(r.byte_offset), "latin1")
                     )
                 else:
                     context.destination.write(
-                        bytes("{0:010d} 00000 f\n".format(r.byte_offset), "latin1")
+                        bytes("{0:010d} 00000 f\r\n".format(r.byte_offset), "latin1")
                     )
 
-        # update Size
+        # update /Size
         trailer_out[Name("Size")] = Decimal(
-            sum([len(v) for k, v in context.indirect_objects.items()])
+            sum([len(v) for k, v in context.indirect_objects_by_hash.items()]) + 1
         )
 
-        # write Trailer
+        # write /Trailer
         context.destination.write(bytes("trailer\n", "latin1"))
         self.get_root_transformer().transform(trailer_out, context)
         context.destination.write(bytes("startxref\n", "latin1"))
@@ -124,7 +120,7 @@ class WriteXREFTransformer(WriteBaseTransformer):
         # get all references
         indirect_objects: typing.List[AnyPDFType] = [
             item
-            for sublist in [v for k, v in context.indirect_objects.items()]
+            for sublist in [v for k, v in context.indirect_objects_by_hash.items()]
             for item in sublist
         ]
         references: typing.List[Reference] = []

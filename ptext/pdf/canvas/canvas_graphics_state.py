@@ -70,7 +70,7 @@ class CanvasGraphicsState:
         out.word_spacing = self.word_spacing
         out.horizontal_scaling = self.horizontal_scaling
         out.leading = self.leading
-        out.font = copy.deepcopy(self.font)
+        out.font = copy.deepcopy(self.font, memodict)
         out.font_size = self.font_size
         # out.clipping_path = None
         # out.non_stroke_color_space = None

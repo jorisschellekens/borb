@@ -61,7 +61,7 @@ class ReadFontDictionaryTransformer(ReadBaseTransformer):
         elif subtype_name == "CIDFontType2":
             font_obj = CIDFontType2()
         else:
-            print("Unsupported font type %s" % subtype_name)
+            assert False, "Unsupported font type %s" % subtype_name
 
         # None
         if font_obj is None:
@@ -69,11 +69,11 @@ class ReadFontDictionaryTransformer(ReadBaseTransformer):
 
         # set parent
         assert font_obj is not None
-        font_obj.set_parent(parent_object)  # type: ignore [attr-defined]
+        font_obj.set_parent(parent_object)  # type: ignore [union-attr]
 
         # add listener(s)
         for l in event_listeners:
-            font_obj.add_event_listener(l)  # type: ignore [attr-defined]
+            font_obj.add_event_listener(l)  # type: ignore [union-attr]
 
         # convert key/value pair(s)
         assert isinstance(object_to_transform, Dictionary)

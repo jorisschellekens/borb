@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains implementation of LayoutElement representing lists (ordered and unordered)
+"""
 import typing
 from decimal import Decimal
 
@@ -8,6 +14,10 @@ from ptext.pdf.page.page import Page
 
 
 class UnorderedList(LayoutElement):
+    """
+    This implementation of LayoutElement represents an unordered list
+    """
+
     def __init__(
         self,
         border_top: bool = False,
@@ -102,6 +112,10 @@ class UnorderedList(LayoutElement):
 
 
 class OrderedList(LayoutElement):
+    """
+    This implementation of LayoutElement represents an ordered (that is to say numbered) list
+    """
+
     def __init__(
         self,
         border_top: bool = False,

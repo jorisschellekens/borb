@@ -10,8 +10,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="ptext-joris-schellekens", # Replace with your own username
-    version="1.6.0",
+    name="ptext-joris-schellekens",  # Replace with your own username
+    version="1.7.0",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="pText is a library for reading, creating and manipulating PDF files in python.",
@@ -19,5 +19,5 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/jorisschellekens/ptext-release",
     packages=setuptools.find_packages(),
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )

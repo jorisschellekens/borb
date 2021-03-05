@@ -23,7 +23,7 @@ class TestExportToSVG(Test):
         super(TestExportToSVG, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0118.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_document(self, file):
 
@@ -36,7 +36,7 @@ class TestExportToSVG(Test):
             doc = PDF.loads(pdf_file_handle, [l])
             output_file = self.output_dir / (file.stem + ".svg")
             with open(output_file, "wb") as svg_file_handle:
-                svg_file_handle.write(ET.tostring(l.get_svg_per_page(0)))
+                svg_file_handle.write(ET.tostring(l.svg_per_page.get(0)))
 
         return True
 

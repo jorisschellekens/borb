@@ -10,6 +10,7 @@ import copy
 from decimal import Decimal
 from typing import Optional
 
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.font.afm.adobe_font_metrics import AdobeFontMetrics
 from ptext.pdf.canvas.font.font import Font
 
@@ -165,12 +166,13 @@ class FontType1(Font):
     def __deepcopy__(self, memodict={}):
         copy_out = FontType1()
         for k in ["Type", "Subtype", "BaseFont"]:
-            copy_out[k] = self[k]
+            if k in self:
+                copy_out[Name(k)] = self[k]
         for k in ["Name", "FirstChar", "LastChar"]:
             if k in self:
-                copy_out[k] = self.get(k)
+                copy_out[Name(k)] = self.get(k)
         for k in ["Widths", "FontDescriptor", "Encoding", "ToUnicode"]:
             if k in self:
-                copy_out[k] = copy.deepcopy(self.get(k), memodict)
+                copy_out[Name(k)] = copy.deepcopy(self.get(k), memodict)
         # return
         return copy_out

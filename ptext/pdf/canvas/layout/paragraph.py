@@ -1,9 +1,11 @@
 import typing
 import zlib
+from decimal import Decimal
 from enum import Enum
 from typing import Union
 
-from ptext.io.read.types import Stream, Name, Dictionary, Decimal, String
+from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Stream, Name, Dictionary, String
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.font.afm.adobe_font_metrics import AdobeFontMetrics
 from ptext.pdf.canvas.font.font import Font
@@ -56,7 +58,7 @@ class LayoutElement:
         self.parent = parent
 
         # layout
-        self.bounding_box = typing.Optional[Rectangle]
+        self.bounding_box: typing.Optional[Rectangle] = None
 
     def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
         self.bounding_box = bounding_box
@@ -74,7 +76,7 @@ class LayoutElement:
         content_stream[Name("DecodedBytes")] = b""
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
         content_stream[Name("Filter")] = Name("FlateDecode")
-        content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
 
         # set content of page
         page[Name("Contents")] = content_stream
@@ -82,9 +84,10 @@ class LayoutElement:
     def _append_to_content_stream(self, page: Page, instructions: str):
         self._initialize_page_content_stream(page)
         content_stream = page["Contents"]
-        content_stream["DecodedBytes"] += instructions.encode("utf8")
+        content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
+        # content_stream[Name("Bytes")] = content_stream[Name("DecodedBytes")]
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
 
     def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
 
@@ -115,11 +118,11 @@ class LayoutElement:
         if self.background_color is not None:
             # restore page
             content_stream = page["Contents"]
-            content_stream["DecodedBytes"] = previous_decoded_bytes
+            content_stream[Name("DecodedBytes")] = previous_decoded_bytes
             content_stream[Name("Bytes")] = zlib.compress(
                 content_stream["DecodedBytes"], 9
             )
-            content_stream[Name("Length")] = Decimal(len(content_stream["Bytes"]))
+            content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
 
             # draw background
             self._draw_background(page, modified_layout_rect)
@@ -149,7 +152,7 @@ class LayoutElement:
                                 %f %f l
                                 %f %f l
                                 %f %f l
-                                B
+                                f
                                 Q
                                """ % (
             Decimal(rgb_color.red / COLOR_MAX),
@@ -258,6 +261,7 @@ class ChunkOfText(LayoutElement):
         if isinstance(font, str):
             self.font: Font = FontType1()
             font_to_copy: typing.Optional[Font] = AdobeFontMetrics.get(font)
+            self.font[Name("Encoding")] = Name("WinAnsiEncoding")
             assert font_to_copy
             for k, v in font_to_copy.items():
                 self.font[k] = v
@@ -496,6 +500,7 @@ class Paragraph(LineOfText):
         self,
         text: str,
         respect_newlines_in_text: bool = False,
+        respect_leading_spaces_in_text: bool = False,
         font: Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
         justification: Justification = Justification.FLUSH_LEFT,
@@ -533,11 +538,15 @@ class Paragraph(LineOfText):
             parent=parent,
         )
         self.respect_newlines_in_text = respect_newlines_in_text
+        self.respect_leading_spaces_in_text = respect_leading_spaces_in_text
 
     def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
         # split on newlines
         if self.respect_newlines_in_text:
-            return [x.strip() for x in self.text.split("\n")]
+            return [
+                x if self.respect_leading_spaces_in_text else x.lstrip()
+                for x in self.text.split("\n")
+            ]
 
         # determine how to break text to fit
         lines_of_text = []
@@ -663,17 +672,17 @@ class Heading(Paragraph):
 
     def _add_outline(self, page: Page):
         # fetch document
-        p = page
-        while p is not None and not isinstance(p, Document):
-            p = p.get_parent()  # type: ignore [attr-defined]
+        p = page.get_root()  # type: ignore[attr-defined]
         assert isinstance(p, Document)
 
         # add outline to document
+        page_nr = page.get_page_info().get_page_number()
+        assert page_nr
         p.add_outline(
             text=self.outline_text,
             level=self.outline_level,
             destination_type="Fit",
-            page_nr=int(page.get_page_info().get_page_number()),
+            page_nr=int(page_nr),
         )
 
         # mark

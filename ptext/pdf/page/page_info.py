@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class represents the meta-information belonging to a single page in a PDF document
+"""
 from decimal import Decimal
 from typing import Optional, Tuple
 
@@ -6,6 +12,10 @@ from ptext.pdf.page.page_size import PageSize
 
 
 class PageInfo(Dictionary):
+    """
+    This class represents the meta-information belonging to a single page in a PDF document
+    """
+
     def __init__(self, page: "Page"):  # type: ignore [name-defined]
         super(PageInfo, self).__init__()
         self.page = page
@@ -43,17 +53,14 @@ class PageInfo(Dictionary):
         w, h = self.get_width(), self.get_height()
         if w is None or h is None:
             return None
-        for m0_offset in [-1, 0, 1]:
-            for m1_offset in [-1, 0, 1]:
-                try:
-                    return PageSize((int(w + m0_offset), int(h + m1_offset)))
-                except ValueError:
-                    pass
+        for p in PageSize:
+            if abs(w - p.value[1]) <= 1 and abs(h - p.value[1]):
+                return p
         return None
 
     def get_page_number(self) -> Optional[Decimal]:
-        kids = self.page.get_parent().get("Kids")
-        l = int(self.page.get_parent().get("Count"))
+        kids = self.page.get_parent().get_parent().get("Kids")
+        l = int(self.page.get_parent().get_parent().get("Count"))
         for i in range(0, l):
             if kids[i] == self.page:
                 return Decimal(i)

@@ -15,7 +15,7 @@ from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import AnyPDFType
+from ptext.io.read.types import AnyPDFType, Dictionary, Name
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.canvas.font.font import Font
 
@@ -29,7 +29,7 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
         return (
-            isinstance(object, dict)
+            isinstance(object, Dictionary)
             and "Type" in object
             and object["Type"] == "FontDescriptor"
         )
@@ -41,6 +41,8 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+
+        assert isinstance(object_to_transform, Dictionary)
 
         # convert like regular dictionary
         if isinstance(parent_object, Font):
@@ -57,7 +59,7 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
         for l in event_listeners:
             tmp.add_event_listener(l)
 
-        tmp["FontDescriptor"] = self.get_root_transformer().transform(
+        tmp[Name("FontDescriptor")] = self.get_root_transformer().transform(
             object_to_transform, tmp, context, []
         )
 

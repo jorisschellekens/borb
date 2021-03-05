@@ -20,6 +20,161 @@ class LineArtFactory:
     """
 
     @staticmethod
+    def dragon_curve(
+        bounding_box: Rectangle, number_of_iterations: int = 10
+    ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for the Heighway dragon (also known as the Harter–Heighway dragon,
+        or the Jurassic Park dragon) curve that fits in the given bounding box
+        """
+        seq: typing.List[int] = [1]
+        for _ in range(0, number_of_iterations):
+            seq.append(1)
+            m: int = int(len(seq) / 2) - 1
+            for i, v in enumerate(seq[0:-1]):
+                if i == m:
+                    seq.append(1 - v)
+                else:
+                    seq.append(v)
+        step_size = Decimal(10)
+        direction: int = 0
+        x: Decimal = Decimal(0)
+        y: Decimal = Decimal(0)
+        points: typing.List[Tuple[Decimal, Decimal]] = []
+        for turn in seq:
+            # go forward
+            if direction == 0:
+                y += step_size
+            elif direction == 1:
+                x += step_size
+            elif direction == 2:
+                y -= step_size
+            elif direction == 3:
+                x -= step_size
+            # store point
+            points.append((x, y))
+            # make turn
+            if turn == 0:
+                direction = (direction + 1) % 4
+            elif turn == 1:
+                direction = (direction + 3) % 4
+
+        # determine width/height
+        w: Decimal = max([x[0] for x in points]) - min([x[0] for x in points])
+        h: Decimal = max([x[1] for x in points]) - min([x[1] for x in points])
+
+        # scale everything
+        w_scale: Decimal = bounding_box.width / w
+        h_scale: Decimal = bounding_box.height / h
+        points = [(x[0] * w_scale, x[1] * h_scale) for x in points]
+
+        # translate everything
+        x_delta: Decimal = x - bounding_box.x
+        y_delta: Decimal = y - bounding_box.y
+        points = [(x[0] - x_delta, x[1] - y_delta) for x in points]
+
+        return points
+
+    @staticmethod
+    def cross(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a cross that matches the given bounding box
+        """
+        return [
+            (bounding_box.x, bounding_box.y + bounding_box.height * Decimal(0.66)),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.33),
+                bounding_box.y + bounding_box.height * Decimal(0.66),
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.33),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.66),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.66),
+                bounding_box.y + bounding_box.height * Decimal(0.66),
+            ),
+            (
+                bounding_box.x + bounding_box.width,
+                bounding_box.y + bounding_box.height * Decimal(0.66),
+            ),
+            (
+                bounding_box.x + bounding_box.width,
+                bounding_box.y + bounding_box.height * Decimal(0.33),
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.66),
+                bounding_box.y + bounding_box.height * Decimal(0.33),
+            ),
+            (bounding_box.x + bounding_box.width * Decimal(0.66), bounding_box.y),
+            (bounding_box.x + bounding_box.width * Decimal(0.33), bounding_box.y),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.33),
+                bounding_box.y + bounding_box.height * Decimal(0.33),
+            ),
+            (bounding_box.x, bounding_box.y + bounding_box.height * Decimal(0.33)),
+            # repeat first point to explicitly close shape
+            (bounding_box.x, bounding_box.y + bounding_box.height * Decimal(0.66)),
+        ]
+
+    @staticmethod
+    def cartoon_diamond(
+        bounding_box: Rectangle,
+    ) -> typing.List[Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a cartoon diamond that matches the given bounding box
+        """
+        top_ratio: Decimal = Decimal(0.75)
+        return [
+            (bounding_box.x + bounding_box.width * Decimal(0.5), bounding_box.y),
+            (bounding_box.x, bounding_box.y + bounding_box.height * top_ratio),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.2),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.4),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.33),
+                bounding_box.y + bounding_box.height * top_ratio,
+            ),
+            (bounding_box.x + bounding_box.width * Decimal(0.5), bounding_box.y),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.66),
+                bounding_box.y + bounding_box.height * top_ratio,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.6),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.4),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.8),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width,
+                bounding_box.y + bounding_box.height * top_ratio,
+            ),
+            (bounding_box.x, bounding_box.y + bounding_box.height * top_ratio),
+            (
+                bounding_box.x + bounding_box.width,
+                bounding_box.y + bounding_box.height * top_ratio,
+            ),
+            # repeat first point to explicitly close shape
+            (bounding_box.x + bounding_box.width * Decimal(0.5), bounding_box.y),
+        ]
+
+    @staticmethod
     def rectangle(bounding_box: Rectangle) -> typing.List[Tuple[Decimal, Decimal]]:
         """
         This function returns the coordinates for a rectangle that matches the given bounding box
@@ -29,6 +184,7 @@ class LineArtFactory:
             (bounding_box.x + bounding_box.width, bounding_box.y),
             (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
             (bounding_box.x, bounding_box.y + bounding_box.height),
+            # repeat first point to explicitly close shape
             (bounding_box.x, bounding_box.y),
         ]
 

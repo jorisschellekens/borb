@@ -10,6 +10,7 @@ import copy
 from decimal import Decimal
 from typing import Optional
 
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.glyph_line import GlyphLine
 
@@ -86,19 +87,21 @@ class FontType0(Font):
         if self._to_unicode_map is None:
             self._init_to_unicode_map()
         # set parent
-        self.get_descendant_font()._parent = self  # type: ignore [attr-defined]
+        self.get_descendant_font().set_parent(self)  # type: ignore [attr-defined]
         # call child
         return self.get_descendant_font().build_glyph_line(content)
 
     def __deepcopy__(self, memodict={}):
         copy_out = FontType0()
-        copy_out["Type"] = self["Type"]
-        copy_out["Subtype"] = self["Subtype"]
-        copy_out["BaseFont"] = self["BaseFont"]
-        copy_out["Encoding"] = copy.deepcopy(self["Encoding"], memodict)
-        copy_out["DescendantFonts"] = copy.deepcopy(self["DescendantFonts"], memodict)
+        copy_out[Name("Type")] = self["Type"]
+        copy_out[Name("Subtype")] = self["Subtype"]
+        copy_out[Name("BaseFont")] = self["BaseFont"]
+        copy_out[Name("Encoding")] = copy.deepcopy(self["Encoding"], memodict)
+        copy_out[Name("DescendantFonts")] = copy.deepcopy(
+            self["DescendantFonts"], memodict
+        )
         if "ToUnicode" in self:
-            copy_out["ToUnicode"] = copy.deepcopy(self.get("ToUnicode"), memodict)
+            copy_out[Name("ToUnicode")] = copy.deepcopy(self.get("ToUnicode"), memodict)
 
         # return
         return copy_out

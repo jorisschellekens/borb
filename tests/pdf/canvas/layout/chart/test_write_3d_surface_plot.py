@@ -31,7 +31,7 @@ class TestWriteBasic3DChart(unittest.TestCase):
 
     def _create_plot(self) -> None:
         # Get the data (csv file is hosted on the web)
-        url = "https://python-graph-gallery.com/wp-content/uploads/volcano.csv"
+        url = "https://raw.githubusercontent.com/holtzy/The-Python-Graph-Gallery/master/static/data/volcano.csv"
         data = pd.read_csv(url)
 
         # Transform it to a long format

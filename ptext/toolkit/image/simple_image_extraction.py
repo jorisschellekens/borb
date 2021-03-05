@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This implementation of EventListener extracts all Image objects on a Page
+"""
 from typing import List
 
 from PIL import Image  # type: ignore [import]

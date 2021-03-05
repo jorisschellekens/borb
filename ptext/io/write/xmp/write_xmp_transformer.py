@@ -6,7 +6,6 @@
 """
 import logging
 import xml.etree.ElementTree as ET
-import zlib
 from typing import Optional
 
 from ptext.io.read.types import (
@@ -14,8 +13,8 @@ from ptext.io.read.types import (
     Stream,
     Reference,
     Name,
-    Decimal,
 )
+from ptext.io.read.types import Decimal as pDecimal
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,
@@ -49,13 +48,11 @@ class WriteXMPTransformer(WriteBaseTransformer):
         out_value = Stream()
         out_value[Name("Type")] = Name("Metadata")
         out_value[Name("Subtype")] = Name("XML")
-        out_value[Name("Filter")] = Name("FlateDecode")
 
         bts = ET.tostring(object_to_transform)
-        btsz = zlib.compress(bts, 9)
         out_value[Name("DecodedBytes")] = bts
-        out_value[Name("Bytes")] = btsz
-        out_value[Name("Length")] = Decimal(len(btsz))
+        out_value[Name("Bytes")] = bts
+        out_value[Name("Length")] = pDecimal(len(bts))
 
         # copy reference
         out_value.set_reference(object_to_transform.get_reference())  # type: ignore [attr-defined]

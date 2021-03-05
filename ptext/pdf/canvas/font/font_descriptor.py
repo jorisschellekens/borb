@@ -9,7 +9,7 @@
 """
 import copy
 
-from ptext.io.read.types import Dictionary
+from ptext.io.read.types import Dictionary, Name
 
 
 class FontDescriptor(Dictionary):
@@ -32,7 +32,7 @@ class FontDescriptor(Dictionary):
     def __deepcopy__(self, memodict={}):
         out = FontDescriptor()
         for key in ["Type", "FontName", "Flags", "ItalicAngle"]:
-            out[key] = self[key]
+            out[Name(key)] = self[key]
         for key in [
             "FontFamily",
             "FontStretch",
@@ -50,8 +50,8 @@ class FontDescriptor(Dictionary):
             "CharSet",
         ]:
             if key in self:
-                out[key] = self[key]
+                out[Name(key)] = self[key]
         for key in ["FontBBox", "FontFile", "FontFile2", "FontFile3"]:
             if key in self:
-                out[key] = copy.deepcopy(self[key], memodict)
+                out[Name(key)] = copy.deepcopy(self[key], memodict)
         return out

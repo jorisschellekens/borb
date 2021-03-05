@@ -182,6 +182,7 @@ For the document I picked, this gives me the following output:
     
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
     
+    
 ### 1.5 Meta-Information
 
 #### 1.5.1 Using the `\Info` dictionary in a `Document`
@@ -1023,6 +1024,89 @@ The constructor of `AudioExport` has some arguments that allow us to tweak the e
 - `include_position` : This should be set to `True` if you want the position of each `Paragraph` to be spoken as well. This results in output such as "page 1, paragraph 1, top left; once upon a time"
 - `language` : This is the 2-letter abbreviation of the language you expect the text to be in. Default is `en`
 - `slow`: This indicates whether you want the speaking-voice to go (extra) slow, or not
+
+### 1.9 Concatenating PDFs, and other page-manipulations
+
+A common scenario, when working with existing PDF `Document` objects is concatenation.
+Let's look at how you can concatenate two or more existing `Document` objects:
+
+#### 1.9.1 Concatenating entire PDF `Documents`
+
+        # attempt to read PDF
+        doc_a = None
+        with open("input_a.pdf", "rb") as in_file_handle:
+            doc_a = PDF.loads(in_file_handle)
+
+        # attempt to read PDF
+        doc_b = None
+        with open("input_b.pdf", "rb") as in_file_handle_b:
+            doc_b = PDF.loads(in_file_handle_b)
+
+Now we can simply call `append_document` on a new `Document`
+
+        # concat all pages to same document
+        doc_c = Document()
+        doc_c.append_document(doc_a)
+        doc_c.append_document(doc_b)
+
+And finally store the merged PDF:
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc_c)
+
+#### 1.9.2 Concatenating parts of a `Document`
+
+        # attempt to read PDF
+        doc_a = None
+        with open("input_a.pdf", "rb") as in_file_handle:
+            doc_a = PDF.loads(in_file_handle)
+
+        # attempt to read PDF
+        doc_b = None
+        with open("input_b.pdf", "rb") as in_file_handle_b:
+            doc_b = PDF.loads(in_file_handle_b)
+
+In stead of calling `append_document`, we can select `Page` objects, and call `append_page`.
+In fact `append_document` is just a shortcut for repeatedly calling `append_page`
+
+        # concat all pages to same document
+        doc_c = Document()
+        for i in range(0, int(doc_a.get_document_info().get_number_of_pages())):
+            doc_c.append_page(doc_a.get_page(i))
+        for i in range(0, int(doc_b.get_document_info().get_number_of_pages())):
+            doc_c.append_page(doc_b.get_page(i))
+
+And finally we can store the merged PDF:
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc_c)
+
+#### 1.9.3 Removing a `Page` from a `Document`
+
+First, we open the `Document`
+
+        doc = None
+        with open("input.pdf", "rb") as in_file_handle:
+            print("\treading (1) ..")
+            doc = PDF.loads(in_file_handle)
+
+Let's check the number of pages
+
+        number_of_pages = int(doc.get_document_info().get_number_of_pages())
+        print(number_of_pages)
+
+Now we can remove the first `Page`
+
+        # remove page
+        doc.pop_page(0)
+
+And finally we store the modified `Document`
+
+        # attempt to store PDF
+        with open("output.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
 
 ## 2. PDF Creation
 

@@ -3,8 +3,6 @@ import unittest
 from pathlib import Path
 
 import matplotlib.pyplot as MatPlotLibPlot
-import numpy as np
-import pandas as pd
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
@@ -49,7 +47,6 @@ class TestWrite3ScatterPlots(unittest.TestCase):
         layout = MultiColumnLayout(page)
 
         # add chart
-        from matplotlib import pyplot as plt
         import numpy as np
 
         # create data

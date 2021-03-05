@@ -10,10 +10,10 @@
     positive number. Going to the next line entails decreasing the
     y coordinate.
 """
-from decimal import Decimal
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
+from ptext.io.read.types import Decimal as pDecimal
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.text.move_text_position import MoveTextPosition
 
@@ -36,5 +36,5 @@ class MoveToNextLine(CanvasOperator):
         """
         Invoke the T* operator
         """
-        operands = [Decimal(0), -canvas.graphics_state.leading]
+        operands = [pDecimal(0), -canvas.graphics_state.leading]
         MoveTextPosition().invoke(canvas, operands)

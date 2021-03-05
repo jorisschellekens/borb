@@ -18,7 +18,7 @@ class TestAddCircleAnnotation(Test):
         self.output_dir = Path("../../../output/test-add-circle-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0041.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
         super(TestAddCircleAnnotation, self).test_corpus()

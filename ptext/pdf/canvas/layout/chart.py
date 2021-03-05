@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of LayoutElement represents a Chart
+"""
 import io
 from decimal import Decimal
 from typing import Optional
@@ -9,6 +15,10 @@ from ptext.pdf.canvas.layout.image import Image
 
 
 class Chart(Image):
+    """
+    This implementation of LayoutElement represents a Chart
+    """
+
     def __init__(
         self,
         chart: MatPlotLibPlot,

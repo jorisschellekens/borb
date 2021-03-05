@@ -16,6 +16,7 @@ from ptext.io.read.types import (
     Dictionary,
     List,
     CanvasOperatorName,
+    Name,
 )
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
@@ -173,13 +174,6 @@ class Canvas(Dictionary):
         # set graphics state stack
         self.graphics_state_stack = []
 
-    def add_listener(self, event_listener: "EventListener") -> "Canvas":  # type: ignore [name-defined]
-        """
-        This method adds a generic EventListener to this Canvas
-        """
-        self._event_listeners.append(event_listener)  # type: ignore [attr-defined]
-        return self
-
     def read(self, io_source: io.IOBase) -> "Canvas":
         """
         This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
@@ -220,12 +214,12 @@ class Canvas(Dictionary):
 
             # append
             if "Instructions" not in self:
-                self["Instructions"] = List().set_parent(self)  # type: ignore [attr-defined]
+                self[Name("Instructions")] = List().set_parent(self)  # type: ignore [attr-defined]
 
             instruction_number = len(self["Instructions"])
             instruction_dictionary = Dictionary()
-            instruction_dictionary["Name"] = operator.get_text()
-            instruction_dictionary["Args"] = List().set_parent(  # type: ignore [attr-defined]
+            instruction_dictionary[Name("Operator")] = operator.get_text()
+            instruction_dictionary[Name("Args")] = List().set_parent(  # type: ignore [attr-defined]
                 instruction_dictionary
             )
 

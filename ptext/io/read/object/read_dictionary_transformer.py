@@ -45,7 +45,7 @@ class ReadDictionaryTransformer(ReadBaseTransformer):
         # transform key/value pair(s)
         for k, v in object_to_transform.items():
             v = self.get_root_transformer().transform(
-                v, object_to_transform, context, event_listeners
+                v, object_to_transform, context, []
             )
             if v is not None:
                 object_to_transform[k] = v

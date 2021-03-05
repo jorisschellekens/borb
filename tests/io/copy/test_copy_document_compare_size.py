@@ -18,7 +18,7 @@ class TestCopyDocumentCompareSize(Test):
         self.output_dir = Path("../../output/test-copy-document-compare-size")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0474.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
     def test_corpus(self):
         super(TestCopyDocumentCompareSize, self).test_corpus()

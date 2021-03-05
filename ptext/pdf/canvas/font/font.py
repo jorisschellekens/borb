@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from typing import Optional
 
-from ptext.io.read.types import Dictionary, HexadecimalString
+from ptext.io.read.types import Dictionary, HexadecimalString, Name
 from ptext.pdf.canvas.font.cmap.cmap import CMap
 from ptext.pdf.canvas.font.glyph_line import GlyphLine, Glyph
 from ptext.pdf.canvas.font.latin_text_encoding import (
@@ -250,8 +250,8 @@ class Font(Dictionary):
             return
 
         # encoding is specified
-        if "Encoding" in self and isinstance(self["Encoding"], str):
-            if self["Encoding"].upper() in ["IDENTITY-H", "IDENTITY-V"]:
+        if "Encoding" in self and isinstance(self["Encoding"], Name):
+            if str(self["Encoding"]).upper() in ["IDENTITY-H", "IDENTITY-V"]:
                 self._to_unicode_map = None
             else:
                 self._font_encoding = get_encoding(self["Encoding"])

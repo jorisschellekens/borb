@@ -1,7 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class represents the meta-information belonging to a PDF document
+"""
 from typing import Optional, List
 
 
 class DocumentInfo:
+    """
+    This class represents the meta-information belonging to a PDF document
+    """
+
     def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super().__init__()
         self.document = document
@@ -130,6 +140,10 @@ class DocumentInfo:
 
 
 class XMPDocumentInfo(DocumentInfo):
+    """
+    This class represents the (XMP) meta-information belonging to a PDF document
+    """
+
     def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super(XMPDocumentInfo, self).__init__(document)
 

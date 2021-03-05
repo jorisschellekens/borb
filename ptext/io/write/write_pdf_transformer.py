@@ -55,6 +55,7 @@ class WritePDFTransformer(WriteBaseTransformer):
             object_to_transform["XRef"]["Trailer"]["ID"].append(random_id)
         else:
             object_to_transform["XRef"]["Trailer"]["ID"][1] = random_id
+        object_to_transform["XRef"]["Trailer"]["ID"].set_can_be_referenced(False)
 
         # set CreationDate
         modification_date = WritePDFTransformer._timestamp_to_str()

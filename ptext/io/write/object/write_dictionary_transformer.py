@@ -50,6 +50,17 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
         assert context.destination is not None
         assert context.destination
 
+        # avoid resolving objects twice
+        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()  # type: ignore [attr-defined]
+        if object_ref is not None and object_ref in context.resolved_references:
+            assert object_ref is not None
+            assert object_ref.object_number is not None
+            logger.debug(
+                "skip writing object %d %d R (already resolved)"
+                % (object_ref.object_number, object_ref.generation_number or 0)
+            )
+            return
+
         # output value
         out_value = Dictionary()
 
@@ -70,20 +81,12 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
 
         # start object if needed
         started_object = False
-        ref = object_to_transform.get_reference()  # type: ignore [attr-defined]
-        if ref is not None:
-            assert isinstance(ref, Reference)
-            assert ref.object_number is not None
-            if ref in context.resolved_references:
-                logger.debug(
-                    "skip writing object %d %d R (already resolved)"
-                    % (ref.object_number, ref.generation_number or 0)
-                )
-                return
-            if ref.object_number is not None and ref.byte_offset is None:
+        if object_ref is not None:
+            assert object_ref.object_number is not None
+            if object_ref.object_number is not None and object_ref.byte_offset is None:
                 started_object = True
                 self.start_object(object_to_transform, context)
-            context.resolved_references.append(ref)
+            context.resolved_references.append(object_ref)
 
         # write dictionary at current location
         context.destination.write(bytes("<<", "latin1"))

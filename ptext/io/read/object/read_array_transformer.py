@@ -35,20 +35,18 @@ class ReadArrayTransformer(ReadBaseTransformer):
     ) -> Any:
 
         # create root object
-        tmp = List().set_parent(parent_object)  # type: ignore [attr-defined]
+        assert isinstance(object_to_transform, List)
+        object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
         # add listener(s)
         for l in event_listeners:
-            tmp.add_event_listener(l)
+            object_to_transform.add_event_listener(l)  # type: ignore [attr-defined]
 
         # transform child(ren)
-        assert isinstance(object_to_transform, List)
         for i in range(0, len(object_to_transform)):
-            tmp.append(
-                self.get_root_transformer().transform(
-                    object_to_transform[i], tmp, context, event_listeners
-                )
+            object_to_transform[i] = self.get_root_transformer().transform(
+                object_to_transform[i], object_to_transform, context, []
             )
 
         # return
-        return tmp
+        return object_to_transform

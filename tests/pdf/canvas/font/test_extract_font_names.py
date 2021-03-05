@@ -15,7 +15,7 @@ class TestExtractFontNames(Test):
         super(TestExtractFontNames, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+        self.test_document(Path("/home/joris/Code/pdf-corpus/0066.pdf"))
 
     def test_document(self, file):
         with open(file, "rb") as pdf_file_handle:

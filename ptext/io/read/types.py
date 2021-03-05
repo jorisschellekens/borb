@@ -1,95 +1,229 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module defines all the base types used in processing PDFs
+    e.g. Boolean, CanvasOperatorName, Decimal, Dictionary, Element, Name, Stream, String, ..
+"""
+import copy
+import types
+import typing
 import xml.etree.ElementTree as ET
-from decimal import Decimal
+from decimal import Decimal as oDecimal
 from typing import Union, Optional
 
+from PIL.Image import Image  # type: ignore [import]
 
-def add_base_methods(cls):
-    """
-    This decorator adds a variety of methods to an object to ensure
-    it can be used by a BaseTransformer. These methods include:
-    setting/getting a parent, getting the root in hierarchy,
-    adding an EventListener,
-    and notifying an object that an event has occurred.
-    """
+from ptext.pdf.canvas.event.event_listener import EventListener
 
+
+def add_base_methods(object: typing.Any) -> typing.Any:
+    def image_hash_method(self):
+        w = self.width
+        h = self.height
+        pixels = [
+            self.getpixel((0, 0)),
+            self.getpixel((0, h - 1)),
+            self.getpixel((w - 1, 0)),
+            self.getpixel((w - 1, h - 1)),
+        ]
+        hashcode = 1
+        for p in pixels:
+            if isinstance(p, typing.List) or isinstance(p, typing.Tuple):
+                hashcode += 32 * hashcode + sum(p)
+            else:
+                hashcode += 32 * hashcode + p
+        return hashcode
+
+    def deepcopy_mod(self, memodict={}):
+        prev_function_ptr = self.__deepcopy__
+        self.__deepcopy__ = None
+        # copy
+        out = copy.deepcopy(self, memodict)
+        # restore
+        self.__deepcopy__ = prev_function_ptr
+        # add base methods
+        add_base_methods(out)
+        # return
+        return out
+
+    # get_parent
     def get_parent(self):
-        """
-        Get the parent object of this object
-        """
-        return getattr(self, "_parent")
+        if "_parent" not in vars(self):
+            setattr(self, "_parent", None)
+        return self._parent
 
+    # set_parent
     def set_parent(self, parent):
+        if "_parent" not in vars(self):
+            setattr(self, "_parent", None)
+        self._parent = parent
+        return self
+
+    # get_root
+    def get_root(self):
+        e = self
+        while e.get_parent() is not None:
+            e = e.get_parent()
+        return e
+
+    # add_event_listener
+    def add_event_listener(self, event_listener: "EventListener"):
+        if "_event_listeners" not in vars(self):
+            setattr(self, "_event_listeners", [])
+        self._event_listeners.append(event_listener)
+        return self
+
+    # get_event_listener
+    def get_event_listeners(self) -> typing.List["EventListener"]:
+        if "_event_listeners" not in vars(self):
+            setattr(self, "_event_listeners", [])
+        return self._event_listeners
+
+    # event_occurred
+    def event_occurred(self, event: "Event"):  # type: ignore [name-defined]
+        if "_event_listeners" not in vars(self):
+            setattr(self, "_event_listeners", [])
+        for l in self._event_listeners:
+            l.event_occurred(event)
+        if self.get_parent() is not None:
+            self.get_parent().event_occurred(event)
+        return self
+
+    # set_reference
+    def set_reference(self, reference: "Reference") -> "BaseClass":
+        if "_reference" not in vars(self):
+            setattr(self, "_reference", None)
+        assert (
+            self._reference is None
+            or self._reference.object_number == reference.object_number
+            or (
+                self._reference.parent_stream_object_number
+                == reference.parent_stream_object_number
+                and self._reference.index_in_parent_stream
+                == reference.index_in_parent_stream
+            )
+        )
+        self._reference = reference
+        return self
+
+    # get_reference
+    def get_reference(self) -> typing.Optional["Reference"]:
+        if "_reference" not in vars(self):
+            setattr(self, "_reference", None)
+        return self._reference
+
+    # set_can_be_referenced
+    def set_can_be_referenced(self, a_flag: bool) -> "BaseClass":
+        if "_can_be_referenced" not in vars(self):
+            setattr(self, "_can_be_referenced", None)
+        self._can_be_referenced = a_flag
+        return self
+
+    # can_be_referenced
+    def can_be_referenced(self) -> bool:
+        if "_can_be_referenced" not in vars(self):
+            setattr(self, "_can_be_referenced", True)
+        return self._can_be_referenced
+
+    object.set_parent = types.MethodType(set_parent, object)
+    object.get_parent = types.MethodType(get_parent, object)
+    object.get_root = types.MethodType(get_root, object)
+    object.add_event_listener = types.MethodType(add_event_listener, object)
+    object.get_event_listeners = types.MethodType(get_event_listeners, object)
+    object.event_occurred = types.MethodType(event_occurred, object)
+    object.set_reference = types.MethodType(set_reference, object)
+    object.get_reference = types.MethodType(get_reference, object)
+    object.set_can_be_referenced = types.MethodType(set_can_be_referenced, object)
+    object.can_be_referenced = types.MethodType(can_be_referenced, object)
+    object.__deepcopy__ = types.MethodType(deepcopy_mod, object)
+    if isinstance(object, Image):
+        object.__hash__ = types.MethodType(image_hash_method, object)
+
+
+class BaseClass:
+    def __init__(self):
+        self._parent: typing.Optional["BaseClass"] = None
+        self._event_listeners: typing.List[EventListener] = []
+        self._reference: typing.Optional["Reference"] = None
+        self._can_be_referenced: bool = True
+
+    def add_event_listener(self, event_listener: "EventListener") -> "BaseClass":
+        if "_event_listeners" not in vars(self):
+            setattr(self, "_event_listeners", [])
+        self._event_listeners.append(event_listener)
+        return self
+
+    def get_event_listeners(self) -> typing.List["EventListener"]:
+        if "_event_listeners" not in vars(self):
+            setattr(self, "_event_listeners", [])
+        return self._event_listeners
+
+    def event_occurred(self, event: "Event") -> "BaseClass":  # type: ignore [name-defined]
+        if "_event_listeners" not in vars(self):
+            setattr(self, "_event_listeners", [])
+        for l in self._event_listeners:
+            l.event_occurred(event)
+        parent = self.get_parent()
+        if parent is not None:
+            parent.event_occurred(event)
+        return self
+
+    def get_parent(self) -> Optional["BaseClass"]:
+        """
+        This function returns the parent object of this object
+        """
+        if "_parent" not in vars(self):
+            setattr(self, "_parent", None)
+        return self._parent
+
+    def set_parent(self, parent: "BaseClass") -> "BaseClass":
         """
         Set the parent object of this object
         """
-        setattr(self, "_parent", parent)
+        if "_parent" not in vars(self):
+            setattr(self, "_parent", None)
+        self._parent = parent
         return self
 
-    def get_root(self):
+    def get_root(self) -> Optional["BaseClass"]:
         """
-        Get the root object of this object
+        This function returns the root object of this object
         """
-        tmp = self
-        while (
-            tmp is not None
-            and hasattr(tmp, "_parent")
-            and getattr(tmp, "_parent") is not None
-        ):
-            tmp = getattr(tmp, "_parent")
-        return tmp
+        e = self
+        while e.get_parent() is not None:
+            p = e.get_parent()
+            if p is not None:
+                e = p
+        return e
 
-    def set_reference(self, reference: "Reference"):
+    def set_reference(self, reference: "Reference") -> "BaseClass":
         """
         This method sets the Reference for this Object
         """
-        setattr(self, "_reference", reference)
+        if "_reference" not in vars(self):
+            setattr(self, "_reference", None)
+        self._reference = reference
         return self
 
-    def get_reference(self):
+    def get_reference(self) -> typing.Optional["Reference"]:
         """
         This function returns the Reference for this Object
         """
-        if not hasattr(self, "_reference"):
+        if "_reference" not in vars(self):
             setattr(self, "_reference", None)
-        return getattr(self, "_reference")
+        return self._reference
 
-    def can_be_referenced(self):
-        """
-        This function returns whether this Object can
-        be referenced. If not, this Object is always immediately
-        written to the output stream
-        """
-        if not hasattr(self, "_can_be_referenced"):
+    def set_can_be_referenced(self, a_flag: bool) -> "BaseClass":
+        if "_can_be_referenced" not in vars(self):
+            setattr(self, "_can_be_referenced", None)
+        self._can_be_referenced = a_flag
+        return self
+
+    def can_be_referenced(self) -> bool:
+        if "_can_be_referenced" not in vars(self):
             setattr(self, "_can_be_referenced", True)
-        return getattr(self, "_can_be_referenced")
-
-    def set_can_be_referenced(self, a_flag: bool):
-        """
-        This method sets a flag, indicating whether this Object
-        can be referenced
-        """
-        setattr(self, "_can_be_referenced", a_flag)
-        return self
-
-    def add_event_listener(self, event_listener):
-        """
-        This method adds an EventListener to this Object
-        """
-        if not hasattr(self, "_event_listeners"):
-            setattr(self, "_event_listeners", [])
-        getattr(self, "_event_listeners").append(event_listener)
-        return self
-
-    def event_occurred(self, event):
-        """
-        This method notifies the EventListeners registered
-        to this object that an Event has occurred
-        """
-        if not hasattr(self, "_event_listeners"):
-            setattr(self, "_event_listeners", [])
-        for l in getattr(self, "_event_listeners"):
-            l.event_occurred(event)
-        return self
+        return self._can_be_referenced
 
     def to_json_serializable(self, to_convert=None):
         """
@@ -111,43 +245,163 @@ def add_base_methods(cls):
             or isinstance(to_convert, Name)
             or isinstance(to_convert, CanvasOperatorName)
         ):
-            return to_convert
+            return str(to_convert)
         return None
 
-    # linkage methods
-    setattr(cls, "get_parent", get_parent)
-    setattr(cls, "set_parent", set_parent)
-    setattr(cls, "get_root", get_root)
-    # event listener methods
-    setattr(cls, "add_event_listener", add_event_listener)
-    setattr(cls, "event_occurred", event_occurred)
-    # pdf methods
-    setattr(cls, "set_reference", set_reference)
-    setattr(cls, "get_reference", get_reference)
-    setattr(cls, "can_be_referenced", can_be_referenced)
-    setattr(cls, "set_can_be_referenced", set_can_be_referenced)
-    # serialization methods
-    setattr(cls, "to_json_serializable", to_json_serializable)
-    # initialize fields
-    setattr(cls, "_parent", None)
-    setattr(cls, "_event_listeners", [])
-    setattr(cls, "_can_be_referenced", True)
-    return cls
+
+class Boolean:
+    def __init__(self, value: bool):
+        super(Boolean, self).__init__()
+        self.value = value
+
+    def __bool__(self):
+        return self.value
+
+    def __eq__(self, other):
+        if isinstance(other, bool):
+            return other == self.value
+        if isinstance(other, Boolean):
+            return other.value == self.value
+        return False
+
+    def __str__(self):
+        if self.value:
+            return "True"
+        else:
+            return "False"
 
 
-@add_base_methods
-class Decimal(Decimal):  # type: ignore [no-redef]
+class CanvasOperatorName:
+    # fmt: off
+    VALID_NAMES = [
+        "b", "B", "b*", "B*", "BDC", "BI", "BMC", "BT", "BX",
+        "c", "cm", "cs", "CS",
+        "d", "d0", "d1", "Do", "DP",
+        "EI", "EMC", "ET", "EX",
+        "f", "F", "f*",
+        "g", "G", "gs",
+        "h",
+        "i", "ID",
+        "j", "J",
+        "k", "K",
+        "l",
+        "m", "M", "MP",
+        "n",
+        "q", "Q",
+        "re", "RG", "rg", "ri",
+        "s", "S", "sc", "SC", "SCN", "scn", "sh",
+        "T*", "Tc", "Td", "TD", "Tf", "Tj", "TJ", "TL", "Tm", "Tr", "Ts", "Tw", "Tz",
+        "v",
+        "w", "W", "W*",
+        "y",
+        "''",
+        '"',
+    ]
+    # fmt: on
+
+    def __init__(self, text: str):
+        super(CanvasOperatorName, self).__init__()
+        self.text = text
+        add_base_methods(self)
+
+    def __eq__(self, other):
+        if isinstance(other, CanvasOperatorName):
+            return other.text == self.text
+        if isinstance(other, str):
+            return other == self.text
+        return False
+
+    def __hash__(self):
+        return self.text.__hash__()
+
+    def __str__(self):
+        return self.text
+
+
+class Decimal(oDecimal):  # type: ignore [no-redef]
     """Floating point class for decimal arithmetic."""
 
-    pass
+    def __init__(self, obj: typing.Union[str, float, int, oDecimal]):
+        super(Decimal, self).__init__()
+        add_base_methods(self)
 
 
-@add_base_methods
-class String(str):
-    def __new__(cls, value: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
-        s = str.__new__(cls, value)  # type: ignore [call-arg]
-        s.encoding = encoding
-        return s
+class Dictionary(dict):
+    def __init__(self):
+        super(Dictionary, self).__init__()
+        add_base_methods(self)
+
+    def __hash__(self):
+        hashcode: int = 1
+        for e in self:
+            hashcode = 31 * hashcode + (0 if e is None else hash(e))
+        return hashcode
+
+    def __setitem__(self, key, value):
+        assert isinstance(key, Name)
+        super(Dictionary, self).__setitem__(key, value)
+
+    def __deepcopy__(self, memodict={}):
+        out = Dictionary()
+        for k, v in self.items():
+            out[copy.deepcopy(k, memodict)] = copy.deepcopy(v, memodict)
+        return out
+
+
+class Element(ET.Element):
+    def __init__(self, tag, **extra):
+        super(Element, self).__init__(tag, **extra)
+        add_base_methods(self)
+
+
+class Name:
+    def __init__(self, text: str):
+        self.text = text
+        add_base_methods(self)
+
+    def __eq__(self, other):
+        if isinstance(other, Name):
+            return other.text == self.text
+        if isinstance(other, str):
+            return other == self.text
+        return False
+
+    def __hash__(self):
+        return self.text.__hash__()
+
+    def __str__(self):
+        return self.text
+
+
+class Stream(Dictionary):
+    def __init__(self):
+        super(Stream, self).__init__()
+
+
+class String:
+    def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
+        self.text = text
+        self.encoding = encoding
+        add_base_methods(self)
+
+    def __eq__(self, other):
+        if isinstance(other, String):
+            return other.text == self.text
+        if isinstance(other, str):
+            return other == self.text
+        return False
+
+    def __hash__(self):
+        return self.text.__hash__()
+
+    def __str__(self):
+        return self.text
+
+    def __len__(self):
+        return len(self.text)
+
+    def __getitem__(self, item):
+        return self.text[item]
 
     def get_content_bytes(self) -> bytearray:
         txt = ""
@@ -233,53 +487,12 @@ class String(str):
         return None
 
 
-@add_base_methods
-class Name(str):
-    def __new__(cls, value):
-        return str.__new__(cls, value)
-
-
-class CanvasOperatorName(str):
-    # fmt: off
-    VALID_NAMES = [
-        "b", "B", "b*", "B*", "BDC", "BI", "BMC", "BT", "BX",
-        "c", "cm", "cs", "CS",
-        "d", "d0", "d1", "Do", "DP",
-        "EI", "EMC", "ET", "EX",
-        "f", "F", "f*",
-        "g", "G", "gs",
-        "h",
-        "i", "ID",
-        "j", "J",
-        "k", "K",
-        "l",
-        "m", "M", "MP",
-        "n",
-        "q", "Q",
-        "re", "RG", "rg", "ri",
-        "s", "S", "sc", "SC", "SCN", "scn", "sh",
-        "T*", "Tc", "Td", "TD", "Tf", "Tj", "TJ", "TL", "Tm", "Tr", "Ts", "Tw", "Tz",
-        "v",
-        "w", "W", "W*",
-        "y",
-        "''",
-        '"',
-    ]
-    # fmt: on
-
-    def __new__(cls, value):
-        return str.__new__(cls, value)  # type: ignore [call-arg]
-
-
-@add_base_methods
 class HexadecimalString(String):
-    def __new__(cls, value: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
-        if len(value) % 2 == 1:
-            s = str.__new__(cls, value + "0")  # type: ignore [call-arg]
-        else:
-            s = str.__new__(cls, value)  # type: ignore [call-arg]
-        s.encoding = encoding
-        return s
+    def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
+        if len(text) % 2 == 1:
+            text += "0"
+        self.encoding = encoding
+        super(HexadecimalString, self).__init__(text)
 
     def get_content_bytes(self) -> bytearray:
         arr = bytearray()
@@ -288,8 +501,11 @@ class HexadecimalString(String):
         return arr
 
 
-@add_base_methods
 class List(list):
+    def __init__(self):
+        super(List, self).__init__()
+        add_base_methods(self)
+
     def __hash__(self):
         hashcode: int = 1
         for e in self:
@@ -297,42 +513,6 @@ class List(list):
         return hashcode
 
 
-@add_base_methods
-class Dictionary(dict):
-    def __hash__(self):
-        hashcode: int = 1
-        for e in self:
-            hashcode = 31 * hashcode + (0 if e is None else hash(e))
-        return hashcode
-
-
-@add_base_methods
-class Stream(Dictionary):
-    pass
-
-
-@add_base_methods
-class Element(ET.Element):
-    def __init__(self, tag, **extra):
-        super(Element, self).__init__(tag, **extra)
-
-
-@add_base_methods
-class Boolean:
-    def __init__(self, value: bool):
-        self.value = value
-
-    def __bool__(self):
-        return self.value
-
-    def __str__(self):
-        if self.value:
-            return "True"
-        else:
-            return "False"
-
-
-@add_base_methods
 class Reference:
     object_number: Optional[int]
     generation_number: Optional[int]
@@ -359,6 +539,7 @@ class Reference:
         self.byte_offset = byte_offset
         self.is_in_use = is_in_use
         self.document = document
+        add_base_methods(self)
 
     def __hash__(self):
         hashcode: int = 1

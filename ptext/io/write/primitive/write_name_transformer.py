@@ -33,4 +33,4 @@ class WriteNameTransformer(WriteBaseTransformer):
         assert context.destination is not None
         assert isinstance(object_to_transform, Name)
 
-        context.destination.write(bytes("/" + object_to_transform, "latin1"))
+        context.destination.write(bytes("/" + str(object_to_transform), "latin1"))

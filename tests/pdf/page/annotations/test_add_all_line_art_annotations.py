@@ -40,7 +40,7 @@ class TestAddAllLineArtAnnotations(Test):
             doc = PDF.loads(in_file_handle)
 
         shapes = [
-            LineArtFactory.right_angled_triangle(
+            LineArtFactory.cartoon_diamond(
                 Rectangle(Decimal(0), Decimal(0), Decimal(100), Decimal(100))
             ),
             LineArtFactory.isosceles_triangle(

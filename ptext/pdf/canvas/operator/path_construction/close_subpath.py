@@ -38,8 +38,9 @@ class CloseSubpath(CanvasOperator):
         # get graphic state
         gs = canvas.graphics_state
 
-        # path should not be empty
-        assert len(gs.path) > 0
+        # path is empty
+        if len(gs.path) == 0:
+            return
 
         # first point in subpath
         x0 = gs.path[0].x0
