@@ -1,1 +1,2 @@
 include ptext/pdf/canvas/font/afm/*.afm
+include ptext/io/write/ascii_art/ascii_logo.txt
