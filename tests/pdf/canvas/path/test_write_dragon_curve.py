@@ -1,21 +1,17 @@
 import logging
-import random
 import unittest
 from pathlib import Path
 
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import HexColor, X11Color
+from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.barcode import Barcode, BarcodeType
-from ptext.pdf.canvas.layout.codeblock import CodeBlock
-from ptext.pdf.canvas.layout.image import Image
 from ptext.pdf.canvas.layout.page_layout import MultiColumnLayout, SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
     Justification,
     Paragraph,
 )
 from ptext.pdf.canvas.layout.shape import Shape
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page

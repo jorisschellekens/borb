@@ -211,7 +211,7 @@ class DisjointShape(LayoutElement):
         # write content
         stroke_rgb = (self.stroke_color or X11Color("Black")).to_rgb()
         COLOR_MAX = Decimal(255.0)
-        content = "q %f %f %f rg %f w " % (
+        content = "q %f %f %f RG %d w " % (
             Decimal(stroke_rgb.red / COLOR_MAX),
             Decimal(stroke_rgb.green / COLOR_MAX),
             Decimal(stroke_rgb.blue / COLOR_MAX),
@@ -221,7 +221,7 @@ class DisjointShape(LayoutElement):
             content += " %f %f m %f %f l " % (l[0][0], l[0][1], l[1][0], l[1][1])
 
         # stroke
-        content += " F Q"
+        content += " S Q"
 
         # append to page
         self._append_to_content_stream(page, content)
