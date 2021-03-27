@@ -1,5 +1,6 @@
 import logging
 import random
+import time
 import typing
 import unittest
 from pathlib import Path
@@ -8,14 +9,15 @@ from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.layout.list import UnorderedList
 from ptext.pdf.canvas.layout.page_layout import MultiColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Justification
+from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-word-search.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-word-search.log"), level=logging.DEBUG
 )
 
 
@@ -33,7 +35,9 @@ class WordSearch(Table):
             g = [["." for _ in range(0, w)] for _ in range(0, w)]
 
             # recursion
-            self._fit_words_in_grid(g, [x.upper() for x in words])
+            words = [x.upper() for x in words]
+            random.shuffle(words)
+            self._fit_words_in_grid(g, words)
 
             if self.solved_grid is None:
                 w += 1
@@ -47,7 +51,7 @@ class WordSearch(Table):
                 self.add(
                     Paragraph(
                         text=self.solved_grid[i][j],
-                        justification=Justification.CENTERED,
+                        horizontal_alignment=Alignment.CENTERED,
                     )
                 )
 
@@ -55,11 +59,27 @@ class WordSearch(Table):
         self.no_borders()
 
     def _fit_words_in_grid(
-        self, grid: typing.List[typing.List[str]], words_to_fit: typing.List[str]
+        self,
+        grid: typing.List[typing.List[str]],
+        words_to_fit: typing.List[str],
+        allow_reverse_horizontal: bool = True,
+        allow_reverse_vertical: bool = True,
+        allow_diagonal: bool = True,
+        allow_reverse_diagonal=True,
+        depth: int = 0,
+        start_time: typing.Optional[float] = None,
+        time_out: float = 10,
     ):
 
         # all words are already placed (in a previous iteration)
         if self.solved_grid is not None:
+            return
+
+        # taking too long
+        if start_time is None:
+            start_time = time.time()
+        delta: float = abs(time.time() - start_time)
+        if delta > time_out:
             return
 
         # all words are placed
@@ -84,19 +104,23 @@ class WordSearch(Table):
             for i in range(0, len(grid)):
                 for j in range(0, len(grid[i])):
 
-                    # out of bounds (vertically)
+                    ##
+                    ## HORIZONTAL
+                    ##
+
+                    # out of bounds (horizontally)
                     grid_conflict = False
                     if j + len(w) > len(grid[i]):
                         grid_conflict = True
 
-                    # check existing letters (vertically)
+                    # check existing letters (horizontally)
                     if not grid_conflict:
                         for k in range(0, len(w)):
                             if grid[i][j + k] != "." and grid[i][j + k] != w[k]:
                                 grid_conflict = True
                                 break
 
-                    # set (vertically)
+                    # set (horizontally)
                     if not grid_conflict:
                         prev_vals: typing.List[str] = []
                         for k in range(0, len(w)):
@@ -104,11 +128,25 @@ class WordSearch(Table):
                             grid[i][j + k] = w[k]
 
                         # recurse
-                        self._fit_words_in_grid(grid, words_to_fit)
+                        self._fit_words_in_grid(
+                            grid,
+                            words_to_fit,
+                            allow_reverse_horizontal,
+                            allow_reverse_vertical,
+                            allow_diagonal,
+                            allow_reverse_diagonal,
+                            depth + 1,
+                            start_time,
+                            time_out,
+                        )
 
                         # unset
                         for k in range(0, len(w)):
                             grid[i][j + k] = prev_vals[k]
+
+                    ##
+                    ## VERTICAL
+                    ##
 
                     # out of bounds (vertically)
                     grid_conflict = False
@@ -130,24 +168,153 @@ class WordSearch(Table):
                             grid[i + k][j] = w[k]
 
                         # recurse
-                        self._fit_words_in_grid(grid, words_to_fit)
+                        self._fit_words_in_grid(
+                            grid,
+                            words_to_fit,
+                            allow_reverse_horizontal,
+                            allow_reverse_vertical,
+                            allow_diagonal,
+                            allow_reverse_diagonal,
+                            depth + 1,
+                            start_time,
+                            time_out,
+                        )
 
                         # unset
                         for k in range(0, len(w)):
                             grid[i + k][j] = prev_vals[k]
 
+                    ##
+                    ## REVERSE VERTICAL
+                    ##
+
+                    r: float = depth / (depth + len(words_to_fit))
+                    if allow_reverse_vertical and r > 0.75:
+
+                        # out of bounds (inverse - vertically)
+                        grid_conflict = False
+                        if i + len(w) > len(grid):
+                            grid_conflict = True
+
+                        # check existing letters
+                        if not grid_conflict:
+                            for k in range(0, len(w)):
+                                if (
+                                    grid[i + k][j] != "."
+                                    and grid[i + k][j] != w[len(w) - k - 1]
+                                ):
+                                    grid_conflict = True
+                                    break
+
+                        # set
+                        if not grid_conflict:
+                            prev_vals: typing.List[str] = []
+                            for k in range(0, len(w)):
+                                prev_vals.append(grid[i + k][j])
+                                grid[i + k][j] = w[len(w) - k - 1]
+
+                            # recurse
+                            self._fit_words_in_grid(
+                                grid,
+                                words_to_fit,
+                                allow_reverse_horizontal,
+                                allow_reverse_vertical,
+                                allow_diagonal,
+                                allow_reverse_diagonal,
+                                depth + 1,
+                                start_time,
+                                time_out,
+                            )
+
+                            # unset
+                            for k in range(0, len(w)):
+                                grid[i + k][j] = prev_vals[k]
+
+                    ##
+                    ## REVERSE HORIZONTAL
+                    ##
+
+                    if allow_reverse_horizontal and r > 0.75:
+
+                        # out of bounds (horizontally)
+                        grid_conflict = False
+                        if j + len(w) > len(grid[i]):
+                            grid_conflict = True
+
+                        # check existing letters (reverse horizontally)
+                        if not grid_conflict:
+                            for k in range(0, len(w)):
+                                if (
+                                    grid[i][j + k] != "."
+                                    and grid[i][j + k] != w[len(w) - k - 1]
+                                ):
+                                    grid_conflict = True
+                                    break
+
+                        # set (horizontally)
+                        if not grid_conflict:
+                            prev_vals: typing.List[str] = []
+                            for k in range(0, len(w)):
+                                prev_vals.append(grid[i][j + k])
+                                grid[i][j + k] = w[len(w) - k - 1]
+
+                            # recurse
+                            self._fit_words_in_grid(
+                                grid,
+                                words_to_fit,
+                                allow_reverse_horizontal,
+                                allow_reverse_vertical,
+                                allow_diagonal,
+                                allow_reverse_diagonal,
+                                depth + 1,
+                                start_time,
+                                time_out,
+                            )
+
+                            # unset
+                            for k in range(0, len(w)):
+                                grid[i][j + k] = prev_vals[k]
+
             # push word back
             words_to_fit.insert(0, w)
 
 
-class TestWriteSimpleTable(unittest.TestCase):
+class TestWriteWordSearch(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-word-search")
+        self.output_dir = Path(get_output_dir(), "test-write-word-search")
 
     def test_write_document(self):
 
-        words = ["APPLE", "ADAM", "AXE", "ACE", "APE", "ALE", "SOCK", "SOFA", "SAD"]
+        words = [
+            "COW",
+            "PUPPY",
+            "TURTLE",
+            "PARROT",
+            "SNAKE",
+            "GOLDFISH",
+            "HAMSTER",
+            "KITTEN",
+            "TURKEY",
+            "DOVE",
+            "HORSE",
+            "BEE" "RABBIT",
+            "DUCK",
+            "SHRIMP",
+            "PIG",
+            "GOAT",
+            "CRAB",
+            "DOG",
+            "DEER",
+            "CAT",
+            "MOUSE",
+            "ELEPHANT",
+            "LION",
+            "PENGUIN",
+            "SPARROW",
+            "STORK",
+            "HAWK",
+        ]
         ws = WordSearch(words)
 
         pdf = Document()

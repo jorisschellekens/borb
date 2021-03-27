@@ -12,9 +12,10 @@ from ptext.pdf.canvas.layout.paragraph import (
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_output_dir, get_log_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-codeblock.log",
+    filename=Path(get_log_dir(), "test-write-codeblock.log"),
     level=logging.DEBUG,
 )
 
@@ -22,7 +23,7 @@ logging.basicConfig(
 class TestWriteCodeblock(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-codeblock")
+        self.output_dir = Path(get_output_dir(), "test-write-codeblock")
 
     def test_write_document(self):
 
@@ -52,7 +53,12 @@ class TestWriteCodeblock(unittest.TestCase):
         with open(__file__, "r") as self_file_handle:
             file_contents = self_file_handle.read()
 
-        layout.add(CodeBlock(file_contents, font_size=Decimal(6)))
+        layout.add(
+            CodeBlock(
+                file_contents,
+                font_size=Decimal(5),
+            )
+        )
 
         layout.add(
             Paragraph(

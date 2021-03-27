@@ -8,7 +8,7 @@ from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.barcode import Barcode, BarcodeType
 from ptext.pdf.canvas.layout.page_layout import MultiColumnLayout, SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
-    Justification,
+    Alignment,
     Paragraph,
 )
 from ptext.pdf.canvas.layout.shape import Shape
@@ -16,16 +16,17 @@ from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-write-dragon-curve.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-dragon-curve.log"), level=logging.DEBUG
 )
 
 
 class TestWriteDragonCurve(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-write-dragon-curve")
+        self.output_dir = Path(get_output_dir(), "test-write-dragon-curve")
 
     def _write_background(self, page: Page):
         layout = SingleColumnLayout(page)
@@ -72,12 +73,12 @@ class TestWriteDragonCurve(unittest.TestCase):
         )
         layout.switch_to_next_column()
         for _ in range(0, 11):
-            layout.add(Paragraph(" "))
+            layout.add(Paragraph(" ", respect_spaces_in_text=True))
         layout.add(
             Paragraph(
                 "such as this cool dragon curve!",
                 font_color=HexColor("F95738"),
-                justification=Justification.FLUSH_RIGHT,
+                horizontal_alignment=Alignment.RIGHT,
             )
         )
 

@@ -1,4 +1,5 @@
 import logging
+import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
@@ -14,12 +15,13 @@ class TestExtractEmbeddedFiles(Test):
         super().__init__(methodName)
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0164.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0164.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         super(TestExtractEmbeddedFiles, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
         with open(file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
 

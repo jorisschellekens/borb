@@ -7,8 +7,14 @@
 
 import typing
 
-from ptext.io.read.types import Dictionary, Decimal, List, Name, String
-from ptext.pdf.page.page import Page
+from ptext.io.read.types import (
+    Dictionary,
+    Decimal,
+    List,
+    Name,
+    String,
+)
+from ptext.pdf.page.page import Page, DestinationType
 from ptext.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
 
@@ -165,7 +171,7 @@ class Document(Dictionary):
         self,
         text: str,
         level: int,
-        destination_type: str,
+        destination_type: DestinationType,
         page_nr: int,
         top: typing.Optional[Decimal] = None,
         right: typing.Optional[Decimal] = None,
@@ -174,20 +180,10 @@ class Document(Dictionary):
         zoom: typing.Optional[Decimal] = None,
     ) -> "Document":
 
-        assert destination_type in [
-            "XYZ",
-            "Fit",
-            "FitH",
-            "FitV",
-            "FitR",
-            "FitB",
-            "FitBH",
-            "FitBV",
-        ]
         destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         destination.append(Decimal(page_nr))
-        destination.append(Name(destination_type))
-        if destination_type == "XYZ":
+        destination.append(destination_type.value)
+        if destination_type == DestinationType.X_Y_Z:
             assert (
                 left is not None
                 and bottom is None
@@ -198,7 +194,7 @@ class Document(Dictionary):
             destination.append(Decimal(left))
             destination.append(Decimal(top))
             destination.append(Decimal(zoom))
-        if destination_type == "Fit":
+        if destination_type == DestinationType.FIT:
             assert (
                 left is None
                 and bottom is None
@@ -206,7 +202,7 @@ class Document(Dictionary):
                 and top is None
                 and zoom is None
             )
-        if destination_type == "FitH":
+        if destination_type == DestinationType.FIT_H:
             assert (
                 left is None
                 and bottom is None
@@ -215,7 +211,7 @@ class Document(Dictionary):
                 and zoom is None
             )
             destination.append(Decimal(top))
-        if destination_type == "FitV":
+        if destination_type == DestinationType.FIT_V:
             assert (
                 left is not None
                 and bottom is None
@@ -224,7 +220,7 @@ class Document(Dictionary):
                 and zoom is None
             )
             destination.append(Decimal(left))
-        if destination_type == "FitR":
+        if destination_type == DestinationType.FIT_R:
             assert (
                 left is not None
                 and bottom is not None
@@ -236,7 +232,7 @@ class Document(Dictionary):
             destination.append(Decimal(bottom))
             destination.append(Decimal(right))
             destination.append(Decimal(top))
-        if destination_type == "FitBH":
+        if destination_type == DestinationType.FIT_B_H:
             assert (
                 left is None
                 and bottom is None
@@ -245,7 +241,7 @@ class Document(Dictionary):
                 and zoom is None
             )
             destination.append(Decimal(top))
-        if destination_type == "FitBV":
+        if destination_type == DestinationType.FIT_B_V:
             assert (
                 left is not None
                 and bottom is None

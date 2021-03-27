@@ -5,13 +5,14 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import LineOfText, Justification
+from ptext.pdf.canvas.layout.paragraph import LineOfText, Alignment
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-line-of-text-justified-center.log",
+    filename=Path(get_log_dir(), "test-write-line-of-text-justified-center.log"),
     level=logging.DEBUG,
 )
 
@@ -20,7 +21,7 @@ class TestWriteLineOfTextJustifiedCenter(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path(
-            "../../../../output/test-write-line-of-text-justified-center"
+            get_output_dir(), "test-write-line-of-text-justified-center"
         )
 
     def test_write_document(self):
@@ -48,7 +49,7 @@ class TestWriteLineOfTextJustifiedCenter(unittest.TestCase):
             r = LineOfText(
                 s,
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             ).layout(
                 page,
                 Rectangle(

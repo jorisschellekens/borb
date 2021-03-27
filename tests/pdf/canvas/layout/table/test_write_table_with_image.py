@@ -9,21 +9,22 @@ from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.layout.image import Image
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Justification
+from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-table-with-image.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-table-with-image.log"), level=logging.DEBUG
 )
 
 
 class TestWriteTableWithImage(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-table-with-image")
+        self.output_dir = Path(get_output_dir(), "test-write-table-with-image")
 
     def _add_image_to_table(self, url: str, table: Table):
         im = PILImage.open(
@@ -32,7 +33,14 @@ class TestWriteTableWithImage(unittest.TestCase):
                 stream=True,
             ).raw
         )
-        table.add(Image(im, width=Decimal(128), height=Decimal(128)))
+        table.add(
+            Image(
+                im,
+                width=Decimal(128),
+                height=Decimal(128),
+                horizontal_alignment=Alignment.CENTERED,
+            )
+        )
 
     def test_write_document(self):
 
@@ -48,13 +56,13 @@ class TestWriteTableWithImage(unittest.TestCase):
         pdf.append_page(page)
 
         t = Table(number_of_rows=5, number_of_columns=3)
-        t.add(Paragraph(" "))
+        t.add(Paragraph(" ", respect_spaces_in_text=True))
         t.add(
             Paragraph(
                 "Close-up",
                 font_color=X11Color("SteelBlue"),
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
@@ -62,7 +70,7 @@ class TestWriteTableWithImage(unittest.TestCase):
                 "Panoramic",
                 font_color=X11Color("SteelBlue"),
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
 

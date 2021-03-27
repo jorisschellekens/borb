@@ -5,20 +5,18 @@ from pathlib import Path
 from PIL import Image as PILImage
 
 from ptext.pdf.pdf import PDF
+from tests.util import get_output_dir, get_log_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-modify-image-in-document.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-modify-image-in-document.log"),
+    level=logging.DEBUG,
 )
 
 
 class TestModifyImageInDocument(unittest.TestCase):
-    """
-    This test attempts to read the DocumentInfo for each PDF in the corpus
-    """
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-modify-image-in-document")
+        self.output_dir = Path(get_output_dir(), "test-modify-image-in-document")
 
     def _modify_image(self, image: PILImage.Image):
         w = image.width
@@ -52,6 +50,10 @@ class TestModifyImageInDocument(unittest.TestCase):
         for k, v in xobjects.items():
             if isinstance(v, PILImage.Image):
                 self._modify_image(v)
+
+        # create output directory if it does not exist yet
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
         # write
         file = self.output_dir / "output.pdf"

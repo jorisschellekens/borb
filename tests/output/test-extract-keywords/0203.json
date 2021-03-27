@@ -1,0 +1,24 @@
+[
+    {
+        "text": "CONSTIPATION",
+        "page_number": 0,
+        "words_on_page": 119,
+        "term_frequency": 5,
+        "occurs_on_pages": [
+            0,
+            1
+        ],
+        "number_of_pages": 2
+    },
+    {
+        "text": "FIBRE",
+        "page_number": 0,
+        "words_on_page": 119,
+        "term_frequency": 5,
+        "occurs_on_pages": [
+            0,
+            1
+        ],
+        "number_of_pages": 2
+    }
+]

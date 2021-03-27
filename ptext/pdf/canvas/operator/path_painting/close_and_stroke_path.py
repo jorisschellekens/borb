@@ -5,12 +5,11 @@
     Close and stroke the path. This operator shall have the same effect as the
     sequence h S.
 """
+import typing
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.pdf.canvas.operator.path_construction.close_subpath import CloseSubpath
-from ptext.pdf.canvas.operator.path_painting.stroke_path import StrokePath
 
 
 class CloseAndStrokePath(CanvasOperator):
@@ -26,5 +25,10 @@ class CloseAndStrokePath(CanvasOperator):
         """
         Invoke the s operator
         """
-        CloseSubpath().invoke(canvas, [])
-        StrokePath().invoke(canvas, [])
+        close_subpath_op: typing.Optional[CanvasOperator] = canvas.get_operator("h")
+        assert close_subpath_op
+        close_subpath_op.invoke(canvas, [])
+
+        stroke_path_op: typing.Optional[CanvasOperator] = canvas.get_operator("S")
+        assert stroke_path_op
+        stroke_path_op.invoke(canvas, [])

@@ -1,0 +1,14 @@
+{
+   "number_of_chars_0": 372,
+   "number_of_chars_1": 156,
+   "number_of_wrong_chars": 8,
+   "number_of_wrong_chars_percentage": 0.021505376344086023,
+   "diffs": {
+      "\u2122": 1,
+      "\u00ae": 1,
+      "u": -2,
+      "\u25c6": 2,
+      "\u00aa": -1,
+      "\u00a8": -1
+   }
+}

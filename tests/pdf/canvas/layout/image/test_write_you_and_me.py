@@ -12,20 +12,17 @@ from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-you-and-me.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-you-and-me.log"), level=logging.DEBUG
 )
 
 
 class TestWriteYouAndMe(unittest.TestCase):
-    """
-    This test attempts to extract the text of each PDF in the corpus
-    """
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-you-and-me")
+        self.output_dir = Path(get_output_dir(), "test-write-you-and-me")
 
     def test_write_document(self):
 
@@ -46,8 +43,12 @@ class TestWriteYouAndMe(unittest.TestCase):
         layout = MultiColumnLayout(page)
 
         # add image
-        im = PILImage.open("/home/joris/Desktop/you_and_me.jpeg")
-        layout.add(Image(im, width=Decimal(256)))
+        layout.add(
+            Image(
+                "https://images.unsplash.com/photo-1550155864-3033f844da36?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
+                width=Decimal(256),
+            )
+        )
         layout.switch_to_next_column()
 
         # add title

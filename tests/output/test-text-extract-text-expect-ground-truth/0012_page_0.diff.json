@@ -1,0 +1,11 @@
+{
+   "number_of_chars_0": 207557,
+   "number_of_chars_1": 886,
+   "number_of_wrong_chars": 8,
+   "number_of_wrong_chars_percentage": 3.8543628979027445e-05,
+   "diffs": {
+      "\u0093": 2,
+      "\u20ac": -4,
+      "\ufb01": -2
+   }
+}

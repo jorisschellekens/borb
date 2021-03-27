@@ -1,0 +1,10 @@
+{
+   "number_of_chars_0": 7076,
+   "number_of_chars_1": 2039,
+   "number_of_wrong_chars": 4,
+   "number_of_wrong_chars_percentage": 0.0005652911249293386,
+   "diffs": {
+      "\u0095": 2,
+      "\u2022": -2
+   }
+}

@@ -1,0 +1,4200 @@
+{
+    "per_document": [
+        {
+            "file": "0578_page_0",
+            "time_in_seconds": 0.6748833656311035,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0348_page_0",
+            "time_in_seconds": 0.5393574237823486,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0450_page_0",
+            "time_in_seconds": 3.387024164199829,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0314_page_0",
+            "time_in_seconds": 1.4237518310546875,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0055_page_0",
+            "time_in_seconds": 0.8547382354736328,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0520_page_0",
+            "time_in_seconds": 0.8784840106964111,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0518_page_0",
+            "time_in_seconds": 2.4354264736175537,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0075_page_0",
+            "time_in_seconds": 5.5207743644714355,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0139_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0063_page_0",
+            "time_in_seconds": 0.8305051326751709,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0381_page_0",
+            "time_in_seconds": 1.195859670639038,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0190_page_0",
+            "time_in_seconds": 9.822173357009888,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0121_page_0",
+            "time_in_seconds": 0.5534095764160156,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0049_page_0",
+            "time_in_seconds": 1.3466501235961914,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0195_page_0",
+            "time_in_seconds": 0.23959779739379883,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0090_page_0",
+            "time_in_seconds": 0.3499934673309326,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0421_page_0",
+            "time_in_seconds": 2.79947566986084,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0086_page_0",
+            "time_in_seconds": 1.1396114826202393,
+            "passed": false,
+            "exception": "An error occurred on line 133 in file /home/joris/PycharmProjects/ptext/ptext/io/read/tokenize/low_level_tokenizer.py when calling next_token",
+            "timed_out": false
+        },
+        {
+            "file": "0077_page_0",
+            "time_in_seconds": 6.868748188018799,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0386_page_0",
+            "time_in_seconds": 0.7090258598327637,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0481_page_0",
+            "time_in_seconds": 15.492345809936523,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0383_page_0",
+            "time_in_seconds": 0.8753454685211182,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0227_page_0",
+            "time_in_seconds": 0.2927429676055908,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0599_page_0",
+            "time_in_seconds": 12.702952861785889,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0033_page_0",
+            "time_in_seconds": 1.8206639289855957,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0510_page_0",
+            "time_in_seconds": 2.3464484214782715,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0382_page_0",
+            "time_in_seconds": 0.411452054977417,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0225_page_0",
+            "time_in_seconds": 0.29183220863342285,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0047_page_0",
+            "time_in_seconds": 1.3845264911651611,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0187_page_0",
+            "time_in_seconds": 1.0876476764678955,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0074_page_0",
+            "time_in_seconds": 0.1257627010345459,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0023_page_0",
+            "time_in_seconds": 1.680002212524414,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0241_page_0",
+            "time_in_seconds": 8.200269222259521,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0482_page_0",
+            "time_in_seconds": 0.44975829124450684,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0595_page_0",
+            "time_in_seconds": 0.8771846294403076,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0580_page_0",
+            "time_in_seconds": 1.9587788581848145,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0338_page_0",
+            "time_in_seconds": 0.5355472564697266,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0559_page_0",
+            "time_in_seconds": 0.23594999313354492,
+            "passed": false,
+            "exception": "An error occurred on line 64 in file /home/joris/PycharmProjects/ptext/ptext/io/read/font/read_font_dictionary_transformer.py when calling transform",
+            "timed_out": false
+        },
+        {
+            "file": "0494_page_0",
+            "time_in_seconds": 13.10949420928955,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0161_page_0",
+            "time_in_seconds": 1.24778413772583,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0292_page_0",
+            "time_in_seconds": 0.2635512351989746,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0586_page_0",
+            "time_in_seconds": 0.26468729972839355,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0054_page_0",
+            "time_in_seconds": 3.2781424522399902,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0106_page_0",
+            "time_in_seconds": 0.8929071426391602,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0428_page_0",
+            "time_in_seconds": 0.6641781330108643,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0496_page_0",
+            "time_in_seconds": 0.4329831600189209,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0375_page_0",
+            "time_in_seconds": 0.4311537742614746,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0531_page_0",
+            "time_in_seconds": 0.3283119201660156,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0384_page_0",
+            "time_in_seconds": 0.7604587078094482,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0210_page_0",
+            "time_in_seconds": 0.9682719707489014,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0094_page_0",
+            "time_in_seconds": 0.11353683471679688,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0044_page_0",
+            "time_in_seconds": 1.492722511291504,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0103_page_0",
+            "time_in_seconds": 1.3061225414276123,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0270_page_0",
+            "time_in_seconds": 6.4050071239471436,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0073_page_0",
+            "time_in_seconds": 0.09139251708984375,
+            "passed": false,
+            "exception": "An error occurred on line 51 in file /home/joris/PycharmProjects/ptext/ptext/io/filter/stream_decode_util.py when calling decode_stream",
+            "timed_out": false
+        },
+        {
+            "file": "0399_page_0",
+            "time_in_seconds": 3.766975164413452,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0326_page_0",
+            "time_in_seconds": 0.3525669574737549,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0183_page_0",
+            "time_in_seconds": 0.49560976028442383,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0479_page_0",
+            "time_in_seconds": 1.00181245803833,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0341_page_0",
+            "time_in_seconds": 7.142568826675415,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0564_page_0",
+            "time_in_seconds": 0.5781877040863037,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0144_page_0",
+            "time_in_seconds": 1.2914464473724365,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0248_page_0",
+            "time_in_seconds": 0.18865966796875,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0539_page_0",
+            "time_in_seconds": 1.5353903770446777,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0040_page_0",
+            "time_in_seconds": 0.6806139945983887,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0283_page_0",
+            "time_in_seconds": 0.909907341003418,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0432_page_0",
+            "time_in_seconds": 0.13811302185058594,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0132_page_0",
+            "time_in_seconds": 4.099424123764038,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0194_page_0",
+            "time_in_seconds": 1.032264232635498,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0224_page_0",
+            "time_in_seconds": 6.418653964996338,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0260_page_0",
+            "time_in_seconds": 0.27322816848754883,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0233_page_0",
+            "time_in_seconds": 0.06234288215637207,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0529_page_0",
+            "time_in_seconds": 2.9518728256225586,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0543_page_0",
+            "time_in_seconds": 0.9038383960723877,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0262_page_0",
+            "time_in_seconds": 0.37230873107910156,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0002_page_0",
+            "time_in_seconds": 0.9306497573852539,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0575_page_0",
+            "time_in_seconds": 3.1002957820892334,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0442_page_0",
+            "time_in_seconds": 0.18718385696411133,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0293_page_0",
+            "time_in_seconds": 0.4413304328918457,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0084_page_0",
+            "time_in_seconds": 3.461925745010376,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0359_page_0",
+            "time_in_seconds": 6.476490020751953,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0297_page_0",
+            "time_in_seconds": 1.2510085105895996,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0179_page_0",
+            "time_in_seconds": 0.9597618579864502,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0429_page_0",
+            "time_in_seconds": 1.2377817630767822,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0204_page_0",
+            "time_in_seconds": 3.98109769821167,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0247_page_0",
+            "time_in_seconds": 0.5134608745574951,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0316_page_0",
+            "time_in_seconds": 0.5263750553131104,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0365_page_0",
+            "time_in_seconds": 0.09421253204345703,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0255_page_0",
+            "time_in_seconds": 0.9132957458496094,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0208_page_0",
+            "time_in_seconds": 0.4586062431335449,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0371_page_0",
+            "time_in_seconds": 2.1050543785095215,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0483_page_0",
+            "time_in_seconds": 8.052150011062622,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0122_page_0",
+            "time_in_seconds": 1.0414273738861084,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0422_page_0",
+            "time_in_seconds": 0.4171574115753174,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0499_page_0",
+            "time_in_seconds": 2.046623706817627,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0587_page_0",
+            "time_in_seconds": 0.9519803524017334,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0124_page_0",
+            "time_in_seconds": 0.8079037666320801,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0126_page_0",
+            "time_in_seconds": 0.31119608879089355,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0095_page_0",
+            "time_in_seconds": 2.1148605346679688,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0001_page_0",
+            "time_in_seconds": 0.44226527214050293,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0491_page_0",
+            "time_in_seconds": 1.9010024070739746,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0045_page_0",
+            "time_in_seconds": 1.5532925128936768,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0281_page_0",
+            "time_in_seconds": 1.6254456043243408,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0453_page_0",
+            "time_in_seconds": 1.3199925422668457,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0305_page_0",
+            "time_in_seconds": 11.719166278839111,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0522_page_0",
+            "time_in_seconds": 0.7845885753631592,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0594_page_0",
+            "time_in_seconds": 0.5114643573760986,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0535_page_0",
+            "time_in_seconds": 0.2584240436553955,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0509_page_0",
+            "time_in_seconds": 0.6406106948852539,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0188_page_0",
+            "time_in_seconds": 0.30475568771362305,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0123_page_0",
+            "time_in_seconds": 0.6475422382354736,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0019_page_0",
+            "time_in_seconds": 0.9137208461761475,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0460_page_0",
+            "time_in_seconds": 2.764916181564331,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0372_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0185_page_0",
+            "time_in_seconds": 0.41816115379333496,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0490_page_0",
+            "time_in_seconds": 1.0579795837402344,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0226_page_0",
+            "time_in_seconds": 0.46811699867248535,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0304_page_0",
+            "time_in_seconds": 0.7256543636322021,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0250_page_0",
+            "time_in_seconds": 2.293492317199707,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0131_page_0",
+            "time_in_seconds": 0.5130512714385986,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0404_page_0",
+            "time_in_seconds": 1.4519538879394531,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0065_page_0",
+            "time_in_seconds": 0.9988236427307129,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0558_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0272_page_0",
+            "time_in_seconds": 0.24450302124023438,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0284_page_0",
+            "time_in_seconds": 0.2678501605987549,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0440_page_0",
+            "time_in_seconds": 0.7748243808746338,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0596_page_0",
+            "time_in_seconds": 0.41492223739624023,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0069_page_0",
+            "time_in_seconds": 0.08135437965393066,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0261_page_0",
+            "time_in_seconds": 0.8774919509887695,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0392_page_0",
+            "time_in_seconds": 0.6851882934570312,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0271_page_0",
+            "time_in_seconds": 1.2785239219665527,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0448_page_0",
+            "time_in_seconds": 0.7963364124298096,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0148_page_0",
+            "time_in_seconds": 0.6199648380279541,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0549_page_0",
+            "time_in_seconds": 0.12163519859313965,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0232_page_0",
+            "time_in_seconds": 0.8679001331329346,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0434_page_0",
+            "time_in_seconds": 0.5463829040527344,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0327_page_0",
+            "time_in_seconds": 1.0436155796051025,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0048_page_0",
+            "time_in_seconds": 0.2957758903503418,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0169_page_0",
+            "time_in_seconds": 1.2389347553253174,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0426_page_0",
+            "time_in_seconds": 0.12705540657043457,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0334_page_0",
+            "time_in_seconds": 0.9601538181304932,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0140_page_0",
+            "time_in_seconds": 0.10899734497070312,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0244_page_0",
+            "time_in_seconds": 0.24448728561401367,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0287_page_0",
+            "time_in_seconds": 0.48131489753723145,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0178_page_0",
+            "time_in_seconds": 0.383298397064209,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0093_page_0",
+            "time_in_seconds": 0.12575912475585938,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0098_page_0",
+            "time_in_seconds": 0.6913583278656006,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0498_page_0",
+            "time_in_seconds": 0.17876648902893066,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0025_page_0",
+            "time_in_seconds": 0.048035383224487305,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0411_page_0",
+            "time_in_seconds": 0.19547820091247559,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0056_page_0",
+            "time_in_seconds": 0.28983449935913086,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0263_page_0",
+            "time_in_seconds": 1.6445024013519287,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0277_page_0",
+            "time_in_seconds": 2.6245598793029785,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0354_page_0",
+            "time_in_seconds": 0.42519330978393555,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0512_page_0",
+            "time_in_seconds": 2.3589885234832764,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0193_page_0",
+            "time_in_seconds": 0.0713956356048584,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0581_page_0",
+            "time_in_seconds": 0.4519321918487549,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0452_page_0",
+            "time_in_seconds": 1.4138109683990479,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0480_page_0",
+            "time_in_seconds": 0.265134334564209,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0182_page_0",
+            "time_in_seconds": 1.4021522998809814,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0349_page_0",
+            "time_in_seconds": 0.7676863670349121,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0592_page_0",
+            "time_in_seconds": 0.299896240234375,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0346_page_0",
+            "time_in_seconds": 1.4355857372283936,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0174_page_0",
+            "time_in_seconds": 7.117919445037842,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0026_page_0",
+            "time_in_seconds": 0.5978691577911377,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0311_page_0",
+            "time_in_seconds": 3.4082534313201904,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0406_page_0",
+            "time_in_seconds": 1.5563056468963623,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0268_page_0",
+            "time_in_seconds": 1.0469920635223389,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0212_page_0",
+            "time_in_seconds": 13.753411769866943,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0153_page_0",
+            "time_in_seconds": 17.19114375114441,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0537_page_0",
+            "time_in_seconds": 0.16997575759887695,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0368_page_0",
+            "time_in_seconds": 0.900367021560669,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0552_page_0",
+            "time_in_seconds": 5.705862522125244,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0528_page_0",
+            "time_in_seconds": 0.4621403217315674,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0034_page_0",
+            "time_in_seconds": 0.1753849983215332,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0319_page_0",
+            "time_in_seconds": 0.581024169921875,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0003_page_0",
+            "time_in_seconds": 0.9551284313201904,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0471_page_0",
+            "time_in_seconds": 0.4135928153991699,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0416_page_0",
+            "time_in_seconds": 1.6997828483581543,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0340_page_0",
+            "time_in_seconds": 0.4433917999267578,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0391_page_0",
+            "time_in_seconds": 0.35727787017822266,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0322_page_0",
+            "time_in_seconds": 0.8004505634307861,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0228_page_0",
+            "time_in_seconds": 0.727043628692627,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0506_page_0",
+            "time_in_seconds": 0.4811415672302246,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0544_page_0",
+            "time_in_seconds": 8.538116693496704,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0051_page_0",
+            "time_in_seconds": 0.361386775970459,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0041_page_0",
+            "time_in_seconds": 0.2930431365966797,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0472_page_0",
+            "time_in_seconds": 0.5326747894287109,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0364_page_0",
+            "time_in_seconds": 0.40981411933898926,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0133_page_0",
+            "time_in_seconds": 0.44626355171203613,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0547_page_0",
+            "time_in_seconds": 3.775301218032837,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0164_page_0",
+            "time_in_seconds": 0.46752429008483887,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0312_page_0",
+            "time_in_seconds": 0.8318378925323486,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0163_page_0",
+            "time_in_seconds": 0.6903319358825684,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0017_page_0",
+            "time_in_seconds": 4.19723653793335,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0330_page_0",
+            "time_in_seconds": 7.0856077671051025,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0574_page_0",
+            "time_in_seconds": 0.41115355491638184,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0020_page_0",
+            "time_in_seconds": 1.348944902420044,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0568_page_0",
+            "time_in_seconds": 1.3857638835906982,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0315_page_0",
+            "time_in_seconds": 17.360779762268066,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0400_page_0",
+            "time_in_seconds": 0.49317049980163574,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0353_page_0",
+            "time_in_seconds": 13.121567249298096,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0307_page_0",
+            "time_in_seconds": 1.8959057331085205,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0393_page_0",
+            "time_in_seconds": 0.4800267219543457,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0221_page_0",
+            "time_in_seconds": 0.0707390308380127,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0088_page_0",
+            "time_in_seconds": 3.805842399597168,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0582_page_0",
+            "time_in_seconds": 12.006172895431519,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0561_page_0",
+            "time_in_seconds": 2.395218849182129,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0379_page_0",
+            "time_in_seconds": 0.6129341125488281,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0493_page_0",
+            "time_in_seconds": 0.7031519412994385,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0457_page_0",
+            "time_in_seconds": 0.028297901153564453,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0597_page_0",
+            "time_in_seconds": 0.8003809452056885,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0245_page_0",
+            "time_in_seconds": 0.3746814727783203,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0085_page_0",
+            "time_in_seconds": 0.21491479873657227,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0229_page_0",
+            "time_in_seconds": 0.620718240737915,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0308_page_0",
+            "time_in_seconds": 0.6949396133422852,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0109_page_0",
+            "time_in_seconds": 0.80007004737854,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0052_page_0",
+            "time_in_seconds": 3.1748950481414795,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0445_page_0",
+            "time_in_seconds": 0.7472870349884033,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0061_page_0",
+            "time_in_seconds": 0.8827121257781982,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0478_page_0",
+            "time_in_seconds": 0.7280929088592529,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0461_page_0",
+            "time_in_seconds": 0.25673723220825195,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0514_page_0",
+            "time_in_seconds": 0.7096843719482422,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0443_page_0",
+            "time_in_seconds": 1.95241117477417,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0201_page_0",
+            "time_in_seconds": 0.5153830051422119,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0267_page_0",
+            "time_in_seconds": 1.1894631385803223,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0060_page_0",
+            "time_in_seconds": 0.18970847129821777,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0388_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0078_page_0",
+            "time_in_seconds": 0.17124295234680176,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0550_page_0",
+            "time_in_seconds": 0.6257274150848389,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0082_page_0",
+            "time_in_seconds": 0.1877751350402832,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0500_page_0",
+            "time_in_seconds": 0.7483899593353271,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0517_page_0",
+            "time_in_seconds": 3.7329154014587402,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0249_page_0",
+            "time_in_seconds": 0.34099650382995605,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0138_page_0",
+            "time_in_seconds": 0.09483504295349121,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0279_page_0",
+            "time_in_seconds": 2.377241373062134,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0579_page_0",
+            "time_in_seconds": 0.38268566131591797,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0252_page_0",
+            "time_in_seconds": 1.079111099243164,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0412_page_0",
+            "time_in_seconds": 0.615166187286377,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0433_page_0",
+            "time_in_seconds": 1.248750925064087,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0419_page_0",
+            "time_in_seconds": 0.1693258285522461,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0530_page_0",
+            "time_in_seconds": 0.16992592811584473,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0066_page_0",
+            "time_in_seconds": 1.9427902698516846,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0588_page_0",
+            "time_in_seconds": 0.4568500518798828,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0028_page_0",
+            "time_in_seconds": 17.011809587478638,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0363_page_0",
+            "time_in_seconds": 0.5390565395355225,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0108_page_0",
+            "time_in_seconds": 0.4317796230316162,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0373_page_0",
+            "time_in_seconds": 0.5607380867004395,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0423_page_0",
+            "time_in_seconds": 0.2936570644378662,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0266_page_0",
+            "time_in_seconds": 0.11659455299377441,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0191_page_0",
+            "time_in_seconds": 0.537891149520874,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0256_page_0",
+            "time_in_seconds": 0.3983418941497803,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0176_page_0",
+            "time_in_seconds": 0.14468765258789062,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0151_page_0",
+            "time_in_seconds": 0.3955962657928467,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0189_page_0",
+            "time_in_seconds": 2.42730450630188,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0524_page_0",
+            "time_in_seconds": 1.6478030681610107,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0100_page_0",
+            "time_in_seconds": 0.8527495861053467,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0168_page_0",
+            "time_in_seconds": 0.8090550899505615,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0222_page_0",
+            "time_in_seconds": 0.7733845710754395,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0455_page_0",
+            "time_in_seconds": 0.21564579010009766,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0323_page_0",
+            "time_in_seconds": 2.4939124584198,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0223_page_0",
+            "time_in_seconds": 0.2706880569458008,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0008_page_0",
+            "time_in_seconds": 2.105466842651367,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0101_page_0",
+            "time_in_seconds": 0.19248414039611816,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0409_page_0",
+            "time_in_seconds": 0.508446216583252,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0431_page_0",
+            "time_in_seconds": 0.35885095596313477,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0504_page_0",
+            "time_in_seconds": 0.3025360107421875,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0475_page_0",
+            "time_in_seconds": 1.853158950805664,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0344_page_0",
+            "time_in_seconds": 0.1969585418701172,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0172_page_0",
+            "time_in_seconds": 0.23183226585388184,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0110_page_0",
+            "time_in_seconds": 0.15437841415405273,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0300_page_0",
+            "time_in_seconds": 0.3615119457244873,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0064_page_0",
+            "time_in_seconds": 0.4613511562347412,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0335_page_0",
+            "time_in_seconds": 0.3977365493774414,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0015_page_0",
+            "time_in_seconds": 1.4701390266418457,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0298_page_0",
+            "time_in_seconds": 1.1261637210845947,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0560_page_0",
+            "time_in_seconds": 0.3583195209503174,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0081_page_0",
+            "time_in_seconds": 0.6242709159851074,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0485_page_0",
+            "time_in_seconds": 0.4719109535217285,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0215_page_0",
+            "time_in_seconds": 0.11015939712524414,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0413_page_0",
+            "time_in_seconds": 0.1943368911743164,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0441_page_0",
+            "time_in_seconds": 0.3080925941467285,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0492_page_0",
+            "time_in_seconds": 0.10558056831359863,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0306_page_0",
+            "time_in_seconds": 0.11764764785766602,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0403_page_0",
+            "time_in_seconds": 0.12469601631164551,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0230_page_0",
+            "time_in_seconds": 0.20816922187805176,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0278_page_0",
+            "time_in_seconds": 0.43332457542419434,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0167_page_0",
+            "time_in_seconds": 2.4319992065429688,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0258_page_0",
+            "time_in_seconds": 0.5637245178222656,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0253_page_0",
+            "time_in_seconds": 1.346142292022705,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0192_page_0",
+            "time_in_seconds": 0.40352559089660645,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0343_page_0",
+            "time_in_seconds": 22.8132426738739,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0007_page_0",
+            "time_in_seconds": 0.23924684524536133,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0389_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0010_page_0",
+            "time_in_seconds": 1.4093756675720215,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0265_page_0",
+            "time_in_seconds": 0.20778942108154297,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0462_page_0",
+            "time_in_seconds": 0.10258722305297852,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0030_page_0",
+            "time_in_seconds": 1.5249826908111572,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0473_page_0",
+            "time_in_seconds": 2.3613717555999756,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0414_page_0",
+            "time_in_seconds": 2.2971534729003906,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0251_page_0",
+            "time_in_seconds": 0.3979761600494385,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0415_page_0",
+            "time_in_seconds": 0.2510702610015869,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0220_page_0",
+            "time_in_seconds": 0.9398229122161865,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0401_page_0",
+            "time_in_seconds": 0.1783888339996338,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0367_page_0",
+            "time_in_seconds": 0.3308253288269043,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0464_page_0",
+            "time_in_seconds": 0.28549647331237793,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0410_page_0",
+            "time_in_seconds": 4.433561086654663,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0572_page_0",
+            "time_in_seconds": 0.08516550064086914,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0083_page_0",
+            "time_in_seconds": 1.358708381652832,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0154_page_0",
+            "time_in_seconds": 0.3152639865875244,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0162_page_0",
+            "time_in_seconds": 5.094354152679443,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0505_page_0",
+            "time_in_seconds": 1.360640287399292,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0503_page_0",
+            "time_in_seconds": 2.39335298538208,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0408_page_0",
+            "time_in_seconds": 0.06505608558654785,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0296_page_0",
+            "time_in_seconds": 0.49752259254455566,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0555_page_0",
+            "time_in_seconds": 0.5782887935638428,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0417_page_0",
+            "time_in_seconds": 4.550221920013428,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0317_page_0",
+            "time_in_seconds": 3.643160343170166,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0435_page_0",
+            "time_in_seconds": 0.5484273433685303,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0563_page_0",
+            "time_in_seconds": 0.9160990715026855,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0076_page_0",
+            "time_in_seconds": 0.8850359916687012,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0012_page_0",
+            "time_in_seconds": 0.5046465396881104,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0376_page_0",
+            "time_in_seconds": 1.6193358898162842,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0387_page_0",
+            "time_in_seconds": 0.6588780879974365,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0447_page_0",
+            "time_in_seconds": 2.4913554191589355,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0570_page_0",
+            "time_in_seconds": 0.35418081283569336,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0155_page_0",
+            "time_in_seconds": 0.5939617156982422,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0486_page_0",
+            "time_in_seconds": 0.7520208358764648,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0546_page_0",
+            "time_in_seconds": 1.64485764503479,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0014_page_0",
+            "time_in_seconds": 0.19118499755859375,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0459_page_0",
+            "time_in_seconds": 0.07781124114990234,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0141_page_0",
+            "time_in_seconds": 0.5847413539886475,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0390_page_0",
+            "time_in_seconds": 0.8980786800384521,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0369_page_0",
+            "time_in_seconds": 0.8759822845458984,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0532_page_0",
+            "time_in_seconds": 0.026290178298950195,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0325_page_0",
+            "time_in_seconds": 0.8058576583862305,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0538_page_0",
+            "time_in_seconds": 0.08510518074035645,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0206_page_0",
+            "time_in_seconds": 0.6594243049621582,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0059_page_0",
+            "time_in_seconds": 0.23551225662231445,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0009_page_0",
+            "time_in_seconds": 2.1544189453125,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0091_page_0",
+            "time_in_seconds": 0.9097824096679688,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0117_page_0",
+            "time_in_seconds": 0.1718907356262207,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0294_page_0",
+            "time_in_seconds": 0.9191720485687256,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0079_page_0",
+            "time_in_seconds": 0.07608532905578613,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0062_page_0",
+            "time_in_seconds": 0.590874433517456,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0420_page_0",
+            "time_in_seconds": 0.1904582977294922,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0171_page_0",
+            "time_in_seconds": 0.15790200233459473,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0385_page_0",
+            "time_in_seconds": 0.368558406829834,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0396_page_0",
+            "time_in_seconds": 0.6664490699768066,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0134_page_0",
+            "time_in_seconds": 2.7973241806030273,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0099_page_0",
+            "time_in_seconds": 0.10512280464172363,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0236_page_0",
+            "time_in_seconds": 1.1705176830291748,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0569_page_0",
+            "time_in_seconds": 1.523226022720337,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0213_page_0",
+            "time_in_seconds": 0.21041011810302734,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0289_page_0",
+            "time_in_seconds": 0.12137174606323242,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0071_page_0",
+            "time_in_seconds": 0.6269760131835938,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0269_page_0",
+            "time_in_seconds": 0.6785986423492432,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0593_page_0",
+            "time_in_seconds": 0.5829274654388428,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0342_page_0",
+            "time_in_seconds": 0.3311333656311035,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0096_page_0",
+            "time_in_seconds": 0.17368435859680176,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0274_page_0",
+            "time_in_seconds": 0.23854851722717285,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0285_page_0",
+            "time_in_seconds": 0.3628239631652832,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0398_page_0",
+            "time_in_seconds": 0.020402908325195312,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0324_page_0",
+            "time_in_seconds": 0.5023701190948486,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0502_page_0",
+            "time_in_seconds": 3.018174409866333,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0107_page_0",
+            "time_in_seconds": 0.10506582260131836,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0186_page_0",
+            "time_in_seconds": 0.3325166702270508,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0280_page_0",
+            "time_in_seconds": 0.5836200714111328,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0320_page_0",
+            "time_in_seconds": 0.3938298225402832,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0566_page_0",
+            "time_in_seconds": 4.918445110321045,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0397_page_0",
+            "time_in_seconds": 0.6085824966430664,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0545_page_0",
+            "time_in_seconds": 0.667837381362915,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0092_page_0",
+            "time_in_seconds": 0.4367966651916504,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0439_page_0",
+            "time_in_seconds": 3.046133518218994,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0057_page_0",
+            "time_in_seconds": 0.034990549087524414,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0181_page_0",
+            "time_in_seconds": 0.3455960750579834,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0295_page_0",
+            "time_in_seconds": 0.27554917335510254,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0571_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0589_page_0",
+            "time_in_seconds": 1.014988660812378,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0329_page_0",
+            "time_in_seconds": 5.947262763977051,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0495_page_0",
+            "time_in_seconds": 0.21666717529296875,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0150_page_0",
+            "time_in_seconds": 0.2722132205963135,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0011_page_0",
+            "time_in_seconds": 0.40009188652038574,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0446_page_0",
+            "time_in_seconds": 0.4240868091583252,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0136_page_0",
+            "time_in_seconds": 0.10783219337463379,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0046_page_0",
+            "time_in_seconds": 0.042513370513916016,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0299_page_0",
+            "time_in_seconds": 29.799179077148438,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0137_page_0",
+            "time_in_seconds": 0.32259654998779297,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0029_page_0",
+            "time_in_seconds": 0.15026521682739258,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0146_page_0",
+            "time_in_seconds": 0.6574587821960449,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0038_page_0",
+            "time_in_seconds": 0.39905714988708496,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0554_page_0",
+            "time_in_seconds": 0.2735891342163086,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0013_page_0",
+            "time_in_seconds": 2.131948471069336,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0374_page_0",
+            "time_in_seconds": 0.2738821506500244,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0345_page_0",
+            "time_in_seconds": 0.48421263694763184,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0113_page_0",
+            "time_in_seconds": 0.5900378227233887,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0438_page_0",
+            "time_in_seconds": 0.39583635330200195,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0156_page_0",
+            "time_in_seconds": 0.6562387943267822,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0105_page_0",
+            "time_in_seconds": 0.39194488525390625,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0358_page_0",
+            "time_in_seconds": 1.6875362396240234,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0521_page_0",
+            "time_in_seconds": 1.6435573101043701,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0352_page_0",
+            "time_in_seconds": 1.011038064956665,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0328_page_0",
+            "time_in_seconds": 0.6588437557220459,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0175_page_0",
+            "time_in_seconds": 0.1775226593017578,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0361_page_0",
+            "time_in_seconds": 0.40244555473327637,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0437_page_0",
+            "time_in_seconds": 1.1046576499938965,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0507_page_0",
+            "time_in_seconds": 0.06887173652648926,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0585_page_0",
+            "time_in_seconds": 1.2734456062316895,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0217_page_0",
+            "time_in_seconds": 0.491774320602417,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0205_page_0",
+            "time_in_seconds": 0.5046277046203613,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0246_page_0",
+            "time_in_seconds": 0.8341364860534668,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0035_page_0",
+            "time_in_seconds": 1.3886981010437012,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0378_page_0",
+            "time_in_seconds": 0.3850712776184082,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0239_page_0",
+            "time_in_seconds": 1.0495460033416748,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0456_page_0",
+            "time_in_seconds": 0.7160849571228027,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0395_page_0",
+            "time_in_seconds": 0.4882521629333496,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0276_page_0",
+            "time_in_seconds": 0.3456454277038574,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0501_page_0",
+            "time_in_seconds": 0.3112196922302246,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0288_page_0",
+            "time_in_seconds": 0.05833172798156738,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0036_page_0",
+            "time_in_seconds": 0.9540927410125732,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0541_page_0",
+            "time_in_seconds": 0.6298744678497314,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0120_page_0",
+            "time_in_seconds": 1.196425437927246,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0006_page_0",
+            "time_in_seconds": 0.5959527492523193,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0118_page_0",
+            "time_in_seconds": 1.1080949306488037,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0551_page_0",
+            "time_in_seconds": 1.341001033782959,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0197_page_0",
+            "time_in_seconds": 1.0949771404266357,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0350_page_0",
+            "time_in_seconds": 0.8235008716583252,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0470_page_0",
+            "time_in_seconds": 3.638791799545288,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0333_page_0",
+            "time_in_seconds": 0.21152210235595703,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0207_page_0",
+            "time_in_seconds": 0.16878008842468262,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0313_page_0",
+            "time_in_seconds": 0.1907052993774414,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0000_page_0",
+            "time_in_seconds": 0.39599013328552246,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0513_page_0",
+            "time_in_seconds": 3.296792507171631,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0072_page_0",
+            "time_in_seconds": 0.4863436222076416,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0562_page_0",
+            "time_in_seconds": 0.2761683464050293,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0067_page_0",
+            "time_in_seconds": 0.2579371929168701,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0058_page_0",
+            "time_in_seconds": 0.22674250602722168,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0436_page_0",
+            "time_in_seconds": 0.26603102684020996,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0477_page_0",
+            "time_in_seconds": 0.43190431594848633,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0525_page_0",
+            "time_in_seconds": 0.1763155460357666,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0469_page_0",
+            "time_in_seconds": 0.13441896438598633,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0259_page_0",
+            "time_in_seconds": 0.8044326305389404,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0591_page_0",
+            "time_in_seconds": 0.1793360710144043,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0527_page_0",
+            "time_in_seconds": 0.3077671527862549,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0273_page_0",
+            "time_in_seconds": 0.8121905326843262,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0198_page_0",
+            "time_in_seconds": 0.1343071460723877,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0027_page_0",
+            "time_in_seconds": 0.013703346252441406,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0468_page_0",
+            "time_in_seconds": 0.4133024215698242,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0291_page_0",
+            "time_in_seconds": 0.3004143238067627,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0424_page_0",
+            "time_in_seconds": 1.039494276046753,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0351_page_0",
+            "time_in_seconds": 1.7494401931762695,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0211_page_0",
+            "time_in_seconds": 0.6192798614501953,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0331_page_0",
+            "time_in_seconds": 0.40363240242004395,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0533_page_0",
+            "time_in_seconds": 18.019696712493896,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0087_page_0",
+            "time_in_seconds": 0.38529181480407715,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0542_page_0",
+            "time_in_seconds": 0.4299454689025879,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0366_page_0",
+            "time_in_seconds": 0.7577724456787109,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0042_page_0",
+            "time_in_seconds": 0.8897397518157959,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0199_page_0",
+            "time_in_seconds": 0.1883091926574707,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0200_page_0",
+            "time_in_seconds": 0.5933804512023926,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0196_page_0",
+            "time_in_seconds": 0.4038708209991455,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0254_page_0",
+            "time_in_seconds": 3.1921348571777344,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0427_page_0",
+            "time_in_seconds": 0.37618231773376465,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0536_page_0",
+            "time_in_seconds": 1.0232272148132324,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0523_page_0",
+            "time_in_seconds": 1.2322111129760742,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0458_page_0",
+            "time_in_seconds": 0.4539530277252197,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0125_page_0",
+            "time_in_seconds": 0.01988959312438965,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0031_page_0",
+            "time_in_seconds": 0.9088990688323975,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0377_page_0",
+            "time_in_seconds": 0.5732109546661377,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0449_page_0",
+            "time_in_seconds": 0.7510426044464111,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0264_page_0",
+            "time_in_seconds": 1.0794556140899658,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0037_page_0",
+            "time_in_seconds": 0.21158766746520996,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0043_page_0",
+            "time_in_seconds": 0.19433379173278809,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0573_page_0",
+            "time_in_seconds": 2.4221882820129395,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0282_page_0",
+            "time_in_seconds": 0.34383201599121094,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0130_page_0",
+            "time_in_seconds": 1.2530016899108887,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0166_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0418_page_0",
+            "time_in_seconds": 1.1629705429077148,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0362_page_0",
+            "time_in_seconds": 1.177152395248413,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0301_page_0",
+            "time_in_seconds": 0.1083364486694336,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0216_page_0",
+            "time_in_seconds": 0.4307138919830322,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0567_page_0",
+            "time_in_seconds": 0.186767578125,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0465_page_0",
+            "time_in_seconds": 0.3912985324859619,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0430_page_0",
+            "time_in_seconds": 1.3534886837005615,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0286_page_0",
+            "time_in_seconds": 0.48871731758117676,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0337_page_0",
+            "time_in_seconds": 1.3890957832336426,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0158_page_0",
+            "time_in_seconds": 0.11304855346679688,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0005_page_0",
+            "time_in_seconds": 0.92091965675354,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0451_page_0",
+            "time_in_seconds": 0.7748777866363525,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0565_page_0",
+            "time_in_seconds": 0.4641139507293701,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0553_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0147_page_0",
+            "time_in_seconds": 0.06298470497131348,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0275_page_0",
+            "time_in_seconds": 0.5497746467590332,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0053_page_0",
+            "time_in_seconds": 7.533811807632446,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0177_page_0",
+            "time_in_seconds": 0.9098701477050781,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0257_page_0",
+            "time_in_seconds": 0.6403234004974365,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0444_page_0",
+            "time_in_seconds": 1.440157413482666,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0332_page_0",
+            "time_in_seconds": 0.11832690238952637,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0119_page_0",
+            "time_in_seconds": 0.22208571434020996,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0004_page_0",
+            "time_in_seconds": 0.6371333599090576,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0024_page_0",
+            "time_in_seconds": 0.984133243560791,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0209_page_0",
+            "time_in_seconds": 0.9585094451904297,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0114_page_0",
+            "time_in_seconds": 0.42433643341064453,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0032_page_0",
+            "time_in_seconds": 4.841064453125,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0487_page_0",
+            "time_in_seconds": 7.104460000991821,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0142_page_0",
+            "time_in_seconds": 1.0511953830718994,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0234_page_0",
+            "time_in_seconds": 1.4671516418457031,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0310_page_0",
+            "time_in_seconds": 0.9506223201751709,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0070_page_0",
+            "time_in_seconds": 0.49629759788513184,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0149_page_0",
+            "time_in_seconds": 0.28026390075683594,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0356_page_0",
+            "time_in_seconds": 0.46874570846557617,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0590_page_0",
+            "time_in_seconds": 6.506585597991943,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0584_page_0",
+            "time_in_seconds": 0.3960874080657959,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0519_page_0",
+            "time_in_seconds": 1.7699873447418213,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0303_page_0",
+            "time_in_seconds": 0.11554360389709473,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0463_page_0",
+            "time_in_seconds": 0.19903254508972168,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0290_page_0",
+            "time_in_seconds": 0.49843883514404297,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0339_page_0",
+            "time_in_seconds": 0.9292104244232178,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0407_page_0",
+            "time_in_seconds": 0.37168407440185547,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0511_page_0",
+            "time_in_seconds": 0.28321146965026855,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0242_page_0",
+            "time_in_seconds": 0.16742849349975586,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0370_page_0",
+            "time_in_seconds": 0.4128437042236328,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0516_page_0",
+            "time_in_seconds": 1.4850058555603027,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0135_page_0",
+            "time_in_seconds": 0.562244176864624,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0102_page_0",
+            "time_in_seconds": 0.1878969669342041,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0237_page_0",
+            "time_in_seconds": 1.711543321609497,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0508_page_0",
+            "time_in_seconds": 0.8249537944793701,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0143_page_0",
+            "time_in_seconds": 1.3651092052459717,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0405_page_0",
+            "time_in_seconds": 0.46864914894104004,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0497_page_0",
+            "time_in_seconds": 1.2218663692474365,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0218_page_0",
+            "time_in_seconds": 0.1651773452758789,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0577_page_0",
+            "time_in_seconds": 0.8067386150360107,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0173_page_0",
+            "time_in_seconds": 0.11402368545532227,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0336_page_0",
+            "time_in_seconds": 1.2203214168548584,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0018_page_0",
+            "time_in_seconds": 0.23567581176757812,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0115_page_0",
+            "time_in_seconds": 0.567777156829834,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0016_page_0",
+            "time_in_seconds": 0.944251537322998,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0380_page_0",
+            "time_in_seconds": 0.5642068386077881,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0127_page_0",
+            "time_in_seconds": 0.8513939380645752,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0111_page_0",
+            "time_in_seconds": 1.110177755355835,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0089_page_0",
+            "time_in_seconds": 1.2289469242095947,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0488_page_0",
+            "time_in_seconds": 5.0121989250183105,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0145_page_0",
+            "time_in_seconds": 0.2920393943786621,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0039_page_0",
+            "time_in_seconds": 0.7312133312225342,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0556_page_0",
+            "time_in_seconds": 0.5748574733734131,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0534_page_0",
+            "time_in_seconds": 0.3835415840148926,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0104_page_0",
+            "time_in_seconds": 0.11224198341369629,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0112_page_0",
+            "time_in_seconds": 0.7938821315765381,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0360_page_0",
+            "time_in_seconds": 0.8671352863311768,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0548_page_0",
+            "time_in_seconds": 0.608727216720581,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0050_page_0",
+            "time_in_seconds": 0.8175218105316162,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0476_page_0",
+            "time_in_seconds": 0.8590519428253174,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0160_page_0",
+            "time_in_seconds": 2.3784055709838867,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0394_page_0",
+            "time_in_seconds": 2.0257813930511475,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0302_page_0",
+            "time_in_seconds": 0.4622182846069336,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0128_page_0",
+            "time_in_seconds": 0.15175271034240723,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0068_page_0",
+            "time_in_seconds": 0.860238790512085,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0238_page_0",
+            "time_in_seconds": 0.3018307685852051,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0526_page_0",
+            "time_in_seconds": 1.2084991931915283,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0243_page_0",
+            "time_in_seconds": 0.413238525390625,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0557_page_0",
+            "time_in_seconds": 1.6098301410675049,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0425_page_0",
+            "time_in_seconds": 0.33672022819519043,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0022_page_0",
+            "time_in_seconds": 0.22600126266479492,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0309_page_0",
+            "time_in_seconds": 0.40146613121032715,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0466_page_0",
+            "time_in_seconds": 3.113584041595459,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0484_page_0",
+            "time_in_seconds": 0.5512115955352783,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0157_page_0",
+            "time_in_seconds": 0.2372431755065918,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0231_page_0",
+            "time_in_seconds": 0.3068559169769287,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0515_page_0",
+            "time_in_seconds": 5.396348476409912,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0214_page_0",
+            "time_in_seconds": 0.19546914100646973,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0321_page_0",
+            "time_in_seconds": 0.9203393459320068,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0454_page_0",
+            "time_in_seconds": 1.5470187664031982,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0203_page_0",
+            "time_in_seconds": 0.6858172416687012,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0184_page_0",
+            "time_in_seconds": 0.3497943878173828,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0540_page_0",
+            "time_in_seconds": 1.1991703510284424,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0318_page_0",
+            "time_in_seconds": 0.12138700485229492,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0202_page_0",
+            "time_in_seconds": 0.17114901542663574,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0152_page_0",
+            "time_in_seconds": 0.8687772750854492,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0159_page_0",
+            "time_in_seconds": 1.1047155857086182,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0129_page_0",
+            "time_in_seconds": 3.3070218563079834,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0357_page_0",
+            "time_in_seconds": 0.3166999816894531,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0355_page_0",
+            "time_in_seconds": 0.1310412883758545,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0180_page_0",
+            "time_in_seconds": 0.42670631408691406,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0576_page_0",
+            "time_in_seconds": 1.0953922271728516,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0402_page_0",
+            "time_in_seconds": 2.3578827381134033,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0474_page_0",
+            "time_in_seconds": 3.0029845237731934,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0021_page_0",
+            "time_in_seconds": 1.4990816116333008,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0116_page_0",
+            "time_in_seconds": 30,
+            "passed": false,
+            "exception": "None",
+            "timed_out": true
+        },
+        {
+            "file": "0080_page_0",
+            "time_in_seconds": 0.20312237739562988,
+            "passed": false,
+            "exception": "An error occurred on line 75 in file /home/joris/PycharmProjects/ptext/ptext/io/filter/stream_decode_util.py when calling decode_stream",
+            "timed_out": false
+        },
+        {
+            "file": "0097_page_0",
+            "time_in_seconds": 0.5676229000091553,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0583_page_0",
+            "time_in_seconds": 0.73893141746521,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0240_page_0",
+            "time_in_seconds": 0.30826759338378906,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0598_page_0",
+            "time_in_seconds": 0.3330078125,
+            "passed": false,
+            "exception": "An error occurred on line 106 in file /home/joris/PycharmProjects/ptext/tests/toolkit/text/test_extract_text_expect_ground_truth.py when calling _compare_text",
+            "timed_out": false
+        },
+        {
+            "file": "0170_page_0",
+            "time_in_seconds": 0.10198855400085449,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0235_page_0",
+            "time_in_seconds": 1.3174431324005127,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0489_page_0",
+            "time_in_seconds": 0.23836135864257812,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0165_page_0",
+            "time_in_seconds": 0.2429649829864502,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        },
+        {
+            "file": "0219_page_0",
+            "time_in_seconds": 0.3033261299133301,
+            "passed": true,
+            "exception": "None",
+            "timed_out": false
+        }
+    ],
+    "summary": {
+        "passed_count": 366,
+        "passed_percentage": 0.6120401337792643,
+        "failed_count": 232,
+        "failed_percentage": 0.3879598662207358,
+        "timed_out_count": 9,
+        "timed_out_percentage": 0.015050167224080268,
+        "average_time_in_seconds": 1.5364823178515408,
+        "count": 598
+    }
+}

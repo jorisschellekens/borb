@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from typing import Optional
 
-from ptext.io.read.types import Dictionary, HexadecimalString, Name
+from ptext.io.read.types import Dictionary, Name
 from ptext.pdf.canvas.font.cmap.cmap import CMap
 from ptext.pdf.canvas.font.glyph_line import GlyphLine, Glyph
 from ptext.pdf.canvas.font.latin_text_encoding import (
@@ -176,7 +176,7 @@ class Font(Dictionary):
         value_bytes = content.get_value_bytes()
         while i < len(value_bytes):
             # attempt to use ToUnicode CMAP (2 bytes)
-            if i + 1 < len(value_bytes) and isinstance(content, HexadecimalString):
+            if i + 1 < len(value_bytes):
                 code = value_bytes[i] * 256 + value_bytes[i + 1]
                 if (
                     self._to_unicode_map is not None
@@ -192,8 +192,7 @@ class Font(Dictionary):
             # attempt to use ToUnicode CMAP (1 byte)
             code = value_bytes[i]
             if (
-                isinstance(content, HexadecimalString)
-                and self._to_unicode_map is not None
+                self._to_unicode_map is not None
                 and self._to_unicode_map.code_to_unicode(code) is not None
                 and self._to_unicode_map.code_to_unicode(code) != 0
             ):

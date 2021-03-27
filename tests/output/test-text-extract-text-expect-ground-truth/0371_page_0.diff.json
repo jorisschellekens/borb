@@ -1,0 +1,14 @@
+{
+   "number_of_chars_0": 962781,
+   "number_of_chars_1": 5398,
+   "number_of_wrong_chars": 14,
+   "number_of_wrong_chars_percentage": 1.4541209267735861e-05,
+   "diffs": {
+      "F": -1,
+      "a": -4,
+      "d": -2,
+      "\u25b6": 4,
+      "\u25b2": 1,
+      "\u25bc": 2
+   }
+}

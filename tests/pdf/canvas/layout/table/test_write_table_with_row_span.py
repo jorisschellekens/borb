@@ -10,9 +10,10 @@ from ptext.pdf.canvas.layout.table import Table, TableCell
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_output_dir, get_log_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-table-with-row-span.log",
+    filename=Path(get_log_dir(), "test-write-table-with-row-span.log"),
     level=logging.DEBUG,
 )
 
@@ -20,7 +21,7 @@ logging.basicConfig(
 class TestWriteTableWithRowSpan(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-table-with-row-span")
+        self.output_dir = Path(get_output_dir(), "test-write-table-with-row-span")
 
     def test_write_document(self):
 
@@ -36,7 +37,13 @@ class TestWriteTableWithRowSpan(unittest.TestCase):
         pdf.append_page(page)
 
         t = Table(number_of_rows=5, number_of_columns=3)
-        t.add(TableCell(Paragraph(" "), border_top=False, border_left=False))
+        t.add(
+            TableCell(
+                Paragraph(" ", respect_spaces_in_text=True),
+                border_top=False,
+                border_left=False,
+            )
+        )
         t.add(
             Paragraph(
                 "Language", font_color=X11Color("SteelBlue"), font_size=Decimal(20)

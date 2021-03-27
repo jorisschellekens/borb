@@ -5,21 +5,22 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Justification
+from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-simple-table.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-simple-table.log"), level=logging.DEBUG
 )
 
 
 class TestWriteTableWithColors(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-table-with-colors")
+        self.output_dir = Path(get_output_dir(), "test-write-table-with-colors")
 
     def test_write_document(self):
 
@@ -52,7 +53,7 @@ class TestWriteTableWithColors(unittest.TestCase):
         }
 
         table = Table(number_of_rows=4, number_of_columns=5)
-        table.add(Paragraph(" "))
+        table.add(Paragraph(" ", respect_spaces_in_text=True))
         for h in my_dict[" "]:
             table.add(Paragraph(text=h, font="Helvetica-Bold", font_size=Decimal(12)))
         for name, row in [(k, v) for k, v in my_dict.items() if k != " "]:
@@ -64,7 +65,7 @@ class TestWriteTableWithColors(unittest.TestCase):
                         c = bc
                 table.add(
                     Paragraph(
-                        str(v), font_color=c, justification=Justification.CENTERED
+                        str(v), font_color=c, horizontal_alignment=Alignment.CENTERED
                     )
                 )
 

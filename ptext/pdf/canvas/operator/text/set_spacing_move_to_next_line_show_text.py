@@ -7,15 +7,11 @@
     the text state). a w and a c shall be numbers expressed in unscaled text
     space units.
 """
+import typing
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.pdf.canvas.operator.text.move_to_next_line_show_text import (
-    MoveToNextLineShowText,
-)
-from ptext.pdf.canvas.operator.text.set_character_spacing import SetCharacterSpacing
-from ptext.pdf.canvas.operator.text.set_word_spacing import SetWordSpacing
 
 
 class SetSpacingMoveToNextLineShowText(CanvasOperator):
@@ -36,6 +32,18 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
         """
         Invoke the " operator
         """
-        SetWordSpacing().invoke(canvas, [operands[0]])
-        SetCharacterSpacing().invoke(canvas, [operands[1]])
-        MoveToNextLineShowText().invoke(canvas, [operands[2]])
+        set_word_spacing_op: typing.Optional[CanvasOperator] = canvas.get_operator("Tw")
+        assert set_word_spacing_op
+        set_word_spacing_op.invoke(canvas, [operands[0]])
+
+        set_character_spacing_op: typing.Optional[CanvasOperator] = canvas.get_operator(
+            "Tc"
+        )
+        assert set_character_spacing_op
+        set_character_spacing_op.invoke(canvas, [operands[1]])
+
+        move_to_next_line_show_text_op: typing.Optional[
+            CanvasOperator
+        ] = canvas.get_operator("'")
+        assert move_to_next_line_show_text_op
+        move_to_next_line_show_text_op.invoke(canvas, [operands[2]])

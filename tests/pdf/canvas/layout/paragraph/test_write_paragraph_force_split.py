@@ -6,15 +6,16 @@ from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.page_layout import MultiColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
-    Justification,
+    Alignment,
     Paragraph,
 )
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-paragraph-force-split.log",
+    filename=Path(get_log_dir(), "test-write-paragraph-force-split.log"),
     level=logging.DEBUG,
 )
 
@@ -22,7 +23,7 @@ logging.basicConfig(
 class TestWriteParagraphForceSplit(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-paragraph-force-split")
+        self.output_dir = Path(get_output_dir(), "test-write-paragraph-force-split")
 
     def test_write_document(self):
 
@@ -55,8 +56,8 @@ class TestWriteParagraphForceSplit(unittest.TestCase):
                                 As of some one gently rapping, rapping at my chamber door.
                                 'Tis some visitor,' I muttered, 'tapping at my chamber door-
                                 Only this and nothing more.'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                text_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )

@@ -5,21 +5,22 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Justification
+from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-simple-table.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-simple-table.log"), level=logging.DEBUG
 )
 
 
 class TestWriteSimpleTable(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-simple-table")
+        self.output_dir = Path(get_output_dir(), "test-write-simple-table")
 
     def test_write_document(self):
 
@@ -40,7 +41,7 @@ class TestWriteSimpleTable(unittest.TestCase):
                 "Language",
                 font_color=X11Color("SteelBlue"),
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
@@ -48,7 +49,7 @@ class TestWriteSimpleTable(unittest.TestCase):
                 "Nof. Questions",
                 font_color=X11Color("SteelBlue"),
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
 
@@ -77,7 +78,7 @@ class TestWriteSimpleTable(unittest.TestCase):
             text="**Data gathered from Stackoverflow.com on 10th of february 2021",
             font_size=Decimal(8),
             font_color=X11Color("Gray"),
-            justification=Justification.FLUSH_RIGHT,
+            horizontal_alignment=Alignment.RIGHT,
         ).layout(
             page,
             bounding_box=Rectangle(

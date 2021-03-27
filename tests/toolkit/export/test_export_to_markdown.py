@@ -5,6 +5,7 @@ from pathlib import Path
 from ptext.pdf.pdf import PDF
 from ptext.toolkit.export.markdown_export import MarkdownExport
 from tests.test import Test
+from tests.util import get_output_dir
 
 logging.basicConfig(
     filename="../../logs/test-export-to-markdown.log", level=logging.DEBUG
@@ -18,12 +19,13 @@ class TestExportToMarkDown(Test):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../output/test-export-to-markdown")
+        self.output_dir = Path(get_output_dir(), "test-export-to-markdown")
 
+    @unittest.skip
     def test_corpus(self):
         super(TestExportToMarkDown, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():

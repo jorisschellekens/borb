@@ -13,6 +13,7 @@ from PIL import Image as PILImage  # type: ignore [import]
 
 from ptext.io.read.types import Name, Dictionary, add_base_methods
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.paragraph import LayoutElement
 from ptext.pdf.page.page import Page
 
@@ -27,6 +28,8 @@ class Image(LayoutElement):
         image: typing.Union[str, PILImage.Image],
         width: Optional[Decimal] = None,
         height: Optional[Decimal] = None,
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         if isinstance(image, str):
             image = PILImage.open(
@@ -35,7 +38,10 @@ class Image(LayoutElement):
                     stream=True,
                 ).raw
             )
-        super(Image, self).__init__()
+        super(Image, self).__init__(
+            horizontal_alignment=horizontal_alignment,
+            vertical_alignment=vertical_alignment,
+        )
         add_base_methods(image)
         self.image: PILImage = image
         self.width = width
@@ -59,7 +65,9 @@ class Image(LayoutElement):
             page["Resources"]["XObject"][Name("Im%d" % image_index)] = image
             return Name("Im%d" % image_index)
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
 
         # add image to resources
         image_resource_name = self._get_image_resource_name(self.image, page)

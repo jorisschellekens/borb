@@ -1,226 +1,16 @@
 import typing
-import zlib
 from decimal import Decimal
-from enum import Enum
 from typing import Union
 
-from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Stream, Name, Dictionary, String
+from ptext.io.read.types import Name, Dictionary, String
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.font.afm.adobe_font_metrics import AdobeFontMetrics
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.font_type_1 import FontType1
-from ptext.pdf.canvas.font.glyph_line import GlyphLine
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-
-
-class LayoutElement:
-    def __init__(
-        self,
-        border_top: bool = False,
-        border_right: bool = False,
-        border_bottom: bool = False,
-        border_left: bool = False,
-        border_color: Color = X11Color("Black"),
-        border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
-        padding_bottom: Decimal = Decimal(0),
-        padding_left: Decimal = Decimal(0),
-        background_color: typing.Optional[Color] = None,
-        parent: typing.Optional["LayoutElement"] = None,
-    ):
-        # borders
-        self.border_top = border_top
-        self.border_right = border_right
-        self.border_bottom = border_bottom
-        self.border_left = border_left
-        assert border_width >= 0
-        self.border_width = border_width
-        self.border_color = border_color
-
-        # padding
-        assert padding_top >= 0
-        assert padding_right >= 0
-        assert padding_bottom >= 0
-        assert padding_left >= 0
-        self.padding_top = padding_top
-        self.padding_right = padding_right
-        self.padding_bottom = padding_bottom
-        self.padding_left = padding_left
-
-        # background color
-        self.background_color = background_color
-
-        # linkage (for lists, tables, etc)
-        self.parent = parent
-
-        # layout
-        self.bounding_box: typing.Optional[Rectangle] = None
-
-    def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
-        self.bounding_box = bounding_box
-        return self
-
-    def get_bounding_box(self) -> typing.Optional[Rectangle]:
-        return self.bounding_box
-
-    def _initialize_page_content_stream(self, page: Page):
-        if "Contents" in page:
-            return
-
-        # build content stream object
-        content_stream = Stream()
-        content_stream[Name("DecodedBytes")] = b""
-        content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Filter")] = Name("FlateDecode")
-        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
-
-        # set content of page
-        page[Name("Contents")] = content_stream
-
-    def _append_to_content_stream(self, page: Page, instructions: str):
-        self._initialize_page_content_stream(page)
-        content_stream = page["Contents"]
-        content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
-        # content_stream[Name("Bytes")] = content_stream[Name("DecodedBytes")]
-        content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
-
-    def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-
-        # modify bounding box (to take into account padding)
-        modified_bounding_box = Rectangle(
-            bounding_box.x + self.padding_left,
-            bounding_box.y + self.padding_bottom,
-            bounding_box.width - self.padding_right - self.padding_left,
-            bounding_box.height - self.padding_top - self.padding_bottom,
-        )
-
-        # store previous contents
-        if "Contents" not in page:
-            self._initialize_page_content_stream(page)
-        previous_decoded_bytes = page["Contents"]["DecodedBytes"]
-
-        # layout without padding
-        layout_rect = self._layout_without_padding(page, modified_bounding_box)
-
-        # modify rectangle (to take into account padding)
-        modified_layout_rect = Rectangle(
-            layout_rect.x - self.padding_left,
-            layout_rect.y - self.padding_bottom,
-            layout_rect.width + self.padding_left + self.padding_right,
-            layout_rect.height + self.padding_top + self.padding_bottom,
-        )
-
-        if self.background_color is not None:
-            # restore page
-            content_stream = page["Contents"]
-            content_stream[Name("DecodedBytes")] = previous_decoded_bytes
-            content_stream[Name("Bytes")] = zlib.compress(
-                content_stream["DecodedBytes"], 9
-            )
-            content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
-
-            # draw background
-            self._draw_background(page, modified_layout_rect)
-
-            # layout again
-            self._layout_without_padding(page, modified_bounding_box)
-
-        # draw border (if needed)
-        self._draw_border(page, modified_layout_rect)
-
-        # return
-        return modified_layout_rect
-
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-        return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
-
-    def _draw_background(self, page: Page, border_box: Rectangle):
-        if not self.background_color:
-            return
-        assert self.background_color
-        rgb_color = self.background_color.to_rgb()
-        COLOR_MAX = Decimal(255.0)
-        content = """
-                                q
-                                %f %f %f rg
-                                %f %f m
-                                %f %f l
-                                %f %f l
-                                %f %f l
-                                f
-                                Q
-                               """ % (
-            Decimal(rgb_color.red / COLOR_MAX),
-            Decimal(rgb_color.green / COLOR_MAX),
-            Decimal(rgb_color.blue / COLOR_MAX),
-            border_box.x,  # lower left corner
-            border_box.y,  # lower left corner
-            border_box.x + border_box.width,  # lower right corner
-            border_box.y,  # lower right corner
-            border_box.x + border_box.width,  # upper right corner
-            border_box.y + border_box.height,  # upper right corner
-            border_box.x,  # upper left corner
-            border_box.y + border_box.height,  # upper left corner
-        )
-        self._append_to_content_stream(page, content)
-
-    def _draw_border(self, page: Page, border_box: Rectangle):
-        # border is not wanted on any side
-        if (
-            self.border_top
-            == self.border_right
-            == self.border_bottom
-            == self.border_right
-            == False
-        ):
-            return
-        # border width is set to zero
-        if self.border_width == 0:
-            return
-        # draw border(s)
-        rgb_color = self.border_color.to_rgb()
-        COLOR_MAX = Decimal(255.0)
-        content = "q %f %f %f RG %f w" % (
-            Decimal(rgb_color.red / COLOR_MAX),
-            Decimal(rgb_color.green / COLOR_MAX),
-            Decimal(rgb_color.blue / COLOR_MAX),
-            self.border_width,
-        )
-        if self.border_top:
-            content += " %f %f m %f %f l s" % (
-                border_box.x,
-                border_box.y + border_box.height,
-                border_box.x + border_box.width,
-                border_box.y + border_box.height,
-            )
-        if self.border_right:
-            content += " %d %d m %d %d l s" % (
-                border_box.x + border_box.width,
-                border_box.y + border_box.height,
-                border_box.x + border_box.width,
-                border_box.y,
-            )
-        if self.border_bottom:
-            content += " %d %d m %d %d l s" % (
-                border_box.x + border_box.width,
-                border_box.y,
-                border_box.x,
-                border_box.y,
-            )
-        if self.border_left:
-            content += " %d %d m %d %d l s" % (
-                border_box.x,
-                border_box.y,
-                border_box.x,
-                border_box.y + border_box.height,
-            )
-        content += " Q "
-        self._append_to_content_stream(page, content)
+from ptext.pdf.page.page import Page, DestinationType
 
 
 class ChunkOfText(LayoutElement):
@@ -240,6 +30,8 @@ class ChunkOfText(LayoutElement):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        vertical_alignment: Alignment = Alignment.TOP,
+        horizontal_alignment: Alignment = Alignment.LEFT,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
@@ -254,6 +46,8 @@ class ChunkOfText(LayoutElement):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            vertical_alignment=vertical_alignment,
+            horizontal_alignment=horizontal_alignment,
             background_color=background_color,
             parent=parent,
         )
@@ -318,7 +112,7 @@ class ChunkOfText(LayoutElement):
         # default
         return self.text
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
+    def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self.font
         rgb_color = self.font_color.to_rgb()
         COLOR_MAX = Decimal(255.0)
@@ -360,28 +154,30 @@ class ChunkOfText(LayoutElement):
         return layout_rect
 
 
-class Justification(Enum):
-    """
-    In typesetting and page layout, alignment or range is the setting of text flow or image placement relative to a page,
-    column (measure), table cell, or tab.
-    The type alignment setting is sometimes referred to as text alignment,
-    text justification, or type justification.
-    The edge of a page or column is known as a margin, and a gap between columns is known as a gutter.
-    """
-
-    FLUSH_LEFT = (2,)
-    FLUSH_RIGHT = (3,)
-    JUSTIFIED = (5,)
-    CENTERED = 7
-
-
 class LineOfText(ChunkOfText):
+    """
+    LineOfText represents a single line of text
+    LineOfText supports:
+    - font
+    - font_color
+    - font_size
+    - borders: border_top, border_right, border_bottom, border_left
+    - border_color
+    - border_width
+    - padding: padding_top, padding_right, padding_bottom, padding_left
+    - background_color
+    - horizontal_alignment
+    - vertical_alignment
+    text_alignment is not applicable for LineOfText, as its bounding box will always be the exact width needed
+    """
+
     def __init__(
         self,
         text: str,
         font: Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
-        justification: Justification = Justification.FLUSH_LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
+        horizontal_alignment: Alignment = Alignment.LEFT,
         font_color: Color = X11Color("Black"),
         border_top: bool = False,
         border_right: bool = False,
@@ -412,80 +208,10 @@ class LineOfText(ChunkOfText):
             padding_bottom=padding_bottom,
             padding_left=padding_left,
             background_color=background_color,
+            vertical_alignment=vertical_alignment,
+            horizontal_alignment=horizontal_alignment,
             parent=parent,
         )
-        self.justification = justification
-
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
-        assert self.font
-        if self.justification == Justification.FLUSH_LEFT:
-            return super(LineOfText, self)._layout_without_padding(page, bounding_box)
-
-        # calculate width of glyph line
-        glyph_line: GlyphLine = self.font.build_glyph_line(String(self.text))
-        glyph_line_width = glyph_line.get_width_in_text_space(self.font_size)
-        remaining_space = max(bounding_box.get_width() - glyph_line_width, Decimal(0))
-
-        if self.justification == Justification.FLUSH_RIGHT:
-            layout_rect = super(LineOfText, self)._layout_without_padding(
-                page,
-                Rectangle(
-                    bounding_box.x + remaining_space,
-                    bounding_box.y,
-                    glyph_line_width,
-                    bounding_box.height,
-                ),
-            )
-
-        elif self.justification == Justification.CENTERED:
-            half_of_remaining_space = remaining_space / Decimal(2)
-            bounds = Rectangle(
-                bounding_box.x + half_of_remaining_space,
-                bounding_box.y,
-                glyph_line_width,
-                bounding_box.height,
-            )
-            layout_rect = super(LineOfText, self)._layout_without_padding(
-                page,
-                bounds,
-            )
-
-        elif self.justification == Justification.JUSTIFIED:
-            number_of_spaces: Decimal = Decimal(sum([1 for x in self.text if x == " "]))
-            if number_of_spaces > 0:
-                space_per_space: Decimal = remaining_space / number_of_spaces
-            else:
-                space_per_space = Decimal(0)
-            words: typing.List[str] = self.text.split(" ")
-            x: Decimal = bounding_box.x
-            for w in words:
-                s = w + " "
-                ChunkOfText(
-                    s,
-                    font=self.font,
-                    font_size=self.font_size,
-                    font_color=self.font_color,
-                    parent=self,
-                ).layout(
-                    page,
-                    bounding_box=Rectangle(
-                        x, bounding_box.y, bounding_box.width, bounding_box.height
-                    ),
-                )
-                word_size = self.font.build_glyph_line(
-                    String(s)
-                ).get_width_in_text_space(self.font_size)
-                x += word_size
-                x += space_per_space
-            layout_rect = Rectangle(
-                bounding_box.x, bounding_box.y, bounding_box.width, self.font_size
-            )
-
-        # set bounding box
-        self.set_bounding_box(layout_rect)
-
-        # return
-        return layout_rect
 
 
 class Paragraph(LineOfText):
@@ -500,10 +226,12 @@ class Paragraph(LineOfText):
         self,
         text: str,
         respect_newlines_in_text: bool = False,
-        respect_leading_spaces_in_text: bool = False,
+        respect_spaces_in_text: bool = False,
         font: Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
-        justification: Justification = Justification.FLUSH_LEFT,
+        text_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
+        horizontal_alignment: Alignment = Alignment.LEFT,
         font_color: Color = X11Color("Black"),
         border_top: bool = False,
         border_right: bool = False,
@@ -522,7 +250,8 @@ class Paragraph(LineOfText):
             text=text,
             font=font,
             font_size=font_size,
-            justification=justification,
+            vertical_alignment=vertical_alignment,
+            horizontal_alignment=horizontal_alignment,
             font_color=font_color,
             border_top=border_top,
             border_right=border_right,
@@ -538,47 +267,95 @@ class Paragraph(LineOfText):
             parent=parent,
         )
         self.respect_newlines_in_text = respect_newlines_in_text
-        self.respect_leading_spaces_in_text = respect_leading_spaces_in_text
+        self.respect_spaces_in_text = respect_spaces_in_text
+        assert text_alignment in [
+            Alignment.LEFT,
+            Alignment.CENTERED,
+            Alignment.RIGHT,
+            Alignment.JUSTIFIED,
+        ]
+        self.text_alignment = text_alignment
 
     def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
-        # split on newlines
-        if self.respect_newlines_in_text:
-            return [
-                x if self.respect_leading_spaces_in_text else x.lstrip()
-                for x in self.text.split("\n")
-            ]
+        # attempt to split into words (preserve space if needed)
+        words: typing.List[str] = [""]
+        tokens_to_split_on: typing.List[str] = [" ", "\t", "\n"]
 
-        # determine how to break text to fit
+        tokens_to_preserve: typing.List[str] = []
+        if self.respect_newlines_in_text:
+            tokens_to_preserve.append("\n")
+        if self.respect_spaces_in_text:
+            tokens_to_preserve.append(" ")
+            tokens_to_preserve.append("\t")
+
+        for c in self.text:
+            if c in tokens_to_split_on:
+                # we have a token we split on, and preserve
+                # add it to the list of words
+                if c in tokens_to_preserve:
+                    words.append(c)
+                    words.append("")
+                else:
+                    # we have a token we split on, but don't preserve
+                    # such as whitespace, with self.respect_spaces_in_text set to False
+                    if words[-1] != "":
+                        words.append("")
+            else:
+                # build the word that was already being built
+                words[-1] += c
+
+        # build lines using words
         lines_of_text = []
-        last_line_of_text = ""
-        words = self.text.split(" ")
         for i, w in enumerate(words):
-            potential_text = last_line_of_text
-            if i != 0:
+
+            # split on \n
+            if w == "\n" and self.respect_newlines_in_text:
+                lines_of_text.append("")
+                continue
+
+            # build line of text to check if it fits the bounding box
+            potential_text = lines_of_text[-1] if len(lines_of_text) > 0 else ""
+            if i != 0 and not self.respect_spaces_in_text:
                 potential_text += " "
             potential_text += w
+
+            # check the width of this piece of text
             potential_width = self.font.build_glyph_line(
                 String(potential_text)
             ).get_width_in_text_space(self.font_size)
-            if potential_width > bounding_box.width:
-                lines_of_text.append(last_line_of_text)
-                last_line_of_text = w
-            else:
-                if i != 0:
-                    last_line_of_text += " "
-                last_line_of_text += w
 
-        # append last line
-        if len(last_line_of_text) > 0:
-            lines_of_text.append(last_line_of_text)
+            # if this text is larger than the bounding box, split the text
+            remaining_space_in_box: Decimal = bounding_box.width - potential_width
+            if remaining_space_in_box > Decimal(
+                -1
+            ):  # checking with 0 is not a great idea due to rounding errors
+                if len(lines_of_text) == 0:
+                    lines_of_text.append(w)
+                else:
+                    if i != 0 and not self.respect_spaces_in_text:
+                        lines_of_text[-1] += " "
+                    lines_of_text[-1] += w
+            else:
+                lines_of_text.append(w)
 
         # return
-        return [x.strip() for x in lines_of_text]
+        return lines_of_text
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle):
+    def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
         # easy case
         if len(self.text) == 0:
             return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
+
+        # other easy cases
+        lines_of_text = self._split_text(bounding_box)
+        if len(lines_of_text) == 0:
+            return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
+
+        # separate method for the harder case of Alignment.JUSTIFIED
+        if self.text_alignment == Alignment.JUSTIFIED:
+            return self._do_layout_without_padding_text_alignment_justified(
+                lines_of_text, page, bounding_box
+            )
 
         # delegate
         min_x: Decimal = Decimal(2048)
@@ -586,13 +363,13 @@ class Paragraph(LineOfText):
         max_x: Decimal = Decimal(0)
         max_y: Decimal = Decimal(0)
         leading: Decimal = self.font_size * Decimal(1.3)
-        for i, l in enumerate(self._split_text(bounding_box)):
+        for i, l in enumerate(lines_of_text):
             r = LineOfText(
                 l,
                 font=self.font,
                 font_size=self.font_size,
-                justification=self.justification,
                 font_color=self.font_color,
+                horizontal_alignment=self.text_alignment,
                 parent=self,
             ).layout(
                 page,
@@ -615,6 +392,73 @@ class Paragraph(LineOfText):
         # return
         return layout_rect
 
+    def _do_layout_without_padding_text_alignment_justified(
+        self, lines_of_text: typing.List[str], page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
+        min_x: Decimal = Decimal(2048)
+        min_y: Decimal = Decimal(2048)
+        max_x: Decimal = Decimal(0)
+        max_y: Decimal = Decimal(0)
+        leading: Decimal = self.font_size * Decimal(1.3)
+
+        for i, line_of_text in enumerate(lines_of_text):
+
+            estimated_width: Decimal = self.font.build_glyph_line(
+                String(line_of_text)
+            ).get_width_in_text_space(self.font_size)
+            remaining_space: Decimal = bounding_box.width - estimated_width
+
+            # calculate the space that needs to be divided among the space-characters
+            number_of_spaces: Decimal = Decimal(
+                sum([1 for x in line_of_text if x == " "])
+            )
+            if number_of_spaces > 0:
+                space_per_space: Decimal = remaining_space / number_of_spaces
+            else:
+                space_per_space = Decimal(0)
+            words: typing.List[str] = line_of_text.split(" ")
+
+            # perform layout
+            x: Decimal = bounding_box.x
+            for w in words:
+                s = w + " "
+                r: Rectangle = ChunkOfText(
+                    s,
+                    font=self.font,
+                    font_size=self.font_size,
+                    font_color=self.font_color,
+                    parent=self,
+                ).layout(
+                    page,
+                    bounding_box=Rectangle(
+                        x,
+                        bounding_box.y
+                        + bounding_box.height
+                        - leading * i
+                        - self.font_size,
+                        bounding_box.width,
+                        self.font_size,
+                    ),
+                )
+                min_x = min(r.x, min_x)
+                min_y = min(r.y, min_y)
+                max_x = max(r.x + r.width, max_x)
+                max_y = max(r.y + r.height, max_y)
+
+                # line up our next x
+                word_size = self.font.build_glyph_line(
+                    String(s)
+                ).get_width_in_text_space(self.font_size)
+                x += word_size
+                x += space_per_space
+
+        # set bounding box
+        layout_rect = Rectangle(min_x, min_y, max_x - min_x, max_y - min_y)
+        self.set_bounding_box(layout_rect)
+
+        # return
+        return layout_rect
+
 
 class Heading(Paragraph):
     def __init__(
@@ -625,7 +469,8 @@ class Heading(Paragraph):
         respect_newlines_in_text: bool = False,
         font: Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
-        justification: Justification = Justification.FLUSH_LEFT,
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
         font_color: Color = X11Color("Black"),
         border_top: bool = False,
         border_right: bool = False,
@@ -645,7 +490,8 @@ class Heading(Paragraph):
             respect_newlines_in_text=respect_newlines_in_text,
             font=font,
             font_size=font_size,
-            justification=justification,
+            vertical_alignment=vertical_alignment,
+            horizontal_alignment=horizontal_alignment,
             font_color=font_color,
             border_top=border_top,
             border_right=border_right,
@@ -664,8 +510,12 @@ class Heading(Paragraph):
         self.outline_level = outline_level
         self.has_added_outline = False
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-        layout_rect = super(Heading, self)._layout_without_padding(page, bounding_box)
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
+        layout_rect = super(Heading, self)._do_layout_without_padding(
+            page, bounding_box
+        )
         if not self.has_added_outline:
             self._add_outline(page)
         return layout_rect
@@ -677,11 +527,11 @@ class Heading(Paragraph):
 
         # add outline to document
         page_nr = page.get_page_info().get_page_number()
-        assert page_nr
+        assert page_nr is not None
         p.add_outline(
             text=self.outline_text,
             level=self.outline_level,
-            destination_type="Fit",
+            destination_type=DestinationType.FIT,
             page_nr=int(page_nr),
         )
 

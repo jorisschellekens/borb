@@ -1,0 +1,18 @@
+{
+   "number_of_chars_0": 287,
+   "number_of_chars_1": 46,
+   "number_of_wrong_chars": 18,
+   "number_of_wrong_chars_percentage": 0.0627177700348432,
+   "diffs": {
+      "a": 2,
+      "t": 1,
+      "o": 3,
+      "w": 3,
+      ".": 2,
+      "l": 1,
+      "s": 1,
+      "c": 3,
+      "p": 1,
+      "m": 1
+   }
+}

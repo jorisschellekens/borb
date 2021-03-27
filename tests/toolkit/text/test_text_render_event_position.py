@@ -8,6 +8,7 @@ from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderE
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_output_dir
 
 logging.basicConfig(
     filename="../../logs/test-text-render-event-position.log", level=logging.DEBUG
@@ -41,16 +42,17 @@ class TestTextRenderEventPosition(Test):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../output/test-text-render-event-position")
+        self.output_dir = Path(get_output_dir(), "test-text-render-event-position")
         self.max_distance = 2
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0014_page_0.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0014_page_0.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         super(TestTextRenderEventPosition, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():

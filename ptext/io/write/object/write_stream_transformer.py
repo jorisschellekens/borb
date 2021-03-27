@@ -6,6 +6,7 @@
 """
 import logging
 import typing
+import zlib
 from typing import Optional
 
 from ptext.io.read.types import (
@@ -14,7 +15,9 @@ from ptext.io.read.types import (
     Stream,
     Reference,
     List,
+    Name,
 )
+from ptext.io.read.types import Decimal as pDecimal
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,
@@ -27,6 +30,9 @@ class WriteStreamTransformer(WriteBaseTransformer):
     """
     This implementation of WriteBaseTransformer is responsible for writing Stream objects
     """
+
+    def __init__(self):
+        super(WriteStreamTransformer, self).__init__()
 
     def can_be_transformed(self, any: AnyPDFType):
         return isinstance(any, Stream)
@@ -81,6 +87,23 @@ class WriteStreamTransformer(WriteBaseTransformer):
             else:
                 stream_dictionary[k] = v
 
+        # if self.compression_level == 0, remove \Filter
+        if context.compression_level == 0 and Name("Filter") in stream_dictionary:
+            stream_dictionary.pop(Name("Filter"))
+
+        # handle compression
+        if "DecodedBytes" in object_to_transform:
+            if context.compression_level == 0:
+                bts = object_to_transform["DecodedBytes"]
+            else:
+                bts = zlib.compress(
+                    object_to_transform["DecodedBytes"], context.compression_level
+                )
+            stream_dictionary[Name("Length")] = pDecimal(len(bts))
+        else:
+            assert "Bytes" in object_to_transform
+            bts = object_to_transform["Bytes"]
+
         # write stream dictionary
         self.get_root_transformer().transform(stream_dictionary, context)
 
@@ -88,7 +111,7 @@ class WriteStreamTransformer(WriteBaseTransformer):
         context.destination.write(bytes("stream\n", "latin1"))
 
         # write bytes
-        context.destination.write(object_to_transform["Bytes"])
+        context.destination.write(bts)
 
         # write "endstream"
         context.destination.write(bytes("\nendstream\n", "latin1"))

@@ -27,14 +27,16 @@ class Test(unittest.TestCase):
         self.input_dir = Path("/home/joris/Code/pdf-corpus/")
         self.test_results: typing.List[TestResult] = []
 
-    def test_document(self, input_file: Path) -> bool:
+    def _test_document(self, input_file: Path) -> bool:
         return False
 
+    @unittest.skip
     def test_corpus(self):
         pdf_file_names = os.listdir(self.input_dir)
         pdfs = [(self.input_dir / x) for x in pdf_file_names if x.endswith(".pdf")]
         self._test_list_of_documents(pdfs)
 
+    @unittest.skip
     def test_previous_fails(self):
         json_file = self._get_json_file()
         previous_fails = []
@@ -55,14 +57,14 @@ class Test(unittest.TestCase):
         for pdf_file in documents:
             print("Processing %s .. [%d / %d]" % (pdf_file, n, m))
             n += 1
-            self.test_single_document_wrapper(pdf_file)
+            self._test_single_document_wrapper(pdf_file)
 
-    def test_single_document_wrapper(self, input_file: Path):
+    def _test_single_document_wrapper(self, input_file: Path):
 
         # start new thread to run test
         q = multiprocessing.Queue()
         process_a = multiprocessing.Process(
-            target=self.test_single_document_in_thread_wrapper, args=(input_file, q)
+            target=self._test_single_document_in_thread_wrapper, args=(input_file, q)
         )
         process_a.start()
 
@@ -85,12 +87,12 @@ class Test(unittest.TestCase):
         # call to processing method
         self.process_test_results()
 
-    def test_single_document_in_thread_wrapper(
+    def _test_single_document_in_thread_wrapper(
         self, input_file: Path, queue: multiprocessing.Queue
     ):
         before = time.time()
         try:
-            val = self.test_document(input_file)
+            val = self._test_document(input_file)
             delta = time.time() - before
             queue.put(
                 TestResult(

@@ -1,29 +1,34 @@
 import logging
+import unittest
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.page.page import TextAnnotationIconType
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-add-text-annotation.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-add-text-annotation.log"),
+    level=logging.DEBUG,
 )
 
 
 class TestAddTextAnnotation(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-add-text-annotation")
+        self.output_dir = Path(get_output_dir(), "test-add-text-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         super(TestAddTextAnnotation, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():
@@ -42,7 +47,7 @@ class TestAddTextAnnotation(Test):
         doc.get_page(0).append_text_annotation(
             contents="The quick brown fox ate the lazy mouse",
             rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
-            name_of_icon="Key",
+            text_annotation_icon=TextAnnotationIconType.KEY,
             open=True,
             color=X11Color("Orange"),
         )

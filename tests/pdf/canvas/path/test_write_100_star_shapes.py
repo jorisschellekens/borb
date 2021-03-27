@@ -16,9 +16,10 @@ from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-write-100-star-shapes.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-100-star-shapes.log"), level=logging.DEBUG
 )
 
 
@@ -35,7 +36,7 @@ class TestWrite100StarShapes(unittest.TestCase):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-write-100-star-shapes")
+        self.output_dir = Path(get_output_dir(), "test-write-100-star-shapes")
 
     def test_write_document(self):
 
@@ -79,7 +80,7 @@ class TestWrite100StarShapes(unittest.TestCase):
                         )
                     )
                 else:
-                    t.add(Paragraph(" "))
+                    t.add(Paragraph(" ", respect_spaces_in_text=True))
         t.no_borders()
         t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
         layout.add(t)

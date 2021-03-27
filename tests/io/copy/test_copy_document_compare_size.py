@@ -5,9 +5,11 @@ from pathlib import Path
 
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../logs/test-copy-document-compare-size.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-copy-document-compare-size.log"),
+    level=logging.DEBUG,
 )
 
 
@@ -15,7 +17,7 @@ class TestCopyDocumentCompareSize(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.size_tuples: typing.Dictionary[str, typing.Tuple[int, int]] = {}
-        self.output_dir = Path("../../output/test-copy-document-compare-size")
+        self.output_dir = Path(get_output_dir(), "test-copy-document-compare-size")
 
     def test_exact_document(self):
         self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))

@@ -18,6 +18,32 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 def add_base_methods(object: typing.Any) -> typing.Any:
+    def _to_json_serializable(to_convert=None):
+        """
+        Convert this object to a representation that
+        can be serialized as JSON
+        """
+        if isinstance(to_convert, dict):
+            return {
+                to_json_serializable(k): to_json_serializable(v)
+                for k, v in to_convert.items()
+            }
+        if isinstance(to_convert, list):
+            return [to_json_serializable(x) for x in to_convert]
+        if isinstance(to_convert, Decimal):
+            return float(to_convert)
+        if (
+            isinstance(to_convert, HexadecimalString)
+            or isinstance(to_convert, String)
+            or isinstance(to_convert, Name)
+            or isinstance(to_convert, CanvasOperatorName)
+        ):
+            return str(to_convert)
+        return None
+
+    def to_json_serializable(self):
+        return _to_json_serializable(self)
+
     def image_hash_method(self):
         w = self.width
         h = self.height
@@ -36,6 +62,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
         return hashcode
 
     def deepcopy_mod(self, memodict={}):
+        print("copying %s" % self.__class__.__name__)
         prev_function_ptr = self.__deepcopy__
         self.__deepcopy__ = None
         # copy
@@ -91,7 +118,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
         return self
 
     # set_reference
-    def set_reference(self, reference: "Reference") -> "BaseClass":
+    def set_reference(self, reference: "Reference"):
         if "_reference" not in vars(self):
             setattr(self, "_reference", None)
         assert (
@@ -114,7 +141,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
         return self._reference
 
     # set_can_be_referenced
-    def set_can_be_referenced(self, a_flag: bool) -> "BaseClass":
+    def set_can_be_referenced(self, a_flag: bool):
         if "_can_be_referenced" not in vars(self):
             setattr(self, "_can_be_referenced", None)
         self._can_be_referenced = a_flag
@@ -136,117 +163,10 @@ def add_base_methods(object: typing.Any) -> typing.Any:
     object.get_reference = types.MethodType(get_reference, object)
     object.set_can_be_referenced = types.MethodType(set_can_be_referenced, object)
     object.can_be_referenced = types.MethodType(can_be_referenced, object)
-    object.__deepcopy__ = types.MethodType(deepcopy_mod, object)
+    object.to_json_serializable = types.MethodType(to_json_serializable, object)
     if isinstance(object, Image):
+        object.__deepcopy__ = types.MethodType(deepcopy_mod, object)
         object.__hash__ = types.MethodType(image_hash_method, object)
-
-
-class BaseClass:
-    def __init__(self):
-        self._parent: typing.Optional["BaseClass"] = None
-        self._event_listeners: typing.List[EventListener] = []
-        self._reference: typing.Optional["Reference"] = None
-        self._can_be_referenced: bool = True
-
-    def add_event_listener(self, event_listener: "EventListener") -> "BaseClass":
-        if "_event_listeners" not in vars(self):
-            setattr(self, "_event_listeners", [])
-        self._event_listeners.append(event_listener)
-        return self
-
-    def get_event_listeners(self) -> typing.List["EventListener"]:
-        if "_event_listeners" not in vars(self):
-            setattr(self, "_event_listeners", [])
-        return self._event_listeners
-
-    def event_occurred(self, event: "Event") -> "BaseClass":  # type: ignore [name-defined]
-        if "_event_listeners" not in vars(self):
-            setattr(self, "_event_listeners", [])
-        for l in self._event_listeners:
-            l.event_occurred(event)
-        parent = self.get_parent()
-        if parent is not None:
-            parent.event_occurred(event)
-        return self
-
-    def get_parent(self) -> Optional["BaseClass"]:
-        """
-        This function returns the parent object of this object
-        """
-        if "_parent" not in vars(self):
-            setattr(self, "_parent", None)
-        return self._parent
-
-    def set_parent(self, parent: "BaseClass") -> "BaseClass":
-        """
-        Set the parent object of this object
-        """
-        if "_parent" not in vars(self):
-            setattr(self, "_parent", None)
-        self._parent = parent
-        return self
-
-    def get_root(self) -> Optional["BaseClass"]:
-        """
-        This function returns the root object of this object
-        """
-        e = self
-        while e.get_parent() is not None:
-            p = e.get_parent()
-            if p is not None:
-                e = p
-        return e
-
-    def set_reference(self, reference: "Reference") -> "BaseClass":
-        """
-        This method sets the Reference for this Object
-        """
-        if "_reference" not in vars(self):
-            setattr(self, "_reference", None)
-        self._reference = reference
-        return self
-
-    def get_reference(self) -> typing.Optional["Reference"]:
-        """
-        This function returns the Reference for this Object
-        """
-        if "_reference" not in vars(self):
-            setattr(self, "_reference", None)
-        return self._reference
-
-    def set_can_be_referenced(self, a_flag: bool) -> "BaseClass":
-        if "_can_be_referenced" not in vars(self):
-            setattr(self, "_can_be_referenced", None)
-        self._can_be_referenced = a_flag
-        return self
-
-    def can_be_referenced(self) -> bool:
-        if "_can_be_referenced" not in vars(self):
-            setattr(self, "_can_be_referenced", True)
-        return self._can_be_referenced
-
-    def to_json_serializable(self, to_convert=None):
-        """
-        Convert this object to a representation that
-        can be serialized as JSON
-        """
-        if isinstance(to_convert, dict):
-            return {
-                self.to_json_serializable(k): self.to_json_serializable(v)
-                for k, v in to_convert.items()
-            }
-        if isinstance(to_convert, list):
-            return [self.to_json_serializable(x) for x in to_convert]
-        if isinstance(to_convert, Decimal):
-            return float(to_convert)
-        if (
-            isinstance(to_convert, HexadecimalString)
-            or isinstance(to_convert, String)
-            or isinstance(to_convert, Name)
-            or isinstance(to_convert, CanvasOperatorName)
-        ):
-            return str(to_convert)
-        return None
 
 
 class Boolean:

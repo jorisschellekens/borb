@@ -1,0 +1,12 @@
+{
+   "number_of_chars_0": 9324,
+   "number_of_chars_1": 4030,
+   "number_of_wrong_chars": 10,
+   "number_of_wrong_chars_percentage": 0.0010725010725010724,
+   "diffs": {
+      "m": 2,
+      "d": 2,
+      "y": 4,
+      "/": 2
+   }
+}

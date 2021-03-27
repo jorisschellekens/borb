@@ -64,7 +64,9 @@ class UnorderedList(LayoutElement):
             e = e.parent
         return level
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
         last_item_bottom: Decimal = bounding_box.y + bounding_box.height
         bullet_margin: Decimal = Decimal(20)
         for i in self.items:
@@ -153,7 +155,9 @@ class OrderedList(LayoutElement):
         self.items.append(element)
         return self
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
         last_item_bottom: Decimal = bounding_box.y + bounding_box.height
         bullet_margin: Decimal = Decimal(20)
         for index, i in enumerate(self.items):

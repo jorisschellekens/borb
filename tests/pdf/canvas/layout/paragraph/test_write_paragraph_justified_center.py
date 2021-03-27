@@ -6,15 +6,16 @@ from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import (
-    Justification,
+    Alignment,
     Paragraph,
 )
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-paragraph-justified-center.log",
+    filename=Path(get_log_dir(), "test-write-paragraph-justified-center.log"),
     level=logging.DEBUG,
 )
 
@@ -23,7 +24,7 @@ class TestWriteParagraphJustifiedCenter(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path(
-            "../../../../output/test-write-paragraph-justified-center"
+            get_output_dir(), "test-write-paragraph-justified-center"
         )
 
     def test_write_document(self):
@@ -42,7 +43,8 @@ class TestWriteParagraphJustifiedCenter(unittest.TestCase):
         Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
-            justification=Justification.CENTERED,
+            text_alignment=Alignment.CENTERED,
+            vertical_alignment=Alignment.BOTTOM,
         ).layout(
             page,
             Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),

@@ -1,28 +1,31 @@
 import logging
+import unittest
 from pathlib import Path
 
 from ptext.pdf.document import Document
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../logs/test-concat-documents-2.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-concat-documents-2.log"), level=logging.DEBUG
 )
 
 
 class TestConcatDocuments2(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../output/test-concat-documents-2")
+        self.output_dir = Path(get_output_dir(), "test-concat-documents-2")
         self.input_file_b = self.input_dir / "0118.pdf"
 
+    @unittest.skip
     def test_corpus(self):
         super(TestConcatDocuments2, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():

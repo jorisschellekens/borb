@@ -11,6 +11,7 @@ from typing import Tuple
 
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.paragraph import LayoutElement
 from ptext.pdf.page.page import Page
 
@@ -27,9 +28,14 @@ class Shape(LayoutElement):
         stroke_color: typing.Optional[Color],
         fill_color: typing.Optional[Color],
         line_width: Decimal = Decimal(0),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
         preserve_aspect_ratio: bool = True,
     ):
-        super(Shape, self).__init__()
+        super(Shape, self).__init__(
+            horizontal_alignment=horizontal_alignment,
+            vertical_alignment=vertical_alignment,
+        )
         assert len(points) >= 3
         self.points = points
         self.stroke_color = stroke_color
@@ -53,7 +59,7 @@ class Shape(LayoutElement):
         max_y = max([x[1] for x in self.points])
         return max_y - min_y
 
-    def scale_to_fit(self, max_width: Decimal, max_height: Decimal) -> "Shape":
+    def scale_down(self, max_width: Decimal, max_height: Decimal) -> "Shape":
         """
         This method scales this Shape to fit a given max. width / height
         """
@@ -68,6 +74,18 @@ class Shape(LayoutElement):
             self.points = [(x[0], x[1] * h_scale) for x in self.points]
         return self
 
+    def scale_up(self, max_width: Decimal, max_height: Decimal) -> "Shape":
+        w_scale = max_width / self.get_width()
+        h_scale = max_height / self.get_height()
+        if self.preserve_aspect_ratio:
+            w_scale = min(w_scale, h_scale)
+            h_scale = w_scale
+        if w_scale > 1:
+            self.points = [(x[0] * w_scale, x[1]) for x in self.points]
+        if h_scale > 1:
+            self.points = [(x[0], x[1] * h_scale) for x in self.points]
+        return self
+
     def translate_to_align(self, lower_left_x: Decimal, lower_left_y: Decimal):
         """
         This method translates this Shape so its lower left corner aligns with the given coordinates
@@ -78,10 +96,12 @@ class Shape(LayoutElement):
         delta_y = lower_left_y - min_y
         self.points = [(x[0] + delta_x, x[1] + delta_y) for x in self.points]
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
 
         # scale to fit
-        self.scale_to_fit(bounding_box.width, bounding_box.height)
+        self.scale_down(bounding_box.width, bounding_box.height)
 
         # translate points to fit in box
         self.translate_to_align(
@@ -137,9 +157,14 @@ class DisjointShape(LayoutElement):
         lines: typing.List[Tuple[Tuple[Decimal, Decimal], Tuple[Decimal, Decimal]]],
         stroke_color: Color = X11Color("Black"),
         line_width: Decimal = Decimal(0),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
         preserve_aspect_ratio: bool = True,
     ):
-        super(DisjointShape, self).__init__()
+        super(DisjointShape, self).__init__(
+            horizontal_alignment=horizontal_alignment,
+            vertical_alignment=vertical_alignment,
+        )
         self.lines = lines
         self.stroke_color = stroke_color
         self.line_width = line_width
@@ -161,7 +186,7 @@ class DisjointShape(LayoutElement):
         max_y = max([max(x[0][1], x[1][1]) for x in self.lines])
         return max_y - min_y
 
-    def scale_to_fit(self, max_width: Decimal, max_height: Decimal) -> "Shape":
+    def scale_to_fit(self, max_width: Decimal, max_height: Decimal) -> "DisjointShape":
         """
         This method scales this DisjointShape to fit a given max. width / height
         """
@@ -182,7 +207,9 @@ class DisjointShape(LayoutElement):
             ]
         return self
 
-    def translate_to_align(self, lower_left_x: Decimal, lower_left_y: Decimal):
+    def translate_to_align(
+        self, lower_left_x: Decimal, lower_left_y: Decimal
+    ) -> "DisjointShape":
         """
         This method translates this DisjointShape so its lower left corner aligns with the given coordinates
         """
@@ -197,8 +224,11 @@ class DisjointShape(LayoutElement):
             )
             for x in self.lines
         ]
+        return self
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
 
         # scale to fit
         self.scale_to_fit(bounding_box.width, bounding_box.height)

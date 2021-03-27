@@ -35,7 +35,7 @@ class Glyph:
         if isinstance(self.unicode, int) and self.unicode > 0:
             return chr(self.unicode)
         elif isinstance(self.unicode, tuple):
-            "".join([chr(x) if x > 0 else "" for x in self.unicode])
+            return "".join([chr(x) if x > 0 else "" for x in self.unicode])
         return ""
 
 

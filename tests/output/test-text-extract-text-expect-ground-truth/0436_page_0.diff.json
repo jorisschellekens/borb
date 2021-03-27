@@ -1,0 +1,21 @@
+{
+   "number_of_chars_0": 4235,
+   "number_of_chars_1": 2994,
+   "number_of_wrong_chars": 15,
+   "number_of_wrong_chars_percentage": 0.0035419126328217238,
+   "diffs": {
+      "o": 1,
+      "i": 1,
+      "y": 1,
+      "a": 2,
+      "l": 1,
+      "R": 1,
+      "D": 1,
+      "2": 2,
+      "0": 1,
+      "1": 1,
+      "7": 1,
+      "\u00a9": 1,
+      "4": 1
+   }
+}

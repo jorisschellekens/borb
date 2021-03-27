@@ -7,22 +7,23 @@ from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.image import Image
 from ptext.pdf.canvas.layout.page_layout import MultiColumnLayout, SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
-    Justification,
+    Alignment,
     Paragraph,
 )
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-the-raven.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-the-raven.log"), level=logging.DEBUG
 )
 
 
 class TestWriteTheRaven(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-the-raven")
+        self.output_dir = Path(get_output_dir(), "test-write-the-raven")
 
     def test_write_document(self):
 
@@ -40,7 +41,7 @@ class TestWriteTheRaven(unittest.TestCase):
         # first layer, displaying a raven
         layout = SingleColumnLayout(page)
         for _ in range(0, 12):
-            layout.add(Paragraph(" "))
+            layout.add(Paragraph(" ", respect_spaces_in_text=True))
         layout.add(
             Image(
                 "https://cdn3.vectorstock.com/i/1000x1000/03/47/black-raven-on-white-background-vector-4780347.jpg"
@@ -65,8 +66,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 As of some one gently rapping, rapping at my chamber door.
                                 'Tis some visitor,' I muttered, 'tapping at my chamber door-
                                 Only this and nothing more.'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -78,8 +79,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 From my books surcease of sorrow-sorrow for the lost Lenore-
                                 For the rare and radiant maiden whom the angels name Lenore-
                                 Nameless here for evermore.""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -91,8 +92,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 'Tis some visitor entreating entrance at my chamber door-
                                 Some late visitor entreating entrance at my chamber door;-
                                 This it is and nothing more.'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -104,8 +105,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 And so faintly you came tapping, tapping at my chamber door,
                                 That I scarce was sure I heard you'-here I opened wide the door;-
                                 Darkness there and nothing more.""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -118,8 +119,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 And the only word there spoken was the whispered word, 'Lenore?'
                                 This I whispered, and an echo murmured back the word, 'Lenore!'-
                                 Merely this and nothing more.""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -131,8 +132,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 Let me see, then, what thereat is, and this mystery explore-
                                 Let my heart be still a moment and this mystery explore;-
                                 'Tis the wind and nothing more!'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -144,8 +145,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 But, with mien of lord or lady, perched above my chamber door-
                                 Perched upon a bust of Pallas just above my chamber door-
                                 Perched, and sat, and nothing more.""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -157,8 +158,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 Ghastly grim and ancient Raven wandering from the Nightly shore-
                                 Tell me what thy lordly name is on the Night's Plutonian shore!'
                                 Quoth the Raven 'Nevermore.'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -170,8 +171,8 @@ class TestWriteTheRaven(unittest.TestCase):
                                 Ever yet was blessed with seeing bird above his chamber door-
                                 Bird or beast upon the sculptured bust above his chamber door,
                                 With such name as 'Nevermore.'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )
@@ -183,8 +184,8 @@ class TestWriteTheRaven(unittest.TestCase):
                     Till I scarcely more than muttered 'Other friends have flown before-
                     On the morrow he will leave me, as my Hopes have flown before.'
                     Then the bird said 'Nevermore.'""",
-                justification=Justification.CENTERED,
-                font_size=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+                font_size=Decimal(7),
                 respect_newlines_in_text=True,
             )
         )

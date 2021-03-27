@@ -1,40 +1,35 @@
 import logging
+import unittest
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
-from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-add-square-annotation.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-add-square-annotation.log"), level=logging.DEBUG
 )
 
 
-class TestAddSquareAnnotation(Test):
+class TestAddSquareAnnotation(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-add-square-annotation")
+        self.input_file = Path("/home/joris/Code/pdf-corpus/0203.pdf")
+        self.output_file = Path(
+            get_output_dir(), "test-add-square-annotation/output.pdf"
+        )
 
-    def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0113.pdf"))
-
-    def test_corpus(self):
-        super(TestAddSquareAnnotation, self).test_corpus()
-
-    def test_document(self, file):
+    def test_add_square_annotation(self):
 
         # create output directory if it does not exist yet
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-        # determine output location
-        out_file = self.output_dir / (file.stem + "_out.pdf")
+        if not self.output_file.parent.exists():
+            self.output_file.parent.mkdir()
 
         # attempt to read PDF
         doc = None
-        with open(file, "rb") as in_file_handle:
+        with open(self.input_file, "rb") as in_file_handle:
             print("\treading (1) ..")
             doc = PDF.loads(in_file_handle)
 
@@ -46,12 +41,12 @@ class TestAddSquareAnnotation(Test):
         )
 
         # attempt to store PDF
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.output_file, "wb") as out_file_handle:
             print("\twriting ..")
             PDF.dumps(out_file_handle, doc)
 
         # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
+        with open(self.output_file, "rb") as in_file_handle:
             print("\treading (2) ..")
             doc = PDF.loads(in_file_handle)
 

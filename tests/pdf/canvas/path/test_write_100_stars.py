@@ -10,7 +10,7 @@ from ptext.pdf.canvas.layout.barcode import Barcode, BarcodeType
 from ptext.pdf.canvas.layout.image import Image
 from ptext.pdf.canvas.layout.page_layout import MultiColumnLayout, SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
-    Justification,
+    Alignment,
     Paragraph,
 )
 from ptext.pdf.canvas.layout.shape import Shape
@@ -19,9 +19,10 @@ from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-write-100-stars.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-100-stars.log"), level=logging.DEBUG
 )
 
 import requests
@@ -68,7 +69,7 @@ class TestWrite100Stars(unittest.TestCase):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-write-100-stars")
+        self.output_dir = Path(get_output_dir(), "test-write-100-stars")
 
     def _write_background(self, page: Page):
         layout = SingleColumnLayout(page)
@@ -77,7 +78,7 @@ class TestWrite100Stars(unittest.TestCase):
             for j in range(0, 10):
                 put_star = random.choice([x <= 3 for x in range(0, 10)])
                 if i < 11 and j >= 5:
-                    t.add(Paragraph(" "))
+                    t.add(Paragraph(" ", respect_spaces_in_text=True))
                     continue
                 if put_star:
                     c = random.choice(
@@ -103,7 +104,7 @@ class TestWrite100Stars(unittest.TestCase):
                         )
                     )
                 else:
-                    t.add(Paragraph(" "))
+                    t.add(Paragraph(" ", respect_spaces_in_text=True))
         t.no_borders()
         t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
         layout.add(t)
@@ -145,7 +146,7 @@ class TestWrite100Stars(unittest.TestCase):
                 font="Helvetica-Bold",
                 font_size=Decimal(20),
                 font_color=self.ACCENT_COLOR_1,
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
 

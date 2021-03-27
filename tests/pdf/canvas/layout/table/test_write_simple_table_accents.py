@@ -5,21 +5,23 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Justification
+from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-simple-table-accents.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-simple-table-accents.log"),
+    level=logging.DEBUG,
 )
 
 
 class TestWriteSimpleTableAccents(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-simple-table-accents")
+        self.output_dir = Path(get_output_dir(), "test-write-simple-table-accents")
 
     def test_write_document(self):
 
@@ -40,28 +42,28 @@ class TestWriteSimpleTableAccents(unittest.TestCase):
             Paragraph(
                 "lowercase",
                 font_color=X11Color("YellowGreen"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "uppercase",
                 font_color=X11Color("YellowGreen"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "lowercase acute",
                 font_color=X11Color("YellowGreen"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "uppercase acute",
                 font_color=X11Color("YellowGreen"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         # A
@@ -104,28 +106,28 @@ class TestWriteSimpleTableAccents(unittest.TestCase):
             Paragraph(
                 "...",
                 font_color=X11Color("LightGray"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "...",
                 font_color=X11Color("LightGray"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "...",
                 font_color=X11Color("LightGray"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "...",
                 font_color=X11Color("LightGray"),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         # Z
@@ -144,7 +146,7 @@ class TestWriteSimpleTableAccents(unittest.TestCase):
                 text="**These are the characters pText can currently render in a PDF",
                 font_size=Decimal(8),
                 font_color=X11Color("Gray"),
-                justification=Justification.FLUSH_RIGHT,
+                horizontal_alignment=Alignment.RIGHT,
             )
         )
 

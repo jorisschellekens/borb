@@ -152,6 +152,92 @@ class HexColor(RGBColor):
         super(HexColor, self).__init__(Decimal(r), Decimal(g), Decimal(b))
 
 
+class HSVColor(Color):
+    """
+    HSL (hue, saturation, lightness) and HSV (hue, saturation, value, also known as HSB or hue, saturation, brightness)
+    are alternative representations of the RGB color model, designed in the 1970s by computer graphics researchers
+    to more closely align with the way human vision perceives color-making attributes.
+    In these models, colors of each hue are arranged in a radial slice,
+    around a central axis of neutral colors which ranges from black at the bottom to white at the top.
+
+    The HSL representation models the way different paints mix together to create colour in the real world,
+    with the lightness dimension resembling the varying amounts of black or white paint in the mixture
+    (e.g. to create "light red", a red pigment can be mixed with white paint;
+    this white paint corresponds to a high "lightness" value in the HSL representation).
+    Fully saturated colors are placed around a circle at a lightness value of ½,
+    with a lightness value of 0 or 1 corresponding to fully black or white, respectively.
+
+    Meanwhile, the HSV representation models how colors appear under light.
+    The difference between HSL and HSV is that a color with maximum lightness in HSL is pure white,
+    but a color with maximum value/brightness in HSV is analogous to shining a white light on a colored object
+    (e.g. shining a bright white light on a red object causes the object to still appear red, just brighter and more intense,
+    while shining a dim light on a red object causes the object to appear darker and less bright).
+    """
+
+    def __init__(self, hue: Decimal, saturation: Decimal, value: Decimal):
+        self.hue = hue
+        self.saturation = saturation
+        self.value = value
+
+    def to_rgb(self) -> "RGBColor":
+        h, s, v = self.hue, self.saturation, self.value
+        RGB_MAX = Decimal(255)
+        ONE = Decimal(1)
+        SIX = Decimal(6)
+        if s == 0:
+            return RGBColor(v * RGB_MAX, v * RGB_MAX, v * RGB_MAX)
+        i = int(h * SIX)  # XXX assume int() truncates!
+        f = (h * SIX) - i
+        p, q, t = v * (ONE - s), v * (ONE - s * f), v * (ONE - s * (ONE - f))
+        i %= 6
+        if i == 0:
+            return RGBColor(v * RGB_MAX, t * RGB_MAX, p * RGB_MAX)
+        if i == 1:
+            return RGBColor(q * RGB_MAX, v * RGB_MAX, p * RGB_MAX)
+        if i == 2:
+            return RGBColor(p * RGB_MAX, v * RGB_MAX, t * RGB_MAX)
+        if i == 3:
+            return RGBColor(p * RGB_MAX, q * RGB_MAX, v * RGB_MAX)
+        if i == 4:
+            return RGBColor(t * RGB_MAX, p * RGB_MAX, v * RGB_MAX)
+        if i == 5:
+            return RGBColor(v * RGB_MAX, p * RGB_MAX, q * RGB_MAX)
+        return RGBColor(Decimal(0), Decimal(0), Decimal(0))
+
+    @staticmethod
+    def from_rgb(c: RGBColor) -> "HSVColor":
+        RGB_MAX = Decimal(255)
+        r, g, b = c.red / RGB_MAX, c.green / RGB_MAX, c.blue / RGB_MAX
+        mx = max(r, g, b)
+        mn = min(r, g, b)
+        df = mx - mn
+        if mx == mn:
+            h = Decimal(0)
+        elif mx == r:
+            h = (Decimal(60) * ((g - b) / df) + Decimal(360)) % Decimal(360)
+        elif mx == g:
+            h = (Decimal(60) * ((b - r) / df) + Decimal(120)) % Decimal(360)
+        elif mx == b:
+            h = (Decimal(60) * ((r - g) / df) + Decimal(240)) % Decimal(360)
+        if mx == 0:
+            s = Decimal(0)
+        else:
+            s = (df / mx) * 100
+        v = mx * 100
+        HUNDRED = Decimal(100)
+        FULL_CIRCLE = Decimal(360)
+        return HSVColor(h / FULL_CIRCLE, s / HUNDRED, v / HUNDRED)
+
+    @staticmethod
+    def opposite(color: Color):
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
+        return HSVColor(Decimal(new_hue / 360), c.saturation, c.value)
+
+    def darker(self) -> "HSVColor":
+        return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
+
+
 class X11Color(HexColor):
     """
     In computing, on the X Window System, X11 color names are represented in a simple text file,

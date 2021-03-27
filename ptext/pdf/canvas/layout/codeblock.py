@@ -1,6 +1,7 @@
+import typing
 from decimal import Decimal
 
-import typing
+from ptext.pdf.canvas.layout.layout_element import Alignment
 
 try:
     import black
@@ -11,7 +12,7 @@ except ImportError:
 
 from ptext.pdf.canvas.color.color import Color, X11Color, RGBColor
 from ptext.pdf.canvas.font.font import Font
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Justification, LayoutElement
+from ptext.pdf.canvas.layout.paragraph import Paragraph, LayoutElement
 
 
 class CodeBlock(Paragraph):
@@ -20,8 +21,9 @@ class CodeBlock(Paragraph):
         text: str,
         font: typing.Union[Font, str] = "Courier",
         font_size: Decimal = Decimal(12),
-        justification: Justification = Justification.FLUSH_LEFT,
         font_color: Color = RGBColor(Decimal(36), Decimal(41), Decimal(46)),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
         border_top: bool = False,
         border_right: bool = False,
         border_bottom: bool = False,
@@ -46,8 +48,9 @@ class CodeBlock(Paragraph):
             text=text,
             font=font,
             font_size=font_size,
-            justification=justification,
             font_color=font_color,
+            horizontal_alignment=horizontal_alignment,
+            vertical_alignment=vertical_alignment,
             border_top=border_top,
             border_right=border_right,
             border_bottom=border_bottom,
@@ -60,6 +63,6 @@ class CodeBlock(Paragraph):
             padding_left=padding_left,
             background_color=background_color,
             respect_newlines_in_text=True,
-            respect_leading_spaces_in_text=True,
+            respect_spaces_in_text=True,
             parent=parent,
         )

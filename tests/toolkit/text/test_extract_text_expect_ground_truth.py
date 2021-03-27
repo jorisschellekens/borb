@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import unittest
@@ -8,6 +9,7 @@ from ptext.toolkit.text.simple_text_extraction import (
     SimpleTextExtraction,
 )
 from tests.test import Test
+from tests.util import get_output_dir
 
 logging.basicConfig(
     filename="../../logs/test-extract-text-expect-ground-truth.log", level=logging.DEBUG
@@ -20,12 +22,14 @@ class TestExtractTextExpectGroundTruth(Test):
         self.global_char_abs_diff = {}
         self.number_of_wrong_chars_per_document = {}
         self.output_dir = Path(
-            "../../output/test-text-extract-text-expect-ground-truth"
+            get_output_dir(), "test-text-extract-text-expect-ground-truth"
         )
+        self.diff_file = Path(self.output_dir, "differences.json")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0203_page_0.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0203_page_0.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         pdf_file_names = os.listdir(self.input_dir)
         pdfs = [
@@ -35,7 +39,10 @@ class TestExtractTextExpectGroundTruth(Test):
         ]
         self._test_list_of_documents(pdfs)
 
-    def test_document(self, file):
+    def _test_document(self, file):
+
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
         txt_ground_truth_file = self.input_dir / (file.stem + ".txt")
         txt_ground_truth = ""
@@ -68,34 +75,55 @@ class TestExtractTextExpectGroundTruth(Test):
             char_count_1[c] = 0
 
         # count difference in frequency
-        diffs = {}
+        letter_frequency_difference = {}
         for c in [k for k, v in char_count_0.items()] + [
             k for k, v in char_count_1.items()
         ]:
             f0 = char_count_0.get(c, 0)
             f1 = char_count_1.get(c, 0)
             if f0 != f1:
-                diffs[c] = f0 - f1
+                letter_frequency_difference[c] = f0 - f1
 
         # take care of special characters
-        diffs = self._redeem_special_characters(diffs)
-
-        # update count per character
-        for c in diffs:
-            if c not in self.global_char_abs_diff:
-                self.global_char_abs_diff[c] = 0
-            self.global_char_abs_diff[c] += diffs[c]
-
-        # update count per document
-        self.number_of_wrong_chars_per_document[filename] = sum(
-            [abs(v) for k, v in diffs.items()]
+        letter_frequency_difference = self._redeem_special_characters(
+            letter_frequency_difference
         )
 
+        # update file
+        if len(letter_frequency_difference) > 0:
+            diff_file_data = {
+                "number_of_chars_0": len(txt0),
+                "number_of_chars_1": len(txt1),
+                "number_of_wrong_chars": sum(
+                    [abs(v) for k, v in letter_frequency_difference.items()]
+                ),
+                "number_of_wrong_chars_percentage": sum(
+                    [abs(v) for k, v in letter_frequency_difference.items()]
+                )
+                / max(len(txt0), len(txt1)),
+                "diffs": letter_frequency_difference,
+            }
+            with open(
+                Path(self.output_dir, filename + ".diff.json"), "w"
+            ) as json_diff_file_handle:
+                json_diff_file_handle.write(json.dumps(diff_file_data, indent=3))
+
         # error if needed
-        if len(diffs) > 0:
-            raise ValueError("Character count mismatch : %s" % str(diffs))
+        if len(letter_frequency_difference) > 0:
+            print(
+                "Character count mismatch %s : %s"
+                % (filename, str(letter_frequency_difference))
+            )
+            raise ValueError(
+                "Character count mismatch : %s" % str(letter_frequency_difference)
+            )
 
     def _redeem_special_characters(self, differences: dict) -> dict:
+        # soft hypen
+        if "\xad" in differences and "-" in differences:
+            k = differences["\xad"]
+            differences.pop("\xad")
+            differences["-"] += k
         # ligature ff
         if "ﬀ" in differences and "f" in differences:
             k = differences["ﬀ"]

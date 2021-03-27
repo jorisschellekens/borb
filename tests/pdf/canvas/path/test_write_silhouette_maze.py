@@ -10,12 +10,14 @@ from PIL import Image as PILImage  # type: ignore [import]
 
 from ptext.pdf.canvas.color.color import HexColor, X11Color
 from ptext.pdf.canvas.layout.barcode import Barcode, BarcodeType
+from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.canvas.layout.shape import DisjointShape
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 
 class Maze:
@@ -180,6 +182,23 @@ class Maze:
 
 
 class SilhouetteMaze(Maze):
+    @staticmethod
+    def _convert_png_to_jpg(image: PILImage.Image) -> PILImage.Image:
+
+        # omit transparency
+        fill_color = (255, 255, 255)  # new background color
+        image_out = image.convert("RGBA")  # it had mode P after DL it from OP
+        if image_out.mode in ("RGBA", "LA"):
+            background = PILImage.new(image_out.mode[:-1], image_out.size, fill_color)
+            background.paste(image_out, image_out.split()[-1])  # omit transparency
+            image_out = background
+
+        # convert to RGB
+        image_out = image_out.convert("RGB")
+
+        # return
+        return image_out
+
     def __init__(self, image: typing.Union[PILImage.Image, str]):
         if isinstance(image, str):
             image = PILImage.open(
@@ -189,11 +208,10 @@ class SilhouetteMaze(Maze):
                 ).raw
             )
         assert isinstance(image, PILImage.Image)
+        image = SilhouetteMaze._convert_png_to_jpg(image)
         if image.width * image.height > (128 * 128):
             scale = 128 / max(image.width, image.height)
             image = image.resize((int(image.width * scale), int(image.height * scale)))
-
-        image = image.convert("RGB")
 
         # basic rectangle
         self.width: int = image.width
@@ -223,14 +241,14 @@ class SilhouetteMaze(Maze):
 
 
 logging.basicConfig(
-    filename="../../../logs/test-write-silhouette-maze.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-silhouette-maze.log"), level=logging.DEBUG
 )
 
 
 class TestWriteMaze(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-write-silhouette-maze")
+        self.output_dir = Path(get_output_dir(), "test-write-silhouette-maze")
 
     def _write_maze_page(self, pdf: Document, maze_url: str, title_color: str):
 
@@ -263,6 +281,8 @@ class TestWriteMaze(unittest.TestCase):
                 Good luck
                 """,
                 respect_newlines_in_text=True,
+                font_color=X11Color("SlateGray"),
+                font_size=Decimal(8),
             )
         )
 
@@ -272,6 +292,8 @@ class TestWriteMaze(unittest.TestCase):
                 m.get_walls(Decimal(10)),
                 stroke_color=HexColor(title_color),
                 line_width=Decimal(1),
+                horizontal_alignment=Alignment.CENTERED,
+                vertical_alignment=Alignment.MIDDLE,
             )
         )
 
@@ -294,7 +316,8 @@ class TestWriteMaze(unittest.TestCase):
             ("https://images-na.ssl-images-amazon.com/images/I/61bqYbAeUgL._AC_SL1500_.jpg", "395E66"),
             ("https://i.pinimg.com/originals/55/e8/91/55e891af7de086a8868e1a8e02fb4426.jpg","387D7A"),
             ("https://cdn.shopify.com/s/files/1/2123/8425/products/166422700-LRG_242a4c8b-cad5-476e-afd1-c8b882d48fc2_530x.jpg","32936F"),
-            ("http://www.silhcdn.com/3/i/shapes/lg/7/6/d124067.jpg","26A96C")
+            ("http://www.silhcdn.com/3/i/shapes/lg/7/6/d124067.jpg","26A96C"),
+            ("https://cdn.pixabay.com/photo/2018/03/04/23/28/frog-3199601_1280.png","2BC016")
         ]
         # fmt: on
 

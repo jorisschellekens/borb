@@ -1,25 +1,29 @@
 import logging
+import unittest
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-add-watermark-annotation.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-add-watermark-annotation.log"),
+    level=logging.DEBUG,
 )
 
 
 class TestAddWatermarkAnnotation(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-add-watermark-annotation")
+        self.output_dir = Path(get_output_dir(), "test-add-watermark-annotation")
 
+    @unittest.skip
     def test_corpus(self):
         super(TestAddWatermarkAnnotation, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():

@@ -112,11 +112,16 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         x: Decimal = Decimal(0)
         y: Decimal = self._graphics_state.text_rise
         for g in self._glyph_line.glyphs:
+            chrs = (
+                [g.unicode]
+                if isinstance(g.unicode, int)
+                else [g.unicode[x] for x in range(0, len(g.unicode))]
+            )
             e = ChunkOfTextRenderEvent(self._graphics_state, String(" "))
             e.font_size = self.font_size
             e.font_color = self.font_color
             e.font = self.font
-            e.text = chr(g.unicode)
+            e.text = g.to_unicode_string()
             e.space_character_width_estimate = self.space_character_width_estimate
             e._graphics_state = self._graphics_state
             e._glyph_line = GlyphLine([g])
@@ -129,7 +134,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
                 * Decimal(0.01)
                 + (
                     self._graphics_state.word_spacing
-                    if chr(g.unicode) == " "
+                    if g.to_unicode_string() == " "
                     else Decimal(0)
                 )
                 + self._graphics_state.character_spacing
@@ -149,7 +154,14 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
             e.bounding_box = e.baseline_bounding_box
 
             # change bounding box (descent)
-            uses_descent = chr(g.unicode).lower() in ["y", "p", "q", "f", "g", "j"]
+            uses_descent = g.to_unicode_string().lower() in [
+                "y",
+                "p",
+                "q",
+                "f",
+                "g",
+                "j",
+            ]
             if uses_descent:
                 p0 = m.cross(
                     x,

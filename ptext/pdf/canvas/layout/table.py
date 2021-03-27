@@ -5,10 +5,13 @@
     This module contains everything needed to lay out tables
 """
 import typing
-from decimal import Decimal, getcontext
+import zlib
+from decimal import Decimal
 
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.color.color import X11Color, Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.paragraph import LayoutElement
 from ptext.pdf.page.page import Page
 
@@ -56,14 +59,32 @@ class TableCell(LayoutElement):
         self.row_span = row_span
         self.col_span = col_span
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
-        return self.layout_element._layout_without_padding(page, bounding_box)
+    def layout(self, page: Page, layout_box: Rectangle) -> Rectangle:
+        self.layout_element.padding_top = self.padding_top
+        self.layout_element.padding_right = self.padding_right
+        self.layout_element.padding_bottom = self.padding_bottom
+        self.layout_element.padding_left = self.padding_left
+        box: Rectangle = self.layout_element.layout(page, layout_box)
+        self.set_bounding_box(box)
+        return box
 
     def _draw_border(self, page: Page, border_box: Rectangle):
+        # This method is purposefully blank, to ensure the parent (Table)
+        # is the only element that gets to call the _draw_border_after_layout method
+        # which properly renders the borders.
         pass
 
     def _draw_border_after_layout(self, page: Page, border_box: Rectangle):
         super(TableCell, self)._draw_border(page, border_box)
+
+    def _draw_background(self, page: Page, border_box: Rectangle):
+        # This method is purposefully blank, to ensure the parent (Table)
+        # is the only element that gets to call the _draw_background_after_layout method
+        # which properly renders the background.
+        pass
+
+    def _draw_background_after_layout(self, page: Page, border_box: Rectangle):
+        super(TableCell, self)._draw_background(page, border_box)
 
 
 class Table(LayoutElement):
@@ -86,6 +107,8 @@ class Table(LayoutElement):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
         background_color: typing.Optional[Color] = None,
     ):
         super(Table, self).__init__(
@@ -100,6 +123,8 @@ class Table(LayoutElement):
             padding_bottom=padding_bottom,
             padding_left=padding_left,
             background_color=background_color,
+            horizontal_alignment=horizontal_alignment,
+            vertical_alignment=vertical_alignment,
         )
         assert number_of_rows >= 1
         assert number_of_columns >= 1
@@ -180,9 +205,25 @@ class Table(LayoutElement):
         self.set_borders_on_all_cells(False, False, False, False)
         return self
 
-    def _layout_without_padding(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def outer_borders(self):
+        """
+        This method unsets the border(s) on all TableCell objects in this Table
+        except for the borders that form the outside edge of the Table
+        """
+        self.no_borders()
+        # TODO
+        return self
+
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
+
+        content_stream = page["Contents"]
+        len_decoded_bytes_before = len(content_stream[Name("DecodedBytes")])
 
         # layout elements in grid
+        # this matrix ensures we can easily check which element is located at (x,y) even if there are
+        # TableCell elements with row_span and col_span
         mtx = [
             [-1 for _ in range(0, self.number_of_columns)]
             for _ in range(0, self.number_of_rows)
@@ -208,13 +249,14 @@ class Table(LayoutElement):
         for i in range(1, len(column_boundaries)):
             column_boundaries[i] += column_boundaries[i - 1]
 
-        # main layout loop
+        # set up datastructures for main layout loop
         already_laid_out: typing.List[LayoutElement] = []
         bottom_row_mtx = [
             [Decimal(-1) for _ in range(0, self.number_of_columns)]
             for _ in range(0, self.number_of_rows)
         ]
 
+        # execute main layout loop
         previous_row_bottom = bounding_box.y + bounding_box.height
         row_boundaries: typing.List[Decimal] = [previous_row_bottom]
         for r in range(0, self.number_of_rows):
@@ -224,7 +266,7 @@ class Table(LayoutElement):
                     continue
                 rect_out = e.layout(
                     page,
-                    bounding_box=Rectangle(
+                    Rectangle(
                         column_boundaries[c],
                         Decimal(0),
                         column_boundaries[c + e.col_span] - column_boundaries[c],
@@ -245,7 +287,8 @@ class Table(LayoutElement):
                 [
                     v
                     for i, v in enumerate(bottom_row_mtx[r])
-                    if r == 0 or self.content[mtx[r][i]].row_span == 1
+                    if self.content[mtx[r][i]].row_span == 1
+                    and self.content[mtx[r][i]].get_bounding_box().height > 0
                 ]
             )
             row_boundaries.append(previous_row_bottom)
@@ -258,25 +301,61 @@ class Table(LayoutElement):
         )
 
         # draw borders
-        previous_precision = getcontext().prec
-        getcontext().prec = 3
-        already_drawn_border: typing.List[LayoutElement] = []
+        already_drawn_border: typing.Dict[LayoutElement, Rectangle] = {}
         for r in range(0, self.number_of_rows):
             for c in range(0, self.number_of_columns):
                 e = self.content[mtx[r][c]]
                 if e in already_drawn_border:
                     continue
-                e._draw_border_after_layout(
-                    page,
-                    Rectangle(
-                        column_boundaries[c],
-                        row_boundaries[r + e.row_span],
-                        column_boundaries[c + e.col_span] - column_boundaries[c],
-                        row_boundaries[r] - row_boundaries[r + e.row_span],
-                    ),
+
+                border_box = Rectangle(
+                    column_boundaries[c],
+                    row_boundaries[r + e.row_span],
+                    column_boundaries[c + e.col_span] - column_boundaries[c],
+                    row_boundaries[r] - row_boundaries[r + e.row_span],
                 )
-                already_drawn_border.append(e)
-        getcontext().prec = previous_precision
+
+                # Due to rounding errors, setting the bounding box is not trivial
+                # This code cheats that system.
+                # The first row is laid out to its integer-rounded coordinates,
+                # every row after that is matched to the row above it
+                if r == 0:
+                    border_box.height = Decimal(int(border_box.height))
+                    border_box.y = Decimal(int(border_box.y))
+
+                if r != 0:
+                    nb = self.content[mtx[r - 1][c]]
+                    if nb is not None and nb in already_drawn_border:
+                        up_bb = already_drawn_border[nb]
+                        border_box.y = Decimal(int(border_box.y))
+                        border_box.height = up_bb.y - border_box.y
+
+                # set the bounding box of a cell to equal its border box
+                e.set_bounding_box(border_box)
+
+                # draw the border
+                e._draw_border_after_layout(page, border_box)
+
+                # mark the border as already drawn
+                already_drawn_border[e] = border_box
+
+        # change content stream to put background before rendering of the content
+        added_content = content_stream[Name("DecodedBytes")][len_decoded_bytes_before:]
+        content_stream[Name("DecodedBytes")] = content_stream[Name("DecodedBytes")][
+            0:len_decoded_bytes_before
+        ]
+
+        # draw backgrounds
+        for table_cell in self.content:
+            assert table_cell.bounding_box is not None
+            table_cell._draw_background_after_layout(page, table_cell.bounding_box)
+
+        # re-add content
+        content_stream[Name("DecodedBytes")] += added_content
+        content_stream[Name("Bytes")] = zlib.compress(
+            content_stream[Name("DecodedBytes")], 9
+        )
+        content_stream[Name("Length")] = len(content_stream[Name("Bytes")])
 
         # set bounding box
         self.set_bounding_box(layout_rect)

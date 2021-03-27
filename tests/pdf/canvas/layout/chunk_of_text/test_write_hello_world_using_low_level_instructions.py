@@ -8,9 +8,13 @@ from ptext.io.read.types import Stream, Name, Dictionary
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-hello-world-low-level-using-low-level-instructions.log",
+    filename=Path(
+        get_log_dir(),
+        "test-write-hello-world-low-level-using-low-level-instructions.log",
+    ),
     level=logging.DEBUG,
 )
 
@@ -19,7 +23,7 @@ class TestWriteHelloWorldUsingLowLevelInstructions(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path(
-            "../../../../output/test-write-hello-world-using-low-level-instructions"
+            get_output_dir(), "test-write-hello-world-using-low-level-instructions"
         )
 
     def test_write_document(self):

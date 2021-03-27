@@ -24,6 +24,7 @@ class WriteTransformerContext:
         self.resolved_references: typing.List[
             Reference
         ] = []  # these references have already been written
+        self.compression_level = 9
 
 
 class WriteBaseTransformer:

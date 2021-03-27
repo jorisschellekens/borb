@@ -52,3 +52,7 @@ class Rectangle:
         This function returns the height of this Rectangle
         """
         return self.height
+
+    def intersects(self, other_rectangle: "Rectangle") -> bool:
+        # TODO
+        return False

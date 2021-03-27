@@ -7,9 +7,9 @@
 import io
 from typing import Optional
 
-from PIL.Image import Image  # type: ignore [import]
+from PIL import Image as PILImage  # type: ignore [import]
 
-from ptext.io.read.types import AnyPDFType, Name, Stream, Reference
+from ptext.io.read.types import AnyPDFType, Name, Stream, Reference, add_base_methods
 from ptext.io.read.types import Decimal as pDecimal
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
@@ -23,7 +23,27 @@ class WriteImageTransformer(WriteBaseTransformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
-        return isinstance(any, Image)
+        return isinstance(any, PILImage.Image)
+
+    def _convert_png_to_jpg(self, image: PILImage.Image) -> PILImage.Image:
+
+        # omit transparency
+        fill_color = (255, 255, 255)  # new background color
+        image_out = image.convert("RGBA")  # it had mode P after DL it from OP
+        if image_out.mode in ("RGBA", "LA"):
+            background = PILImage.new(image_out.mode[:-1], image_out.size, fill_color)
+            background.paste(image_out, image_out.split()[-1])  # omit transparency
+            image_out = background
+
+        # convert to RGB
+        image_out = image_out.convert("RGB")
+
+        # add methods
+        add_base_methods(image_out)
+        image_out.set_reference(image.get_reference())
+
+        # return
+        return image_out
 
     def transform(
         self,
@@ -35,13 +55,14 @@ class WriteImageTransformer(WriteBaseTransformer):
         """
         assert context is not None
         assert context.destination is not None
-        assert isinstance(object_to_transform, Image)
+        assert isinstance(object_to_transform, PILImage.Image)
 
         # get image bytes
         contents = None
         filter_name: Optional[Name] = None
         try:
             with io.BytesIO() as output:
+                assert isinstance(object_to_transform, PILImage.Image)
                 object_to_transform.save(output, format="JPEG")
                 contents = output.getvalue()
             filter_name = Name("DCTDecode")
@@ -50,12 +71,14 @@ class WriteImageTransformer(WriteBaseTransformer):
 
         if contents is None:
             try:
-                # TODO : store PNG
+                # TODO : properly store PNG (instead of converting it)
                 with io.BytesIO() as output:
-                    object_to_transform.convert("RGB").save(output, format="JPEG")
+                    object_to_transform = self._convert_png_to_jpg(object_to_transform)
+                    assert isinstance(object_to_transform, PILImage.Image)
+                    object_to_transform.save(output, format="JPEG")
                     contents = output.getvalue()
                 filter_name = Name("DCTDecode")
-            except:
+            except Exception as e:
                 pass
         assert contents is not None
 
@@ -84,7 +107,10 @@ class WriteImageTransformer(WriteBaseTransformer):
                 self.start_object(out_value, context)
 
         # write stream
+        cl = context.compression_level
+        context.compression_level = 9
         self.get_root_transformer().transform(out_value, context)
+        context.compression_level = cl
 
         # end object if needed
         if started_object:

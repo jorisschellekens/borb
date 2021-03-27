@@ -4,9 +4,10 @@ from pathlib import Path
 
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir
 
 logging.basicConfig(
-    filename="../../logs/test-read-xmp-meta-data.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-read-xmp-meta-data.log"), level=logging.DEBUG
 )
 
 
@@ -15,13 +16,14 @@ class TestReadXMPMetaData(Test):
     This test attempts to read the XMPDocumentInfo for each PDF in the corpus
     """
 
+    @unittest.skip
     def test_corpus(self):
         super(TestReadXMPMetaData, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0066.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0066.pdf"))
 
-    def test_document(self, file) -> bool:
+    def _test_document(self, file) -> bool:
         with open(file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
             doc_info = doc.get_xmp_document_info()

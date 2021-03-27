@@ -1,26 +1,30 @@
 import logging
+import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-remove-annotation.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-remove-annotations.log"),
+    level=logging.DEBUG,
 )
 
 
 class TestRemoveAnnotation(Test):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-remove-annotation")
+        self.output_dir = Path(get_output_dir(), "test-remove-annotation")
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0200.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         super(TestRemoveAnnotation, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():

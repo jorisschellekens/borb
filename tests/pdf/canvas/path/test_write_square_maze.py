@@ -6,12 +6,14 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import HexColor
+from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.canvas.layout.shape import DisjointShape
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 
 class Maze:
@@ -176,14 +178,14 @@ class Maze:
 
 
 logging.basicConfig(
-    filename="../../../logs/test-write-square-maze.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-square-maze.log"), level=logging.DEBUG
 )
 
 
 class TestWriteMaze(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../output/test-write-square-maze")
+        self.output_dir = Path(get_output_dir(), "test-write-square-maze")
 
     def test_write_document(self):
 
@@ -207,8 +209,7 @@ class TestWriteMaze(unittest.TestCase):
         # add title
         layout.add(
             Paragraph(
-                "AMAZING MAZES",
-                font="TimesRoman",
+                "Square Maze",
                 font_size=Decimal(20),
                 font_color=HexColor("274029"),
             )
@@ -232,6 +233,8 @@ class TestWriteMaze(unittest.TestCase):
                 m.get_walls(Decimal(10)),
                 stroke_color=HexColor("315C2B"),
                 line_width=Decimal(1),
+                horizontal_alignment=Alignment.CENTERED,
+                vertical_alignment=Alignment.MIDDLE,
             )
         )
 

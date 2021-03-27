@@ -1,0 +1,18 @@
+{
+   "number_of_chars_0": 4472,
+   "number_of_chars_1": 2971,
+   "number_of_wrong_chars": 17,
+   "number_of_wrong_chars_percentage": 0.0038014311270125225,
+   "diffs": {
+      "T": 1,
+      "H": 1,
+      "E": 5,
+      "P": 2,
+      "A": 2,
+      "R": 2,
+      "M": 1,
+      "N": 1,
+      "G": 1,
+      "I": 1
+   }
+}

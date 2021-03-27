@@ -14,9 +14,7 @@ import typing
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.types import (
     Dictionary,
-    List,
     CanvasOperatorName,
-    Name,
 )
 from ptext.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from ptext.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
@@ -174,6 +172,9 @@ class Canvas(Dictionary):
         # set graphics state stack
         self.graphics_state_stack = []
 
+    def get_operator(self, name) -> typing.Optional["CanvasOperator"]:
+        return self.canvas_operators.get(name)
+
     def read(self, io_source: io.IOBase) -> "Canvas":
         """
         This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
@@ -186,6 +187,7 @@ class Canvas(Dictionary):
 
         # process content
         operand_stk = []
+        instruction_number: int = 0
         while canvas_tokenizer.tell() != length:
 
             # print("<canvas pos='%d' length='%d' percentage='%d'/>" % ( canvas_tokenizer.tell(), length, int(canvas_tokenizer.tell() * 100 / length)))
@@ -201,6 +203,7 @@ class Canvas(Dictionary):
                 continue
 
             # process operator
+            instruction_number += 1
             operator = self.canvas_operators.get(obj, None)
             if operator is None:
                 logger.debug("Missing operator %s" % obj)
@@ -212,31 +215,12 @@ class Canvas(Dictionary):
             for _ in range(0, operator.get_number_of_operands()):
                 operands.insert(0, operand_stk.pop(-1))
 
-            # append
-            if "Instructions" not in self:
-                self[Name("Instructions")] = List().set_parent(self)  # type: ignore [attr-defined]
-
-            instruction_number = len(self["Instructions"])
-            instruction_dictionary = Dictionary()
-            instruction_dictionary[Name("Operator")] = operator.get_text()
-            instruction_dictionary[Name("Args")] = List().set_parent(  # type: ignore [attr-defined]
-                instruction_dictionary
-            )
-
-            if len(operands) > 0:
-                for i in range(0, len(operands)):
-                    instruction_dictionary["Args"].append(operands[i])
-            self["Instructions"].append(instruction_dictionary)
-
             # debug
-            logger.debug(
-                "%d %s %s"
-                % (
-                    instruction_number,
-                    operator.text,
-                    str([str(x) for x in operands]),
-                )
-            )
+            operand_str = str([str(x) for x in operands])
+            if len(operands) == 1 and isinstance(operands[0], list):
+                operand_str = str([str(x) for x in operands[0]])
+
+            logger.debug("%d %s %s" % (instruction_number, operator.text, operand_str))
 
             # invoke
             try:

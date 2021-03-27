@@ -11,9 +11,11 @@ from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-table-of-barcodes.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-table-of-barcodes.log"),
+    level=logging.DEBUG,
 )
 
 
@@ -24,7 +26,7 @@ class TestWriteTableOfBarcodes(unittest.TestCase):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-table-of-barcodes")
+        self.output_dir = Path(get_output_dir(), "test-write-table-of-barcodes")
 
     def test_write_document(self):
 
@@ -93,7 +95,7 @@ class TestWriteTableOfBarcodes(unittest.TestCase):
                     fill_color=HexColor("#DF2935"),
                 )
             )
-            .set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
+            .set_padding_on_all_cells(Decimal(10), Decimal(5), Decimal(5), Decimal(5))
         )
 
         # write

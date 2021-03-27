@@ -1,0 +1,21 @@
+{
+   "number_of_chars_0": 7264,
+   "number_of_chars_1": 4926,
+   "number_of_wrong_chars": 54,
+   "number_of_wrong_chars_percentage": 0.007433920704845815,
+   "diffs": {
+      "\u2014": 5,
+      "\ufb01": 14,
+      "\u00a7": 2,
+      "\u2021": 2,
+      "\u2020": 3,
+      "\u201c": 1,
+      "\u201d": 1,
+      "\u00d1": -5,
+      "\u00de": -14,
+      "\u00a4": -2,
+      "\u20ac": -3,
+      "\u00d2": -1,
+      "\u00d3": -1
+   }
+}

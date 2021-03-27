@@ -1,0 +1,14 @@
+{
+   "number_of_chars_0": 5338,
+   "number_of_chars_1": 1332,
+   "number_of_wrong_chars": 8,
+   "number_of_wrong_chars_percentage": 0.0014986886474334957,
+   "diffs": {
+      "\u2019": 2,
+      "\u00eb": 1,
+      "\u00e0": 1,
+      "\u00d5": -2,
+      "\u201a": -1,
+      "\u2039": -1
+   }
+}

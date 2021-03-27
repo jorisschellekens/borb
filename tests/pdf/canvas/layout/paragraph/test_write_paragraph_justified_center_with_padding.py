@@ -6,15 +6,18 @@ from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import (
-    Justification,
+    Alignment,
     Paragraph,
 )
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-paragraph-justified-center-with-padding.log",
+    filename=Path(
+        get_log_dir(), "test-write-paragraph-justified-center-with-padding.log"
+    ),
     level=logging.DEBUG,
 )
 
@@ -23,7 +26,7 @@ class TestWriteParagraphJustifiedCenterWithPadding(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path(
-            "../../../../output/test-write-paragraph-justified-center-with-padding"
+            get_output_dir(), "test-write-paragraph-justified-center-with-padding"
         )
 
     def test_write_document(self):
@@ -43,7 +46,7 @@ class TestWriteParagraphJustifiedCenterWithPadding(unittest.TestCase):
         layout_rect = Paragraph(
             "Once upon a midnight dreary,\nwhile I pondered weak and weary,\nover many a quaint and curious\nvolume of forgotten lore",
             font_size=Decimal(20),
-            justification=Justification.CENTERED,
+            horizontal_alignment=Alignment.CENTERED,
             respect_newlines_in_text=True,
             padding_top=padding,
             padding_right=padding,

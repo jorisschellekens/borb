@@ -1,0 +1,21 @@
+{
+   "number_of_chars_0": 3899,
+   "number_of_chars_1": 2467,
+   "number_of_wrong_chars": 35,
+   "number_of_wrong_chars_percentage": 0.008976660682226212,
+   "diffs": {
+      "\ufb01": 7,
+      "\u2217": 6,
+      "\u2020": 2,
+      "\u2021": 2,
+      "z": -2,
+      "\u00a8": 1,
+      "\u00a7": 2,
+      "\u00b6": 2,
+      "x": -2,
+      "y": -2,
+      "\ufb03": 3,
+      "`": 2,
+      "{": -2
+   }
+}

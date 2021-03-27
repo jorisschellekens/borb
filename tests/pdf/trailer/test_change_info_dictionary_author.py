@@ -5,6 +5,7 @@ from pathlib import Path
 from ptext.io.read.types import String, Name, Dictionary
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_output_dir
 
 logging.basicConfig(
     filename="../../logs/test-change-info-dictionary-author.log", level=logging.DEBUG
@@ -18,15 +19,16 @@ class TestChangeInfoDictionaryAuthor(Test):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../output/test-change-info-dictionary-author")
+        self.output_dir = Path(get_output_dir(), "test-change-info-dictionary-author")
 
+    @unittest.skip
     def test_corpus(self):
         super(TestChangeInfoDictionaryAuthor, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
-    def test_document(self, file) -> bool:
+    def _test_document(self, file) -> bool:
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():
@@ -45,7 +47,7 @@ class TestChangeInfoDictionaryAuthor(Test):
             doc["XRef"]["Trailer"][Name("Info")] = Dictionary()
 
         # change author
-        doc["XRef"]["Trailer"]["Info"]["Author"] = String("Joris Schellekens")
+        doc["XRef"]["Trailer"]["Info"][Name("Author")] = String("Joris Schellekens")
 
         # determine output location
         out_file = self.output_dir / (file.stem + "_out.pdf")

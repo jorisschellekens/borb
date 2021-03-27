@@ -8,9 +8,10 @@ from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_output_dir, get_log_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-nested-unordered-list.log",
+    filename=Path(get_log_dir(), "test-write-nested-unordered-list.log"),
     level=logging.DEBUG,
 )
 
@@ -18,7 +19,7 @@ logging.basicConfig(
 class TestWriteNestedUnorderedList(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-nested-unordered-list")
+        self.output_dir = Path(get_output_dir(), "test-write-nested-unordered-list")
 
     def test_write_document(self):
 

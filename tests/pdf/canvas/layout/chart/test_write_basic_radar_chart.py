@@ -15,9 +15,11 @@ from ptext.pdf.canvas.layout.paragraph import Heading, Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-write-basic-radar-chart.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-write-basic-radar-chart.log"),
+    level=logging.DEBUG,
 )
 
 
@@ -28,7 +30,7 @@ class TestWriteBasicRadarChart(unittest.TestCase):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path("../../../../output/test-write-basic-radar-chart")
+        self.output_dir = Path(get_output_dir(), "test-write-basic-radar-chart")
 
     def _create_plot(self) -> None:
         df = pd.DataFrame(

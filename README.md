@@ -29,3 +29,7 @@ They include;
 - using a layout
  and much more
  
+## 2. Acknowledgements
+
+I would like to thank the following people, for their contributions / advice with regards to developing `pText`:
+- Michael Klink 

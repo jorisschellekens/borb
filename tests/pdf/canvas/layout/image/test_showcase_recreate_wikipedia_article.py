@@ -14,22 +14,19 @@ from ptext.pdf.canvas.layout.paragraph import Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../../logs/test-showcase-recreate-wikipedia-article.log",
+    filename=Path(get_log_dir(), "test-showcase-recreate-wikipedia-article.log"),
     level=logging.DEBUG,
 )
 
 
 class TestShowcaseRecreateWikipediaArticle(unittest.TestCase):
-    """
-    This test attempts to extract the text of each PDF in the corpus
-    """
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         self.output_dir = Path(
-            "../../../../output/test-showcase-recreate-wikipedia-article"
+            get_output_dir(), "test-showcase-recreate-wikipedia-article"
         )
 
     def test_write_document(self):

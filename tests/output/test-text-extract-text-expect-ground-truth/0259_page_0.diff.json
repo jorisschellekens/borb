@@ -1,0 +1,18 @@
+{
+   "number_of_chars_0": 5314,
+   "number_of_chars_1": 3889,
+   "number_of_wrong_chars": 15,
+   "number_of_wrong_chars_percentage": 0.002822732404968009,
+   "diffs": {
+      "g": -1,
+      "f": -1,
+      "{": 1,
+      "\ufb01": 3,
+      "}": 1,
+      "\ufb02": 2,
+      "\u2019": 2,
+      "\u2192": 1,
+      "'": -2,
+      "!": -1
+   }
+}

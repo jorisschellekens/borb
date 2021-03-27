@@ -382,7 +382,7 @@ Then we add the annotation:
 
         # add annotation
         doc.get_page(0).append_stamp_annotation(
-            name="Confidential",
+            name=RubberStampAnnotationIconType.CONFIDENTIAL,
             contents="Approved by Joris Schellekens",
             color=X11Color("White"),
             rectangle=(Decimal(128), Decimal(128), Decimal(32), Decimal(64)),
@@ -424,24 +424,7 @@ We now define a `List[str]` to hold all valid types of rubber stamp annotations,
 we iterate over it, and add them to the `Document` one at a time:
 
         # add annotation
-        for index, name in enumerate(
-            [
-                "Approved",
-                "Experimental",
-                "NotApproved",
-                "Asis",
-                "Expired",
-                "NotForPublicRelease",
-                "Confidential",
-                "Final",
-                "Sold",
-                "Departmental",
-                "ForComment",
-                "TopSecret",
-                "Draft",
-                "ForPublicRelease",
-            ]
-        ):
+        for index, name in enumerate(RubberStampAnnotationIconType):
             doc.get_page(0).append_stamp_annotation(
                 name=name,
                 contents="Approved by Joris Schellekens",
@@ -670,7 +653,7 @@ Next we add the annotation:
 
         doc.get_page(0).append_link_annotation(
             page=Decimal(0),
-            destination_type="Fit",
+            destination_type=DestinationType.FIT,
             color=X11Color("Red"),
             rectangle=Rectangle(Decimal(128), Decimal(128), Decimal(64), Decimal(64)),
         )
@@ -895,7 +878,7 @@ Now we can simply add all the annotations by calling the appropriate method on t
                 doc.get_page(0).append_link_annotation(
                     page=Decimal(0),
                     color=c[m[i][j]],
-                    destination_type="Fit",
+                    destination_type=DestinationType.FIT,
                     rectangle=(
                         Decimal(x),
                         Decimal(y),
@@ -1291,7 +1274,7 @@ Check out the `tests` directory to find more tests like this one, and discover w
 
 #### 2.1.3 Adding text to a `Document` using `LineOfText`
 
-By using `LineOfText` we can add justification (left, center, right, full) to our text.
+By using `LineOfText` we can add Alignment.(left, center, right, full) to our text.
 We start by creating an empty `Document` (just like the other examples).
 
         # create document
@@ -1301,8 +1284,8 @@ We start by creating an empty `Document` (just like the other examples).
         page = Page()
         pdf.append_page(page)
 
-Here we're going to add 4 lines of text, all of them will be justified `FLUSH_RIGHT`
-That means we're going to give them all the same bounding box (apart from the y-coordinate), and have `pText` work out where to start the text to achieve the correct justification.
+Here we're going to add 4 lines of text, all of them will be justified `RIGHT`
+That means we're going to give them all the same bounding box (apart from the y-coordinate), and have `pText` work out where to start the text to achieve the correct Alignment.
 
         for i, s in enumerate(
             [
@@ -1315,7 +1298,7 @@ That means we're going to give them all the same bounding box (apart from the y-
             LineOfText(
                 s,
                 font_size=Decimal(20),
-                justification=Justification.FLUSH_RIGHT,
+                horizontal_alignment=Alignment.RIGHT,
             ).layout(
                 page,
                 Rectangle(
@@ -1363,7 +1346,7 @@ Next we define the text we want to add.
 
         s = "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore"
         
-And now we construct a `Paragraph` object from that text, we are also going to set its `color`, `justification` and `font_size`.
+And now we construct a `Paragraph` object from that text, we are also going to set its `color`, `Alignment. and `font_size`.
         
         Paragraph(
             s,
@@ -1398,13 +1381,13 @@ Check out the `tests` directory to find more tests like this one, and discover w
 
 ##### 2.1.3.2 Setting justification
 
-Let's change the code we wrote earlier to have the `Paragraph` justification `CENTERED`
+Let's change the code we wrote earlier to have the `Paragraph` alignment `CENTERED`
 
         Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
             font_color=X11Color("YellowGreen"),
-            justification=Justification.CENTERED,
+            horizontal_alignment=Alignment.CENTERED,
         ).layout(
             page,
             Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),
@@ -1414,13 +1397,13 @@ The result should be something like this:
 
 ![adding paragraph_justified_center](readme_img/adding_paragraph_justified_center.png)
 
-We can do the same for justification `FULL`
+We can do the same for alignment `FULL`
 
         Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
             font_color=X11Color("YellowGreen"),
-            justification=Justification.JUSTIFIED,
+            horizontal_alignment=Alignment.JUSTIFIED,
         ).layout(
             page,
             Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),
@@ -1434,7 +1417,7 @@ Check out the `tests` directory to find more tests like this one, and discover w
 
 ##### 2.1.3.3 Setting padding
 
-Let's change the code we wrote earlier to have the `Paragraph` justification `CENTERED`.
+Let's change the code we wrote earlier to have the `Paragraph` alignment `CENTERED`.
 This time, we're also going to set some padding. This will ensure the `Paragraph` stays away from its bounding box.
     
         padding: Decimal = Decimal(5)
@@ -1442,7 +1425,7 @@ This time, we're also going to set some padding. This will ensure the `Paragraph
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore",
             font_size=Decimal(20),
             font_color=X11Color("YellowGreen"),
-            justification=Justification.CENTERED,
+            horizontal_alignment=Alignment.CENTERED,
             padding_top=padding,
             padding_right=padding,
             padding_bottom=padding,
@@ -1475,7 +1458,7 @@ Let's try that:
         layout_rect = Paragraph(
             "Once upon a midnight dreary,\nwhile I pondered weak and weary,\nover many a quaint and curious\nvolume of forgotten lore",
             font_size=Decimal(20),
-            justification=Justification.CENTERED,
+            horizontal_alignment=Alignment.CENTERED,
             respect_newlines_in_text=True,
             padding_top=padding,
             padding_right=padding,
@@ -1504,7 +1487,7 @@ Black is boring. Let's set the `font_color` to `salmon` for a change:
         layout_rect = Paragraph(
             "Once upon a midnight dreary,\nwhile I pondered weak and weary,\nover many a quaint and curious\nvolume of forgotten lore",
             font_size=Decimal(20),
-            justification=Justification.CENTERED,
+            horizontal_alignment=Alignment.CENTERED,
             respect_newlines_in_text=True,
             padding_top=padding,
             padding_right=padding,
@@ -1555,7 +1538,7 @@ Finally, we add the `Paragraph`
                                 As of some one gently rapping, rapping at my chamber door.
                                 'Tis some visitor,' I muttered, 'tapping at my chamber door-
                                 Only this and nothing more.'""",
-                             justification=Justification.CENTERED,
+                             horizontal_alignment=Alignment.CENTERED,
                              font_size=Decimal(8),
                              respect_newlines_in_text=True))
 
@@ -1614,7 +1597,7 @@ Notice that I have set the `outline_level` to 1 here.
                         "Once upon a midnight dreary, while I pondered, weak and weary, Over many a quaint and curious volume of forgotten lore- While I nodded, nearly napping, suddenly there came a tapping, As of some one gently rapping, rapping at my chamber door. Tis some visitor, I muttered, tapping at my chamber door- Only this and nothing more.",
                         font_size=Decimal(12),
                         font_color=X11Color("SlateGray"),
-                        justification=Justification.FLUSH_LEFT,
+                        horizontal_alignment=Alignment.LEFT,
                     )
                 )
 
@@ -1656,12 +1639,12 @@ It will keep track of where each `LayoutElement` is, and will calculate the next
         layout.add(Paragraph(
             "Once upon a midnight dreary, while I pondered weak and weary, over many a quaint and curious volume of forgotten lore.",
             font_size=Decimal(20),
-            justification=Justification.FLUSH_RIGHT,
+            horizontal_alignment=Alignment.RIGHT,
         ))
         layout.add(Paragraph(
             "While I nodded, nearly napping, suddenly there came a tapping. As of someone gently rapping, rapping at my chamberdoor.",
             font_size=Decimal(20),
-            justification=Justification.FLUSH_RIGHT,
+            horizontal_alignment=Alignment.RIGHT,
         ))
 
 Let's store the PDF
@@ -1702,7 +1685,7 @@ We're also going to add a lot more content, so you can really see the effect.
                     "Once upon a midnight dreary, while I pondered, weak and weary, Over many a quaint and curious volume of forgotten lore- While I nodded, nearly napping, suddenly there came a tapping, As of some one gently rapping, rapping at my chamber door. Tis some visitor, I muttered, tapping at my chamber door- Only this and nothing more.",
                     font_size=Decimal(12),
                     font_color=X11Color("SlateGray"),
-                    justification=Justification.FLUSH_LEFT,
+                    horizontal_alignment=Alignment.LEFT,
                 )
             )
 
@@ -1758,7 +1741,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 As of some one gently rapping, rapping at my chamber door.
                                 'Tis some visitor,' I muttered, 'tapping at my chamber door-
                                 Only this and nothing more.'""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1771,7 +1754,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 From my books surcease of sorrow-sorrow for the lost Lenore-
                                 For the rare and radiant maiden whom the angels name Lenore-
                                 Nameless here for evermore.""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1784,7 +1767,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 'Tis some visitor entreating entrance at my chamber door-
                                 Some late visitor entreating entrance at my chamber door;-
                                 This it is and nothing more.'""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1797,7 +1780,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 And so faintly you came tapping, tapping at my chamber door,
                                 That I scarce was sure I heard you'-here I opened wide the door;-
                                 Darkness there and nothing more.""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1811,7 +1794,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 And the only word there spoken was the whispered word, 'Lenore?'
                                 This I whispered, and an echo murmured back the word, 'Lenore!'-
                                 Merely this and nothing more.""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1824,7 +1807,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 Let me see, then, what thereat is, and this mystery explore-
                                 Let my heart be still a moment and this mystery explore;-
                                 'Tis the wind and nothing more!'""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1837,7 +1820,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 But, with mien of lord or lady, perched above my chamber door-
                                 Perched upon a bust of Pallas just above my chamber door-
                                 Perched, and sat, and nothing more.""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1850,7 +1833,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 Ghastly grim and ancient Raven wandering from the Nightly shore-
                                 Tell me what thy lordly name is on the Night's Plutonian shore!'
                                 Quoth the Raven 'Nevermore.'""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1863,7 +1846,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                                 Ever yet was blessed with seeing bird above his chamber door-
                                 Bird or beast upon the sculptured bust above his chamber door,
                                 With such name as 'Nevermore.'""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1876,7 +1859,7 @@ Then we'll create a new `PageLayout`, and start layout on `Paragraph` objects
                     Till I scarcely more than muttered 'Other friends have flown before-
                     On the morrow he will leave me, as my Hopes have flown before.'
                     Then the bird said 'Nevermore.'""",
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
                 font_size=Decimal(8),
                 respect_newlines_in_text=True,
             )
@@ -1910,8 +1893,8 @@ Let's start by creating an empty `Document`
 Now we're going to create a simple `Table`. By simple I mean; no row-span, no col-span.
 
         t = Table(number_of_rows=5, number_of_columns=2)
-        t.add(Paragraph("Language", color=X11Color("SteelBlue"), font_size=Decimal(20), justification=Justification.CENTERED))
-        t.add(Paragraph("Nof. Questions", color=X11Color("SteelBlue"), font_size=Decimal(20), justification=Justification.CENTERED))
+        t.add(Paragraph("Language", color=X11Color("SteelBlue"), font_size=Decimal(20), horizontal_alignment=Alignment.CENTERED))
+        t.add(Paragraph("Nof. Questions", color=X11Color("SteelBlue"), font_size=Decimal(20), horizontal_alignment=Alignment.CENTERED))
 
         t.add(Paragraph("Javascript"))
         t.add(Paragraph("2,167,178"))
@@ -2065,7 +2048,7 @@ I'm going to start the `Table` by writing the header
                 "Close-up",
                 font_color=X11Color("SteelBlue"),
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
@@ -2073,7 +2056,7 @@ I'm going to start the `Table` by writing the header
                 "Panoramic",
                 font_color=X11Color("SteelBlue"),
                 font_size=Decimal(20),
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
 
@@ -2159,7 +2142,7 @@ Now we can add the data-rows:
                         c = bc
                 table.add(Paragraph(str(v),
                                     font_color=c,
-                                    justification=Justification.CENTERED))
+                                    horizontal_alignment=Alignment.CENTERED))
 
 We're going to make the border on each cell a bit thinner than the default:
 
@@ -2539,7 +2522,7 @@ It seems a bit redundant to repeat that here.
                 font="Helvetica-Bold",
                 font_size=Decimal(20),
                 font_color=self.ACCENT_COLOR_1,
-                justification=Justification.CENTERED,
+                horizontal_alignment=Alignment.CENTERED,
             )
         )
 
@@ -2803,7 +2786,7 @@ Next we're going to create a method that writes 1 page of results:
                 Paragraph(
                     str(time),
                     font_size=Decimal(8),
-                    justification=Justification.CENTERED,
+                    horizontal_alignment=Alignment.CENTERED,
                 )
             )
 
@@ -2814,13 +2797,13 @@ If the test passes, we'll print a green 'V', else a red 'X'
                 status_para = Paragraph(
                     "X",
                     font_color=X11Color("Red"),
-                    justification=Justification.CENTERED,
+                    horizontal_alignment=Alignment.CENTERED,
                 )
             else:
                 status_para = Paragraph(
                     "V",
                     font_color=X11Color("Green"),
-                    justification=Justification.CENTERED,
+                    horizontal_alignment=Alignment.CENTERED,
                 )
             table.add(status_para)
             annotation_positions[status_para] = fail_message
@@ -2995,6 +2978,61 @@ use `DisjointShape` if you have a collection of lines (that are not connected).
 
 #### 2.8.1 Using `Shape` to display a figure from `LineArtFactory`
 
+We'll start by creating an empty `Document`
+
+    pdf = Document()
+    page = Page()
+    pdf.append_page(page)
+    layout = SingleColumnLayout(page)
+    
+Next we get `width` and `height` to be able to scale our figure properly
+    
+    w = page.get_page_info().get_width()
+    h = page.get_page_info().get_height()
+    assert w is not None
+    assert h is not None
+
+Note that the asserts aren't strictly needed. But the method `get_width` and `get_height` return a `typing.Optional[Decimal]`
+so, to appease my static typechecker I included the asserts.
+   
+    layout.add(
+        Shape(
+            LineArtFactory.dragon_curve(
+                bounding_box=Rectangle(Decimal(0), Decimal(0), w, h),
+                number_of_iterations=10,
+            ),
+            stroke_color=HexColor("64B6AC"),
+            line_width=Decimal(1),
+            fill_color=None,
+        )
+    )
+    
+So, what's happening here?   
+1. First we construct a `typing.List[typing.Tuple[Decimal, Decimal]]` (a list of points). In this case we're using the `LineArtFactory` to generate them.
+`LineArtFactory` has a number of methods that generate all kinds of figures (geometric, arrows, stars, etc).
+For this example, I picked the dragon curve. You can find more information about this curve here: https://en.wikipedia.org/wiki/Dragon_curve.
+
+2. Next we are feeding these points into the constructor of `Shape`. `Shape` takes a few other arguments as well,
+including `stroke_color` (the color in which to draw, default=`X11Color('black')`), `fill_color`, and `line_width`. 
+
+So why do we take the long route? Why not directly paint on the pdf `Canvas`?
+`Shape` plays nicely with our layout algorithms. If the content needs to be resized or translated during the layout process, `Shape will do so.
+
+It also means we don't have to worry about the precise coordinates when we're building our `Shape`. 
+We can just pretend our figure starts at `(0, 0)` and have `Shape` do the heavy lifting.
+
+Back to our tutorial. We need to store the PDF:
+
+    # attempt to store PDF
+    with open("output.pdf", "wb") as in_file_handle:
+        PDF.dumps(in_file_handle, pdf)
+
+The result should be something like this:
+
+![adding_a_shape](readme_img/adding_a_shape.png)
+
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+      
 #### 2.8.2 Using `DisjointShape` to display a maze
 
 Let's put DisjointShape to the test by generating a maze and adding it to a PDF.
@@ -3017,6 +3055,9 @@ First we'll need some code to generate a Maze:
             # pick an exit
             self._make_gap(reverse_scan_order=True)
 
+Each cell of the `Maze` has 4 walls. Each wall is represented by a prime (north=2, east=3, south=5, west=7).
+Each cell can therefor be represented using 1 number, which is 210 initially.
+
 This algorithm is based on https://en.wikipedia.org/wiki/Maze_generation_algorithm
 
         def _unvisited_neighbours(self, x: int, y: int):
@@ -3037,7 +3078,7 @@ This algorithm is based on https://en.wikipedia.org/wiki/Maze_generation_algorit
                      nbs.append((x + i, y + j))
             return nbs
 
-This function returns the walls representing the maze
+This function returns the walls representing the `Maze`
 
       def get_walls(self, cell_size: int) -> typing.List[typing.Tuple[typing.Tuple[Decimal, Decimal], typing.Tuple[Decimal, Decimal]]]:
          walls: typing.List[typing.Tuple[typing.Tuple[Decimal, Decimal], typing.Tuple[Decimal, Decimal]]] = []
@@ -3054,7 +3095,7 @@ This function returns the walls representing the maze
                     walls.append([[i * cell_size, j * cell_size], [i * cell_size, (j + 1) * cell_size]])
          return walls
 
-This function actually generates the Maze:
+This function actually generates the `Maze`:
 
       def _build_maze(self) -> None:
 
@@ -3097,19 +3138,11 @@ This function actually generates the Maze:
                 # Mark the chosen cell as visited and push it to the stack
                 stk.append((nb[0], nb[1]))
 
-This function creates a gap in the maze wall on an edge (representing the start or exit):
+This function creates a gap in the `Maze` wall on an edge (representing the start or exit):
 
     def _make_gap(self, reverse_scan_order: bool = False):
-        xs = (
-            [x for x in reversed(range(0, self.width))]
-            if reverse_scan_order
-            else [x for x in range(0, self.width)]
-        )
-        ys = (
-            [x for x in reversed(range(0, self.height))]
-            if reverse_scan_order
-            else [x for x in range(0, self.height)]
-        )
+        xs = ([x for x in reversed(range(0, self.width))] if reverse_scan_order else [x for x in range(0, self.width)])
+        ys = ([x for x in reversed(range(0, self.height))] if reverse_scan_order else [x for x in range(0, self.height)])
         for i in xs:
             for j in ys:
                 if i == 0 or i == self.width - 1 or j == 0 or j == self.height - 1:
@@ -3194,7 +3227,7 @@ Finally, with all of that out of the way, let's get to PDF:
 
 The end result should be something like this (keeping in mind the maze is generated randomly, so it might be different on your machine):
 
-![adding_a_disjointshape_to_a_pdf](readme_img/adding_a_disjointshape_to_a_pdf.png)
+![adding_a_disjointshape](readme_img/adding_a_disjointshape.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
         

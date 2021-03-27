@@ -1,0 +1,12 @@
+{
+   "number_of_chars_0": 561,
+   "number_of_chars_1": 267,
+   "number_of_wrong_chars": 4,
+   "number_of_wrong_chars_percentage": 0.0071301247771836,
+   "diffs": {
+      "\u00ab": 1,
+      "\u00bb": 1,
+      "\u00c7": -1,
+      "\u00c8": -1
+   }
+}

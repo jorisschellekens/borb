@@ -8,13 +8,12 @@
     −ty TL
     tx ty Td
 """
+import typing
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
 from ptext.io.read.types import Decimal as pDecimal
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.pdf.canvas.operator.text.move_text_position import MoveTextPosition
-from ptext.pdf.canvas.operator.text.set_text_leading import SetTextLeading
 
 
 class MoveTextPositionSetLeading(CanvasOperator):
@@ -36,5 +35,12 @@ class MoveTextPositionSetLeading(CanvasOperator):
         assert isinstance(operands[0], pDecimal)
         assert isinstance(operands[1], pDecimal)
 
-        SetTextLeading().invoke(canvas, [pDecimal(-operands[1])])
-        MoveTextPosition().invoke(canvas, operands)
+        set_text_leading_op: typing.Optional[CanvasOperator] = canvas.get_operator("TL")
+        assert set_text_leading_op
+        set_text_leading_op.invoke(canvas, [pDecimal(-operands[1])])
+
+        move_text_position_op: typing.Optional[CanvasOperator] = canvas.get_operator(
+            "Td"
+        )
+        assert move_text_position_op
+        move_text_position_op.invoke(canvas, operands)

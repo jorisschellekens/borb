@@ -1,0 +1,15 @@
+{
+   "number_of_chars_0": 5445,
+   "number_of_chars_1": 2038,
+   "number_of_wrong_chars": 36,
+   "number_of_wrong_chars_percentage": 0.006611570247933884,
+   "diffs": {
+      "o": 9,
+      "n": 3,
+      "e": 6,
+      "s": 3,
+      "C": 3,
+      "h": 3,
+      ".": 9
+   }
+}

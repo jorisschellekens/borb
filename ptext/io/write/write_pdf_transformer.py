@@ -83,7 +83,7 @@ class WritePDFTransformer(WriteBaseTransformer):
         now = datetime.datetime.now()
         for n in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
             timestamp_str += "{0:02}".format(n)
-        timestamp_str += "+00"
+        timestamp_str += "Z00"
         return timestamp_str
 
     @staticmethod

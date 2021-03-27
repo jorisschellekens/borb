@@ -1,4 +1,5 @@
 import logging
+import unittest
 from pathlib import Path
 from typing import Optional
 
@@ -15,13 +16,14 @@ logging.basicConfig(
 
 
 class TestExtractParagraph(Test):
+    @unittest.skip
     def test_corpus(self):
         super(TestExtractParagraph, self).test_corpus()
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
-    def test_document(self, file):
+    def _test_document(self, file):
         with open(file, "rb") as pdf_file_handle:
 
             # process document

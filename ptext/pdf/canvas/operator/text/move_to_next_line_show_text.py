@@ -7,12 +7,11 @@
     T*
     string Tj
 """
+import typing
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
-from ptext.pdf.canvas.operator.text.move_to_next_line import MoveToNextLine
-from ptext.pdf.canvas.operator.text.show_text import ShowText
 
 
 class MoveToNextLineShowText(CanvasOperator):
@@ -30,5 +29,12 @@ class MoveToNextLineShowText(CanvasOperator):
         """
         Invoke the ' operator
         """
-        MoveToNextLine().invoke(canvas, [])
-        ShowText().invoke(canvas, operands)
+        move_to_next_line_op: typing.Optional[CanvasOperator] = canvas.get_operator(
+            "T*"
+        )
+        assert move_to_next_line_op
+        move_to_next_line_op.invoke(canvas, [])
+
+        show_text_op: typing.Optional[CanvasOperator] = canvas.get_operator("Tj")
+        assert show_text_op
+        show_text_op.invoke(canvas, operands)

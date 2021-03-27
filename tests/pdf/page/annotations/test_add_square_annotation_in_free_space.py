@@ -1,4 +1,5 @@
 import logging
+import unittest
 from decimal import Decimal
 from pathlib import Path
 
@@ -7,9 +8,10 @@ from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-add-square-annotation-in-free-space.log",
+    filename=Path(get_log_dir(), "test-add-annotation-in-free-space.log"),
     level=logging.DEBUG,
 )
 
@@ -19,16 +21,17 @@ class TestAddSquareAnnotationInFreeSpace(Test):
         super().__init__(methodName)
         self.in_debug = False
         self.output_dir = Path(
-            "../../../output/test-add-square-annotation-in-free-space"
+            get_output_dir(), "test-add-square-annotation-in-free-space"
         )
 
     def test_exact_document(self):
-        self.test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         super(TestAddSquareAnnotationInFreeSpace, self).test_corpus()
 
-    def test_document(self, file):
+    def _test_document(self, file):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():
