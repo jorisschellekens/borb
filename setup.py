@@ -16,7 +16,7 @@ with open('requirements.txt') as fh:
 
 setuptools.setup(
     name="ptext-joris-schellekens",  # Replace with your own username
-    version="1.8.6",
+    version="1.8.5",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="pText is a library for reading, creating and manipulating PDF files in python.",
@@ -26,5 +26,4 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     python_requires=">=3.6",
-    install_requires=required,
 )
