@@ -20,6 +20,497 @@ class LineArtFactory:
     """
 
     @staticmethod
+    def lissajours(
+        bounding_box: Rectangle, x_frequency: int, y_frequency: int
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts = []
+        r = min(bounding_box.width, bounding_box.height)
+        for i in range(0, 360 * x_frequency * y_frequency):
+            x = Decimal(math.sin(math.radians(i * x_frequency))) * r
+            y = Decimal(math.cos(math.radians(i * y_frequency))) * r
+            pts.append((x, y))
+        return pts
+
+    @staticmethod
+    def flowchart_process(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Represents a set of operations that changes value, form, or location of data. Represented as a rectangle.
+        """
+        return LineArtFactory.rectangle(bounding_box)
+
+    @staticmethod
+    def flowchart_decision(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Shows a conditional operation that determines which one of the two paths the program will take.
+        The operation is commonly a yes/no question or true/false test. Represented as a diamond (rhombus).
+        """
+        return LineArtFactory.diamond(bounding_box)
+
+    @staticmethod
+    def flowchart_document(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts = []
+        # build squiggly line
+        arc_height = bounding_box.height / Decimal(8)
+        half_arc_height = arc_height / Decimal(2)
+        from_angle = 150
+        to_angle = 390
+        for i in range(from_angle, to_angle):
+            x = Decimal(i) / Decimal(to_angle - from_angle) * bounding_box.width
+            y = (
+                Decimal(math.cos(math.radians(i))) * arc_height
+                + half_arc_height
+                + bounding_box.y
+            )
+            pts.append((x, y))
+        # add rectangle top
+        pa = pts[0]
+        pb = pts[-1]
+        pts = pts + [
+            (pb[0], bounding_box.y + bounding_box.height),
+            (pa[0], bounding_box.y + bounding_box.height),
+            pa,
+        ]
+        # return
+        return pts
+
+    @staticmethod
+    def flowchart_predefined_document(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts = []
+        # build squiggly line
+        arc_height = bounding_box.height / Decimal(8)
+        half_arc_height = arc_height / Decimal(2)
+        from_angle = 150
+        to_angle = 390
+        for i in range(from_angle, to_angle):
+            x = Decimal(i) / Decimal(to_angle - from_angle) * bounding_box.width
+            y = (
+                Decimal(math.cos(math.radians(i))) * arc_height
+                + half_arc_height
+                + bounding_box.y
+            )
+            pts.append((x, y))
+            if i == int(from_angle + (to_angle - from_angle) / 10):
+                pts.append((x, bounding_box.y + bounding_box.height))
+                pts.append((x, y))
+        # add rectangle top
+        pa = pts[0]
+        pb = pts[-1]
+        pts = pts + [
+            (pb[0], bounding_box.y + bounding_box.height),
+            (pa[0], bounding_box.y + bounding_box.height),
+            pa,
+        ]
+        # return
+        return pts
+
+    @staticmethod
+    def flowchart_multiple_documents(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return []
+
+    @staticmethod
+    def flowchart_data(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates the process of inputting and outputting data,
+        as in entering data or displaying results. Represented as a rhomboid.
+        """
+        w25 = bounding_box.width * Decimal(0.25)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x + w25, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width - w25, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_predefined_process(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Shows named process which is defined elsewhere.
+        Represented as a rectangle with double-struck vertical edges.[14]
+        """
+        w10 = bounding_box.width * Decimal(0.1)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            # stripe (1)
+            (bounding_box.x + bounding_box.width - w10, bounding_box.y),
+            (
+                bounding_box.x + bounding_box.width - w10,
+                bounding_box.y + bounding_box.height,
+            ),
+            (bounding_box.x + bounding_box.width - w10, bounding_box.y),
+            # stripe (2)
+            (bounding_box.x + w10, bounding_box.y),
+            (bounding_box.x + w10, bounding_box.y + bounding_box.height),
+            (bounding_box.x + w10, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_stored_data(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return []
+
+    @staticmethod
+    def flowchart_internal_storage(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        w = min(bounding_box.width, bounding_box.height)
+        w10 = w * Decimal(0.1)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + w),
+            (bounding_box.x + w, bounding_box.y + w),
+            (bounding_box.x + w, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+            # cross
+            (bounding_box.x + w10, bounding_box.y),
+            (bounding_box.x + w10, bounding_box.y + w),
+            (bounding_box.x, bounding_box.y + w),
+            (bounding_box.x, bounding_box.y + w - w10),
+            (bounding_box.x + w, bounding_box.y + w - w10),
+            (bounding_box.x, bounding_box.y + w - w10),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_sequential_data(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts = []
+        r = min(bounding_box.width, bounding_box.height)
+        mid_x = bounding_box.x + r
+        mid_y = bounding_box.y + r
+        for i in range(0, 320):
+            x = Decimal(math.sin(math.radians(i + 180))) * r + mid_x
+            y = Decimal(math.cos(math.radians(i + 180))) * r + mid_y
+            pts.append((x, y))
+        #
+        y0 = pts[0][1]
+        y350 = pts[-1][1]
+        pts.append((r + mid_x, y350))
+        pts.append((r + mid_x, y0))
+        pts.append(pts[0])
+        return pts
+
+    @staticmethod
+    def flowchart_direct_data(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return []
+
+    @staticmethod
+    def flowchart_manual_input(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Represented by quadrilateral, with the top irregularly sloping up from left to right,
+        like the side view of a keyboard.
+        """
+        h80 = bounding_box.height * Decimal(0.8)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + h80),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_manual_operation(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Represented by a trapezoid with the longest parallel side at the top,
+        to represent an operation or adjustment to process that can only be made manually.
+        """
+        h20 = bounding_box.height * Decimal(0.2)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (
+                bounding_box.x + bounding_box.width,
+                bounding_box.y + bounding_box.height - h20,
+            ),
+            (bounding_box.x + bounding_box.width, bounding_box.y + h20),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_card(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        h825 = bounding_box.height * Decimal(0.825)
+        w175 = bounding_box.width * Decimal(0.175)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + h825),
+            (bounding_box.x + w175, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_paper_tape(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts_a = []
+        pts_b = []
+        # build squiggly line
+        arc_height = bounding_box.height / Decimal(8)
+        half_arc_height = arc_height / Decimal(2)
+        from_angle = 150
+        to_angle = 390
+        for i in range(from_angle, to_angle):
+            x = Decimal(i) / Decimal(to_angle - from_angle) * bounding_box.width
+            ya = (
+                Decimal(math.cos(math.radians(i))) * arc_height
+                + half_arc_height
+                + bounding_box.y
+            )
+            yb = (
+                Decimal(math.cos(math.radians(i))) * arc_height
+                + half_arc_height
+                + bounding_box.y
+                + bounding_box.height
+            )
+            pts_a.append((x, ya))
+            pts_b.append((x, yb))
+        # return
+        return pts_a + [x for x in reversed(pts_b)] + [pts_a[0]]
+
+    @staticmethod
+    def flowchart_preparation(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Represented by an elongated hexagon,
+        originally used for steps like setting a switch or initializing a routine.
+        """
+        half_height = bounding_box.height / Decimal(2)
+        quarter_width = bounding_box.width / Decimal(4)
+        return [
+            (bounding_box.x, bounding_box.y + half_height),
+            (bounding_box.x + quarter_width, bounding_box.y + bounding_box.height),
+            (
+                bounding_box.x + bounding_box.width - quarter_width,
+                bounding_box.y + bounding_box.height,
+            ),
+            (bounding_box.x + bounding_box.width, bounding_box.y + half_height),
+            (bounding_box.x + bounding_box.width - quarter_width, bounding_box.y),
+            (bounding_box.x + quarter_width, bounding_box.y),
+            (bounding_box.x, bounding_box.y + half_height),
+        ]
+
+    @staticmethod
+    def flowchart_loop_limit(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        w25 = bounding_box.width * Decimal(0.25)
+        h75 = bounding_box.height * Decimal(0.75)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + h75),
+            (bounding_box.x + w25, bounding_box.y + bounding_box.height),
+            (
+                bounding_box.x + bounding_box.width - w25,
+                bounding_box.y + bounding_box.height,
+            ),
+            (bounding_box.x + bounding_box.width, bounding_box.y + h75),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_termination(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates the beginning and ending of a program or sub-process.
+        Represented as a stadium, oval or rounded (fillet) rectangle.
+        They usually contain the word "Start" or "End", or another phrase signaling the start or end of a process,
+        such as "submit inquiry" or "receive product".
+        """
+        return []
+
+    @staticmethod
+    def flowchart_collate(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_delay(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return []
+
+    @staticmethod
+    def flowchart_extract(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return [
+            (bounding_box.x, bounding_box.y),
+            (
+                bounding_box.x + bounding_box.width / Decimal(2),
+                bounding_box.y + bounding_box.height,
+            ),
+            (bounding_box.x + bounding_box.width, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_merge(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return [
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width / Decimal(2), bounding_box.y),
+            (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+        ]
+
+    @staticmethod
+    def flowchart_or(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts = []
+        r = min(bounding_box.width, bounding_box.height)
+        mid_x = bounding_box.x + r
+        mid_y = bounding_box.y + r
+        for i in range(0, 360):
+            x = Decimal(math.sin(math.radians(i))) * r + mid_x
+            y = Decimal(math.cos(math.radians(i))) * r + mid_y
+            pts.append((x, y))
+            if i == 0 or i == 90:
+                xb = Decimal(math.sin(math.radians(i + 180))) * r + mid_x
+                yb = Decimal(math.cos(math.radians(i + 180))) * r + mid_y
+                pts.append((xb, yb))
+                pts.append((x, y))
+        pts.append(pts[0])
+        return pts
+
+    @staticmethod
+    def flowchart_sort(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        half_width = bounding_box.width / Decimal(2)
+        half_height = bounding_box.height / Decimal(2)
+        return [
+            (bounding_box.x, bounding_box.y + half_height),
+            (bounding_box.x + bounding_box.width, bounding_box.y + half_height),
+            (bounding_box.x, bounding_box.y + half_height),
+            (bounding_box.x + half_width, bounding_box.y + bounding_box.height),
+            (bounding_box.x + bounding_box.width, bounding_box.y + half_height),
+            (bounding_box.x + half_width, bounding_box.y),
+            (bounding_box.x, bounding_box.y + half_height),
+        ]
+
+    @staticmethod
+    def flowchart_summing_junction(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        pts = []
+        r = min(bounding_box.width, bounding_box.height)
+        mid_x = bounding_box.x + r
+        mid_y = bounding_box.y + r
+        for i in range(0, 360):
+            x = Decimal(math.sin(math.radians(i))) * r + mid_x
+            y = Decimal(math.cos(math.radians(i))) * r + mid_y
+            pts.append((x, y))
+            if i == 45 or i == 135:
+                xb = Decimal(math.sin(math.radians(i + 180))) * r + mid_x
+                yb = Decimal(math.cos(math.radians(i + 180))) * r + mid_y
+                pts.append((xb, yb))
+                pts.append((x, y))
+        pts.append(pts[0])
+        return pts
+
+    @staticmethod
+    def flowchart_database(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return []
+
+    @staticmethod
+    def flowchart_on_page_reference(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return LineArtFactory.circle(bounding_box)
+
+    @staticmethod
+    def flowchart_off_page_reference(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """ "
+        A labeled connector for use when the target is on another page.
+        Represented as a home plate-shaped pentagon.
+        """
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (
+                bounding_box.x + bounding_box.width * Decimal(0.5),
+                bounding_box.y + bounding_box.height,
+            ),
+            (
+                bounding_box.x + bounding_box.width,
+                bounding_box.y + bounding_box.height * Decimal(0.5),
+            ),
+            (bounding_box.x + bounding_box.width * Decimal(0.5), bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_process_iso_9000(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        w20 = bounding_box.width * Decimal(0.2)
+        h50 = bounding_box.height * Decimal(0.5)
+        return [
+            (bounding_box.x, bounding_box.y),
+            (bounding_box.x + w20, bounding_box.y + h50),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            (
+                bounding_box.x + bounding_box.width - w20,
+                bounding_box.y + bounding_box.height,
+            ),
+            (bounding_box.x + bounding_box.width, bounding_box.y + h50),
+            (bounding_box.x + bounding_box.width - w20, bounding_box.y),
+            (bounding_box.x, bounding_box.y),
+        ]
+
+    @staticmethod
+    def flowchart_transport(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        return []
+
+    @staticmethod
     def dragon_curve(
         bounding_box: Rectangle, number_of_iterations: int = 10
     ) -> typing.List[Tuple[Decimal, Decimal]]:
@@ -330,6 +821,20 @@ class LineArtFactory:
         This function returns the coordinates for an octagon that fits in the given bounding box
         """
         return LineArtFactory.regular_n_gon(bounding_box, 8)
+
+    @staticmethod
+    def circle(
+        bounding_box: Rectangle,
+    ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        r = Decimal(min(bounding_box.width, bounding_box.height)) / Decimal(2)
+        mid_x = bounding_box.x + r
+        mid_y = bounding_box.y + r
+        points: typing.List[Tuple[Decimal, Decimal]] = []
+        for i in range(0, 360):
+            x = Decimal(math.sin(math.radians(i))) * r + mid_x
+            y = Decimal(math.cos(math.radians(i))) * r + mid_y
+            points.append((x, y))
+        return points
 
     @staticmethod
     def fraction_of_circle(

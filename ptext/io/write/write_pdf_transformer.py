@@ -1,4 +1,5 @@
 import datetime
+import logging
 import random
 import typing
 from typing import Any, Optional
@@ -16,6 +17,8 @@ from ptext.io.write.write_base_transformer import (
     WriteTransformerContext,
 )
 from ptext.pdf.document import Document
+
+logger = logging.getLogger(__name__)
 
 
 class WritePDFTransformer(WriteBaseTransformer):
@@ -97,7 +100,8 @@ class WritePDFTransformer(WriteBaseTransformer):
             objects_done.append(obj)
             try:
                 obj.set_reference(None)  # type: ignore [union-attr]
-            except:
+            except Exception as ex:
+                logger.warning(str(ex))
                 pass
             if isinstance(obj, List):
                 assert isinstance(obj, List)

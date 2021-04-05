@@ -15,15 +15,15 @@ from ptext.pdf.pdf import PDF
 from tests.util import get_log_dir, get_output_dir
 
 logging.basicConfig(
-    filename=Path(get_log_dir(), "test-write-paragraph.log"),
+    filename=Path(get_log_dir(), "test-write-paragraph-save-twice.log"),
     level=logging.DEBUG,
 )
 
 
-class TestWriteParagraph(unittest.TestCase):
+class TestWriteParagraphSaveTwice(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-write-paragraph")
+        self.output_dir = Path(get_output_dir(), "test-write-paragraph-save-twice")
 
     def test_write_document(self):
 
@@ -60,8 +60,14 @@ class TestWriteParagraph(unittest.TestCase):
         )
 
         # determine output location
-        out_file = self.output_dir / "output.pdf"
+        out_file_001 = self.output_dir / "output_001.pdf"
+        out_file_002 = self.output_dir / "output_002.pdf"
 
         # attempt to store PDF
-        with open(out_file, "wb") as in_file_handle:
+        with open(out_file_001, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+        print("\nSAVING SECOND TIME\n")
+
+        with open(out_file_002, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)

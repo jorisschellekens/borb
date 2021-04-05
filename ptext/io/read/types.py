@@ -123,6 +123,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
             setattr(self, "_reference", None)
         assert (
             self._reference is None
+            or reference is None
             or self._reference.object_number == reference.object_number
             or (
                 self._reference.parent_stream_object_number

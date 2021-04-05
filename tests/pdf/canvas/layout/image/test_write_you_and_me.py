@@ -2,8 +2,6 @@ import logging
 import unittest
 from pathlib import Path
 
-from PIL import Image as PILImage
-
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.layout.image import Image
@@ -79,7 +77,7 @@ class TestWriteYouAndMe(unittest.TestCase):
         layout.add(
             Paragraph(
                 """yours, most sincerely
-                                JS
+                                x
                              """,
                 font_color=X11Color("SlateGray"),
                 font="Helvetica-Bold",

@@ -76,13 +76,14 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
 
         # stack to explore Page(s) DFS
         stack_to_handle: typing.List[AnyPDFType] = []
-        stack_to_handle.extend(transformed_root_dictionary["Pages"]["Kids"])
+        stack_to_handle.append(transformed_root_dictionary["Pages"])
 
         # DFS
         while len(stack_to_handle) > 0:
             obj = stack_to_handle.pop(0)
             if isinstance(obj, Page):
                 pages_in_order.append(obj)
+            # \Pages
             if (
                 isinstance(obj, Dictionary)
                 and "Type" in obj
@@ -91,7 +92,7 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
                 and isinstance(obj["Kids"], List)
             ):
                 for k in obj["Kids"]:
-                    stack_to_handle.insert(0, k)
+                    stack_to_handle.append(k)
 
         # change
         transformed_root_dictionary["Pages"][Name("Kids")] = pList()

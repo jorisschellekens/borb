@@ -57,7 +57,7 @@ class ReadReferenceTransformer(ReadBaseTransformer):
                 return ref_from_cache
             # copy because of linkage
             if ref_from_cache.get_parent() != parent_object:  # type: ignore[union-attr]
-                ref_from_cache_copy = ref_from_cache
+                ref_from_cache_copy = ref_from_cache  # TODO
                 ref_from_cache_copy.set_parent(parent_object)  # type: ignore[union-attr]
                 return ref_from_cache_copy
 
@@ -89,6 +89,12 @@ class ReadReferenceTransformer(ReadBaseTransformer):
         # update cache
         if transformed_referenced_object is not None:
             self.cache[object_to_transform] = transformed_referenced_object
+
+        # set reference
+        try:
+            transformed_referenced_object.set_reference(object_to_transform)
+        except:
+            pass
 
         # return
         return transformed_referenced_object

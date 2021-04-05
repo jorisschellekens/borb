@@ -50,9 +50,9 @@ class WritePagesTransformer(WriteDictionaryTransformer):
 
         # queue writing of \Page objects
         queue: typing.List[AnyPDFType] = []
-        for i, p in enumerate(object_to_transform["Kids"]):
-            queue.append(p)
-            ref: Reference = self.get_reference(p, context)
+        for i, k in enumerate(object_to_transform["Kids"]):
+            queue.append(k)
+            ref: Reference = self.get_reference(k, context)
             object_to_transform["Kids"][i] = ref
 
         # delegate to super
@@ -61,3 +61,7 @@ class WritePagesTransformer(WriteDictionaryTransformer):
         # write \Page objects
         for p in queue:
             self.get_root_transformer().transform(p, context)
+
+        # restore \Kids
+        for i, k in enumerate(queue):
+            object_to_transform["Kids"][i] = k
