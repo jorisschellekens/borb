@@ -1,3 +1,10 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of EventListener enables you to
+    extract font-related information from a Document
+"""
 import typing
 from typing import List
 
@@ -7,11 +14,16 @@ from ptext.pdf.canvas.font.font import Font
 
 
 class FontExtraction(EventListener):
+    """
+    This implementation of EventListener enables you to
+    extract font-related information from a Document
+    """
+
     def __init__(self):
         self.fonts_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
+    def _event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event)
 
@@ -38,6 +50,9 @@ class FontExtraction(EventListener):
             self.fonts_per_page[self.current_page].append(f)
 
     def get_fonts_per_page(self, page_number: int) -> List[Font]:
+        """
+        This function returns all fonts used on a given page
+        """
         return (
             self.fonts_per_page[page_number]
             if page_number in self.fonts_per_page
@@ -45,6 +60,9 @@ class FontExtraction(EventListener):
         )
 
     def get_font_names_per_page(self, page_number: int) -> List[str]:
+        """
+        This function returns all font names used on a given page
+        """
         out: typing.List[str] = []
         for x in self.get_fonts_per_page(page_number):
             font_name: typing.Optional[str] = x.get_font_name()

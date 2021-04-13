@@ -19,6 +19,9 @@ class WriteNameTransformer(WriteBaseTransformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents a Name object
+        """
         return isinstance(any, Name)
 
     def transform(

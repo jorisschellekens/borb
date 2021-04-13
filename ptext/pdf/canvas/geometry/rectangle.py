@@ -54,5 +54,8 @@ class Rectangle:
         return self.height
 
     def intersects(self, other_rectangle: "Rectangle") -> bool:
-        # TODO
+        """
+        This function returns True if this Rectangle intersects with the given Rectangle,
+        False otherwise
+        """
         return False

@@ -51,6 +51,9 @@ class UnorderedList(LayoutElement):
         self.items: typing.List[LayoutElement] = []
 
     def add(self, element: LayoutElement) -> "UnorderedList":
+        """
+        This function adds a LayoutElement to this UnorderedList
+        """
         self.items.append(element)
         element.parent = self
         return self
@@ -152,6 +155,9 @@ class OrderedList(LayoutElement):
         self.items: typing.List[LayoutElement] = []
 
     def add(self, element: LayoutElement) -> "OrderedList":
+        """
+        This function adds a LayoutElement to this OrderedList
+        """
         self.items.append(element)
         return self
 

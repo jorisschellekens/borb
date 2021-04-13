@@ -1,3 +1,26 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    In information retrieval, tf–idf, TF*IDF, or TFIDF, short for term frequency–inverse document frequency,
+    is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
+    It is often used as a weighting factor in searches of information retrieval, text mining, and user modeling.
+
+    The tf–idf value increases proportionally to the number of times a word appears in the document
+    and is offset by the number of documents in the corpus that contain the word,
+    which helps to adjust for the fact that some words appear more frequently in general.
+
+    tf–idf is one of the most popular term-weighting schemes today.
+    A survey conducted in 2015 showed that 83% of text-based recommender systems in digital libraries use tf–idf.
+
+    Variations of the tf–idf weighting scheme are often used by search engines as a central tool
+    in scoring and ranking a document's relevance given a user query.
+    tf–idf can be successfully used for stop-words filtering in various subject fields,
+    including text summarization and classification.
+
+    One of the simplest ranking functions is computed by summing the tf–idf for each query term;
+    many more sophisticated ranking functions are variants of this simple model.
+"""
 import re
 import typing
 from math import log
@@ -8,6 +31,10 @@ from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
 class TFIDFKeyword:
+    """
+    This class represents a TF-IDF keyword and its associated meta-data
+    """
+
     def __init__(
         self,
         text: str,
@@ -23,7 +50,10 @@ class TFIDFKeyword:
         self.occurs_on_pages = [self.page_number]
         self.number_of_pages = number_of_pages
 
-    def get_tf_idf_score(self):
+    def get_tf_idf_score(self) -> float:
+        """
+        This function returns the TF-IDF score for this keyword
+        """
         tf = self.term_frequency / self.words_on_page
         idf = log(self.number_of_pages / (1 + len(self.occurs_on_pages)))
         return (tf + 0.001) * (idf + 0.001)
@@ -114,6 +144,9 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
     def get_keywords_per_page(
         self, page_number: int, limit: Optional[int] = None
     ) -> List[TFIDFKeyword]:
+        """
+        This function returns a typing.List[TFIDFKeyword] for a given page
+        """
         out = sorted(
             [
                 x

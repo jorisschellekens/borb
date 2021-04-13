@@ -45,7 +45,7 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
                 assert isinstance(obj, String)
                 tri = ChunkOfTextRenderEvent(canvas.graphics_state, obj)
                 # render
-                canvas.event_occurred(tri)
+                canvas._event_occurred(tri)
                 # update text rendering location
                 canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width
                 continue

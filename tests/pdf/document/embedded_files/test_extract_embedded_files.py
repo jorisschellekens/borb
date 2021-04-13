@@ -4,9 +4,10 @@ from pathlib import Path
 
 from ptext.pdf.pdf import PDF
 from tests.test import Test
+from tests.util import get_log_dir
 
 logging.basicConfig(
-    filename="../../../logs/test-extract-embedded-files.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-extract-embedded-files.log"), level=logging.DEBUG
 )
 
 
@@ -22,13 +23,12 @@ class TestExtractEmbeddedFiles(Test):
         super(TestExtractEmbeddedFiles, self).test_corpus()
 
     def _test_document(self, file):
+        doc = None
         with open(file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
 
-            if (
-                "Names" in doc["XRef"]["Trailer"]["Root"]
-                and "EmbeddedFiles" in doc["XRef"]["Trailer"]["Root"]["Names"]
-            ):
-                print("%s has embedded files" % file.stem)
+        # extract all embedded files
+        embedded_files = doc.get_embedded_files()
 
-        return True
+        # assert(s)
+        assert len(embedded_files) == 1

@@ -3,7 +3,8 @@ import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.audio_export import AudioExport
+
+from ptext.toolkit.export.pdf_to_mp3 import PDFToMP3
 from tests.test import Test
 from tests.util import get_output_dir
 
@@ -33,7 +34,7 @@ class TestExportToMP3(Test):
             self.output_dir.mkdir()
 
         with open(file, "rb") as pdf_file_handle:
-            l = AudioExport()
+            l = PDFToMP3()
             doc = PDF.loads(pdf_file_handle, [l])
             output_file = self.output_dir / (file.stem + ".mp3")
             l.get_audio_file_per_page(0, output_file)

@@ -25,4 +25,4 @@ class EndTextObject(CanvasOperator):
         """
         canvas.graphics_state.text_matrix = None
         canvas.graphics_state.text_line_matrix = None
-        canvas.event_occurred(EndTextEvent())
+        canvas._event_occurred(EndTextEvent())

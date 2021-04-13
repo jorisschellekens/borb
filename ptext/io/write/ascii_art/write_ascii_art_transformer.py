@@ -24,6 +24,10 @@ class WriteASCIIArtTransformer(WriteBaseTransformer):
         self.has_been_used = False
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True once per Document (on the first Stream object) and embeds some ASCII art
+        This is used to embed the current pText version in each Document
+        """
         return isinstance(any, Stream) and not self.has_been_used
 
     def transform(

@@ -4,7 +4,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.svg_export import SVGExport
+
+from ptext.toolkit.export.pdf_to_svg import PDFToSVG
 from tests.test import Test
 from tests.util import get_output_dir
 
@@ -34,7 +35,7 @@ class TestExportToSVG(Test):
             self.output_dir.mkdir()
 
         with open(file, "rb") as pdf_file_handle:
-            l = SVGExport()
+            l = PDFToSVG()
             doc = PDF.loads(pdf_file_handle, [l])
             output_file = self.output_dir / (file.stem + ".svg")
             with open(output_file, "wb") as svg_file_handle:

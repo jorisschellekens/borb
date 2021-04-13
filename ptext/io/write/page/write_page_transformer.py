@@ -35,6 +35,9 @@ class WritePageTransformer(WriteDictionaryTransformer):
         self.queue: typing.List[AnyPDFType] = []
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents an \Page Dictionary
+        """
         return isinstance(any, Dictionary) and "Type" in any and any["Type"] == "Page"
 
     def _is_pages_dictionary(self, object):
@@ -53,6 +56,9 @@ class WritePageTransformer(WriteDictionaryTransformer):
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes a \Page Dictionary to a byte stream
+        """
         assert isinstance(object_to_transform, Dictionary)
         assert context is not None
         assert context.root_object is not None

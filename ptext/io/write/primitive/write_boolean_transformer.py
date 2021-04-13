@@ -19,6 +19,9 @@ class WriteBooleanTransformer(WriteBaseTransformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents a Boolean object
+        """
         return isinstance(any, Boolean)
 
     def transform(

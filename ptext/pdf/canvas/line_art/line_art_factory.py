@@ -23,6 +23,15 @@ class LineArtFactory:
     def lissajours(
         bounding_box: Rectangle, x_frequency: int, y_frequency: int
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        A Lissajous curve /ˈlɪsəʒuː/, also known as Lissajous figure or Bowditch curve /ˈbaʊdɪtʃ/, is the graph of a system of parametric equations
+        which describe complex harmonic motion.
+        This family of curves was investigated by Nathaniel Bowditch in 1815, and later in more detail in 1857 by Jules Antoine Lissajous (for whom it has been named).
+        The appearance of the figure is highly sensitive to the ratio x_frequency / y_frequency.
+        For a ratio of 1, the figure is an ellipse, with special cases including circles.
+        The visual form of these curves is often suggestive of a three-dimensional knot,
+        and indeed many kinds of knots, including those known as Lissajous knots, project to the plane as Lissajous figures.
+        """
         pts = []
         r = min(bounding_box.width, bounding_box.height)
         for i in range(0, 360 * x_frequency * y_frequency):
@@ -54,6 +63,9 @@ class LineArtFactory:
     def flowchart_document(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Shows a printed document or report.
+        """
         pts = []
         # build squiggly line
         arc_height = bounding_box.height / Decimal(8)
@@ -83,6 +95,9 @@ class LineArtFactory:
     def flowchart_predefined_document(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Shows a predefined printed document or report.
+        """
         pts = []
         # build squiggly line
         arc_height = bounding_box.height / Decimal(8)
@@ -115,6 +130,9 @@ class LineArtFactory:
     def flowchart_multiple_documents(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Represents multiple documents in a process
+        """
         return []
 
     @staticmethod
@@ -166,12 +184,22 @@ class LineArtFactory:
     def flowchart_stored_data(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This is a general data storage object used in the process flow as opposed to data which could be also stored on a hard drive,
+        magnetic tape, memory card, of any other storage device.
+        """
         return []
 
     @staticmethod
     def flowchart_internal_storage(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This is a shape which is commonly found in programming flowcharts to illustrate the information stored in memory,
+        as opposed to on a file. This shape is often referred to as the magnetic core memory of early computers;
+        or the random access memory (RAM) as we call it today.
+
+        """
         w = min(bounding_box.width, bounding_box.height)
         w10 = w * Decimal(0.1)
         return [
@@ -194,6 +222,10 @@ class LineArtFactory:
     def flowchart_sequential_data(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This shape is supposed to look like a reel of tape with a small portion of tape extending from the reel.
+        It represents magnetic tape storage which is also called sequential access storage.
+        """
         pts = []
         r = min(bounding_box.width, bounding_box.height)
         mid_x = bounding_box.x + r
@@ -214,6 +246,10 @@ class LineArtFactory:
     def flowchart_direct_data(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Direct Data object in a process flow represents information stored which can be accessed directly.
+        This object represents a computer's hard drive.
+        """
         return []
 
     @staticmethod
@@ -222,7 +258,7 @@ class LineArtFactory:
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
         """
         Represented by quadrilateral, with the top irregularly sloping up from left to right,
-        like the side view of a keyboard.
+        like the side view of a keyboard. Represents a step where a user is prompted to enter information manually.
         """
         h80 = bounding_box.height * Decimal(0.8)
         return [
@@ -257,6 +293,14 @@ class LineArtFactory:
     def flowchart_card(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This is the old IBM punched card. Each line of a program was punched into one IBM card.
+        Then the cards were stacked in order and taken to a card reader.
+        Usually the student would submit the cards and someone else would run them during the middle of the night,
+        when the computer wasn't so busy. The output was printed on wide z-fold paper.
+        If you made a mistake, you would have to resubmit the cards and wait another day.
+        Large programs had stacks of cards several feet high. If you are using this shape, you need to update your hardware.
+        """
         h825 = bounding_box.height * Decimal(0.825)
         w175 = bounding_box.width * Decimal(0.175)
         return [
@@ -272,6 +316,11 @@ class LineArtFactory:
     def flowchart_paper_tape(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        An outdated symbol rarely ever used in modern practices or process flows,
+        but this shape could be used if you’re mapping out processes or input methods
+        on much older computers and CNC machines.
+        """
         pts_a = []
         pts_b = []
         # build squiggly line
@@ -324,6 +373,9 @@ class LineArtFactory:
     def flowchart_loop_limit(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates the point at which a loop should stop.
+        """
         w25 = bounding_box.width * Decimal(0.25)
         h75 = bounding_box.height * Decimal(0.75)
         return [
@@ -349,12 +401,34 @@ class LineArtFactory:
         They usually contain the word "Start" or "End", or another phrase signaling the start or end of a process,
         such as "submit inquiry" or "receive product".
         """
-        return []
+        pts_a = []
+        pts_b = []
+        r_major = bounding_box.height * Decimal(0.5)
+        r_minor = bounding_box.width * Decimal(0.25)
+        for i in range(0, 180):
+            x = (
+                Decimal(math.sin(math.radians(i))) * r_minor
+                + bounding_box.width * Decimal(0.5)
+                + bounding_box.x
+            )
+            y = Decimal(math.cos(math.radians(i))) * r_major + r_major + bounding_box.y
+            pts_a.append((x, y))
+            x = Decimal(math.sin(math.radians(i + 180))) * r_minor + bounding_box.x
+            y = (
+                Decimal(math.cos(math.radians(i + 180))) * r_major
+                + r_major
+                + bounding_box.y
+            )
+            pts_b.append((x, y))
+        return pts_b + pts_a + [pts_b[0]]
 
     @staticmethod
     def flowchart_collate(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates a step that orders information into a standard format.
+        """
         return [
             (bounding_box.x, bounding_box.y),
             (bounding_box.x + bounding_box.width, bounding_box.y + bounding_box.height),
@@ -367,12 +441,35 @@ class LineArtFactory:
     def flowchart_delay(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
-        return []
+        """
+        Represents a segment of delay in a process.
+        It can be helpful to indicate the exact length of delay within the shape.
+        """
+        pts_a = []
+        r_major = bounding_box.height * Decimal(0.5)
+        r_minor = bounding_box.width * Decimal(0.25)
+        for i in range(0, 180):
+            x = (
+                Decimal(math.sin(math.radians(i))) * r_minor
+                + bounding_box.width * Decimal(0.5)
+                + bounding_box.x
+            )
+            y = Decimal(math.cos(math.radians(i))) * r_major + r_major + bounding_box.y
+            pts_a.append((x, y))
+        return pts_a + [
+            (bounding_box.x, pts_a[-1][1]),
+            (bounding_box.x, bounding_box.y + bounding_box.height),
+            pts_a[0],
+        ]
 
     @staticmethod
     def flowchart_extract(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        The Extract shape involves removal of one or more specific sets of items from a set.
+        For example, you could have a list of addresses and extract those that are within 10 miles of some location.
+        """
         return [
             (bounding_box.x, bounding_box.y),
             (
@@ -387,6 +484,9 @@ class LineArtFactory:
     def flowchart_merge(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        The Merge shape combines two or more sets of items into one set.
+        """
         return [
             (bounding_box.x, bounding_box.y + bounding_box.height),
             (bounding_box.x + bounding_box.width / Decimal(2), bounding_box.y),
@@ -398,6 +498,9 @@ class LineArtFactory:
     def flowchart_or(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Just as described, this shape indicates that the process flow continues two paths or more.
+        """
         pts = []
         r = min(bounding_box.width, bounding_box.height)
         mid_x = bounding_box.x + r
@@ -418,6 +521,9 @@ class LineArtFactory:
     def flowchart_sort(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates a step that organizes a list of items into a sequence or sets based on some pre-determined criteria.
+        """
         half_width = bounding_box.width / Decimal(2)
         half_height = bounding_box.height / Decimal(2)
         return [
@@ -434,6 +540,9 @@ class LineArtFactory:
     def flowchart_summing_junction(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates a point in the flowchart where multiple branches converge back into a single process.
+        """
         pts = []
         r = min(bounding_box.width, bounding_box.height)
         mid_x = bounding_box.x + r
@@ -454,12 +563,20 @@ class LineArtFactory:
     def flowchart_database(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Indicates a list of information with a standard structure that allows for searching and sorting.
+        """
         return []
 
     @staticmethod
     def flowchart_on_page_reference(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This small circle (also known as Connector) indicates that the next (or previous) step is somewhere else on the drawing.
+        This is particularly useful for large flowcharts where you would otherwise have to use a long connector,
+        which can be hard to follow.
+        """
         return LineArtFactory.circle(bounding_box)
 
     @staticmethod
@@ -489,6 +606,9 @@ class LineArtFactory:
     def flowchart_process_iso_9000(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        Represents a set of operations that changes value, form, or location of data. Represented as a rectangle.
+        """
         w20 = bounding_box.width * Decimal(0.2)
         h50 = bounding_box.height * Decimal(0.5)
         return [
@@ -826,6 +946,9 @@ class LineArtFactory:
     def circle(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This function returns the coordinates for a circle that fits in the given bounding box
+        """
         r = Decimal(min(bounding_box.width, bounding_box.height)) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r

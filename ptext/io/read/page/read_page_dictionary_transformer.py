@@ -31,6 +31,9 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents a \Page Dictionary
+        """
         return (
             isinstance(object, Dict) and "Type" in object and object["Type"] == "Page"
         )
@@ -42,6 +45,9 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a \Page Dictionary to a byte stream
+        """
 
         # convert dictionary like structure
         tmp = Page().set_parent(parent_object)  # type: ignore [attr-defined]
@@ -61,7 +67,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
                 tmp[k] = v
 
         # send out BeginPageEvent
-        tmp.event_occurred(BeginPageEvent(tmp))
+        tmp._event_occurred(BeginPageEvent(tmp))
 
         # set up canvas
         assert "Contents" in tmp
@@ -79,7 +85,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
                 canvas.read(io.BytesIO(bts))
 
         # send out EndPageEvent
-        tmp.event_occurred(EndPageEvent(tmp))
+        tmp._event_occurred(EndPageEvent(tmp))
 
         # return
         return tmp

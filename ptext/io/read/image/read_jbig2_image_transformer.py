@@ -29,6 +29,9 @@ class ReadJBIG2ImageTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be transformed is a JBIG2 object
+        """
         return (
             isinstance(object, Stream)
             and object.get("Type", None) in ["XObject", None]
@@ -50,6 +53,9 @@ class ReadJBIG2ImageTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a JBIG Image to a byte stream
+        """
 
         # use PIL to read image bytes
         assert isinstance(object_to_transform, Stream)

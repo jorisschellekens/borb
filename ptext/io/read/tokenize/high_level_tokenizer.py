@@ -1,3 +1,11 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains everything needed to perform low-level tokenization against PDF syntax.
+    Low-level tokenization aims to separate numbers, strings, names, comments, start of dictionary, start of array, etc
+    The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
+"""
 import re
 from typing import Optional
 
@@ -18,6 +26,15 @@ from ptext.io.read.types import (
 
 
 class HighLevelTokenizer(LowLevelTokenizer):
+    """
+    In computer science, lexical analysis, lexing or tokenization is the process of converting a sequence of characters
+    (such as in a computer program or web page) into a sequence of tokens (strings with an assigned and thus identified meaning).
+    A program that performs lexical analysis may be termed a lexer, tokenizer, or scanner,
+    although scanner is also a term for the first stage of a lexer.
+    A lexer is generally combined with a parser, which together analyze the syntax of programming languages, web pages,
+    and so forth.
+    """
+
     def read_array(self) -> List:
         """
         This function processes the next tokens and returns a List.

@@ -24,6 +24,9 @@ class ReadNumberTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be transformed is a Decimal object
+        """
         return isinstance(object, Decimal)
 
     def transform(
@@ -33,5 +36,8 @@ class ReadNumberTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a Decimal to a byte stream
+        """
         assert isinstance(object_to_transform, Decimal)
         return Decimal(object_to_transform).set_parent(parent_object)  # type: ignore [attr-defined]

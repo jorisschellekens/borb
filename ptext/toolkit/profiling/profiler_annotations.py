@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module defines an annotation used for profiling
+"""
 import cProfile
 import io
 import pstats
@@ -5,8 +11,15 @@ from pstats import SortKey  # type: ignore [attr-defined]
 
 
 def profile(func):
-    def wrapper(*args, **kwargs):
+    """
+    This annotation wraps itself around a function, profiling it
+    """
 
+    def wrapper(*args, **kwargs):
+        """
+        This function starts the profiling, executes the function (storing the result), outputs the profiling information
+        and returns the result
+        """
         # setup profiler
         pr = cProfile.Profile()
         pr.enable()

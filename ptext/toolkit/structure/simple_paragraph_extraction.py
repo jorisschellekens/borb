@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of EventListener extracts all paragraphs of text from a PDF Document
+"""
 import typing
 from decimal import Decimal
 
@@ -11,6 +17,10 @@ from ptext.toolkit.structure.simple_line_of_text_extraction import (
 
 
 class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
+    """
+    This implementation of EventListener extracts all paragraphs of text from a PDF Document
+    """
+
     def __init__(
         self,
         minimum_horizontal_overlap_percentage: Decimal = Decimal(0.80),
@@ -96,6 +106,9 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
         self.paragraphs_per_page[self.current_page_number] = paragraphs
 
     def get_paragraphs(self, page: int) -> typing.List[Paragraph]:
+        """
+        This function returns the paragraphs on a given page
+        """
         return self.paragraphs_per_page.get(page, [])
 
     def _overlap(self, r0: Rectangle, r1: Rectangle) -> Decimal:

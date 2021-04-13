@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of EventListener extracts all text from a PDF Document
+"""
 from decimal import Decimal
 from functools import cmp_to_key
 
@@ -12,12 +18,16 @@ from ptext.pdf.page.page import Page
 
 
 class SimpleTextExtraction(EventListener):
+    """
+    This implementation of EventListener extracts all text from a PDF Document
+    """
+
     def __init__(self):
         self.text_render_info_per_page = {}
         self.text_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
+    def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
             self._render_text(event)
         if isinstance(event, BeginPageEvent):
@@ -26,6 +36,9 @@ class SimpleTextExtraction(EventListener):
             self._end_page(event.get_page())
 
     def get_text(self, page_nr: int) -> str:
+        """
+        This function returns all text on a given page
+        """
         return self.text_per_page[page_nr] if page_nr in self.text_per_page else ""
 
     def _render_text(self, text_render_info: ChunkOfTextRenderEvent):

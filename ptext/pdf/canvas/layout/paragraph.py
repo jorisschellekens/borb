@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This file contains all the classes needed to perform layout of text-elements.
+    This includes; ChunkOfText, LineOfText, Paragraph and Heading
+"""
 import typing
 from decimal import Decimal
 from typing import Union
@@ -14,6 +21,10 @@ from ptext.pdf.page.page import Page, DestinationType
 
 
 class ChunkOfText(LayoutElement):
+    """
+    This implementation of LayoutElement represents one uninterrupted block of text
+    """
+
     def __init__(
         self,
         text: str,
@@ -461,6 +472,11 @@ class Paragraph(LineOfText):
 
 
 class Heading(Paragraph):
+    """
+    This implementation of LayoutElement acts just like Paragraph.
+    It also adds an outline in the document outline tree.
+    """
+
     def __init__(
         self,
         text: str,

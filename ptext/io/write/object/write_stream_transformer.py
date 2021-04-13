@@ -35,6 +35,9 @@ class WriteStreamTransformer(WriteBaseTransformer):
         super(WriteStreamTransformer, self).__init__()
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents a Stream object
+        """
         return isinstance(any, Stream)
 
     def transform(

@@ -28,6 +28,9 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents an \Font Dictionary
+        """
         return (
             isinstance(object, Dictionary)
             and "Type" in object
@@ -41,6 +44,9 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a \FontDescriptor Dictionary to a byte stream
+        """
 
         assert isinstance(object_to_transform, Dictionary)
 

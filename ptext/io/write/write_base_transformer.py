@@ -6,6 +6,16 @@ from ptext.io.read.types import AnyPDFType, Reference
 
 
 class WriteTransformerContext:
+    """
+    This class represents all the meta-information used in the process of persisting a PDF document.
+    This includes:
+    - the root object (the Document itself)
+    - a cache of indirect objects (by id and hash)
+    - references that have been resolved (to avoid endless loops)
+    - the default compression level
+    - etc
+    """
+
     def __init__(
         self,
         destination: Optional[typing.Union[io.BufferedIOBase, io.RawIOBase]] = None,
@@ -46,6 +56,10 @@ class WriteBaseTransformer:
         return p
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if this WriteBaseTransformer can transform the input object,
+        false otherwise
+        """
         return False
 
     def transform(
@@ -122,7 +136,10 @@ class WriteBaseTransformer:
     def get_reference(
         self, object: AnyPDFType, context: WriteTransformerContext
     ) -> Reference:
-
+        """
+        This function builds a Reference for the input object
+        References are re-used whenever possible (hashing is used to detect duplicate objects)
+        """
         obj_id = id(object)
         if obj_id in context.indirect_objects_by_id:
             cached_indirect_object: AnyPDFType = context.indirect_objects_by_id[obj_id]

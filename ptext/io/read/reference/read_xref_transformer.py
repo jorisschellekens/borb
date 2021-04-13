@@ -35,6 +35,9 @@ class ReadXREFTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents a cross-reference table
+        """
         return isinstance(object, io.IOBase)
 
     def transform(
@@ -44,6 +47,9 @@ class ReadXREFTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a cross-reference table to a byte stream
+        """
 
         # update context
         assert context is not None

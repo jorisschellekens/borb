@@ -10,7 +10,7 @@ from ptext.pdf.canvas.layout.image import Image
 from ptext.pdf.document import Document
 
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.json_import import JSONExport
+from ptext.toolkit.export.json_to_pdf import JSONToPDF
 from tests.util import get_output_dir, get_log_dir
 
 logging.basicConfig(
@@ -41,7 +41,7 @@ class TestExportJSONToPDF(unittest.TestCase):
                 json_data = json.loads(json_file_handle.read())
 
             # convert
-            document: Document = JSONExport.convert_json_to_pdf(json_data)
+            document: Document = JSONToPDF.convert_json_to_pdf(json_data)
 
             # store
             output_file = self.output_dir / (file_to_convert + ".pdf")

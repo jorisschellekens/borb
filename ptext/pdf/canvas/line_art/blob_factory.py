@@ -74,6 +74,9 @@ class BlobFactory:
 
     @staticmethod
     def blob(number_of_edges: int) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This function returns a smoothed n-sided blob shape
+        """
 
         # generate regular polygon
         points = [

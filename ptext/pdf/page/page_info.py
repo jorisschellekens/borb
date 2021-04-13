@@ -39,6 +39,12 @@ class PageInfo(Dictionary):
         return self.page["MediaBox"][3]
 
     def get_size(self) -> Tuple[Decimal, Decimal]:
+        """
+        Return the (width, height) of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
+        expressed in default user space units, that shall define the
+        boundaries of the physical medium on which the page shall be
+        displayed or printed (see 14.11.2, "Page Boundaries").
+        """
         return self.get_width() or Decimal(0), self.get_height() or Decimal(0)
 
     def get_size_as_enum(self) -> Optional[PageSize]:
@@ -59,6 +65,9 @@ class PageInfo(Dictionary):
         return None
 
     def get_page_number(self) -> Optional[Decimal]:
+        """
+        This function returns the page number
+        """
         kids = self.page.get_parent().get_parent().get("Kids")
         l = int(self.page.get_parent().get_parent().get("Count"))
         for i in range(0, l):

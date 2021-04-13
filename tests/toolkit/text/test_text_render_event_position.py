@@ -19,7 +19,7 @@ class TextRenderInfoMeasurandListener(EventListener):
     def __init__(self):
         self.measurands = []
 
-    def event_occurred(self, event: Event):
+    def _event_occurred(self, event: Event):
         if isinstance(event, ChunkOfTextRenderEvent):
             assert isinstance(event, ChunkOfTextRenderEvent)
             self.measurands.append(

@@ -29,6 +29,9 @@ class ReadStreamTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents a Stream object
+        """
         return isinstance(object, Stream)
 
     def transform(
@@ -38,7 +41,9 @@ class ReadStreamTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
-
+        """
+        This function writes a Stream to a byte stream
+        """
         assert isinstance(object_to_transform, Stream)
         object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 

@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This file contains all the classes needed to perform layout.
+    This includes an Alignment Enum type, and the base implementation of LayoutElement
+"""
 import typing
 import zlib
 from decimal import Decimal

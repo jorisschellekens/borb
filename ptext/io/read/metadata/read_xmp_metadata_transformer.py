@@ -48,6 +48,9 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents an XML element
+        """
         return (
             isinstance(object, Stream)
             and "Type" in object
@@ -63,6 +66,9 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes an XML Element to a byte stream
+        """
 
         # delegate to super (ReadStreamTransformer)
         out_value = super(ReadXMPMetadataTransformer, self).transform(

@@ -29,6 +29,9 @@ class ReadStringTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents a String or Hexadecimal String or a Name
+        """
         return (
             isinstance(object, String)
             or isinstance(object, HexadecimalString)
@@ -42,6 +45,9 @@ class ReadStringTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a String to a byte stream
+        """
         # set parent
         object_to_transform.set_parent(parent_object)  # type: ignore[union-attr]
         # return

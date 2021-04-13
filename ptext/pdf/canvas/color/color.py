@@ -52,6 +52,9 @@ class RGBColor(Color):
         return self
 
     def to_hex_string(self):
+        """
+        This method returns a hexadecimal string representing the RGB color
+        """
         return "#{:02x}{:02x}{:02x}".format(
             int(self.red), int(self.green), int(self.blue)
         )
@@ -180,6 +183,9 @@ class HSVColor(Color):
         self.value = value
 
     def to_rgb(self) -> "RGBColor":
+        """
+        This method returns the RGB representation of this Color
+        """
         h, s, v = self.hue, self.saturation, self.value
         RGB_MAX = Decimal(255)
         ONE = Decimal(1)
@@ -206,6 +212,9 @@ class HSVColor(Color):
 
     @staticmethod
     def from_rgb(c: RGBColor) -> "HSVColor":
+        """
+        This method returns the HSV representation of an RGB color
+        """
         RGB_MAX = Decimal(255)
         r, g, b = c.red / RGB_MAX, c.green / RGB_MAX, c.blue / RGB_MAX
         mx = max(r, g, b)
@@ -230,11 +239,17 @@ class HSVColor(Color):
 
     @staticmethod
     def opposite(color: Color):
+        """
+        This function returns an HSV color whose hue is the opposite of the current HSV color
+        """
         c: HSVColor = HSVColor.from_rgb(color.to_rgb())
         new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
         return HSVColor(Decimal(new_hue / 360), c.saturation, c.value)
 
     def darker(self) -> "HSVColor":
+        """
+        This function returns a darker shade of the current HSV color
+        """
         return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
 
 

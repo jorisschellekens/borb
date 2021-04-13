@@ -65,6 +65,9 @@ class FreeSpaceFinder(EventListener):
             self.mock_canvas.read(io.BytesIO(bts))
 
     def find_free_space(self, needed_space: Rectangle) -> typing.Optional[Rectangle]:
+        """
+        This function returns a Rectangle (or None) of free space (no text rendering operations, no drawing operations) near the given Rectangle
+        """
         w = int(int(needed_space.width) / self.grid_resolution)
         h = int(int(needed_space.height) / self.grid_resolution)
         possible_points: typing.List[typing.Tuple[Decimal, Decimal]] = []
@@ -105,7 +108,7 @@ class FreeSpaceFinder(EventListener):
             needed_space.height,
         )
 
-    def event_occurred(self, event: Event) -> None:
+    def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
             assert isinstance(event, ChunkOfTextRenderEvent)
             bb: typing.Optional[Rectangle] = event.get_bounding_box()

@@ -29,7 +29,7 @@ class StrokePath(CanvasOperator):
 
         # notify listeners
         for l in gs.path:
-            canvas.event_occurred(LineRenderEvent(gs, l))
+            canvas._event_occurred(LineRenderEvent(gs, l))
 
         # clear path
         gs.path = []

@@ -49,6 +49,6 @@ class Do(CanvasOperator):
         )
 
         if isinstance(xobject, PIL.Image.Image):
-            canvas.event_occurred(
+            canvas._event_occurred(
                 ImageRenderEvent(graphics_state=canvas.graphics_state, image=xobject)
             )

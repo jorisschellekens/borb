@@ -24,6 +24,9 @@ class ReadDictionaryTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be transformed is a Dictionary object
+        """
         return isinstance(object, Dictionary)
 
     def transform(
@@ -33,6 +36,9 @@ class ReadDictionaryTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a Dictionary to a byte stream
+        """
 
         # create root object
         assert isinstance(object_to_transform, Dictionary)

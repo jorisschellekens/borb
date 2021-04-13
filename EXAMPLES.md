@@ -966,12 +966,12 @@ Sometimes, all you need is an image. With `pText` you can easily convert any `Pa
 As usual, we start by reading the `Document`:
 
         with open("input.pdf", "rb") as pdf_file_handle:
-            l = SVGExport()
+            l = PDFToSVG()
             doc = PDF.loads(pdf_file_handle, [l])
 
-Here we are using `SVGExport` which acts like an `EventListener`.
+Here we are using `PDFToSVG` which acts like an `EventListener`.
 `EventListener` implementations are notified every time a rendering instruction is parsed.
-`SVGExport` uses that knowledge to convert the pdf-syntax rendering instructions to svg-syntax.
+`PDFToSVG` uses that knowledge to convert the pdf-syntax rendering instructions to svg-syntax.
             
             with open("output.svg", "wb") as svg_file_handle:
                 svg_file_handle.write(ET.tostring(l.get_svg_per_page(0)))
@@ -992,15 +992,15 @@ For those with hearing-impairments, it can be very useful to be able to convert 
 This is perfectly possible with `pText`.
 
     with open("input.pdf", "rb") as pdf_file_handle:
-        l = AudioExport()
+        l = PDFToMP3()
         doc = PDF.loads(pdf_file_handle, [l])
 
-`AudioExport` then allows you to store an mp3 file for each page.         
+`PDFToMP3` then allows you to store an mp3 file for each page.         
 For this, you can use the `get_audio_file_per_page` method. You need to provide it with a `page_number` and `path`.
         
         l.get_audio_file_per_page(0, "output.mp3")
         
-The constructor of `AudioExport` has some arguments that allow us to tweak the export.       
+The constructor of `PDFToMP3` has some arguments that allow us to tweak the export.       
 
 - `include_position` : This should be set to `True` if you want the position of each `Paragraph` to be spoken as well. This results in output such as "page 1, paragraph 1, top left; once upon a time"
 - `language` : This is the 2-letter abbreviation of the language you expect the text to be in. Default is `en`

@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.markdown_export import MarkdownExport
+from ptext.toolkit.export.pdf_to_markdown import PDFToMarkDown
 from tests.test import Test
 from tests.util import get_output_dir
 
@@ -32,7 +32,7 @@ class TestExportToMarkDown(Test):
             self.output_dir.mkdir()
 
         with open(file, "rb") as pdf_file_handle:
-            l = MarkdownExport()
+            l = PDFToMarkDown()
             doc = PDF.loads(pdf_file_handle, [l])
             output_file = self.output_dir / (file.stem + ".md")
             with open(output_file, "w") as svg_file_handle:

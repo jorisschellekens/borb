@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    A font shall be represented in PDF as a dictionary specifying the type of font, its PostScript name, its encoding,
+    and information that can be used to provide a substitute when the font program is not available. Optionally, the
+    font program may be embedded as a stream object in the PDF file.
+
+    The font types are distinguished by the Subtype entry in the font dictionary. Table 110 lists the font types
+    defined in PDF. Type 0 fonts are called composite fonts; other types of fonts are called simple fonts. In addition
+    to fonts, PDF supports two classes of font-related objects, called CIDFonts and CMaps, described in 9.7.2,
+    "CID-Keyed Fonts Overview". CIDFonts are listed in Table 110 because, like fonts, they are collections of
+    glyphs; however, a CIDFont shall not be used directly but only as a component of a Type 0 font.
+"""
 import logging
 from decimal import Decimal
 from typing import Optional

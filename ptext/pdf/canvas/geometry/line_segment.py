@@ -12,6 +12,10 @@ from ptext.pdf.canvas.geometry.matrix import Matrix
 
 
 class LineSegment:
+    """
+    This class represents a line segment
+    """
+
     def __init__(self, x0: Decimal, y0: Decimal, x1: Decimal, y1: Decimal):
         self.x0 = x0
         self.y0 = y0
@@ -37,6 +41,10 @@ class LineSegment:
         return (self.x1, self.y1)
 
     def transform_by(self, matrix: Matrix) -> "LineSegment":
+        """
+        This function transforms the start and end of this LineSegment by a given Matrix,
+        it returns the transformed LineSegment
+        """
         p0 = matrix.cross(self.x0, self.y0, Decimal(1))
         p1 = matrix.cross(self.x1, self.y1, Decimal(1))
         return LineSegment(p0[0], p0[1], p1[0], p1[1])

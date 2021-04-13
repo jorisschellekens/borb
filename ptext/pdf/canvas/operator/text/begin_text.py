@@ -31,4 +31,4 @@ class BeginTextObject(CanvasOperator):
         """
         canvas.graphics_state.text_matrix = Matrix.identity_matrix()
         canvas.graphics_state.text_line_matrix = Matrix.identity_matrix()
-        canvas.event_occurred(BeginTextEvent())
+        canvas._event_occurred(BeginTextEvent())

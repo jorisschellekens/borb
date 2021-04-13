@@ -43,6 +43,11 @@ class PageLayout:
 
 
 class SingleColumnLayout(PageLayout):
+    """
+    This implementation of PageLayout adds left/right/top/bottom margins to a Page
+    and lays out the content on the Page as if there was a single column to flow text, images, etc into
+    """
+
     def __init__(self, page: Page):
         super().__init__(page)
 
@@ -59,6 +64,10 @@ class SingleColumnLayout(PageLayout):
         self.previous_leading = Decimal(0)
 
     def add(self, layout_element: LayoutElement):
+        """
+        This method adds a `LayoutElement` to the current `Page`.
+        """
+
         # calculate next available rectangle
         assert self.page_width
         next_available_rect: Rectangle = Rectangle(
@@ -91,6 +100,12 @@ class SingleColumnLayout(PageLayout):
 
 
 class MultiColumnLayout(PageLayout):
+    """
+    This implementation of PageLayout adds left/right/top/bottom margins to a Page
+    and lays out the content on the Page as if there were mutliple  columns to flow text, images, etc into.
+    Once a column is full, the next column is automatically selected, although the next column can be manually selected.
+    """
+
     def __init__(self, page: Page, number_of_columns: int = 2):
         super().__init__(page)
 
@@ -115,6 +130,9 @@ class MultiColumnLayout(PageLayout):
         self.column_index = Decimal(0)
 
     def switch_to_next_column(self) -> "PageLayout":
+        """
+        This function forces this PageLayout to move to the next column on the Page
+        """
         self.column_index += Decimal(1)
         if self.column_index == self.number_of_columns:
             return self.switch_to_next_page()
@@ -124,6 +142,9 @@ class MultiColumnLayout(PageLayout):
         return self
 
     def switch_to_next_page(self) -> "PageLayout":
+        """
+        This function forces this PageLayout to move to the next Page
+        """
         self.column_index = Decimal(0)
         assert self.page_height
         self.previous_y = self.page_height - self.vertical_margin
@@ -144,6 +165,9 @@ class MultiColumnLayout(PageLayout):
         return self
 
     def add(self, layout_element: LayoutElement) -> "PageLayout":
+        """
+        This method adds a `LayoutElement` to the current `Page`.
+        """
         if self.column_index >= self.number_of_columns:
             return self
 

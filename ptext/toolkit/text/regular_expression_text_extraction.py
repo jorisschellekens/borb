@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of EventListener allows you to search for regular expressions in a PDF Document
+"""
 import re
 from decimal import Decimal
 from functools import cmp_to_key
@@ -14,6 +20,10 @@ from ptext.pdf.page.page import Page
 
 
 class RegularExpressionTextExtraction(EventListener):
+    """
+    This implementation of EventListener allows you to search for regular expressions in a PDF Document
+    """
+
     def __init__(self, regular_expression):
         self.regular_expression = regular_expression
         self.text_render_info_events_per_page = {}
@@ -21,7 +31,7 @@ class RegularExpressionTextExtraction(EventListener):
         self.text_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
+    def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
             self._render_text(event)
         if isinstance(event, BeginPageEvent):
@@ -30,6 +40,9 @@ class RegularExpressionTextExtraction(EventListener):
             self._end_page(event.get_page())
 
     def get_text_per_page(self, page_nr: int) -> str:
+        """
+        This function returns the text on a given page
+        """
         return self.text_per_page[page_nr] if page_nr in self.text_per_page else ""
 
     def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
@@ -122,6 +135,9 @@ class RegularExpressionTextExtraction(EventListener):
     def get_matched_chunk_of_text_render_events_per_page(
         self, page_number: int
     ) -> List[ChunkOfTextRenderEvent]:
+        """
+        This function returns a typing.List[ChunkOfTextRenderEvent] matching the regular expression, on a given page
+        """
         if page_number not in self.matched_text_render_info_events_per_page:
             return []
         return self.matched_text_render_info_events_per_page[page_number]

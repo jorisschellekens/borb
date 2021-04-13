@@ -108,6 +108,9 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         return self.baseline_bounding_box
 
     def split_on_glyphs(self) -> typing.List["ChunkOfTextRenderEvent"]:
+        """
+        This function splits this ChunkOfTextRenderEvent on every Glyph
+        """
         chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
         x: Decimal = Decimal(0)
         y: Decimal = self._graphics_state.text_rise
@@ -190,9 +193,19 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
 
 
 class LeftToRightComparator:
+    """
+    This class offers a comparator on ChunkOfTextRenderEvent objects.
+    This comparator favors left-to-right, up-to-down text reading order.
+    This corresponds to the expected western language reading order.
+    """
+
     @staticmethod
     def cmp(obj0: ChunkOfTextRenderEvent, obj1: ChunkOfTextRenderEvent):
-
+        """
+        This function compares two ChunkOfTextRenderEvent objects
+        returning a negative number if obj0 occurs first in the (western) reading order,
+        and a positive number otherwise.
+        """
         # get baseline
         y0_round = obj0.get_baseline().y
         y0_round = y0_round - y0_round % 5

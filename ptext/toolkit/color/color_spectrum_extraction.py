@@ -36,7 +36,7 @@ class ColorSpectrumExtraction(EventListener):
         ] = {}
         self.current_page = -1
 
-    def event_occurred(self, event: Event) -> None:
+    def _event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
         if isinstance(event, ChunkOfTextRenderEvent):
@@ -101,7 +101,12 @@ class ColorSpectrumExtraction(EventListener):
         else:
             self.colors_per_page[self.current_page][t] += amount
 
-    def get_colors_per_page(self, page_number: int, limit: Optional[int] = None):
+    def get_colors_per_page(
+        self, page_number: int, limit: Optional[int] = None
+    ) -> typing.List[RGBColor]:
+        """
+        This function returns the colors used on a given page of a PDF
+        """
         if limit is None:
             limit = 32
         tmp = sorted(

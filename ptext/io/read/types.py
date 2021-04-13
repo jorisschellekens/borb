@@ -18,6 +18,16 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 def add_base_methods(object: typing.Any) -> typing.Any:
+    """
+    This function / decorator adds methods to a given object.
+    These added methods are useful for:
+    - handling linkage (parent/child relationships),
+    - serialization (JSON)
+    - hashing
+    - implementing the "listener" design pattern
+    - etc
+    """
+
     def _to_json_serializable(to_convert=None):
         """
         Convert this object to a representation that
@@ -42,9 +52,15 @@ def add_base_methods(object: typing.Any) -> typing.Any:
         return None
 
     def to_json_serializable(self):
+        """
+        This function converts this Object to something that can be JSON serialized
+        """
         return _to_json_serializable(self)
 
     def image_hash_method(self):
+        """
+        This function hashes Image objects
+        """
         w = self.width
         h = self.height
         pixels = [
@@ -62,7 +78,10 @@ def add_base_methods(object: typing.Any) -> typing.Any:
         return hashcode
 
     def deepcopy_mod(self, memodict={}):
-        print("copying %s" % self.__class__.__name__)
+        """
+        This function overrides the __deepcopy__ method
+        this was needed
+        """
         prev_function_ptr = self.__deepcopy__
         self.__deepcopy__ = None
         # copy
@@ -76,12 +95,18 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
     # get_parent
     def get_parent(self):
+        """
+        This function returns the parent Object of the current Object
+        """
         if "_parent" not in vars(self):
             setattr(self, "_parent", None)
         return self._parent
 
     # set_parent
     def set_parent(self, parent):
+        """
+        This function sets the parent Object of the current Object
+        """
         if "_parent" not in vars(self):
             setattr(self, "_parent", None)
         self._parent = parent
@@ -89,6 +114,9 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
     # get_root
     def get_root(self):
+        """
+        This function returns the root parent Object of the current Object
+        """
         e = self
         while e.get_parent() is not None:
             e = e.get_parent()
@@ -96,6 +124,9 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
     # add_event_listener
     def add_event_listener(self, event_listener: "EventListener"):
+        """
+        This function adds an EventListener to this Object
+        """
         if "_event_listeners" not in vars(self):
             setattr(self, "_event_listeners", [])
         self._event_listeners.append(event_listener)
@@ -103,22 +134,28 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
     # get_event_listener
     def get_event_listeners(self) -> typing.List["EventListener"]:
+        """
+        This function returns a typing.List[EventListener] for this Object
+        """
         if "_event_listeners" not in vars(self):
             setattr(self, "_event_listeners", [])
         return self._event_listeners
 
-    # event_occurred
-    def event_occurred(self, event: "Event"):  # type: ignore [name-defined]
+    # _event_occurred
+    def _event_occurred(self, event: "Event"):  # type: ignore [name-defined]
         if "_event_listeners" not in vars(self):
             setattr(self, "_event_listeners", [])
         for l in self._event_listeners:
-            l.event_occurred(event)
+            l._event_occurred(event)
         if self.get_parent() is not None:
-            self.get_parent().event_occurred(event)
+            self.get_parent()._event_occurred(event)
         return self
 
     # set_reference
     def set_reference(self, reference: "Reference"):
+        """
+        This function sets the Reference for this Object, returning self
+        """
         if "_reference" not in vars(self):
             setattr(self, "_reference", None)
         assert (
@@ -137,12 +174,19 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
     # get_reference
     def get_reference(self) -> typing.Optional["Reference"]:
+        """
+        This function returns the Reference for this Object or None if no Reference was set
+        """
         if "_reference" not in vars(self):
             setattr(self, "_reference", None)
         return self._reference
 
     # set_can_be_referenced
     def set_can_be_referenced(self, a_flag: bool):
+        """
+        This function sets whether or not this Object can be referenced.
+        When an object can not be referenced, it is always embedded immediately in the PDF byte stream.
+        """
         if "_can_be_referenced" not in vars(self):
             setattr(self, "_can_be_referenced", None)
         self._can_be_referenced = a_flag
@@ -150,6 +194,10 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
     # can_be_referenced
     def can_be_referenced(self) -> bool:
+        """
+        This function returns whether or not this Object can be referenced.
+        When an object can not be referenced, it is always embedded immediately in the PDF byte stream.
+        """
         if "_can_be_referenced" not in vars(self):
             setattr(self, "_can_be_referenced", True)
         return self._can_be_referenced
@@ -159,7 +207,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
     object.get_root = types.MethodType(get_root, object)
     object.add_event_listener = types.MethodType(add_event_listener, object)
     object.get_event_listeners = types.MethodType(get_event_listeners, object)
-    object.event_occurred = types.MethodType(event_occurred, object)
+    object._event_occurred = types.MethodType(_event_occurred, object)
     object.set_reference = types.MethodType(set_reference, object)
     object.get_reference = types.MethodType(get_reference, object)
     object.set_can_be_referenced = types.MethodType(set_can_be_referenced, object)
@@ -171,6 +219,11 @@ def add_base_methods(object: typing.Any) -> typing.Any:
 
 
 class Boolean:
+    """
+    Boolean objects represent the logical values of true and false. They appear in PDF files using the keywords
+    true and false.
+    """
+
     def __init__(self, value: bool):
         super(Boolean, self).__init__()
         self.value = value
@@ -193,6 +246,10 @@ class Boolean:
 
 
 class CanvasOperatorName:
+    """
+    This class represents a canvas operator name in PDF syntax
+    """
+
     # fmt: off
     VALID_NAMES = [
         "b", "B", "b*", "B*", "BDC", "BI", "BMC", "BT", "BX",
@@ -240,7 +297,12 @@ class CanvasOperatorName:
 
 
 class Decimal(oDecimal):  # type: ignore [no-redef]
-    """Floating point class for decimal arithmetic."""
+    """
+    PDF provides two types of numeric objects: integer and real. Integer objects represent mathematical integers.
+    Real objects represent mathematical real numbers. The range and precision of numbers may be limited by the
+    internal representations used in the computer on which the conforming reader is running; Annex C gives these
+    limits for typical implementations.
+    """
 
     def __init__(self, obj: typing.Union[str, float, int, oDecimal]):
         super(Decimal, self).__init__()
@@ -248,6 +310,19 @@ class Decimal(oDecimal):  # type: ignore [no-redef]
 
 
 class Dictionary(dict):
+    """
+    A dictionary object is an associative table containing pairs of objects, known as the dictionary’s entries. The first
+    element of each entry is the key and the second element is the value. The key shall be a name (unlike
+    dictionary keys in PostScript, which may be objects of any type). The value may be any kind of object, including
+    another dictionary. A dictionary entry whose value is null (see 7.3.9, "Null Object") shall be treated the same as
+    if the entry does not exist. (This differs from PostScript, where null behaves like any other object as the value
+    of a dictionary entry.) The number of entries in a dictionary shall be subject to an implementation limit; see
+    Annex C. A dictionary may have zero entries.
+
+    The entries in a dictionary represent an associative table and as such shall be unordered even though an
+    arbitrary order may be imposed upon them when written in a file. That ordering shall be ignored.
+    """
+
     def __init__(self):
         super(Dictionary, self).__init__()
         add_base_methods(self)
@@ -270,12 +345,36 @@ class Dictionary(dict):
 
 
 class Element(ET.Element):
+    """
+    An XML element.
+
+    This class is the reference implementation of the Element interface.
+
+    An element's length is its number of subelements.  That means if you
+    want to check if an element is truly empty, you should check BOTH
+    its length AND its text attribute.
+
+    The element tag, attribute names, and attribute values can be either
+    bytes or strings.
+
+    *tag* is the element name.  *attrib* is an optional dictionary containing
+    element attributes. *extra* are additional element attributes given as
+    keyword arguments.
+    """
+
     def __init__(self, tag, **extra):
         super(Element, self).__init__(tag, **extra)
         add_base_methods(self)
 
 
 class Name:
+    """
+    Beginning with PDF 1.2 a name object is an atomic symbol uniquely defined by a sequence of any characters
+    (8-bit values) except null (character code 0). Uniquely defined means that any two name objects made up of
+    the same sequence of characters denote the same object. Atomic means that a name has no internal structure;
+    although it is defined by a sequence of characters, those characters are not considered elements of the name.
+    """
+
     def __init__(self, text: str):
         self.text = text
         add_base_methods(self)
@@ -295,11 +394,24 @@ class Name:
 
 
 class Stream(Dictionary):
+    """
+    A stream object, like a string object, is a sequence of bytes. Furthermore, a stream may be of unlimited length,
+    whereas a string shall be subject to an implementation limit. For this reason, objects with potentially large
+    amounts of data, such as images and page descriptions, shall be represented as streams.
+    """
+
     def __init__(self):
         super(Stream, self).__init__()
 
 
 class String:
+    """
+    A literal string shall be written as an arbitrary number of characters enclosed in parentheses. Any characters
+    may appear in a string except unbalanced parentheses (LEFT PARENHESIS (28h) and RIGHT
+    PARENTHESIS (29h)) and the backslash (REVERSE SOLIDUS (5Ch)), which shall be treated specially as
+    described in this sub-clause. Balanced pairs of parentheses within a string require no special treatment.
+    """
+
     def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
         self.text = text
         self.encoding = encoding
@@ -409,6 +521,13 @@ class String:
 
 
 class HexadecimalString(String):
+    """
+    Strings may also be written in hexadecimal form, which is useful for including arbitrary binary data in a PDF file.
+    A hexadecimal string shall be written as a sequence of hexadecimal digits (0–9 and either A–F or a–f) encoded
+    as ASCII characters and enclosed within angle brackets (using LESS-THAN SIGN (3Ch) and GREATER-
+    THAN SIGN (3Eh)).
+    """
+
     def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
         if len(text) % 2 == 1:
             text += "0"
@@ -423,6 +542,13 @@ class HexadecimalString(String):
 
 
 class List(list):
+    """
+    An array object is a one-dimensional collection of objects arranged sequentially. Unlike arrays in many other
+    computer languages, PDF arrays may be heterogeneous; that is, an array’s elements may be any combination
+    of numbers, strings, dictionaries, or any other objects, including other arrays. An array may have zero
+    elements.
+    """
+
     def __init__(self):
         super(List, self).__init__()
         add_base_methods(self)
@@ -435,6 +561,23 @@ class List(list):
 
 
 class Reference:
+    """
+    Any object in a PDF file may be labelled as an indirect object. This gives the object a unique object identifier by
+    which other objects can refer to it (for example, as an element of an array or as the value of a dictionary entry).
+
+    The object identifier shall consist of two parts:
+
+    •   A positive integer object number. Indirect objects may be numbered sequentially within a PDF file, but this
+        is not required; object numbers may be assigned in any arbitrary order.
+
+    •   A non-negative integer generation number. In a newly created file, all indirect objects shall have generation
+        numbers of 0. Nonzero generation numbers may be introduced when the file is later updated; see sub-
+        clauses 7.5.4, "Cross-Reference Table" and 7.5.6, "Incremental Updates."
+
+    Together, the combination of an object number and a generation number shall uniquely identify an indirect
+    object.
+    """
+
     object_number: Optional[int]
     generation_number: Optional[int]
     parent_stream_object_number: Optional[int]

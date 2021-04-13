@@ -3,7 +3,8 @@ import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.jpg_export import JPGExport
+
+from ptext.toolkit.export.pdf_to_jpg import PDFToJPG
 from tests.test import Test
 from tests.util import get_output_dir
 
@@ -33,7 +34,7 @@ class TestExportToSVG(Test):
             self.output_dir.mkdir()
 
         with open(file, "rb") as pdf_file_handle:
-            l = JPGExport()
+            l = PDFToJPG()
             doc = PDF.loads(pdf_file_handle, [l])
             output_file = self.output_dir / (file.stem + ".jpg")
             with open(output_file, "wb") as svg_file_handle:

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This module contains all classes needed to apply redaction on a Page in a PDF Document
+"""
 import typing
 from decimal import Decimal
 
@@ -9,17 +15,31 @@ from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
 class CopyCommandOperator(CanvasOperator):
+    """
+    This CanvasOperator copies an existing operator and writes its bytes to the content stream of the canvas
+    """
+
     def __init__(self, operator_to_copy: CanvasOperator):
         super().__init__("", 0)
         self.operator_to_copy = operator_to_copy
 
     def get_text(self) -> str:
+        """
+        Return the str that invokes this CanvasOperator
+        """
         return self.operator_to_copy.get_text()
 
     def get_number_of_operands(self) -> int:
+        """
+        Return the number of operands for this CanvasOperator
+        """
         return self.operator_to_copy.get_number_of_operands()
 
     def invoke(self, canvas: "Canvas", operands: typing.List[AnyPDFType] = []) -> None:
+        """
+        Invokes this CanvasOperator
+        """
+
         # execute command
         self.operator_to_copy.invoke(canvas, operands)
         # copy command in content stream
@@ -41,6 +61,10 @@ class ShowTextMod(CanvasOperator):
         super().__init__("Tj", 1)
 
     def invoke(self, canvas: "Canvas", operands: typing.List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+        """
+        Invokes this CanvasOperator
+        """
+
         assert isinstance(operands[0], String)
 
         # get bounding box
@@ -64,6 +88,13 @@ class ShowTextMod(CanvasOperator):
 
 
 class ShowTextWithGlyphPositioningMod(CanvasOperator):
+    """
+    This operator represents a modified version of the TJ operator
+    In stead of always rendering the text, it takes into account the location
+    at which the text is to be rendered, if the text falls in one of the redacted areas
+    it will not render the text.
+    """
+
     def __init__(self):
         super().__init__("TJ", 1)
 
@@ -122,6 +153,13 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
 
 
 class RedactedCanvas(Canvas):
+    """
+    In computer science and visualization, a canvas is a container that holds various drawing elements
+    (lines, shapes, text, frames containing other elements, etc.).
+    It takes its name from the canvas used in visual arts.
+    This implementation of Canvas automatically handles redaction (removal of content).
+    """
+
     def __init__(self, redacted_rectangles: typing.List[Rectangle]):
         super(RedactedCanvas, self).__init__()
 

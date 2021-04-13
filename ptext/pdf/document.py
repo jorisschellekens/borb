@@ -6,6 +6,7 @@
 """
 
 import typing
+import zlib
 
 from ptext.io.read.types import (
     Dictionary,
@@ -13,6 +14,7 @@ from ptext.io.read.types import (
     List,
     Name,
     String,
+    Stream,
 )
 from ptext.pdf.page.page import Page, DestinationType
 from ptext.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
@@ -158,6 +160,13 @@ class Document(Dictionary):
         return True
 
     def has_outlines(self) -> bool:
+        """
+        A PDF document may contain a document outline that the conforming reader may display on the screen,
+        allowing the user to navigate interactively from one part of the document to another. The outline consists of a
+        tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of
+        contents to display the document’s structure to the user.
+        This function returns True if this Document has outlines, false otherwise
+        """
         try:
             return (
                 "Outlines" in self["XRef"]["Trailer"]["Root"]
@@ -179,7 +188,13 @@ class Document(Dictionary):
         left: typing.Optional[Decimal] = None,
         zoom: typing.Optional[Decimal] = None,
     ) -> "Document":
-
+        """
+        A PDF document may contain a document outline that the conforming reader may display on the screen,
+        allowing the user to navigate interactively from one part of the document to another. The outline consists of a
+        tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of
+        contents to display the document’s structure to the user.
+        This function adds an outline to this Document
+        """
         destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         destination.append(Decimal(page_nr))
         destination.append(destination_type.value)
@@ -327,3 +342,203 @@ class Document(Dictionary):
                 break
 
         return self
+
+    def append_embedded_file(
+        self, file_name: str, file_bytes: bytes, apply_compression: bool = True
+    ) -> "Document":
+        """
+        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
+        some provision should be made to ensure that the external references will remain valid. One way to do this is to
+        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
+        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
+        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
+        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
+        This method embeds a file (specified by its name and bytes) into this Document
+        """
+        assert "XRef" in self
+        assert "Trailer" in self["XRef"]
+        assert "Root" in self["XRef"]["Trailer"]
+        root = self["XRef"]["Trailer"]["Root"]
+
+        # set up /Names dictionary
+        if "Names" not in root:
+            root[Name("Names")] = Dictionary()
+        names = root["Names"]
+
+        # set up /EmbeddedFiles
+        if "EmbeddedFiles" not in names:
+            names[Name("EmbeddedFiles")] = Dictionary()
+            names["EmbeddedFiles"][Name("Kids")] = List()
+
+        # find parent
+        parent = names["EmbeddedFiles"]
+        while "Kids" in parent:
+            for k in parent["Kids"]:
+                lower_limit = str(k["Limits"][0])
+                upper_limit = str(k["Limits"][1])
+                if lower_limit == upper_limit:
+                    continue
+                if lower_limit < file_name < upper_limit:
+                    parent = k
+                    break
+            break
+
+        # add new child
+        if (
+            len(
+                [
+                    x
+                    for x in parent["Kids"]
+                    if x["Limits"][0] == x["Limits"][1] == file_name
+                ]
+            )
+            == 0
+        ):
+
+            kid = Dictionary()
+            kid[Name("F")] = String(file_name)
+            kid[Name("Type")] = Name("Filespec")
+            kid[Name("Limits")] = List()
+            for _ in range(0, 2):
+                kid["Limits"].append(String(file_name))
+
+            # build leaf \Names dictionary
+            names = List()
+            names.append(String(file_name))
+            kid[Name("Names")] = names
+
+            # build actual file stream
+            stream = Stream()
+            stream[Name("Type")] = Name("EmbeddedFile")
+            stream[Name("DecodedBytes")] = file_bytes
+            if not apply_compression:
+                stream[Name("Bytes")] = file_bytes
+            else:
+                stream[Name("Bytes")] = zlib.compress(stream[Name("DecodedBytes")], 9)
+                stream[Name("Filter")] = Name("FlateDecode")
+            stream[Name("Length")] = Decimal(len(stream[Name("Bytes")]))
+
+            # build leaf \Filespec dictionary
+            file_spec = Dictionary()
+            file_spec[Name("EF")] = Dictionary()
+            file_spec["EF"][Name("F")] = stream
+            file_spec[Name("F")] = String(file_name)
+            file_spec[Name("Type")] = Name("Filespec")
+            names.append(file_spec)
+
+            # append
+            parent["Kids"].append(kid)
+
+        # change existing child
+        else:
+            kid = [
+                x
+                for x in parent["Kids"]
+                if x["Limits"][0] == x["Limits"][1] == file_name
+            ][0]
+            # TODO
+
+        # return
+        return self
+
+    def get_embedded_files(self) -> typing.Dict[str, bytes]:
+        """
+        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
+        some provision should be made to ensure that the external references will remain valid. One way to do this is to
+        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
+        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
+        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
+        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
+        This method returns all embedded files, as a dictionary of names unto bytes
+        """
+        assert "XRef" in self
+        assert "Trailer" in self["XRef"]
+        assert "Root" in self["XRef"]["Trailer"]
+        root = self["XRef"]["Trailer"]["Root"]
+
+        # look up /Names dictionary
+        if "Names" not in root:
+            return {}
+        names = root["Names"]
+
+        # look up /EmbeddedFiles dictionary
+        if "EmbeddedFiles" not in names:
+            return {}
+
+        nodes_to_visit = [names["EmbeddedFiles"]]
+        file_names = []
+        while len(nodes_to_visit) > 0:
+            n = nodes_to_visit[0]
+            nodes_to_visit.pop(0)
+            if "Kids" in n:
+                for k in n["Kids"]:
+                    nodes_to_visit.append(k)
+            if "Limits" in n:
+                lower_limit = str(n["Limits"][0])
+                upper_limit = str(n["Limits"][1])
+                if upper_limit == lower_limit:
+                    file_names.append(upper_limit)
+
+        file_names_and_contents: typing.Dict[str, bytes] = {}
+        for n in file_names:
+            contents = self.get_embedded_file(n)
+            assert contents is not None
+            file_names_and_contents[n] = contents
+
+        # return
+        return file_names_and_contents
+
+    def get_embedded_file(self, file_name: str) -> typing.Optional[bytes]:
+        """
+        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
+        some provision should be made to ensure that the external references will remain valid. One way to do this is to
+        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
+        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
+        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
+        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
+        This method returns the embedded file specified by the given file_name
+        """
+        assert "XRef" in self
+        assert "Trailer" in self["XRef"]
+        assert "Root" in self["XRef"]["Trailer"]
+        root = self["XRef"]["Trailer"]["Root"]
+
+        # look up /Names dictionary
+        if "Names" not in root:
+            return None
+        names = root["Names"]
+
+        # look up /EmbeddedFiles dictionary
+        if "EmbeddedFiles" not in names:
+            return None
+
+        # find parent
+        parent = names["EmbeddedFiles"]
+        while "Kids" in parent:
+            for k in parent["Kids"]:
+                lower_limit = str(k["Limits"][0])
+                upper_limit = str(k["Limits"][1])
+                if lower_limit == upper_limit == file_name:
+                    assert "Names" in k
+                    assert isinstance(k["Names"], list)
+                    assert len(k["Names"]) == 2
+                    assert str(k["Names"][0]) == file_name
+
+                    # go to /FileSpec leaf
+                    file_spec_leaf = k["Names"][1]
+                    assert isinstance(file_spec_leaf, dict)
+                    assert "EF" in file_spec_leaf
+                    assert isinstance(file_spec_leaf["EF"], dict)
+                    assert "F" in file_spec_leaf["EF"]
+                    assert isinstance(file_spec_leaf["EF"]["F"], Stream)
+
+                    # extract bytes from Stream
+                    return file_spec_leaf["EF"]["F"]["DecodedBytes"]
+
+                if lower_limit < file_name < upper_limit:
+                    parent = k
+                    break
+            break
+
+        # default
+        return None

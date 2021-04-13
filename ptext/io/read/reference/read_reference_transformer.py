@@ -31,6 +31,9 @@ class ReadReferenceTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents a Reference
+        """
         return isinstance(object, Reference)
 
     def transform(
@@ -40,6 +43,9 @@ class ReadReferenceTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a Reference to a byte stream
+        """
 
         assert isinstance(object_to_transform, Reference)
 

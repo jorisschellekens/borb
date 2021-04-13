@@ -19,6 +19,10 @@ from ptext.pdf.page.page_info import PageInfo
 
 
 class RubberStampAnnotationIconType(enum.Enum):
+    """
+    This Enum represents all possible rubber stamp annotation icons
+    """
+
     APPROVED = Name("Approved")
     AS_IS = Name("AsIs")
     CONFIDENTIAL = Name("Confidential")
@@ -36,6 +40,10 @@ class RubberStampAnnotationIconType(enum.Enum):
 
 
 class DestinationType(enum.Enum):
+    """
+    This Enum represents all possible destination types (when adding a link annotation)
+    """
+
     FIT = Name("Fit")
     FIT_B = Name("FitB")
     FIT_B_H = Name("FitBH")
@@ -47,6 +55,10 @@ class DestinationType(enum.Enum):
 
 
 class TextAnnotationIconType(enum.Enum):
+    """
+    This Enum represents all possible text annotation icon types
+    """
+
     COMMENT = Name("Comment")
     HELP = Name("Help")
     INSERT = Name("Insert")
@@ -57,6 +69,10 @@ class TextAnnotationIconType(enum.Enum):
 
 
 class LineEndStyleType(enum.Enum):
+    """
+    This Enum represents all possible line end styles
+    """
+
     SQUARE = Name("Square")
     CIRCLE = Name("Circle")
     DIAMOND = Name("Diamond")
@@ -1124,6 +1140,16 @@ class Page(Dictionary):
         return self
 
     def append_3d_annotation(self) -> "Page":
+        """
+        3D annotations (PDF 1.6) are the means by which 3D artwork shall be represented in a PDF document.
+        Table 298 shows the entries specific to a 3D annotation dictionary. Table 164 describes the entries common to
+        all annotation dictionaries.
+
+        In addition to these entries, a 3D annotation shall provide an appearance stream in its AP entry (see Table 164)
+        that has a normal appearance (the N entry in Table 168). This appearance may be used by applications that do
+        not support 3D annotations and by all applications for the initial display of the annotation.
+        """
+        # TODO
         return self
 
     def append_redact_annotation(
@@ -1240,4 +1266,8 @@ class Page(Dictionary):
         return self._append_annotation(annot)
 
     def apply_redact_annotations(self):
+        """
+        This function applies the redaction annotations on this Page
+        """
+        # TODO
         pass

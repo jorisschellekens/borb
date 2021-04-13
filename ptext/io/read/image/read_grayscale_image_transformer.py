@@ -35,6 +35,9 @@ class ReadGrayscaleImageTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be transformed is a grayscale Image
+        """
         return (
             isinstance(object, Stream)
             and object.get("Type", None) in ["XObject", None]
@@ -57,6 +60,9 @@ class ReadGrayscaleImageTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function writes a grayscale Image to a byte stream
+        """
 
         assert isinstance(object_to_transform, Stream)
 

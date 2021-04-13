@@ -26,13 +26,16 @@ class SimpleImageExtraction(EventListener):
         self.image_render_info_per_page = {}
         self.current_page = -1
 
-    def event_occurred(self, event: "Event") -> None:
+    def _event_occurred(self, event: "Event") -> None:
         if isinstance(event, BeginPageEvent):
             self._begin_page(event.get_page())
         if isinstance(event, ImageRenderEvent):
             self._render_image(event)
 
     def get_images_per_page(self, page_nr: int) -> List[Image.Image]:
+        """
+        This function returns a typing.List[Image] on a given page
+        """
         return (
             self.image_render_info_per_page[page_nr]
             if page_nr in self.image_render_info_per_page

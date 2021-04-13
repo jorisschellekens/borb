@@ -26,6 +26,6 @@ class ShowText(CanvasOperator):
         assert isinstance(operands[0], String)
         tri = ChunkOfTextRenderEvent(canvas.graphics_state, operands[0])
         # render
-        canvas.event_occurred(tri)
+        canvas._event_occurred(tri)
         # update text rendering location
         canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width

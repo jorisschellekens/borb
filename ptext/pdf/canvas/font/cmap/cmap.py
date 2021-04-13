@@ -65,7 +65,9 @@ class CMap:
         return character_code in self._code_to_unicode
 
     def read(self, cmap_bytes: str) -> "CMap":
-
+        """
+        This method reads a given source (specified as a string) into this CMAP
+        """
         N = len(cmap_bytes)
         tok = HighLevelTokenizer(io.BytesIO(cmap_bytes.encode("latin-1")))
 

@@ -19,6 +19,9 @@ class WriteNumberTransformer(WriteBaseTransformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents a Decimal object
+        """
         return isinstance(any, Decimal)
 
     def transform(

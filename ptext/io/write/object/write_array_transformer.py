@@ -31,6 +31,9 @@ class WriteArrayTransformer(WriteBaseTransformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents a List object
+        """
         return isinstance(any, List)
 
     def transform(

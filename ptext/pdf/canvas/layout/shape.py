@@ -61,7 +61,7 @@ class Shape(LayoutElement):
 
     def scale_down(self, max_width: Decimal, max_height: Decimal) -> "Shape":
         """
-        This method scales this Shape to fit a given max. width / height
+        This method scales this Shape down to fit a given max. width / height
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()
@@ -75,6 +75,9 @@ class Shape(LayoutElement):
         return self
 
     def scale_up(self, max_width: Decimal, max_height: Decimal) -> "Shape":
+        """
+        This method scales this Shape up to fit a given max. width / height
+        """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()
         if self.preserve_aspect_ratio:
@@ -152,6 +155,11 @@ class Shape(LayoutElement):
 
 
 class DisjointShape(LayoutElement):
+    """
+    This class represents a generic disjoint shape (specified by a List of lines).
+    It has convenience methods to calculate width and height, perform scaling, etc
+    """
+
     def __init__(
         self,
         lines: typing.List[Tuple[Tuple[Decimal, Decimal], Tuple[Decimal, Decimal]]],

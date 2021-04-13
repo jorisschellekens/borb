@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of EventListener extracts all lines of text from a PDF Document
+"""
 import typing
 from functools import cmp_to_key
 
@@ -16,13 +22,17 @@ from ptext.pdf.page.page import Page
 
 
 class SimpleLineOfTextExtraction(EventListener):
+    """
+    This implementation of EventListener extracts all lines of text from a PDF Document
+    """
+
     def __init__(self):
         self.chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
         self.current_page_number = -1
         self.current_page: typing.Optional[Page] = None
         self.lines_of_text_per_page: typing.Dict[int, typing.List[LineOfText]] = {}
 
-    def event_occurred(self, event: Event) -> None:
+    def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
             self.chunks_of_text.append(event)
         if isinstance(event, BeginPageEvent):
@@ -33,6 +43,9 @@ class SimpleLineOfTextExtraction(EventListener):
             self._end_page(event.get_page())
 
     def get_lines_of_text(self, page: int) -> typing.List[LineOfText]:
+        """
+        This function returns the lines of text on a given page
+        """
         return self.lines_of_text_per_page.get(page, [])
 
     def _end_page(self, page: Page):

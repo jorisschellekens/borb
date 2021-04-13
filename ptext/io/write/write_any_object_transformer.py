@@ -79,6 +79,10 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
         self.add_child_transformer(WriteBooleanTransformer())
 
     def can_be_transformed(self, object_to_transform: AnyPDFType):
+        """
+        This function returns True if the object to be transformed
+        can be transformed by this WriteBaseTransformer
+        """
         return False
 
     def transform(
@@ -87,6 +91,9 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
         context: Optional[WriteTransformerContext] = None,
         destination: Optional[Union[io.BufferedIOBase, io.RawIOBase]] = None,
     ):
+        """
+        This method writes an (PDF) object to a byte stream
+        """
         if context is None:
             super().transform(
                 object_to_transform,

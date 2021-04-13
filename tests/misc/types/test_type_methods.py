@@ -2,7 +2,7 @@ import unittest
 
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
-from ptext.toolkit.export.svg_export import SVGExport
+from ptext.toolkit.export.pdf_to_svg import PDFToSVG
 
 
 class TestTypeMethods(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestTypeMethods(unittest.TestCase):
         d1.append_page(p1)
 
         # add listener to d0
-        d0.add_event_listener(SVGExport())
+        d0.add_event_listener(PDFToSVG())
 
         # check other listener(s)
         assert len(p0.get_event_listeners()) == 0

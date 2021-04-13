@@ -177,6 +177,10 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_metadata_date(self) -> Optional[str]:
+        """
+        (Optional) The date and time the metadata for this document was created, in human-
+        readable form (see 7.9.4, “Dates”).
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -200,6 +204,11 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_creator(self) -> Optional[str]:
+        """
+        (Optional) If the document was converted to PDF from another format,
+        the name of the conforming product that created the original document
+        from which it was converted.
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -210,6 +219,9 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_publisher(self) -> Optional[str]:
+        """
+        (Optional; PDF 1.1) The name of the person/software who/which published the document.
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -220,6 +232,10 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_instance_id(self) -> Optional[str]:
+        """
+        An identifier for a specific incarnation of a document, updated each time a file is saved.
+        It should be based on a UUID; see Document and Instance IDs.
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -230,6 +246,9 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_original_document_id(self) -> Optional[str]:
+        """
+        Refer to Part 1, Data Model, Serialization, and Core Properties, for definition.
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]
@@ -240,6 +259,10 @@ class XMPDocumentInfo(DocumentInfo):
             return None
 
     def get_document_id(self) -> Optional[str]:
+        """
+        The common identifier for all versions and renditions of a document.
+        It should be based on a UUID; see Document and Instance IDs.
+        """
         try:
             return (
                 self.document["XRef"]["Trailer"]["Root"]["Metadata"]

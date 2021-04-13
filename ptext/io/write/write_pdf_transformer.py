@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This implementation of WriteBaseTransformer is responsible for writing Document objects
+"""
 import datetime
 import logging
 import random
@@ -22,7 +28,14 @@ logger = logging.getLogger(__name__)
 
 
 class WritePDFTransformer(WriteBaseTransformer):
+    """
+    This implementation of WriteBaseTransformer is responsible for writing Document objects
+    """
+
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be transformed is a Document
+        """
         return isinstance(any, Document)
 
     def transform(
@@ -30,6 +43,9 @@ class WritePDFTransformer(WriteBaseTransformer):
         object_to_transform: Any,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes a Document object to a byte stream
+        """
         # write header
         assert context is not None
         assert context.destination is not None

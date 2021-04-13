@@ -172,7 +172,11 @@ class Canvas(Dictionary):
         # set graphics state stack
         self.graphics_state_stack = []
 
-    def get_operator(self, name) -> typing.Optional["CanvasOperator"]:
+    def get_operator(self, name: str) -> typing.Optional["CanvasOperator"]:
+        """
+        This function returns the CanvasOperator matching the given operator-name.
+        This allows operator re-use between different implementations of Canvas
+        """
         return self.canvas_operators.get(name)
 
     def read(self, io_source: io.IOBase) -> "Canvas":

@@ -23,6 +23,9 @@ class WriteImageTransformer(WriteBaseTransformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents an Image object
+        """
         return isinstance(any, PILImage.Image)
 
     def _convert_png_to_jpg(self, image: PILImage.Image) -> PILImage.Image:

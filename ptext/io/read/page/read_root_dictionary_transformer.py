@@ -35,6 +35,9 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be converted represents a \Catalog Dictionary
+        """
         return (
             isinstance(object, Dict)
             and "Type" in object
@@ -48,7 +51,9 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
-
+        """
+        This function writes a \Catalog Dictionary to a byte stream
+        """
         assert isinstance(object_to_transform, Dictionary)
 
         # add listener(s)
