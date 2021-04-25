@@ -54,7 +54,7 @@ class ReadCCITTFaxImageTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a CCITT Image to a byte stream
+        This function reads a CCITT Image from a byte stream
         """
         # use PIL to read image bytes
         assert isinstance(object_to_transform, Stream)

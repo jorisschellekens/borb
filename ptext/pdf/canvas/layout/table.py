@@ -60,6 +60,10 @@ class TableCell(LayoutElement):
         self.col_span = col_span
 
     def layout(self, page: Page, layout_box: Rectangle) -> Rectangle:
+        """
+        This function calculates the layout box and performs layout for this LayoutElement.
+        TableCell propagates the padding to its inner LayoutElement.
+        """
         self.layout_element.padding_top = self.padding_top
         self.layout_element.padding_right = self.padding_right
         self.layout_element.padding_bottom = self.padding_bottom

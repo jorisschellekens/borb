@@ -51,7 +51,7 @@ class ReadJPEGImageTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a JPEG Image to a byte stream
+        This function reads a JPEG Image from a byte stream
         """
 
         # use PIL to read image bytes

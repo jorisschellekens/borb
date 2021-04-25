@@ -61,7 +61,7 @@ class ReadGrayscaleImageTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a grayscale Image to a byte stream
+        This function reads a grayscale Image from a byte stream
         """
 
         assert isinstance(object_to_transform, Stream)

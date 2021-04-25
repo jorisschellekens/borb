@@ -52,7 +52,7 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a \Catalog Dictionary to a byte stream
+        This function reads a \Catalog Dictionary from a byte stream
         """
         assert isinstance(object_to_transform, Dictionary)
 

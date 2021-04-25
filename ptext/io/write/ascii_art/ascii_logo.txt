@@ -1,2 +1,2 @@
-pText version 1.8.6
+pText version 1.8.7
 Joris Schellekens

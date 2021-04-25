@@ -15,6 +15,15 @@ from ptext.pdf.canvas.event.event_listener import EventListener
 
 
 class ReadTransformerContext:
+    """
+    This class represents all the meta-information used in the process of reading a PDF document.
+    This includes:
+    - the root object (the Document itself)
+    - the tokenizer
+    - references that have been resolved (to avoid endless loops)
+    - etc
+    """
+
     def __init__(
         self,
         source: Optional[Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO]] = None,
@@ -52,6 +61,12 @@ class ReadBaseTransformer:
         return self
 
     def get_root_transformer(self) -> "ReadBaseTransformer":  # type: ignore[name-defined]
+        """
+        This function returns the top-level ReadBaseTransformer.
+        This is useful when delegating calls from inside a ReadBaseTransformer to another.
+        e.g. Transforming a dictionary by reading its delimiters and then transforming each key/value in turn by
+        calling top-level ReadBaseTransformer
+        """
         p = self
         while p.parent is not None:
             p = p.parent
@@ -60,6 +75,9 @@ class ReadBaseTransformer:
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        This function returns True if the object to be transformed can be transformed by this ReadBaseTransformer
+        """
         return False
 
     def transform(
@@ -69,6 +87,10 @@ class ReadBaseTransformer:
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+        This function reads an object from a byte stream.
+        The object being read depends on the implementation of ReadBaseTransformer.
+        """
         for h in self.children:
             if h.can_be_transformed(object_to_transform):
                 # print("%s<%s level='%d' invocation='%d'>" % ("   " * self.level, h.__class__.__name__, self.level, self.invocation_count), flush=True)

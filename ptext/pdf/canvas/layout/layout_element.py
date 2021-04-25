@@ -37,6 +37,11 @@ class Alignment(Enum):
 
 
 class LayoutElement:
+    """
+    This class contains the common base methods for any object that can be laid out on a Page.
+    e.g. the placement of borders, margins, padding, background color, etc
+    """
+
     def __init__(
         self,
         border_top: bool = False,
@@ -94,10 +99,16 @@ class LayoutElement:
         self.bounding_box: typing.Optional[Rectangle] = None
 
     def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
+        """
+        This method sets the bounding box of this LayoutElement
+        """
         self.bounding_box = bounding_box
         return self
 
     def get_bounding_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the bounding box of this LayoutElement
+        """
         return self.bounding_box
 
     def _initialize_page_content_stream(self, page: Page):
@@ -201,6 +212,11 @@ class LayoutElement:
         return modified_layout_rect
 
     def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+        """
+        This function calculates the layout box and performs layout for this LayoutElement.
+        e.g. for a Paragraph this might involve taking into account the word hyphenation,
+        and enforcing vertical and horizontal alignment.
+        """
         return self.calculate_layout_box_and_do_layout(page, bounding_box)
 
     def calculate_layout_box_and_do_layout(

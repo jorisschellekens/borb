@@ -628,6 +628,9 @@ class LineArtFactory:
     def flowchart_transport(
         bounding_box: Rectangle,
     ) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        The Transport flowchart shape represents the step in the flowchart where information or materials are being transported from the process.
+        """
         return []
 
     @staticmethod

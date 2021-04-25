@@ -46,7 +46,7 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a \Page Dictionary to a byte stream
+        This function reads a \Page Dictionary from a byte stream
         """
 
         # convert dictionary like structure

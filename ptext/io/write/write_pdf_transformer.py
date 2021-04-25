@@ -117,7 +117,7 @@ class WritePDFTransformer(WriteBaseTransformer):
             try:
                 obj.set_reference(None)  # type: ignore [union-attr]
             except Exception as ex:
-                logger.warning(str(ex))
+                logger.debug(str(ex))
                 pass
             if isinstance(obj, List):
                 assert isinstance(obj, List)

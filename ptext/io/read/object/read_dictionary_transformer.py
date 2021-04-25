@@ -37,7 +37,7 @@ class ReadDictionaryTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a Dictionary to a byte stream
+        This function reads a Dictionary from a byte stream
         """
 
         # create root object

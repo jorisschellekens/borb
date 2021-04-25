@@ -46,7 +46,7 @@ class ReadStringTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a String to a byte stream
+        This function reads a String from a byte stream
         """
         # set parent
         object_to_transform.set_parent(parent_object)  # type: ignore[union-attr]

@@ -42,7 +42,7 @@ class ReadStreamTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a Stream to a byte stream
+        This function reads a Stream from a byte stream
         """
         assert isinstance(object_to_transform, Stream)
         object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]

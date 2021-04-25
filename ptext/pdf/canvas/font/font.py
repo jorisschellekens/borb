@@ -70,6 +70,12 @@ class Font(Dictionary):
         return Decimal(0)
 
     def get_font_matrix(self) -> Matrix:
+        """
+        Character glyphs in a font shall be defined in glyph space (see 9.2.4, "Glyph Positioning and Metrics").
+        The transformation from glyph space to text space shall be defined by the font matrix. For most types of fonts,
+        this matrix shall be predefined to map 1000 units of glyph space to 1 unit of text space; for Type 3 fonts, the
+        font matrix shall be given explicitly in the font dictionary (see 9.6.5, "Type 3 Fonts").
+        """
         return Matrix.identity_matrix()
 
     def get_font_name(self) -> Optional[str]:

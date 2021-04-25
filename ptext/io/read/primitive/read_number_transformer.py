@@ -37,7 +37,7 @@ class ReadNumberTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a Decimal to a byte stream
+        This function reads a Decimal from a byte stream
         """
         assert isinstance(object_to_transform, Decimal)
         return Decimal(object_to_transform).set_parent(parent_object)  # type: ignore [attr-defined]

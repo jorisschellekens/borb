@@ -45,7 +45,7 @@ class ReadFontDescriptorDictionaryTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a \FontDescriptor Dictionary to a byte stream
+        This function reads a \FontDescriptor Dictionary from a byte stream
         """
 
         assert isinstance(object_to_transform, Dictionary)

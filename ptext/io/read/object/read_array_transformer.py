@@ -37,7 +37,7 @@ class ReadArrayTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a List to a byte stream
+        This function reads a List from a byte stream
         """
 
         # create root object

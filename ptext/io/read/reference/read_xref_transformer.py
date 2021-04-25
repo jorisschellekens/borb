@@ -48,7 +48,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a cross-reference table to a byte stream
+        This function reads a cross-reference table from a byte stream
         """
 
         # update context

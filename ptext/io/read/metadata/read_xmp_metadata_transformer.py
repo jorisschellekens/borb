@@ -67,7 +67,7 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes an XML Element to a byte stream
+        This function reads an XML Element from a byte stream
         """
 
         # delegate to super (ReadStreamTransformer)

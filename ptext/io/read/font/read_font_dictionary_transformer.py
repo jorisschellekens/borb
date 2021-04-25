@@ -46,7 +46,7 @@ class ReadFontDictionaryTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a \Font Dictionary to a byte stream
+        This function reads a \Font Dictionary from a byte stream
         """
 
         # convert dictionary like structure

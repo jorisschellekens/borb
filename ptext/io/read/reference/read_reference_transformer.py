@@ -44,7 +44,7 @@ class ReadReferenceTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function writes a Reference to a byte stream
+        This function reads a Reference from a byte stream
         """
 
         assert isinstance(object_to_transform, Reference)
