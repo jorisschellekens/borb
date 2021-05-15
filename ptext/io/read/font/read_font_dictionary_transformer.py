@@ -14,19 +14,23 @@ from ptext.io.read.read_base_transformer import (
 )
 from ptext.io.read.types import AnyPDFType, Dictionary
 from ptext.pdf.canvas.event.event_listener import EventListener
-from ptext.pdf.canvas.font.cid_font_type_0 import CIDFontType0
-from ptext.pdf.canvas.font.cid_font_type_2 import CIDFontType2
+from ptext.pdf.canvas.font.composite_font.cid_font_type_0 import CIDType0Font
+from ptext.pdf.canvas.font.composite_font.cid_font_type_2 import CIDType2Font
+from ptext.pdf.canvas.font.composite_font.font_type_0 import Type0Font
 from ptext.pdf.canvas.font.font import Font
-from ptext.pdf.canvas.font.font_type_0 import FontType0
-from ptext.pdf.canvas.font.font_type_1 import FontType1
-from ptext.pdf.canvas.font.font_type_3 import FontType3
-from ptext.pdf.canvas.font.true_type_font import TrueTypeFont
+from ptext.pdf.canvas.font.simple_font.font_type_1 import Type1Font, StandardType1Font
+from ptext.pdf.canvas.font.simple_font.font_type_3 import Type3Font
+from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 
 
 class ReadFontDictionaryTransformer(ReadBaseTransformer):
     """
     This implementation of ReadBaseTransformer is responsible for reading a Font object
     """
+
+    def __init__(self):
+        super(ReadFontDictionaryTransformer, self).__init__()
+        self._accept_true_type_standard_14_fonts: bool = True
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
@@ -54,20 +58,45 @@ class ReadFontDictionaryTransformer(ReadBaseTransformer):
         subtype_name = object_to_transform["Subtype"]
 
         font_obj: Optional[Font] = None
+
+        # TrueType Font
         if subtype_name == "TrueType":
             font_obj = TrueTypeFont()
+            # Some libraries prefer to mark the standard 14 fonts as TrueType fonts
+            # These libraries should be punished for their crimes against humanity.
+            # But in the interest of pleasing the user, we explicitly catch these errors and guide
+            # those wayward lambs back into the fold.
+            if (
+                self._accept_true_type_standard_14_fonts
+                and "BaseFont" in object_to_transform
+                and StandardType1Font.is_standard_14_font_name(
+                    str(object_to_transform["BaseFont"])
+                )
+            ):
+                font_obj = StandardType1Font(str(object_to_transform["BaseFont"]))
+
+        # Type 0 Font
         elif subtype_name == "Type0":
-            font_obj = FontType0()
+            font_obj = Type0Font()
+
+        # Type 1 Font
         elif subtype_name == "Type1":
-            font_obj = FontType1()
+            base_font: str = str(object_to_transform["BaseFont"])
+            if StandardType1Font.is_standard_14_font_name(base_font):
+                font_obj = StandardType1Font(base_font)
+            else:
+                font_obj = Type1Font()
+
+        # Type 3 Font
         elif subtype_name == "Type3":
-            font_obj = FontType3()
+            font_obj = Type3Font()
+
         elif subtype_name == "CIDFontType0":
-            font_obj = CIDFontType0()
+            font_obj = CIDType0Font()
         elif subtype_name == "CIDFontType2":
-            font_obj = CIDFontType2()
+            font_obj = CIDType2Font()
         else:
-            assert False, "Unsupported font type %s" % subtype_name
+            font_obj = StandardType1Font("Helvetica")
 
         # None
         if font_obj is None:
@@ -91,4 +120,5 @@ class ReadFontDictionaryTransformer(ReadBaseTransformer):
                 font_obj[k] = v
 
         # return
+        assert isinstance(font_obj, Font)
         return font_obj

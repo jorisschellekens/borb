@@ -221,7 +221,7 @@ class StreamXREF(XREF):
         self[Name("Trailer")] = Dictionary()
         for k, v in xref_stream.items():
             self[Name("Trailer")][k] = v
-        self[Name("Trailer")].set_parent(self[Name("Trailer")])
+        self[Name("Trailer")].set_parent(self)
 
         # return
         return self

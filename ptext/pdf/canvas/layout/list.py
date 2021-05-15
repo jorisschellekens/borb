@@ -75,7 +75,7 @@ class UnorderedList(LayoutElement):
         for i in self.items:
             # bullet character
             ChunkOfText(
-                text=["l", "m", "n"][
+                text=["●", "❍", "✦"][
                     self._determine_level(i) % 3
                 ],  # this is 006C in MacRoman encoding, which maps to ● in Zapf Dingbats
                 font_size=Decimal(8),

@@ -104,6 +104,13 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
+        """
+        <<<<<<< HEAD
+                This function returns True if the object to be transformed can be transformed by this ReadBaseTransformer
+        =======
+                This function returns True if the object to be transformed can be transformed by this ReadAnyObjectTransformer
+        >>>>>>> feature/font-improvements
+        """
         return isinstance(object, io.IOBase)
 
     def transform(
@@ -113,6 +120,14 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         context: Optional[ReadTransformerContext] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
+        """
+                This function reads an object from a byte stream.
+        <<<<<<< HEAD
+                The object being read depends on the implementation of ReadBaseTransformer.
+        =======
+                The object being read depends on the implementation of ReadAnyObjectTransformer.
+        >>>>>>> feature/font-improvements
+        """
         if context is None:
             return super().transform(
                 object_to_transform,

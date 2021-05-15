@@ -40,17 +40,6 @@ class WritePageTransformer(WriteDictionaryTransformer):
         """
         return isinstance(any, Dictionary) and "Type" in any and any["Type"] == "Page"
 
-    def _is_pages_dictionary(self, object):
-        if object is None:
-            return False
-        if not isinstance(object, Dictionary):
-            return False
-        if "Type" in object and object["Type"] == "Pages":
-            return True
-        if "Count" in object and "Kids" in object:
-            return True
-        return False
-
     def transform(
         self,
         object_to_transform: AnyPDFType,
@@ -68,6 +57,11 @@ class WritePageTransformer(WriteDictionaryTransformer):
 
         # add \Parent reference to \Pages
         object_to_transform[Name("Parent")] = self.get_reference(pages_dict, context)
+
+        # mark some keys as non-referencable
+        for k in ["ArtBox", "BleedBox", "CropBox", "MediaBox", "TrimBox"]:
+            if k in object_to_transform:
+                object_to_transform[k].set_can_be_referenced(False)
 
         # delegate to super
         super(WritePageTransformer, self).transform(object_to_transform, context)

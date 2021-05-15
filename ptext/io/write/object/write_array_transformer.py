@@ -83,7 +83,7 @@ class WriteArrayTransformer(WriteBaseTransformer):
             assert object_ref.object_number is not None
             if object_ref.object_number is not None and object_ref.byte_offset is None:
                 started_object = True
-                self.start_object(object_to_transform, context)
+                self._start_object(object_to_transform, context)
             context.resolved_references.append(object_ref)
 
         # write dictionary at current location
@@ -97,7 +97,7 @@ class WriteArrayTransformer(WriteBaseTransformer):
 
         # end object if needed
         if started_object:
-            self.end_object(object_to_transform, context)
+            self._end_object(object_to_transform, context)
 
         for e in queue:
             self.get_root_transformer().transform(e, context)

@@ -70,6 +70,7 @@ class PlainTextXREF(XREF):
 
         # process trailer
         self[Name("Trailer")] = self._read_trailer(src, tok)
+        self[Name("Trailer")].set_parent(self)
 
         # return self
         return self

@@ -222,6 +222,11 @@ class LayoutElement:
     def calculate_layout_box_and_do_layout(
         self, page: Page, bounding_box: Rectangle
     ) -> Rectangle:
+        """
+        This function calculates the layout box and performs layout for this LayoutElement.
+        e.g. for a Paragraph this might involve taking into account the word hyphenation,
+        and enforcing vertical and horizontal alignment.
+        """
 
         # calculate initial layout box
         layout_box = self._calculate_layout_box(page, bounding_box)

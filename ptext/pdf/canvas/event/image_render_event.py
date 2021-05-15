@@ -21,12 +21,12 @@ class ImageRenderEvent(Event):
         self.image = image
 
         # calculate position
-        v = graphics_state.ctm.cross(0, 0, 1)
+        v = graphics_state.ctm.cross(Decimal(0), Decimal(0), Decimal(1))
         self.x = v[0]
         self.y = v[1]
 
         # calculate display size
-        v = graphics_state.ctm.cross(1, 1, 0)
+        v = graphics_state.ctm.cross(Decimal(1), Decimal(1), Decimal(0))
         self.width = max(abs(v[0]), Decimal(1))
         self.height = max(abs(v[1]), Decimal(1))
 

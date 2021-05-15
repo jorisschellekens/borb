@@ -437,6 +437,11 @@ class String:
         return self.text[item]
 
     def get_content_bytes(self) -> bytearray:
+        """
+        This function returns the bytes that represent the *interpreted* content (as it was present in the PDF)
+        of this String. For hexadecimal Strings, this content includes resolving the hexadecimal codes to their
+        byte counterparts.
+        """
         txt = ""
         i = 0
         while i < len(self):
@@ -511,9 +516,13 @@ class String:
                 continue
             txt += self[i]
             i += 1
-        return bytearray(txt, encoding="latin-1")
+        return bytearray(txt, encoding="utf8")
 
     def get_value_bytes(self):
+        """
+        This function returns the bytes that represent the content (as it was present in the PDF)
+        of this String
+        """
         if self.encoding is None:
             return [b for b in self.get_content_bytes()]
         # TODO
@@ -535,6 +544,11 @@ class HexadecimalString(String):
         super(HexadecimalString, self).__init__(text)
 
     def get_content_bytes(self) -> bytearray:
+        """
+        This function returns the bytes that represent the *interpreted* content (as it was present in the PDF)
+        of this String. For hexadecimal Strings, this content includes resolving the hexadecimal codes to their
+        byte counterparts.
+        """
         arr = bytearray()
         for i in range(0, len(self), 2):
             arr.append(int(self[i : i + 2], 16))

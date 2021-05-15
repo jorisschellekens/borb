@@ -109,7 +109,12 @@ class RegularExpressionTextExtraction(EventListener):
 
             # add space if needed
             delta = abs(last_baseline_right - t.get_bounding_box().x)
-            space_width = round(t.get_space_character_width_estimate(), 1)
+            space_width = round(
+                t.get_space_character_width_estimate()
+                * t.get_font_size()
+                * Decimal(0.001),
+                1,
+            )
             text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append

@@ -2,7 +2,11 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.canvas.font.font import Font
+
 from ptext.io.read.types import Decimal
+from ptext.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
+from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import ChunkOfText
 from ptext.pdf.document import Document
@@ -34,7 +38,10 @@ class TestWriteChunkOfTextEAigu(unittest.TestCase):
         page = Page()
         pdf.append_page(page)
 
-        ChunkOfText("é", font_size=Decimal(24),).layout(
+        font: Font = TrueTypeFont.true_type_font_from_file(
+            Path(__file__).parent / "Pacifico.ttf"
+        )
+        ChunkOfText("é", font_size=Decimal(24), font=font).layout(
             page, Rectangle(Decimal(100), Decimal(600), Decimal(100), Decimal(100))
         )
 

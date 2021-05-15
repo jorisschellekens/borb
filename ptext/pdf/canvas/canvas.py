@@ -9,6 +9,7 @@
 import io
 import logging
 import os
+import time
 import typing
 
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
@@ -192,6 +193,8 @@ class Canvas(Dictionary):
         # process content
         operand_stk = []
         instruction_number: int = 0
+        time_per_operator: typing.Dict[str, float] = {}
+        calls_per_operator: typing.Dict[str, int] = {}
         while canvas_tokenizer.tell() != length:
 
             # print("<canvas pos='%d' length='%d' percentage='%d'/>" % ( canvas_tokenizer.tell(), length, int(canvas_tokenizer.tell() * 100 / length)))
@@ -228,10 +231,23 @@ class Canvas(Dictionary):
 
             # invoke
             try:
+                on: str = operator.get_text()
+                if on not in time_per_operator:
+                    time_per_operator[on] = 0
+                if on not in calls_per_operator:
+                    calls_per_operator[on] = 1
+                else:
+                    calls_per_operator[on] += 1
+                delta: float = time.time()
                 operator.invoke(self, operands)
+                delta = time.time() - delta
+                time_per_operator[on] += delta
             except Exception as e:
                 if not self.in_compatibility_section:
                     raise e
+
+        # for k,v in time_per_operator.items():
+        #    print("operator: %s, cumulative_time: %f, number_of_calls: %d, average_time: %f" % (k, v, calls_per_operator[k], v / calls_per_operator[k]))
 
         # return
         return self

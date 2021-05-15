@@ -6,6 +6,7 @@
     e.g. 97 0 R
 """
 import io
+import logging
 import typing
 from typing import Optional, Any, Union
 
@@ -17,6 +18,8 @@ from ptext.io.read.types import Reference, AnyPDFType
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.xref.xref import XREF
 
+logger = logging.getLogger(__name__)
+
 
 class ReadReferenceTransformer(ReadBaseTransformer):
     """
@@ -26,7 +29,9 @@ class ReadReferenceTransformer(ReadBaseTransformer):
 
     def __init__(self):
         super(ReadReferenceTransformer, self).__init__()
-        self.cache: typing.Dict[Reference, AnyPDFType] = {}
+        self._cache: typing.Dict[Reference, AnyPDFType] = {}
+        self._cache_hits: int = 0
+        self._cache_fails: int = 0
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
@@ -55,8 +60,9 @@ class ReadReferenceTransformer(ReadBaseTransformer):
             return None
 
         # lookup in cache
-        ref_from_cache = self.cache.get(object_to_transform, None)
+        ref_from_cache = self._cache.get(object_to_transform, None)
         if ref_from_cache is not None:
+            self._cache_hits += 1
             # check linkage
             if ref_from_cache.get_parent() is None:  # type: ignore[union-attr]
                 ref_from_cache.set_parent(parent_object)  # type: ignore[union-attr]
@@ -66,6 +72,16 @@ class ReadReferenceTransformer(ReadBaseTransformer):
                 ref_from_cache_copy = ref_from_cache  # TODO
                 ref_from_cache_copy.set_parent(parent_object)  # type: ignore[union-attr]
                 return ref_from_cache_copy
+
+        self._cache_fails += 1
+        logger.debug(
+            "ref. cache hits: %d, fails: %d, ratio %f"
+            % (
+                self._cache_hits,
+                self._cache_fails,
+                self._cache_hits / (self._cache_hits + self._cache_fails),
+            )
+        )
 
         # lookup xref
         assert context.root_object is not None
@@ -94,7 +110,7 @@ class ReadReferenceTransformer(ReadBaseTransformer):
 
         # update cache
         if transformed_referenced_object is not None:
-            self.cache[object_to_transform] = transformed_referenced_object
+            self._cache[object_to_transform] = transformed_referenced_object
 
         # set reference
         try:

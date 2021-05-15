@@ -8,10 +8,11 @@ from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderE
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
 from ptext.pdf.pdf import PDF
 from tests.test import Test
-from tests.util import get_output_dir
+from tests.util import get_output_dir, get_log_dir
 
 logging.basicConfig(
-    filename="../../logs/test-text-render-event-position.log", level=logging.DEBUG
+    filename=Path(get_log_dir(), "test-text-render-event-position.log"),
+    level=logging.DEBUG,
 )
 
 

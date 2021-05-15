@@ -410,10 +410,10 @@ class Document(Dictionary):
             # build actual file stream
             stream = Stream()
             stream[Name("Type")] = Name("EmbeddedFile")
-            stream[Name("DecodedBytes")] = file_bytes
             if not apply_compression:
                 stream[Name("Bytes")] = file_bytes
             else:
+                stream[Name("DecodedBytes")] = file_bytes
                 stream[Name("Bytes")] = zlib.compress(stream[Name("DecodedBytes")], 9)
                 stream[Name("Filter")] = Name("FlateDecode")
             stream[Name("Length")] = Decimal(len(stream[Name("Bytes")]))

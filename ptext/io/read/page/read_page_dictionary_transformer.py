@@ -49,6 +49,9 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
         This function reads a \Page Dictionary from a byte stream
         """
 
+        if isinstance(object_to_transform, Page):
+            return object_to_transform
+
         # convert dictionary like structure
         tmp = Page().set_parent(parent_object)  # type: ignore [attr-defined]
 

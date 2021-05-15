@@ -4,7 +4,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Corpus Coverage : 98.2%](https://img.shields.io/badge/corpus%20coverage-98.2%25-green)]()
 [![Text Extraction : 70.7%](https://img.shields.io/badge/text%20extraction-70.7%25-orange)]()
-[![Public Method Documentation : 93.0%](https://img.shields.io/badge/public%20method%20documentation-93.0%25-green)]()
+[![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 
 
 pText is a library for creating and manipulating PDF files in python.
@@ -50,4 +50,5 @@ Contact sales for more info.
 ## 3. Acknowledgements
 
 I would like to thank the following people, for their contributions / advice with regards to developing `pText`:
-- Michael Klink 
+- Benoît Lagae
+- Michael Klink

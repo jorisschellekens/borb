@@ -642,7 +642,7 @@
   <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ptext/io/write/write_base_transformer.py" />
   <problem_class id="PyMissingOrEmptyDocstringInspection" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Missing or empty docstring</problem_class>
   <description>Missing docstring</description>
-  <highlighted_element>start_object</highlighted_element>
+  <highlighted_element>_start_object</highlighted_element>
   <language>Python</language>
   <offset>8</offset>
   <length>12</length>
@@ -654,7 +654,7 @@
   <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ptext/io/write/write_base_transformer.py" />
   <problem_class id="PyMissingOrEmptyDocstringInspection" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Missing or empty docstring</problem_class>
   <description>Missing docstring</description>
-  <highlighted_element>end_object</highlighted_element>
+  <highlighted_element>_end_object</highlighted_element>
   <language>Python</language>
   <offset>8</offset>
   <length>10</length>

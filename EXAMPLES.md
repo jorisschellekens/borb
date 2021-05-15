@@ -18,8 +18,22 @@ Getting started with `pText` is easy.
 
     `pip install ptext-joris-schellekens`
 
+    If you have installed `pText` before, and you want to ensure you're installing the latest version, execute the following commands
+    
+    `pip uninstall ptext-joris-schellekens`  
+    `pip install --no-cache ptext-joris-schellekens`
+
 4. Done :tada: You are all ready to go.  
 Try out some of the examples to get to know `pText`.
+
+**Note**: if you have used `pText` in the past, it's best to ensure that pip is not serving
+you a version of `pText` from its cache. Uninstall your previous version using:
+
+`pip uninstall ptext-joris-schellekens`
+
+and install the latest version using:
+
+`pip install --no-cache ptext-joris-schellekens`
 
 ### 0.2 About AGPLv3
 
@@ -359,13 +373,43 @@ Once the `Document` is parsed, we can extract all `Image` objects from the `Simp
                 with open(output_file, "wb") as image_file_handle:
                     img.save(image_file_handle)
 
-### 1.7 Annotations                    
+### 1.7 Embedded Files
+
+    If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
+    some provision should be made to ensure that the external references will remain valid. One way to do this is to
+    arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
+    this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
+    file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
+    embedded files are included purely for convenience and need not be directly processed by any conforming
+    reader.)
+
+#### 1.7.1 Listing all embedded files in a PDF
+
+        doc = None
+        with open("input.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle)
+
+        # extract all embedded files
+        # this outputs a dictionary of str -> bytes
+        embedded_files = doc.get_embedded_files()
+
+#### 1.7.2 Extracting an embedded file from a PDF
+
+        doc = None
+        with open("input.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle)
+
+        # extract an embedded file named "file_001.txt"
+        # assuming it exists
+        embedded_files = doc.get_embedded_file("file_001.txt")
+
+### 1.8 Annotations                    
 
     An annotation associates an object such as a note, sound, or movie with a location on a page of a PDF
     document, or provides a way to interact with the user by means of the mouse and keyboard. PDF includes a
     wide variety of standard annotation types, described in detail in 12.5.6, “Annotation Types.”
 
-#### 1.7.1 Adding a rubber stamp annotation to an existing PDF
+#### 1.8.1 Adding a rubber stamp annotation to an existing PDF
 
     A rubber stamp annotation (PDF 1.3) displays text or graphics intended to look as if they were stamped on the
     page with a rubber stamp. When opened, it shall display a pop-up window containing the text of the associated
@@ -407,7 +451,7 @@ The result should be something like this (keep in mind the rendering of the rubb
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.2 Adding all possible rubber stamp annotations to an existing PDF
+#### 1.8.2 Adding all possible rubber stamp annotations to an existing PDF
 
     A rubber stamp annotation (PDF 1.3) displays text or graphics intended to look as if they were stamped on the
     page with a rubber stamp. When opened, it shall display a pop-up window containing the text of the associated
@@ -454,7 +498,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.3 Adding a circle annotation to an existing PDF
+#### 1.8.3 Adding a circle annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -482,7 +526,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.4 Adding a square annotation to an existing PDF
+#### 1.8.4 Adding a square annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -510,7 +554,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.5 Adding a polygon annotation to an existing PDF
+#### 1.8.5 Adding a polygon annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -540,7 +584,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.6 Adding a polyline annotation to an existing PDF
+#### 1.8.6 Adding a polyline annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -570,7 +614,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.7 Adding an annotation using a shape from the `LineArtFactory` to an existing PDF
+#### 1.8.7 Adding an annotation using a shape from the `LineArtFactory` to an existing PDF
 
 The `LineArtFactory` class allows you to easily create shapes (defined as `List[Tuple[Decimal,Decimal]]` ), it contains everything you need to render:
 - triangles (right sided triangle, isoceles triangles)
@@ -611,7 +655,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.8 Adding a highlight annotation to an existing PDF
+#### 1.8.8 Adding a highlight annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -641,7 +685,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.9 Adding a link annotation to an existing PDF
+#### 1.8.9 Adding a link annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -673,7 +717,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.10 Adding a text annotation to an existing PDF
+#### 1.8.10 Adding a text annotation to an existing PDF
 
 We start by reading the PDF:
 
@@ -699,7 +743,7 @@ Finally, we need to store the resulting PDF `Document`.
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.11 Adding a square annotation around a regular expression match to an existing PDF
+#### 1.8.11 Adding a square annotation around a regular expression match to an existing PDF
 
 Let's combine what we saw earlier, 
 about finding the coordinates of a regular expression with our new understanding of annotations.
@@ -738,7 +782,7 @@ The end result (at least the annotations) should look something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.12 Adding a square annotation in the free space of a page to an existing PDF
+#### 1.8.12 Adding a square annotation in the free space of a page to an existing PDF
 
 Sometimes the position of the annotation does not matter that much, 
 as long as it does not block any other visible content.
@@ -796,7 +840,7 @@ Notice how our use of `FreeSpaceFinder` meant that the annotation did not collid
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.13 Getting all annotations from a PDF
+#### 1.8.13 Getting all annotations from a PDF
 
 Getting all annotations from a PDF is easy, if you know where to look.
 Let's start by opening the PDF `Document`:
@@ -813,7 +857,7 @@ Let's check the first `Page`.
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-#### 1.7.14 Showcase : Adding a collection of annotations shaped like super mario to an existing PDF
+#### 1.8.14 Showcase : Adding a collection of annotations shaped like super mario to an existing PDF
 
 From the spec:
 
@@ -907,9 +951,9 @@ The result should be something like this:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
 
-### 1.8 Exporting a PDF
+### 1.9 Exporting a PDF
 
-#### 1.8.1 Exporting a PDF as JSON
+#### 1.9.1 Exporting a PDF as JSON
 
 This scenario is particularly useful when debugging. It enables you to see the PDF `Document` in the same way `pText` sees it.
 
@@ -925,7 +969,7 @@ which will give you access to a `json` like structure.
             # export to json
             with open("output.json", "w") as json_file_handle:
                 json_file_handle.write(
-                    json.dumps(doc.to_json_serializable(doc), indent=4)
+                    json.dumps(doc.to_json_serializable(), indent=4)
                 )
                 
 On my example input document, this yielded the following output:            
@@ -959,7 +1003,7 @@ On my example input document, this yielded the following output:
 Here we can clearly see the xref table being persisted. 
 This table acts as the starting point of the document, it contains references to other data-structures that contain meta-information, information about each page, etc.
 
-#### 1.8.2 Exporting a PDF as SVG
+#### 1.9.2 Exporting a PDF as SVG
 
 Sometimes, all you need is an image. With `pText` you can easily convert any `Page` of a `Document` into an SVG image.                               
 
@@ -986,7 +1030,7 @@ This was the input document:
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.            
 
-#### 1.8.2 Exporting a PDF as MP3
+#### 1.9.2 Exporting a PDF as MP3
 
 For those with hearing-impairments, it can be very useful to be able to convert a PDF `Document` to an MP3 file.
 This is perfectly possible with `pText`.
@@ -1006,12 +1050,12 @@ The constructor of `PDFToMP3` has some arguments that allow us to tweak the expo
 - `language` : This is the 2-letter abbreviation of the language you expect the text to be in. Default is `en`
 - `slow`: This indicates whether you want the speaking-voice to go (extra) slow, or not
 
-### 1.9 Concatenating PDFs, and other page-manipulations
+### 1.10 Concatenating PDFs, and other page-manipulations
 
 A common scenario, when working with existing PDF `Document` objects is concatenation.
 Let's look at how you can concatenate two or more existing `Document` objects:
 
-#### 1.9.1 Concatenating entire PDF `Documents`
+#### 1.10.1 Concatenating entire PDF `Documents`
 
         # attempt to read PDF
         doc_a = None
@@ -1036,7 +1080,7 @@ And finally store the merged PDF:
         with open("output.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc_c)
 
-#### 1.9.2 Concatenating parts of a `Document`
+#### 1.10.2 Concatenating parts of a `Document`
 
         # attempt to read PDF
         doc_a = None
@@ -1064,7 +1108,7 @@ And finally we can store the merged PDF:
         with open("output.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc_c)
 
-#### 1.9.3 Removing a `Page` from a `Document`
+#### 1.10.3 Removing a `Page` from a `Document`
 
 First, we open the `Document`
 
@@ -1553,6 +1597,44 @@ The result should be something like this:
 ![adding_a_paragraph_forcing_split](readme_img/adding_a_paragraph_forcing_split.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+
+##### 2.1.3.7 Setting the Font
+
+`Font` objects in `pText` are as close to the PDF level as possible, whilst still keeping it user-friendly.
+In the PDF spec, there are 2 kinds of `Fonts`. `SimpleFont` (in general) represents a `Font` that maps only the bytes `0..255` to unicode characters. 
+
+Among these `SimpleFonts` are the so called 'standard 14 fonts'. These are fonts that any conforming reader should have available to it.
+By using one of the standard 14, you are ensuring your `Document` will look the same, regardless of the viewing software.
+
+`CompositeFont` on the other hand represents a more generic `Font` that can map an arbitrary byte (range) to an arbitrary collection of unicode characters.
+
+###### 2.1.3.7.1 Using one of the standard 14
+
+    font: Font = StandardType1Font('Helvetica')
+    
+The names of the standard 14 are:
+
+ - "Courier",
+ - "Courier-Bold",
+ - "Courier-Bold-Oblique",
+ - "Courier-Oblique",
+ - "Helvetica",
+ - "Helvetica-Bold",
+ - "Helvetica-Bold-Oblique",
+ - "Helvetica-Oblique",
+ - "Symbol",
+ - "Times-Bold",
+ - "Times-Bold-Italic",
+ - "Times-Italic",
+ - "Times-Roman",
+ - "ZapfDingbats",   
+
+###### 2.1.3.7.2 Using a TrueTypeFont
+
+Alternatively, you can specify a `Font` by providing a path to its `.ttf` file.
+
+    font: Font = TrueTypeFont.true_type_font_from_file(Path("/home/user/Pacifico.ttf"))
+
 
 #### 2.1.4 Adding text to a `Document` using `Heading`
 

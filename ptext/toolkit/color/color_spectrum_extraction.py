@@ -103,7 +103,7 @@ class ColorSpectrumExtraction(EventListener):
 
     def get_colors_per_page(
         self, page_number: int, limit: Optional[int] = None
-    ) -> typing.List[RGBColor]:
+    ) -> typing.List[typing.Tuple[RGBColor, int]]:
         """
         This function returns the colors used on a given page of a PDF
         """

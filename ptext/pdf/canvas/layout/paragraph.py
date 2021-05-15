@@ -9,11 +9,11 @@ import typing
 from decimal import Decimal
 from typing import Union
 
-from ptext.io.read.types import Name, Dictionary, String
+from ptext.io.read.types import Name, Dictionary
 from ptext.pdf.canvas.color.color import Color, X11Color
-from ptext.pdf.canvas.font.afm.adobe_font_metrics import AdobeFontMetrics
 from ptext.pdf.canvas.font.font import Font
-from ptext.pdf.canvas.font.font_type_1 import FontType1
+from ptext.pdf.canvas.font.glyph_line import GlyphLine
+from ptext.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 from ptext.pdf.document import Document
@@ -64,12 +64,7 @@ class ChunkOfText(LayoutElement):
         )
         self.text = text
         if isinstance(font, str):
-            self.font: Font = FontType1()
-            font_to_copy: typing.Optional[Font] = AdobeFontMetrics.get(font)
-            self.font[Name("Encoding")] = Name("WinAnsiEncoding")
-            assert font_to_copy
-            for k, v in font_to_copy.items():
-                self.font[k] = v
+            self.font: Font = StandardType1Font(font)
             assert self.font
         else:
             self.font = font
@@ -94,34 +89,57 @@ class ChunkOfText(LayoutElement):
             page["Resources"]["Font"][Name("F%d" % font_index)] = font
             return Name("F%d" % font_index)
 
-    def _write_bytes_in_simple_font(self) -> str:
+    def _write_text_bytes(self) -> str:
+        hex_mode: bool = False
+        for c in self.text:
+            if ord(c) != self.font.unicode_to_character_identifier(c):
+                hex_mode = True
+                break
+        if hex_mode:
+            return self._write_text_bytes_in_hex()
+        else:
+            return self._write_text_bytes_in_ascii()
+
+    def _write_text_bytes_in_hex(self) -> str:
+        sOut: str = ""
+        for c in self.text:
+            cid: typing.Optional[int] = self.font.unicode_to_character_identifier(c)
+            assert cid is not None, "Font %s can not represent '%s'" % (
+                self.font.get_font_name(),
+                c,
+            )
+            hex_rep: str = hex(int(cid))[2:]
+            if len(hex_rep) == 1:
+                hex_rep = "0" + hex_rep
+            sOut += "".join(["<", hex_rep, ">"])
+        return "".join(["[", sOut, "] TJ"])
+
+    def _write_text_bytes_in_ascii(self) -> str:
         """
         This function escapes certain reserved characters in PDF strings.
         """
-        if isinstance(self.font, FontType1):
-            sOut = ""
-            for c in self.text:
-                if c == "\r":
-                    sOut += "\\r"
-                elif c == "\n":
-                    sOut += "\\n"
-                elif c == "\t":
-                    sOut += "\\t"
-                elif c == "\b":
-                    sOut += "\\b"
-                elif c == "\f":
-                    sOut += "\\f"
-                elif c in ["(", ")", "\\"]:
-                    sOut += "\\" + c
-                elif 0 <= ord(c) < 8:
-                    sOut += "\\00" + oct(ord(c))[2:]
-                elif 8 <= ord(c) < 32:
-                    sOut += "\\0" + oct(ord(c))[2:]
-                else:
-                    sOut += c
-            return sOut
+        sOut: str = ""
+        for c in self.text:
+            if c == "\r":
+                sOut += "\\r"
+            elif c == "\n":
+                sOut += "\\n"
+            elif c == "\t":
+                sOut += "\\t"
+            elif c == "\b":
+                sOut += "\\b"
+            elif c == "\f":
+                sOut += "\\f"
+            elif c in ["(", ")", "\\"]:
+                sOut += "\\" + c
+            elif 0 <= ord(c) < 8:
+                sOut += "\\00" + oct(ord(c))[2:]
+            elif 8 <= ord(c) < 32:
+                sOut += "\\0" + oct(ord(c))[2:]
+            else:
+                sOut += c
         # default
-        return self.text
+        return "".join(["(", sOut, ") Tj"])
 
     def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self.font
@@ -133,7 +151,7 @@ class ChunkOfText(LayoutElement):
             %f %f %f rg
             /%s %f Tf            
             %f 0 0 %f %f %f Tm            
-            (%s) Tj
+            %s
             ET            
             Q
         """ % (
@@ -146,15 +164,18 @@ class ChunkOfText(LayoutElement):
             float(self.font_size),  # Tm
             float(bounding_box.x),  # Tm
             float(bounding_box.y + bounding_box.height - self.font_size),  # Tm
-            self._write_bytes_in_simple_font(),  # Tj
+            self._write_text_bytes(),  # Tj
         )
         self._append_to_content_stream(page, content)
+        encoded_bytes: bytes = [
+            self.font.unicode_to_character_identifier(c) for c in self.text
+        ]
         layout_rect = Rectangle(
             bounding_box.x,
             bounding_box.y + bounding_box.height - self.font_size,
-            self.font.build_glyph_line(String(self.text)).get_width_in_text_space(
-                self.font_size
-            ),
+            GlyphLine(
+                encoded_bytes, self.font, self.font_size
+            ).get_width_in_text_space(),
             self.font_size,
         )
 
@@ -331,9 +352,12 @@ class Paragraph(LineOfText):
             potential_text += w
 
             # check the width of this piece of text
-            potential_width = self.font.build_glyph_line(
-                String(potential_text)
-            ).get_width_in_text_space(self.font_size)
+            encoded_bytes: bytes = [
+                self.font.unicode_to_character_identifier(c) for c in potential_text
+            ]
+            potential_width = GlyphLine(
+                encoded_bytes, self.font, self.font_size
+            ).get_width_in_text_space()
 
             # if this text is larger than the bounding box, split the text
             remaining_space_in_box: Decimal = bounding_box.width - potential_width
@@ -414,9 +438,12 @@ class Paragraph(LineOfText):
 
         for i, line_of_text in enumerate(lines_of_text):
 
-            estimated_width: Decimal = self.font.build_glyph_line(
-                String(line_of_text)
-            ).get_width_in_text_space(self.font_size)
+            encoded_bytes: bytes = [
+                self.font.unicode_to_character_identifier(c) for c in line_of_text
+            ]
+            estimated_width: Decimal = GlyphLine(
+                encoded_bytes, self.font, self.font_size
+            ).get_width_in_text_space()
             remaining_space: Decimal = bounding_box.width - estimated_width
 
             # calculate the space that needs to be divided among the space-characters
@@ -457,9 +484,12 @@ class Paragraph(LineOfText):
                 max_y = max(r.y + r.height, max_y)
 
                 # line up our next x
-                word_size = self.font.build_glyph_line(
-                    String(s)
-                ).get_width_in_text_space(self.font_size)
+                encoded_bytes = [
+                    self.font.unicode_to_character_identifier(c) for c in s
+                ]
+                word_size = GlyphLine(
+                    encoded_bytes, self.font, self.font_size
+                ).get_width_in_text_space()
                 x += word_size
                 x += space_per_space
 

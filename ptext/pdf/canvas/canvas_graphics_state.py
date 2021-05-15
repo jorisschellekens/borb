@@ -32,16 +32,16 @@ class CanvasGraphicsState:
     """
 
     def __init__(self):
-        self.ctm = Matrix.identity_matrix()
-        self.text_matrix = Matrix.identity_matrix()
-        self.text_line_matrix = Matrix.identity_matrix()
-        self.text_rise = Decimal(0)
-        self.character_spacing = Decimal(0)
-        self.word_spacing = Decimal(0)
-        self.horizontal_scaling = Decimal(100)
-        self.leading = Decimal(0)
-        self.font = None
-        self.font_size = None
+        self.ctm: Matrix = Matrix.identity_matrix()
+        self.text_matrix: Matrix = Matrix.identity_matrix()
+        self.text_line_matrix: Matrix = Matrix.identity_matrix()
+        self.text_rise: Decimal = Decimal(0)
+        self.character_spacing: Decimal = Decimal(0)
+        self.word_spacing: Decimal = Decimal(0)
+        self.horizontal_scaling: Decimal = Decimal(100)
+        self.leading: Decimal = Decimal(0)
+        self.font: typing.Optional["Font"] = None
+        self.font_size: Decimal = Decimal(0)
         self.path: typing.List["LineSegment"] = []
         self.clipping_path: typing.List["LineSegment"] = []
         self.non_stroke_color_space = None
@@ -62,15 +62,25 @@ class CanvasGraphicsState:
 
     def __deepcopy__(self, memodict={}):
         out = CanvasGraphicsState()
-        out.ctm = copy.deepcopy(self.ctm)
-        out.text_matrix = copy.deepcopy(self.text_matrix)
-        out.text_line_matrix = copy.deepcopy(self.text_line_matrix)
+
+        # ctm
+        out.ctm = copy.deepcopy(self.ctm, memodict)
+
+        # text matrix
+        if self.text_matrix is not None:
+            out.text_matrix = copy.deepcopy(self.text_matrix, memodict)
+
+        # text line matrix
+        if self.text_line_matrix is not None:
+            out.text_line_matrix = copy.deepcopy(self.text_line_matrix, memodict)
+
         out.text_rise = self.text_rise
         out.character_spacing = self.character_spacing
         out.word_spacing = self.word_spacing
         out.horizontal_scaling = self.horizontal_scaling
         out.leading = self.leading
-        out.font = copy.deepcopy(self.font, memodict)
+        if self.font is not None:
+            out.font = self.font.__deepcopy__(memodict)
         out.font_size = self.font_size
         # out.clipping_path = None
         # out.non_stroke_color_space = None

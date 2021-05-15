@@ -18,7 +18,7 @@ from typing import Union, Optional
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import TokenType
-from ptext.io.read.types import Dictionary, Reference, AnyPDFType, Stream
+from ptext.io.read.types import Dictionary, Reference, AnyPDFType, Stream, Name
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class XREF(Dictionary):
     def __init__(self):
         super(XREF, self).__init__()
         self.entries: typing.List[Reference] = []
-        self.cache: typing.Dict[Reference, Union[AnyPDFType, None]] = {}
+        self.cache: typing.Dict[int, Union[AnyPDFType, None]] = {}
 
     ##
     ## LOWLEVEL IO
@@ -142,8 +142,12 @@ class XREF(Dictionary):
         Objects can be looked up by Reference, or object number.
         """
         # cache
-        if isinstance(indirect_reference, Reference):
-            cached_obj = self.cache.get(indirect_reference, None)
+        if (
+            isinstance(indirect_reference, Reference)
+            and indirect_reference.parent_stream_object_number is None
+        ):
+            assert indirect_reference.object_number is not None
+            cached_obj = self.cache.get(indirect_reference.object_number, None)
             if cached_obj is not None:
                 return cached_obj
 
@@ -198,13 +202,13 @@ class XREF(Dictionary):
 
             # Length may be Reference
             if isinstance(stream_object["Length"], Reference):
-                stream_object["Length"] = self.get_object(
+                stream_object[Name("Length")] = self.get_object(
                     stream_object["Length"], src=src, tok=tok
                 )
 
             # First may be Reference
             if isinstance(stream_object["First"], Reference):
-                stream_object["First"] = self.get_object(
+                stream_object[Name("First")] = self.get_object(
                     stream_object["First"], src=src, tok=tok
                 )
 
@@ -231,7 +235,9 @@ class XREF(Dictionary):
                 obj = None
 
         # update cache
-        self.cache[indirect_reference] = obj
+        if indirect_reference.parent_stream_object_number is None:
+            assert indirect_reference.object_number is not None
+            self.cache[indirect_reference.object_number] = obj
 
         # return
         return obj

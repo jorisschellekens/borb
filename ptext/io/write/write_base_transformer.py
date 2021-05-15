@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    This class is the base implementation of a transformer pattern.
+    It reads bytes from a PDF document, and converts it to JSON-like datastructures.
+"""
 import io
 import typing
 from typing import Optional
@@ -38,18 +44,53 @@ class WriteTransformerContext:
 
 
 class WriteBaseTransformer:
+    """
+    <<<<<<< HEAD
+        This class represents the base transformer for persisting a PDF Document.
+        It allows you to add child BaseWriteTransformer implementations to handle specific cases,
+        such as persisting Image objects, or Dictionary objects, etc.
+    =======
+        This class is the base implementation of a transformer pattern.
+        It reads bytes from a PDF document, and converts it to JSON-like datastructures.
+    >>>>>>> feature/font-improvements
+    """
+
     def __init__(self):
         self.handlers = []
         self.parent = None
 
     def add_child_transformer(
-        self, handler: "BaseWriteTransformer"  # type: ignore [name-defined]
+        self, handler: "WriteBaseTransformer"  # type: ignore [name-defined]
     ) -> "WriteBaseTransformer":  # type: ignore [name-defined]
+        """
+        <<<<<<< HEAD
+                This function allows you to add BaseWriteTransformer implementations to handle specific
+                cases, such as a BaseWriteTransformer specifically designed to persist Image objects.
+        =======
+                This function adds a BaseWriteTransformer to this WriteBaseTransformer.
+                Children of this WriteBaseTransformer will be called in turn, and their
+                `can_be_transformed` method should return True if the child WriteBaseTransformer
+                can handle the object to be transformed. The first child to return True will have its
+                `transform` method called.
+        >>>>>>> feature/font-improvements
+                This function returns self.
+        """
         self.handlers.append(handler)
         handler.parent = self
         return self
 
     def get_root_transformer(self) -> "WriteBaseTransformer":  # type: ignore [name-defined]
+        """
+        <<<<<<< HEAD
+                This function returns the WriteBaseTransformer at the root of this WriteBaseTransformer hierarchy.
+                This allows child WriteBaseTransformer implementations to call the root transformer.
+                This is useful for instance when transforming a dictionary, where each key/value would then be transformed
+                by delegating the call to the root WriteBaseTransformer.
+        =======
+                This function gets the root WriteBaseTransformer of this WriteBaseTransformer.
+                WriteBaseTransformer implementations can be nested to allow a facade design pattern.
+        >>>>>>> feature/font-improvements
+        """
         p = self
         while p.parent is not None:
             p = p.parent
@@ -67,6 +108,9 @@ class WriteBaseTransformer:
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext] = None,
     ):
+        """
+        This method writes an object (of type AnyPDFType) to a byte stream (specified in the WriteTransformerContext)
+        """
         # transform object
         return_value = None
         for h in self.handlers:
@@ -80,12 +124,16 @@ class WriteBaseTransformer:
         # return
         return return_value
 
-    def start_object(
+    def _start_object(
         self,
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext],
     ):
-
+        """
+        This function starts a new direct object by writing
+        its reference number followed by "obj" (e.g. "12 0 obj").
+        It also does some bookkeeping to ensure the byte offset is stored in the XREF
+        """
         # get offset position
         assert context is not None
         assert context.destination is not None
@@ -106,11 +154,14 @@ class WriteBaseTransformer:
             )
         )
 
-    def end_object(
+    def _end_object(
         self,
         object_to_transform: AnyPDFType,
         context: Optional[WriteTransformerContext],
     ):
+        """
+        This function writes the "endobj" bytes whenever a direct object needs to be closed
+        """
         # write endobj
         assert context is not None
         assert context.destination is not None

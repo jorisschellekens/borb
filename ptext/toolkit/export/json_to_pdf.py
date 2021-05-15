@@ -5,6 +5,8 @@
     This class converts JSON to PDF.
     The JSON document defines the layout elements, their nesting (e.g. paragraphs in tables) and their position.
 """
+import logging
+import typing
 from decimal import Decimal
 
 from ptext.io.read.types import Dictionary, Name, String
@@ -22,9 +24,6 @@ from ptext.pdf.canvas.line_art.blob_factory import BlobFactory
 from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
-
-import logging
-import typing
 
 logger = logging.getLogger(__name__)
 

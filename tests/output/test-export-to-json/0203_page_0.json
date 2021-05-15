@@ -252,6 +252,8 @@
                                 },
                                 "Font": {
                                     "T1_0": {
+                                        "Type": "Font",
+                                        "Subtype": "Type1",
                                         "BaseFont": "OPWSIY+Frutiger-Roman",
                                         "Encoding": {
                                             "BaseEncoding": "WinAnsiEncoding",
@@ -292,14 +294,12 @@
                                             "XHeight": 510.0
                                         },
                                         "LastChar": 127.0,
-                                        "Subtype": "Type1",
                                         "ToUnicode": {
                                             "Filter": "FlateDecode",
                                             "Length": 404.0,
                                             "Bytes": null,
                                             "DecodedBytes": null
                                         },
-                                        "Type": "Font",
                                         "Widths": [
                                             667.0,
                                             667.0,
@@ -402,6 +402,8 @@
                                         ]
                                     },
                                     "T1_1": {
+                                        "Type": "Font",
+                                        "Subtype": "Type1",
                                         "BaseFont": "OPWSIY+Frutiger-Light",
                                         "Encoding": {
                                             "BaseEncoding": "WinAnsiEncoding",
@@ -442,14 +444,12 @@
                                             "XHeight": 510.0
                                         },
                                         "LastChar": 127.0,
-                                        "Subtype": "Type1",
                                         "ToUnicode": {
                                             "Filter": "FlateDecode",
                                             "Length": 519.0,
                                             "Bytes": null,
                                             "DecodedBytes": null
                                         },
-                                        "Type": "Font",
                                         "Widths": [
                                             556.0,
                                             556.0,
@@ -552,6 +552,8 @@
                                         ]
                                     },
                                     "T1_2": {
+                                        "Type": "Font",
+                                        "Subtype": "Type1",
                                         "BaseFont": "OPWSIY+Frutiger-Bold",
                                         "Encoding": {
                                             "BaseEncoding": "WinAnsiEncoding",
@@ -591,14 +593,12 @@
                                             "XHeight": 515.0
                                         },
                                         "LastChar": 133.0,
-                                        "Subtype": "Type1",
                                         "ToUnicode": {
                                             "Filter": "FlateDecode",
                                             "Length": 422.0,
                                             "Bytes": null,
                                             "DecodedBytes": null
                                         },
-                                        "Type": "Font",
                                         "Widths": [
                                             667.0,
                                             278.0,
@@ -706,6 +706,8 @@
                                         ]
                                     },
                                     "T1_3": {
+                                        "Type": "Font",
+                                        "Subtype": "Type1",
                                         "BaseFont": "OPWSIY+Frutiger-BoldItalic",
                                         "Encoding": "WinAnsiEncoding",
                                         "FirstChar": 32.0,
@@ -738,14 +740,12 @@
                                             "XHeight": 515.0
                                         },
                                         "LastChar": 117.0,
-                                        "Subtype": "Type1",
                                         "ToUnicode": {
                                             "Filter": "FlateDecode",
                                             "Length": 289.0,
                                             "Bytes": null,
                                             "DecodedBytes": null
                                         },
-                                        "Type": "Font",
                                         "Widths": [
                                             278.0,
                                             0.0,
@@ -836,6 +836,8 @@
                                         ]
                                     },
                                     "T1_4": {
+                                        "Type": "Font",
+                                        "Subtype": "Type1",
                                         "BaseFont": "OPWSIY+Frutiger-LightItalic",
                                         "Encoding": {
                                             "BaseEncoding": "WinAnsiEncoding",
@@ -875,14 +877,12 @@
                                             "XHeight": 510.0
                                         },
                                         "LastChar": 117.0,
-                                        "Subtype": "Type1",
                                         "ToUnicode": {
                                             "Filter": "FlateDecode",
                                             "Length": 324.0,
                                             "Bytes": null,
                                             "DecodedBytes": null
                                         },
-                                        "Type": "Font",
                                         "Widths": [
                                             556.0,
                                             278.0,

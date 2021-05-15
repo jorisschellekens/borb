@@ -67,11 +67,11 @@ class WriteXMPTransformer(WriteBaseTransformer):
             assert isinstance(ref, Reference)
             if ref.object_number is not None and ref.byte_offset is None:
                 started_object = True
-                self.start_object(out_value, context)
+                self._start_object(out_value, context)
 
         # pass stream along to other transformer
         self.get_root_transformer().transform(out_value, context)
 
         # end object if needed
         if started_object:
-            self.end_object(out_value, context)
+            self._end_object(out_value, context)

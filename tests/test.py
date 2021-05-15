@@ -55,7 +55,10 @@ class Test(unittest.TestCase):
         n = 0
         m = len(documents)
         for pdf_file in documents:
-            print("Processing %s .. [%d / %d]" % (pdf_file, n, m))
+            print(
+                "[%s] Processing %s .. [%d / %d]"
+                % (self.__class__.__name__, pdf_file, n, m)
+            )
             n += 1
             self._test_single_document_wrapper(pdf_file)
 

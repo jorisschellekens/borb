@@ -5,6 +5,7 @@
 In mathematics, a matrix (plural matrices) is a rectangular array or table of numbers,
 symbols, or expressions, arranged in rows and columns.
 """
+import typing
 from decimal import Decimal
 from typing import List
 
@@ -25,7 +26,7 @@ class Matrix:
         """
         Initialize a new Matrix
         """
-        self.mtx = [[], [], []]
+        self.mtx: typing.List[typing.List[Decimal]] = [[], [], []]
 
     @staticmethod
     def identity_matrix() -> "Matrix":

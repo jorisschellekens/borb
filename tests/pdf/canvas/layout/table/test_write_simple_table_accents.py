@@ -2,8 +2,12 @@ import logging
 import unittest
 from pathlib import Path
 
+from ptext.pdf.canvas.font.font import Font
+
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
+from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
 from ptext.pdf.canvas.layout.table import Table
@@ -67,40 +71,43 @@ class TestWriteSimpleTableAccents(unittest.TestCase):
             )
         )
         # A
-        t.add(Paragraph("a"))
-        t.add(Paragraph("A"))
-        t.add(Paragraph("á"))
-        t.add(Paragraph("Á"))
+        font: Font = TrueTypeFont.true_type_font_from_file(
+            Path(__file__).parent / "Pacifico.ttf"
+        )
+        t.add(Paragraph("a", font=font))
+        t.add(Paragraph("A", font=font))
+        t.add(Paragraph("á", font=font))
+        t.add(Paragraph("Á", font=font))
         # B
-        t.add(Paragraph("b"))
-        t.add(Paragraph("B"))
-        t.add(Paragraph("-"))
-        t.add(Paragraph("-"))
+        t.add(Paragraph("b", font=font))
+        t.add(Paragraph("B", font=font))
+        t.add(Paragraph("-", font=font))
+        t.add(Paragraph("-", font=font))
         # C
-        t.add(Paragraph("c"))
-        t.add(Paragraph("C"))
-        t.add(Paragraph("-"))
-        t.add(Paragraph("-"))
+        t.add(Paragraph("c", font=font))
+        t.add(Paragraph("C", font=font))
+        t.add(Paragraph("-", font=font))
+        t.add(Paragraph("-", font=font))
         # D
-        t.add(Paragraph("d"))
-        t.add(Paragraph("D"))
-        t.add(Paragraph("-"))
-        t.add(Paragraph("-"))
+        t.add(Paragraph("d", font=font))
+        t.add(Paragraph("D", font=font))
+        t.add(Paragraph("-", font=font))
+        t.add(Paragraph("-", font=font))
         # E
-        t.add(Paragraph("e"))
-        t.add(Paragraph("E"))
-        t.add(Paragraph("é"))
-        t.add(Paragraph("É"))
+        t.add(Paragraph("e", font=font))
+        t.add(Paragraph("E", font=font))
+        t.add(Paragraph("é", font=font))
+        t.add(Paragraph("É", font=font))
         # F
-        t.add(Paragraph("f"))
-        t.add(Paragraph("F"))
-        t.add(Paragraph("-"))
-        t.add(Paragraph("-"))
+        t.add(Paragraph("f", font=font))
+        t.add(Paragraph("F", font=font))
+        t.add(Paragraph("-", font=font))
+        t.add(Paragraph("-", font=font))
         # G
-        t.add(Paragraph("g"))
-        t.add(Paragraph("G"))
-        t.add(Paragraph("-"))
-        t.add(Paragraph("-"))
+        t.add(Paragraph("g", font=font))
+        t.add(Paragraph("G", font=font))
+        t.add(Paragraph("-", font=font))
+        t.add(Paragraph("-", font=font))
         # ..
         t.add(
             Paragraph(
@@ -131,10 +138,10 @@ class TestWriteSimpleTableAccents(unittest.TestCase):
             )
         )
         # Z
-        t.add(Paragraph("z"))
-        t.add(Paragraph("Z"))
-        t.add(Paragraph("-"))
-        t.add(Paragraph("-"))
+        t.add(Paragraph("z", font=font))
+        t.add(Paragraph("Z", font=font))
+        t.add(Paragraph("-", font=font))
+        t.add(Paragraph("-", font=font))
 
         t.set_border_width_on_all_cells(Decimal(0.2))
         t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))

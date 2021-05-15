@@ -80,6 +80,19 @@ class ReadBaseTransformer:
         """
         return False
 
+    def _is_recursive_object(self, object_to_transform) -> bool:
+        try:
+            p = object_to_transform
+            parents = [p]
+            while p is not None:
+                p = p.get_parent()
+                if p in parents:
+                    return True
+                parents.append(p)
+        except:
+            pass
+        return False
+
     def transform(
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
@@ -91,6 +104,8 @@ class ReadBaseTransformer:
         This function reads an object from a byte stream.
         The object being read depends on the implementation of ReadBaseTransformer.
         """
+        if self._is_recursive_object(object_to_transform):
+            return object_to_transform
         for h in self.children:
             if h.can_be_transformed(object_to_transform):
                 # print("%s<%s level='%d' invocation='%d'>" % ("   " * self.level, h.__class__.__name__, self.level, self.invocation_count), flush=True)

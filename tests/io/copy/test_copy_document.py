@@ -1,5 +1,6 @@
 import logging
 import time
+import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
@@ -19,6 +20,7 @@ class TestCopyDocument(Test):
     def test_exact_document(self):
         self.test_document(Path("/home/joris/Code/pdf-corpus/0041.pdf"))
 
+    @unittest.skip
     def test_corpus(self):
         super(TestCopyDocument, self).test_corpus()
 

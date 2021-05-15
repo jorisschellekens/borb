@@ -17,7 +17,6 @@ from ptext.io.read.read_base_transformer import (
 )
 from ptext.io.read.types import (
     Dictionary,
-    List,
     AnyPDFType,
     Decimal,
     Name,
