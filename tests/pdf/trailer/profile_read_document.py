@@ -1,18 +1,14 @@
 import cProfile
-
 import typing
 from pathlib import Path
 
-from ptext.pdf.pdf import PDF
-
 from ptext.pdf.document import Document
+from ptext.pdf.pdf import PDF
 
 
 def read_document():
     doc: typing.Optional[Document] = None
-    with open(
-        Path("/home/joris/Code/pdf-corpus/0063_page_0.pdf"), "rb"
-    ) as pdf_file_handle:
+    with open(Path("/home/joris/Code/pdf-corpus/0364.pdf"), "rb") as pdf_file_handle:
         doc = PDF.loads(pdf_file_handle)
 
 

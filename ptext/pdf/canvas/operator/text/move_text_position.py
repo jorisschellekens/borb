@@ -27,12 +27,12 @@ class MoveTextPosition(CanvasOperator):
     def __init__(self):
         super().__init__("Td", 2)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the Td operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
+        assert isinstance(operands[0], Decimal), "Operand 0 of Td must be a Decimal"
+        assert isinstance(operands[1], Decimal), "Operand 1 of Td must be a Decimal"
 
         tx = operands[0]
         ty = operands[1]
@@ -41,6 +41,7 @@ class MoveTextPosition(CanvasOperator):
         m[2][0] = tx
         m[2][1] = ty
 
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.text_matrix = m.mul(
             canvas.graphics_state.text_line_matrix
         )

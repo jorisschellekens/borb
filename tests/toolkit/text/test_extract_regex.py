@@ -1,58 +1,105 @@
-import json
-import logging
 import unittest
+from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 
+from ptext.pdf.canvas.color.color import HexColor
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.document import Document
+from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test import Test
-from tests.util import get_output_dir
-
-logging.basicConfig(
-    filename="../../logs/test-extract-regular-expression.log", level=logging.DEBUG
-)
 
 
-class TestExtractRegularExpression(Test):
+class TestExtractRegularExpression(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-extract-regular-expression")
-
-    @unittest.skip
-    def test_corpus(self):
-        super(TestExtractRegularExpression, self).test_corpus()
-
-    def test_exact_document(self):
-        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
-
-    def _test_document(self, file):
-
-        # create output directory if it does not exist yet
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-        with open(file, "rb") as pdf_file_handle:
-            l = RegularExpressionTextExtraction("[sS]orbitol")
-            doc = PDF.loads(pdf_file_handle, [l])
+    def test_write_document(self):
 
-            # export matches
-            output_file = self.output_dir / (file.stem + ".json")
-            with open(output_file, "w") as json_file_handle:
-                obj = [
-                    {
-                        "text": x.text,
-                        "x": int(x.get_baseline().x),
-                        "y": int(x.get_baseline().y),
-                        "width": int(x.get_baseline().width),
-                        "height": int(x.get_baseline().height),
-                    }
-                    for x in l.get_matched_chunk_of_text_render_events_per_page(0)
-                ]
-                json_file_handle.write(json.dumps(obj, indent=4))
+        # create document
+        pdf = Document()
 
-        return True
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and a Paragraph of text. "
+                    "A subsequent test will attempt to match a regular expression against the lipsum text."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        layout.add(
+            Paragraph(
+                """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            """,
+                font_size=Decimal(10),
+                vertical_alignment=Alignment.TOP,
+                horizontal_alignment=Alignment.LEFT,
+                padding_top=Decimal(5),
+                padding_right=Decimal(5),
+                padding_bottom=Decimal(5),
+                padding_left=Decimal(5),
+            )
+        )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
+
+    def test_match_regular_expression(self):
+
+        # attempt to read PDF
+        doc = None
+        l = RegularExpressionTextExtraction("ad minim veniam")
+        with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
+            doc = PDF.loads(in_file_handle, [l])
+
+        bb = l.get_all_matches(0)[0].get_bounding_boxes()[0]
+        assert int(bb.x) == 197
+        assert int(bb.y) == 623
+        assert int(bb.width) == 75
+        assert int(bb.height) == 7
+
+        bb = bb.grow(Decimal(2))
+        doc.get_page(0).append_square_annotation(
+            bb,
+            stroke_color=HexColor("86CD82"),
+        )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
 
 
 if __name__ == "__main__":

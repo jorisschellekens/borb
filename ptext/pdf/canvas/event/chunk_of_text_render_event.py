@@ -23,6 +23,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
 
     def __init__(self, graphics_state: CanvasGraphicsState, raw_bytes: String):
         assert graphics_state.font is not None
+        assert isinstance(graphics_state.font, Font)
         self._glyph_line: GlyphLine = GlyphLine(
             raw_bytes.get_value_bytes(),
             graphics_state.font,
@@ -33,11 +34,12 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         )
         super(ChunkOfTextRenderEvent, self).__init__(
             font=graphics_state.font,
-            font_size=graphics_state.font_size,
+            font_size=graphics_state.font_size * graphics_state.text_matrix[1][1],
             font_color=graphics_state.non_stroke_color,
             text=self._glyph_line.get_text(),
         )
         m = graphics_state.text_matrix.mul(graphics_state.ctm)
+        m[1][1] *= graphics_state.font_size
 
         # calculate baseline box
         p0 = m.cross(Decimal(0), graphics_state.text_rise, Decimal(1))
@@ -83,10 +85,13 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
 
         # calculate space character width estimate
         current_font: Font = graphics_state.font
-        self._space_character_width_estimate = (
-            current_font.get_space_character_width_estimate() * graphics_state.font_size
+        self._space_character_width_estimate_in_user_space = (
+            current_font.get_space_character_width_estimate()
+            * graphics_state.font_size
+            * graphics_state.text_matrix[0][0]
+            * Decimal(0.001)
         )
-        self._font_size = graphics_state.font_size
+        self._font_size = graphics_state.font_size * graphics_state.text_matrix[0][0]
 
         # store graphics state
         self._graphics_state = graphics_state
@@ -97,11 +102,21 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         """
         return self._font_size
 
-    def get_space_character_width_estimate(self) -> Decimal:
+    def get_space_character_width_estimate_in_user_space(self) -> Decimal:
+        """
+        This function returns the width (in user space) of the space-character.
+        """
+        return self._space_character_width_estimate_in_user_space
+
+    def get_space_character_width_estimate_in_text_space(self) -> Decimal:
         """
         This function returns the width (in text space) of the space-character.
         """
-        return self._space_character_width_estimate
+        return (
+            self._space_character_width_estimate_in_user_space
+            * Decimal(1000)
+            / self.font_size
+        )
 
     def get_baseline(self) -> Rectangle:
         """
@@ -117,20 +132,24 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
         x: Decimal = Decimal(0)
         y: Decimal = self._graphics_state.text_rise
-        font: typing.Optional[Font] = self._graphics_state.font
-        assert font is not None
+        assert isinstance(self._graphics_state.font, Font)
+        assert self._graphics_state.font is not None
+        font: Font = self._graphics_state.font
         for g in self._glyph_line.split():
             e = ChunkOfTextRenderEvent(self._graphics_state, String(" "))
             e.font_size = self.font_size
             e.font_color = self.font_color
             e.font = self.font
             e.text = g.get_text()
-            e._space_character_width_estimate = self._space_character_width_estimate
+            e._space_character_width_estimate_in_user_space = (
+                self._space_character_width_estimate_in_user_space
+            )
             e._graphics_state = self._graphics_state
             e._glyph_line = g
 
             # set baseline bounding box
             m = self._graphics_state.text_matrix.mul(self._graphics_state.ctm)
+            m[1][1] *= self._graphics_state.font_size
             p0 = m.cross(x, y, Decimal(1))
             p1 = m.cross(
                 x + g.get_width_in_text_space(),

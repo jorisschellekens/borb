@@ -1,27 +1,29 @@
-import logging
 import unittest
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.page.page import DestinationType
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.document import Document
+from ptext.pdf.page.page import DestinationType, Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_log_dir, get_output_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-add-supermario-annotation.log"),
-    level=logging.DEBUG,
-)
 
 
 class TestAddSuperMarioAnnotation(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.input_file = Path("/home/joris/Code/pdf-corpus/0203.pdf")
-        self.output_file = Path(
-            get_output_dir(), "test-add-supermario-annotation/output.pdf"
-        )
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
     def test_add_supermario_annotation(self):
 
@@ -52,25 +54,41 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
             X11Color("White"),
         ]
 
-        # create output directory if it does not exist yet
-        if not self.output_file.parent.exists():
-            self.output_file.parent.mkdir()
+        # create document
+        pdf = Document()
 
-        # attempt to read PDF
-        doc = None
-        with open(self.input_file, "rb") as in_file_handle:
-            print("\treading (1) ..")
-            doc = PDF.loads(in_file_handle)
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and several link annotations shaped like super-mario."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
 
         # add annotation
+        page_width = pdf.get_page(0).get_page_info().get_width()
+        page_height = pdf.get_page(0).get_page_info().get_height()
         pixel_size = 2
         for i in range(0, len(m)):
             for j in range(0, len(m[i])):
                 if m[i][j] == 0:
                     continue
-                x = pixel_size * j
-                y = pixel_size * (len(m) - i)
-                doc.get_page(0).append_link_annotation(
+                x = pixel_size * j + float(page_width) / 2
+                y = pixel_size * (len(m) - i) + float(page_height) / 2
+                pdf.get_page(0).append_link_annotation(
                     page=Decimal(0),
                     color=c[m[i][j]],
                     destination_type=DestinationType.FIT,
@@ -83,13 +101,11 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_file, "wb") as out_file_handle:
-            print("\twriting ..")
-            PDF.dumps(out_file_handle, doc)
+        with open(self.output_dir / "output.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
 
         # attempt to re-open PDF
-        with open(self.output_file, "rb") as in_file_handle:
-            print("\treading (2) ..")
+        with open(self.output_dir / "output.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
         return True

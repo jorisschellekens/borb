@@ -30,16 +30,19 @@ class SetCMYKStroking(CanvasOperator):
     def __init__(self):
         super().__init__("K", 4)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the K operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
-        assert isinstance(operands[2], Decimal)
-        assert isinstance(operands[3], Decimal)
+        # fmt: off
+        assert isinstance(operands[0], Decimal), "operand 0 of K operator must be of type Decimal"
+        assert isinstance(operands[1], Decimal), "operand 1 of K operator must be of type Decimal"
+        assert isinstance(operands[2], Decimal), "operand 2 of K operator must be of type Decimal"
+        assert isinstance(operands[3], Decimal), "operand 3 of K operator must be of type Decimal"
+        # fmt: on
         c = operands[0]
         m = operands[1]
         y = operands[2]
         k = operands[3]
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.stroke_color = CMYKColor(c, m, y, k)

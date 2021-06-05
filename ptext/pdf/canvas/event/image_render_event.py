@@ -18,17 +18,17 @@ class ImageRenderEvent(Event):
     """
 
     def __init__(self, graphics_state: CanvasGraphicsState, image: Image):
-        self.image = image
+        self._image = image
 
         # calculate position
         v = graphics_state.ctm.cross(Decimal(0), Decimal(0), Decimal(1))
-        self.x = v[0]
-        self.y = v[1]
+        self._x: Decimal = v[0]
+        self._y: Decimal = v[1]
 
         # calculate display size
         v = graphics_state.ctm.cross(Decimal(1), Decimal(1), Decimal(0))
-        self.width = max(abs(v[0]), Decimal(1))
-        self.height = max(abs(v[1]), Decimal(1))
+        self._width: Decimal = max(abs(v[0]), Decimal(1))
+        self._height: Decimal = max(abs(v[1]), Decimal(1))
 
     def get_image(self) -> Image:
         """
@@ -36,28 +36,28 @@ class ImageRenderEvent(Event):
         This Image may have different dimensions than
         how it is displayed in the PDF
         """
-        return self.image
+        return self._image
 
     def get_x(self) -> Decimal:
         """
         Get the x-coordinate at which the Image is drawn
         """
-        return self.x
+        return self._x
 
     def get_y(self) -> Decimal:
         """
         Get the y-coordinate at which the Image is drawn
         """
-        return self.y
+        return self._y
 
     def get_width(self) -> Decimal:
         """
         Get the width of the (scaled) Image
         """
-        return self.width
+        return self._width
 
     def get_height(self) -> Decimal:
         """
         Get the height of the (scaled) Image
         """
-        return self.height
+        return self._height

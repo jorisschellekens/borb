@@ -6,6 +6,7 @@
 """
 import datetime
 import enum
+import io
 import typing
 import zlib
 from decimal import Decimal
@@ -13,6 +14,7 @@ from typing import Optional, Tuple
 
 from ptext.io.read.types import Decimal as pDecimal, Stream
 from ptext.io.read.types import Dictionary, Name, List, String, Boolean
+from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page_info import PageInfo
@@ -1158,7 +1160,7 @@ class Page(Dictionary):
         overlay_text: Optional[str] = None,
         repeat_overlay_text: Optional[bool] = None,
         line_width: Decimal = Decimal(1),
-        stroke_color: Optional[Color] = None,
+        stroke_color: Optional[Color] = X11Color("Red"),
         fill_color: Optional[Color] = None,
     ) -> "Page":
         """
@@ -1265,9 +1267,37 @@ class Page(Dictionary):
         # return
         return self._append_annotation(annot)
 
-    def apply_redact_annotations(self):
+    def apply_redact_annotations(
+        self, rectangles_to_redact: typing.List[Rectangle] = []
+    ):
         """
         This function applies the redaction annotations on this Page
         """
-        # TODO
-        pass
+        from ptext.pdf.canvas.redacted_canvas_stream_processor import (
+            RedactedCanvasStreamProcessor,
+        )
+
+        rectangles_to_redact += [
+            Rectangle(
+                x["Rect"][0],
+                x["Rect"][1],
+                x["Rect"][2] - x["Rect"][0],
+                x["Rect"][3] - x["Rect"][1],
+            )
+            for x in self["Annots"]
+            if "Subtype" in x and x["Subtype"] == "Redact" and "Rect" in x
+        ]
+
+        # apply redaction
+        redacted_canvas_content: bytes = (
+            RedactedCanvasStreamProcessor(self, Canvas(), rectangles_to_redact)
+            .read(io.BytesIO(self["Contents"]["DecodedBytes"]))
+            .get_redacted_content()  # type: ignore [attr-defined]
+        )
+
+        # update Page Contents (Stream)
+        self["Contents"][Name("DecodedBytes")] = redacted_canvas_content
+        self["Contents"][Name("Bytes")] = zlib.compress(
+            self["Contents"]["DecodedBytes"], 9
+        )
+        self["Contents"][Name("Length")] = pDecimal(len(self["Contents"]["Bytes"]))

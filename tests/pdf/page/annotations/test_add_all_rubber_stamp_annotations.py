@@ -1,43 +1,59 @@
-import logging
 import unittest
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.page.page import RubberStampAnnotationIconType
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.document import Document
+from ptext.pdf.page.page import RubberStampAnnotationIconType, Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_log_dir, get_output_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-add-all-rubber-stamp-annotations.log"),
-    level=logging.DEBUG,
-)
 
 
 class TestAddAllRubberStampAnnotations(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.input_file = Path("/home/joris/Code/pdf-corpus/0203.pdf")
-        self.output_file = Path(
-            get_output_dir(), "test-add-all-rubber-stamp-annotations/output.pdf"
-        )
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
     def test_all_add_rubber_stamp_annotations(self):
 
-        # create output directory if it does not exist yet
-        if not self.output_file.parent.exists():
-            self.output_file.parent.mkdir()
+        # create document
+        pdf = Document()
 
-        # attempt to read PDF
-        doc = None
-        with open(self.input_file, "rb") as in_file_handle:
-            print("\treading (1) ..")
-            doc = PDF.loads(in_file_handle)
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and all rubber stamp annotations."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
 
         # add annotation
         for index, name in enumerate(RubberStampAnnotationIconType):
-            doc.get_page(0).append_stamp_annotation(
+            pdf.get_page(0).append_stamp_annotation(
                 name=name,
                 contents="Approved by Joris Schellekens",
                 color=X11Color("White"),
@@ -47,13 +63,11 @@ class TestAddAllRubberStampAnnotations(unittest.TestCase):
             )
 
         # attempt to store PDF
-        with open(self.output_file, "wb") as out_file_handle:
-            print("\twriting ..")
-            PDF.dumps(out_file_handle, doc)
+        with open(self.output_dir / "output.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
 
         # attempt to re-open PDF
-        with open(self.output_file, "rb") as in_file_handle:
-            print("\treading (2) ..")
+        with open(self.output_dir / "output.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
         return True

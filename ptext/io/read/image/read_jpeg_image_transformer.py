@@ -5,6 +5,7 @@
     This implementation of ReadBaseTransformer is responsible for reading a jpeg image object
 """
 import io
+import logging
 import typing
 from typing import Optional, Any, Union
 
@@ -16,6 +17,8 @@ from ptext.io.read.read_base_transformer import (
 )
 from ptext.io.read.types import add_base_methods, Stream, AnyPDFType
 from ptext.pdf.canvas.event.event_listener import EventListener
+
+logger = logging.getLogger(__name__)
 
 
 class ReadJPEGImageTransformer(ReadBaseTransformer):
@@ -57,7 +60,18 @@ class ReadJPEGImageTransformer(ReadBaseTransformer):
         # use PIL to read image bytes
         assert isinstance(object_to_transform, Stream)
         raw_byte_array = object_to_transform["Bytes"]
-        tmp = Image.open(io.BytesIO(raw_byte_array))
+        try:
+            tmp = Image.open(io.BytesIO(object_to_transform["Bytes"]))
+            tmp.getpixel(
+                (0, 0)
+            )  # attempting to read pixel 0,0 will trigger an error if the underlying image does not exist
+        except:
+            logger.debug(
+                "Unable to read jbig2 image. Constructing empty image of same dimensions."
+            )
+            w = int(object_to_transform["Width"])
+            h = int(object_to_transform["Height"])
+            tmp = Image.new("RGB", (w, h), (128, 128, 128))
 
         # add base methods
         add_base_methods(tmp)

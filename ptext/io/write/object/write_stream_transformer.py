@@ -31,9 +31,6 @@ class WriteStreamTransformer(WriteBaseTransformer):
     This implementation of WriteBaseTransformer is responsible for writing Stream objects
     """
 
-    def __init__(self):
-        super(WriteStreamTransformer, self).__init__()
-
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a Stream object

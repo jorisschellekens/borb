@@ -22,9 +22,12 @@ class PopGraphicsState(CanvasOperator):
     def __init__(self):
         super().__init__("Q", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the Q operator
         """
-        assert len(canvas.graphics_state_stack) > 0
+        canvas = canvas_stream_processor.get_canvas()
+        assert (
+            len(canvas.graphics_state_stack) > 0
+        ), "Stack underflow. Q operator was applied to an empty stack."
         canvas.graphics_state = canvas.graphics_state_stack.pop(-1)

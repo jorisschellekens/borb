@@ -28,10 +28,6 @@ class ReadXREFTransformer(ReadBaseTransformer):
     This implementation of ReadBaseTransformer is responsible for reading the XRef object
     """
 
-    def __init__(self):
-        super().__init__()
-        self.tokenizer = None
-
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:

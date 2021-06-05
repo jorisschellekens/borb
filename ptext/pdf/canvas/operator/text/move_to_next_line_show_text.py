@@ -25,16 +25,20 @@ class MoveToNextLineShowText(CanvasOperator):
     def __init__(self):
         super().__init__("'", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the ' operator
         """
-        move_to_next_line_op: typing.Optional[CanvasOperator] = canvas.get_operator(
-            "T*"
-        )
-        assert move_to_next_line_op
-        move_to_next_line_op.invoke(canvas, [])
+        move_to_next_line_op: typing.Optional[
+            CanvasOperator
+        ] = canvas_stream_processor.get_operator("T*")
+        assert (
+            move_to_next_line_op
+        ), "Operator T* must be defined for operator ' to function."
+        move_to_next_line_op.invoke(canvas_stream_processor, [])
 
-        show_text_op: typing.Optional[CanvasOperator] = canvas.get_operator("Tj")
-        assert show_text_op
-        show_text_op.invoke(canvas, operands)
+        show_text_op: typing.Optional[
+            CanvasOperator
+        ] = canvas_stream_processor.get_operator("Tj")
+        assert show_text_op, "Operator Tj must be defined for operator ' to function"
+        show_text_op.invoke(canvas_stream_processor, operands)

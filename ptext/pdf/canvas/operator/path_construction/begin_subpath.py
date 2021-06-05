@@ -28,14 +28,19 @@ class BeginSubpath(CanvasOperator):
     def __init__(self):
         super().__init__("m", 2)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the m operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
+        assert isinstance(
+            operands[0], Decimal
+        ), "operand 0 of m operator must be of type Decimal"
+        assert isinstance(
+            operands[1], Decimal
+        ), "operand 1 of m operator must be of type Decimal"
 
         # get graphic state
+        canvas = canvas_stream_processor.get_canvas()
         gs = canvas.graphics_state
 
         # start empty subpath

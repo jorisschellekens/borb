@@ -1,56 +1,97 @@
-import logging
 import unittest
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.document import Document
+from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_log_dir, get_output_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-add-redact-annotation.log"), level=logging.DEBUG
+from ptext.toolkit.text.regular_expression_text_extraction import (
+    RegularExpressionTextExtraction,
 )
 
 
 class TestAddRedactAnnotation(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.input_file = Path("/home/joris/Code/pdf-corpus/0203.pdf")
-        self.output_file = Path(
-            get_output_dir(), "test-add-redact-annotation/output.pdf"
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
+
+    def test_write_document(self):
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and a Paragraph of text. A subsequent test will add a redact annotation."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-    def test_add_redact_annotation(self):
-
-        # create output directory if it does not exist yet
-        if not self.output_file.parent.exists():
-            self.output_file.parent.mkdir()
-
-        # attempt to read PDF
-        doc = None
-        with open(self.input_file, "rb") as in_file_handle:
-            print("\treading (1) ..")
-            doc = PDF.loads(in_file_handle)
-
-        # add annotation
-        doc.get_page(0).append_redact_annotation(
-            fill_color=HexColor("8DE969"),
-            stroke_color=HexColor("CBEF43"),
-            line_width=Decimal(1),
-            rectangle=Rectangle(
-                Decimal(72.86), Decimal(486.82), Decimal(129), Decimal(13)
-            ),
+        layout.add(
+            Paragraph(
+                """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            """,
+                font_size=Decimal(10),
+                vertical_alignment=Alignment.TOP,
+                horizontal_alignment=Alignment.LEFT,
+                padding_top=Decimal(5),
+                padding_right=Decimal(5),
+                padding_bottom=Decimal(5),
+                padding_left=Decimal(5),
+            )
         )
 
         # attempt to store PDF
-        with open(self.output_file, "wb") as out_file_handle:
-            print("\twriting ..")
+        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
+
+    def test_add_line_annotation(self):
+
+        # attempt to read PDF
+        doc = None
+        l = RegularExpressionTextExtraction("ad minim veniam")
+        with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
+            doc = PDF.loads(in_file_handle, [l])
+
+        for m in l.get_all_matches(0):
+            for bb in m.get_bounding_boxes():
+                bb = bb.grow(Decimal(2))
+                doc.get_page(0).append_redact_annotation(
+                    bb,
+                    stroke_color=HexColor("FF0000"),
+                )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
-
-        # attempt to re-open PDF
-        with open(self.output_file, "rb") as in_file_handle:
-            print("\treading (2) ..")
-            doc = PDF.loads(in_file_handle)
-
-        return True

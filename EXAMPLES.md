@@ -117,16 +117,17 @@ We can access this information in the following manner:
 
             # export matches
             with open("sorbitol_matches.json", "w") as json_file_handle:
-                obj = [
-                    {
-                        "text": x.get_text(),
-                        "x": int(x.get_baseline().x),
-                        "y": int(x.get_baseline().y),
-                        "width": int(x.get_baseline().width),
-                        "height": int(x.get_baseline().height),
-                    }
-                    for x in l.get_matched_chunk_of_text_render_events_per_page(0)
-                ]
+                obj = []
+                for m in l.get_all_matches(0):
+                    for bb in m.get_bounding_boxes():
+                        obj.append(
+                        {
+                            "text": m.string,
+                            "x": int(bb.x),
+                            "y": int(bb.y),
+                            "width": int(bb.width),
+                            "height": int(bb.height),
+                        }
                 json_file_handle.write(json.dumps(obj, indent=4))
             
 This should store the coordinates of the individual letters that matched the regular expression.           
@@ -134,24 +135,10 @@ In the example `Document`, this was the output:
 
     [
     {
-        "text": "S",
+        "text": "Sorbitol",
         "x0": 73,
         "y0": 265,
-        "width": 5,
-        "height": 9
-    },
-    {
-        "text": "o",
-        "x0": 78,
-        "y0": 265,
-        "width": 5,
-        "height": 9
-    },
-    {
-        "text": "r",
-        "x0": 84,
-        "y0": 265,
-        "width": 3,
+        "width": 42,
         "height": 9
     },
     ...
@@ -765,8 +752,9 @@ The `RegularExpressionTextExtraction` implementation will use these instructions
 
 Next we are going to add annotations (in this case square annotations) around every `ChunkOfTextRenderEvent` that belongs to a regular expression match.
 
-        for e in l.get_matched_chunk_of_text_render_events_per_page(0):
-            doc.get_page(0).append_square_annotation(
+    for m in l.get_all_matches(0):
+        for bb in m.get_bounding_boxes():
+            doc.get_page(bb).append_square_annotation(
                 rectangle=e.get_baseline(),                
                 stroke_color=X11Color("Firebrick"),
             )
@@ -950,6 +938,74 @@ The result should be something like this:
 ![adding an annotation to an existing pdf](readme_img/adding_multiple_annotations_shaped_like_super_mario_to_an_existing_pdf.png)
 
 Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+
+#### 1.8.15 Adding redaction annotations to a PDF
+
+A redaction annotation (PDF 1.7) identifies content that is intended to be removed from the document. The
+intent of redaction annotations is to enable the following process:
+
+a) Content identification. A user applies redact annotations that specify the pieces or regions of content that
+should be removed. Up until the next step is performed, the user can see, move and redefine these
+annotations.
+
+b) Content removal. The user instructs the viewer application to apply the redact annotations, after which the
+content in the area specified by the redact annotations is removed. In the removed content’s place, some
+marking appears to indicate the area has been redacted. Also, the redact annotations are removed from
+the PDF document.
+
+Redaction annotations provide a mechanism for the first step in the redaction process (content identification).
+This allows content to be marked for redaction in a non-destructive way, thus enabling a review process for
+evaluating potential redactions prior to removing the specified content.
+Redaction annotations shall provide enough information to be used in the second phase of the redaction
+process (content removal). This phase is application-specific and requires the conforming reader to remove all
+content identified by the redaction annotation, as well as the annotation itself.
+
+Let's see this process in action.
+We start by reading the PDF:
+
+        # attempt to read PDF
+        doc = None
+        l = RegularExpressionTextExtraction("[vV]eniam")
+        with open("input.pdf", "rb") as in_file_handle:
+            doc = PDF.loads(in_file_handle, [l])
+
+Because I want to redact the PDF using a regular expression, I am adding a `RegularExpressionTextExtraction` listener.
+This `RegularExpressionTextExtraction` gets notified of all text-rendering events in the PDF and attempts to match a regular expression inside the PDF, as the text is being processed.
+
+Once the PDF has been loaded, we can query the `RegularExpressionTextExtraction` to find the location of the match.
+
+        bbs: typing.List[Rectangle] = []
+        
+`RegularExpressionTextExtraction` gives us one `Rectangle` for every match.        
+Let's aggregate those into one bounding `List`.
+
+    for m in l.get_all_matches(0):
+        for bb in m.get_bounding_boxes():
+            bbs.append(bb)
+
+Now we add a redaction annotation to the first page, on those coordinates.
+
+        doc.get_page(0).append_redact_annotation(
+            bbs[0], stroke_color=X11Color("Black"), fill_color=X11Color("Black")
+        )
+
+Finally, we store the PDF.
+
+        # attempt to store PDF
+        with open("output_001.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
+
+This represents the first step of the redaction process, finding content to be redacted, and marking that content with a redaction annotation.
+Be Aware! Your document will still contain the content.
+
+The last step is to actually apply the redaction annotations. You could do this all in one step (the `Document` does not need to be saved intermittently, this is done here for debugging purposes).
+
+        # apply redaction annotations
+        doc.get_page(0).apply_redact_annotations()
+
+        # attempt to store PDF
+        with open("output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
 
 ### 1.9 Exporting a PDF
 

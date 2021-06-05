@@ -31,9 +31,6 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
     This implementation of WriteBaseTransformer is responsible for writing Dictionary objects
     """
 
-    def __init__(self):
-        self.queue: typing.List[AnyPDFType] = []
-
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents an Dictionary object

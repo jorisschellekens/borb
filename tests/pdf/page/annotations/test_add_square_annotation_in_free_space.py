@@ -1,92 +1,78 @@
-import logging
 import unittest
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.color.color import HexColor, X11Color
+from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from ptext.pdf.pdf import PDF
-from tests.test import Test
-from tests.util import get_log_dir, get_output_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-add-annotation-in-free-space.log"),
-    level=logging.DEBUG,
-)
 
 
-class TestAddSquareAnnotationInFreeSpace(Test):
+class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.in_debug = False
-        self.output_dir = Path(
-            get_output_dir(), "test-add-square-annotation-in-free-space"
-        )
-
-    def test_exact_document(self):
-        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
-
-    @unittest.skip
-    def test_corpus(self):
-        super(TestAddSquareAnnotationInFreeSpace, self).test_corpus()
-
-    def _test_document(self, file):
-
-        # create output directory if it does not exist yet
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-        # determine output location
-        out_file = self.output_dir / (file.stem + "_out.pdf")
+    def test_document_write_grid(self):
 
         # attempt to read PDF
         doc = None
-        with open(file, "rb") as in_file_handle:
-            print("\treading (1) ..")
+        input_file: Path = Path(__file__).parent / "input_001.pdf"
+        with open(input_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
         # determine free space
         space_finder = FreeSpaceFinder(doc.get_page(0))
 
-        # debug purposes
-        if self.in_debug:
-            for i in range(0, len(space_finder.grid)):
-                for j in range(0, len(space_finder.grid[i])):
-                    if space_finder.grid[i][j]:
-                        continue
-                    w = Decimal(space_finder.grid_resolution)
-                    x = Decimal(i) * w
-                    y = Decimal(j) * w
-                    doc.get_page(0).append_square_annotation(
-                        Rectangle(x, y, w, w), stroke_color=X11Color("Salmon")
-                    )
-
-        # add annotation
-        w, h = doc.get_page(0).get_page_info().get_size()
-        free_rect = space_finder.find_free_space(
-            Rectangle(
-                Decimal(w / Decimal(2)),
-                Decimal(h * Decimal(2)),
-                Decimal(64),
-                Decimal(64),
-            )
-        )
-        if free_rect is not None:
-            doc.get_page(0).append_square_annotation(
-                rectangle=free_rect,
-                stroke_color=HexColor("#F75C03"),
-                fill_color=HexColor("#04A777"),
-            )
+        # write (debug purposes)
+        for i in range(0, len(space_finder.grid)):
+            for j in range(0, len(space_finder.grid[i])):
+                if space_finder.grid[i][j]:
+                    continue
+                w = Decimal(space_finder.grid_resolution)
+                x = Decimal(i) * w
+                y = Decimal(j) * w
+                doc.get_page(0).append_square_annotation(
+                    Rectangle(x, y, w, w),
+                    stroke_color=HexColor("72A276"),
+                    fill_color=HexColor("72A276"),
+                )
 
         # attempt to store PDF
-        with open(out_file, "wb") as out_file_handle:
-            print("\twriting ..")
+        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
-        # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
-            print("\treading (2) ..")
+    def test_document_write_annotation(self):
+
+        # attempt to read PDF
+        doc = None
+        input_file: Path = Path(__file__).parent / "input_001.pdf"
+        with open(input_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
-        return True
+        # determine free space
+        space_finder = FreeSpaceFinder(doc.get_page(0))
+
+        w: Decimal = doc.get_page(0).get_page_info().get_width()
+        h: Decimal = doc.get_page(0).get_page_info().get_height()
+        ideal_rectangle: Rectangle = Rectangle(
+            w / Decimal(2) - 50, h / Decimal(2) - 50, Decimal(100), Decimal(100)
+        )
+
+        free_rectangle = space_finder.find_free_space(ideal_rectangle)
+
+        # add annotation
+        doc.get_page(0).append_square_annotation(
+            free_rectangle, stroke_color=HexColor("86CD82")
+        )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)

@@ -31,7 +31,7 @@ class SetTextMatrix(CanvasOperator):
     def __init__(self):
         super().__init__("Tm", 6)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the Tm operator
         """
@@ -51,5 +51,6 @@ class SetTextMatrix(CanvasOperator):
             operands[4],
             operands[5],
         )
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.text_matrix = mtx
         canvas.graphics_state.text_line_matrix = copy.deepcopy(mtx)

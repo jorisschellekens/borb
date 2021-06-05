@@ -151,7 +151,7 @@ class PDFToJPG(PDFToSVG):
         assert page_image is not None
 
         # resize
-        image = image.resize((image_width, image_height))
+        image = image.resize((int(image_width), int(image_height)))
 
         # paste
         page_image.paste(image, (int(x), int(page_height - y - image_height)))

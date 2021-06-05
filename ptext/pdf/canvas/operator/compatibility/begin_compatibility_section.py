@@ -23,8 +23,8 @@ class BeginCompatibilitySection(CanvasOperator):
     def __init__(self):
         super().__init__("BX", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the BX operator
         """
-        canvas.in_compatibility_section = True
+        canvas_stream_processor.get_canvas().in_compatibility_section = True

@@ -79,6 +79,9 @@ class LowLevelTokenizer:
 
     def __init__(self, io_source):
         self.io_source = io_source
+        self._is_pseudo_digit = set("0123456789+-.").__contains__
+        self._is_delimiter = set("\x00\t\n\x0c\r %()/<>[]").__contains__
+        self._is_whitespace = set("\x00\t\n\x0c\r ").__contains__
 
     def next_non_comment_token(self) -> Optional[Token]:
         """
@@ -230,14 +233,6 @@ class LowLevelTokenizer:
         Return the current stream position.
         """
         return self.io_source.tell()
-
-    def _is_delimiter(self, ch: str) -> bool:
-        # fmt: off
-        return ord(ch) in [ -1, 0, 9, 10, 12, 13, 32, 37, 40, 41, 47, 60, 62, 91, 93,]
-        # fmt: on
-
-    def _is_whitespace(self, ch: str) -> bool:
-        return ord(ch) in [0, 9, 10, 12, 13, 32]
 
     def _next_char(self):
         return self.io_source.read(1).decode("latin-1")

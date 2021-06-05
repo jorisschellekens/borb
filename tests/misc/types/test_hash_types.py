@@ -1,9 +1,5 @@
-import types
 import unittest
 from decimal import Decimal
-
-import requests
-from PIL import Image as PILImage  # type: ignore [import]
 
 from ptext.io.read.types import (
     Dictionary,
@@ -11,7 +7,6 @@ from ptext.io.read.types import (
     Reference,
     Boolean,
     List,
-    add_base_methods,
 )
 
 

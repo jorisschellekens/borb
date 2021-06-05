@@ -51,6 +51,9 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
                 ):
                     continue
 
+                if l0.bounding_box.width == 0 or l1.bounding_box.width == 0:
+                    continue
+
                 # determine overlap
                 overlap_percentage = self._overlap(
                     l0.bounding_box, l1.bounding_box

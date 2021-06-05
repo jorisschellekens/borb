@@ -58,4 +58,45 @@ class Rectangle:
         This function returns True if this Rectangle intersects with the given Rectangle,
         False otherwise
         """
-        return False
+        # fmt: off
+        x_intersect: bool = (other_rectangle.x <= self.x <= (other_rectangle.x + other_rectangle.width))
+        x_intersect = x_intersect or (self.x <= other_rectangle.x <= (self.x + self.width))
+        y_intersect: bool = (other_rectangle.y <= self.y <= (other_rectangle.y + other_rectangle.height))
+        y_intersect = y_intersect or (self.y <= other_rectangle.y <= (self.y + self.height))
+        # fmt: on
+        return x_intersect and y_intersect
+
+    def contains(self, x: Decimal, y: Decimal) -> bool:
+        """
+        This function returns True if this Rectangle contains the given point
+        False otherwise
+        """
+        return self.x <= x <= (self.x + self.width) and self.y <= y <= (
+            self.y + self.height
+        )
+
+    def shrink(self, amount: Decimal) -> "Rectangle":
+        """
+        This function returns a (slightly) smaller Rectangle,
+        shrunk by the given amount
+        """
+        assert amount >= 0
+        return Rectangle(
+            self.x + amount,
+            self.y + amount,
+            self.width - Decimal(2) * amount,
+            self.height - Decimal(2) * amount,
+        )
+
+    def grow(self, amount: Decimal) -> "Rectangle":
+        """
+        This function returns a (slightly) larger Rectangle,
+        grown by the given amount
+        """
+        assert amount >= 0
+        return Rectangle(
+            self.x - amount,
+            self.y - amount,
+            self.width + Decimal(2) * amount,
+            self.height + Decimal(2) * amount,
+        )

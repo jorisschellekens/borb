@@ -10,7 +10,9 @@ import copy
 import typing
 from decimal import Decimal
 
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.color.color import RGBColor
+from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.geometry.matrix import Matrix
 
 
@@ -40,7 +42,7 @@ class CanvasGraphicsState:
         self.word_spacing: Decimal = Decimal(0)
         self.horizontal_scaling: Decimal = Decimal(100)
         self.leading: Decimal = Decimal(0)
-        self.font: typing.Optional["Font"] = None
+        self.font: typing.Optional[typing.Union["Name", "Font"]] = None
         self.font_size: Decimal = Decimal(0)
         self.path: typing.List["LineSegment"] = []
         self.clipping_path: typing.List["LineSegment"] = []
@@ -80,12 +82,15 @@ class CanvasGraphicsState:
         out.horizontal_scaling = self.horizontal_scaling
         out.leading = self.leading
         if self.font is not None:
-            out.font = self.font.__deepcopy__(memodict)
+            if isinstance(self.font, Font):
+                out.font = self.font.__deepcopy__(memodict)
+            if isinstance(self.font, Name):
+                out.font = copy.deepcopy(self.font)
         out.font_size = self.font_size
         # out.clipping_path = None
-        # out.non_stroke_color_space = None
+        out.non_stroke_color_space = copy.deepcopy(self.non_stroke_color_space)
         out.non_stroke_color = copy.deepcopy(self.non_stroke_color)
-        # out.stroke_color_space = None
+        out.stroke_color_space = copy.deepcopy(self.stroke_color_space)
         out.stroke_color = copy.deepcopy(self.stroke_color)
         out.line_width = self.line_width
         # self.line_cap = None

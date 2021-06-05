@@ -20,7 +20,7 @@ import typing
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import Token, TokenType
 from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Dictionary, Name, List, String, Decimal
+from ptext.io.read.types import Dictionary, Name, List, Decimal
 
 
 class Font(Dictionary):
@@ -239,7 +239,7 @@ class Font(Dictionary):
                             token = cmap_tokenizer.next_non_comment_token()
                             assert token is not None
                             unicode_base_str_003: str = str(token.text)[1:-1]
-                            unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_base_str_003) % 4)]) + unicode_base_str)
+                            unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_base_str_003) % 4)]) + unicode_base_str_003)
                             unicode_hex = "".join([chr(int(unicode_hex[j: j + 4], 16)) for j in range(0, len(unicode_hex), 4)])
                             out_map[i] = unicode_hex
                         # read END_ARRAY
@@ -263,7 +263,8 @@ class Font(Dictionary):
         # Type
         out[Name("Type")] = Name("Font")
         # BaseFont
-        out[Name("BaseFont")] = Name(str(self["BaseFont"]))
+        if "BaseFont" in self:
+            out[Name("BaseFont")] = Name(str(self["BaseFont"]))
         # FirstChar
         if "FirstChar" in self:
             out[Name("FirstChar")] = self["FirstChar"]
@@ -277,7 +278,9 @@ class Font(Dictionary):
                 out[Name("Widths")].append(k)
         # FontDescriptor
         if "FontDescriptor" in self:
-            out[Name("FontDescriptor")] = self._copy_font_descriptor(self["FontDescriptor"])
+            out[Name("FontDescriptor")] = self._copy_font_descriptor(
+                self["FontDescriptor"]
+            )
         # Encoding
         if "Encoding" in self:
             # Name
@@ -347,7 +350,7 @@ class Font(Dictionary):
         # W2
         # CIDToGIDMap
         # default
-        for k,v in self.items():
+        for k, v in self.items():
             if k not in out:
                 out[k] = copy.deepcopy(v, memodict)
         return out
@@ -355,7 +358,7 @@ class Font(Dictionary):
     def _copy_font_descriptor(self, font_descriptor_to_copy: Dictionary) -> Dictionary:
         f0: Dictionary = font_descriptor_to_copy
         f1: Dictionary = self["FontDescriptor"]
-        f1[Name("Type")] = f0["Type"]
+        f1[Name("Type")] = f0.get("Type", Name("FontDescriptor"))
         f1[Name("FontName")] = f0["FontName"]
         if "FontFamily" in f0:
             f1[Name("FontFamily")] = f0["FontFamily"]
@@ -389,16 +392,16 @@ class Font(Dictionary):
             f1[Name("MaxWidth")] = f0["MaxWidth"]
         if "MissingWidth" in f0:
             f1[Name("MissingWidth")] = f0["MissingWidth"]
-        if "FontFile" in f0 and False:      # TODO
+        if "FontFile" in f0 and False:  # TODO
             f1[Name("FontFile")] = copy.deepcopy(f0["FontFile"])
-        if "FontFile2" in f0 and False:     # TODO
+        if "FontFile2" in f0 and False:  # TODO
             f1[Name("FontFile2")] = copy.deepcopy(f0["FontFile2"])
-        if "FontFile3" in f0 and False:     # TODO
+        if "FontFile3" in f0 and False:  # TODO
             f1[Name("FontFile3")] = copy.deepcopy(f0["FontFile3"])
-        if "CharSet" in f0 and False:       # TODO
+        if "CharSet" in f0 and False:  # TODO
             f1[Name("CharSet")] = f0["CharSet"]
         # default
-        for k,v in f0.items():
+        for k, v in f0.items():
             if k not in f1:
                 f1[k] = copy.deepcopy(v)
         return f1

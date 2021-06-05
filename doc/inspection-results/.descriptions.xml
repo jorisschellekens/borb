@@ -1,9 +1,0 @@
-<inspections profile="Missing or empty docstring">
-  <group name="Python" path="">
-    <inspection shortName="PyMissingOrEmptyDocstringInspection" defaultSeverity="WEAK WARNING" displayName="Missing or empty docstring" enabled="true" language="Python" pluginId="PythonCore" pluginVersion="211.6693.115" isGlobalTool="false">&lt;html&gt;
-&lt;body&gt;
-This inspection detects lack of docstring and an empty docstring.
-&lt;/body&gt;
-&lt;/html&gt;</inspection>
-  </group>
-</inspections>

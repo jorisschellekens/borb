@@ -7,11 +7,13 @@
 import copy
 import io
 import typing
+from decimal import Decimal
 
-from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.canvas import Canvas
+from ptext.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page import Page
 
@@ -22,14 +24,20 @@ class FreeSpaceFinder(EventListener):
     """
 
     def __init__(self, page: Page):
-        self.page_width = page.get_page_info().get_width()
-        self.page_height = page.get_page_info().get_height()
+        self.page_width: typing.Optional[Decimal] = page.get_page_info().get_width()
+        self.page_height: typing.Optional[Decimal] = page.get_page_info().get_height()
         assert self.page_width
         assert self.page_height
-        self.page = copy.deepcopy(page)
-        self.grid_resolution = 10
-        self.mock_canvas = Canvas().set_parent(self.page)  # type: ignore [attr-defined]
+
+        # mock Page and Canvas
+        self.mock_page: Page = copy.deepcopy(page)
+        self.mock_canvas: Canvas = Canvas().set_parent(self.mock_page)  # type: ignore [attr-defined]
+
+        # grid information
+        self.grid_resolution: int = 10
         self.grid: typing.List[typing.List[bool]] = [[]]
+
+        # render canvas
         self._render_canvas()
 
     def _mark_as_unavailable(self, rectangle: Rectangle):
@@ -57,12 +65,16 @@ class FreeSpaceFinder(EventListener):
         self.mock_canvas.add_event_listener(self)
 
         # process canvas
-        contents = self.page["Contents"]
+        contents = self.mock_page["Contents"]
         if isinstance(contents, dict):
-            self.mock_canvas.read(io.BytesIO(contents["DecodedBytes"]))
+            CanvasStreamProcessor(self.mock_page, self.mock_canvas).read(
+                io.BytesIO(contents["DecodedBytes"])
+            )
         if isinstance(contents, list):
             bts = b"".join([x["DecodedBytes"] + b" " for x in contents])
-            self.mock_canvas.read(io.BytesIO(bts))
+            CanvasStreamProcessor(self.mock_page, self.mock_canvas).read(
+                io.BytesIO(bts)
+            )
 
     def find_free_space(self, needed_space: Rectangle) -> typing.Optional[Rectangle]:
         """
@@ -112,5 +124,12 @@ class FreeSpaceFinder(EventListener):
         if isinstance(event, ChunkOfTextRenderEvent):
             assert isinstance(event, ChunkOfTextRenderEvent)
             bb: typing.Optional[Rectangle] = event.get_bounding_box()
+            if bb is not None:
+                self._mark_as_unavailable(bb)
+        if isinstance(event, ImageRenderEvent):
+            assert isinstance(event, ImageRenderEvent)
+            bb: typing.Optional[Rectangle] = Rectangle(
+                event.get_x(), event.get_y(), event.get_width(), event.get_height()
+            )
             if bb is not None:
                 self._mark_as_unavailable(bb)

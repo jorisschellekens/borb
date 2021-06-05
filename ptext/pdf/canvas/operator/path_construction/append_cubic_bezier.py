@@ -60,18 +60,31 @@ class AppendCubicBezierCurve1(CanvasOperator):
     def __init__(self):
         super().__init__("c", 6)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invokes the c operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
-        assert isinstance(operands[2], Decimal)
-        assert isinstance(operands[3], Decimal)
-        assert isinstance(operands[4], Decimal)
-        assert isinstance(operands[5], Decimal)
+        assert isinstance(
+            operands[0], Decimal
+        ), "operand 0 of c operator must be of type Decimal"
+        assert isinstance(
+            operands[1], Decimal
+        ), "operand 1 of c operator must be of type Decimal"
+        assert isinstance(
+            operands[2], Decimal
+        ), "operand 2 of c operator must be of type Decimal"
+        assert isinstance(
+            operands[3], Decimal
+        ), "operand 3 of c operator must be of type Decimal"
+        assert isinstance(
+            operands[4], Decimal
+        ), "operand 4 of c operator must be of type Decimal"
+        assert isinstance(
+            operands[5], Decimal
+        ), "operand 5 of c operator must be of type Decimal"
 
         # get graphic state
+        canvas = canvas_stream_processor.get_canvas()
         gs = canvas.graphics_state
 
         # path should not be empty
@@ -100,16 +113,25 @@ class AppendCubicBezierCurve2(CanvasOperator):
     def __init__(self):
         super().__init__("v", 4)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invokes the v operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
-        assert isinstance(operands[2], Decimal)
-        assert isinstance(operands[3], Decimal)
+        assert isinstance(
+            operands[0], Decimal
+        ), "operand 0 of v operator must be of type Decimal"
+        assert isinstance(
+            operands[1], Decimal
+        ), "operand 1 of v operator must be of type Decimal"
+        assert isinstance(
+            operands[2], Decimal
+        ), "operand 2 of v operator must be of type Decimal"
+        assert isinstance(
+            operands[3], Decimal
+        ), "operand 3 of v operator must be of type Decimal"
 
         # get graphic state
+        canvas = canvas_stream_processor.get_canvas()
         gs = canvas.graphics_state
 
         # path should not be empty
@@ -137,16 +159,25 @@ class AppendCubicBezierCurve3(CanvasOperator):
     def __init__(self):
         super().__init__("y", 4)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invokes the y operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
-        assert isinstance(operands[2], Decimal)
-        assert isinstance(operands[3], Decimal)
+        assert isinstance(
+            operands[0], Decimal
+        ), "operand 0 of y operator must be of type Decimal"
+        assert isinstance(
+            operands[1], Decimal
+        ), "operand 1 of y operator must be of type Decimal"
+        assert isinstance(
+            operands[2], Decimal
+        ), "operand 2 of y operator must be of type Decimal"
+        assert isinstance(
+            operands[3], Decimal
+        ), "operand 3 of y operator must be of type Decimal"
 
         # get graphic state
+        canvas = canvas_stream_processor.get_canvas()
         gs = canvas.graphics_state
 
         # path should not be empty

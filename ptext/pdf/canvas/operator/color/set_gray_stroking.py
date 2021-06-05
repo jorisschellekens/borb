@@ -26,9 +26,10 @@ class SetGrayStroking(CanvasOperator):
     def __init__(self):
         super().__init__("G", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the G operator
         """
-        assert isinstance(operands[0], Decimal)
+        assert isinstance(operands[0], Decimal), "Operand 0 of G must be a Decimal"
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.stroke_color = GrayColor(operands[0])

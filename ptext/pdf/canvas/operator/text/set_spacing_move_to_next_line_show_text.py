@@ -28,22 +28,30 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
     def __init__(self):
         super().__init__('"', 3)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the " operator
         """
-        set_word_spacing_op: typing.Optional[CanvasOperator] = canvas.get_operator("Tw")
-        assert set_word_spacing_op
-        set_word_spacing_op.invoke(canvas, [operands[0]])
+        set_word_spacing_op: typing.Optional[
+            CanvasOperator
+        ] = canvas_stream_processor.get_operator("Tw")
+        assert (
+            set_word_spacing_op
+        ), 'Operator Tw must be defined for operator " to function'
+        set_word_spacing_op.invoke(canvas_stream_processor, [operands[0]])
 
-        set_character_spacing_op: typing.Optional[CanvasOperator] = canvas.get_operator(
-            "Tc"
-        )
-        assert set_character_spacing_op
-        set_character_spacing_op.invoke(canvas, [operands[1]])
+        set_character_spacing_op: typing.Optional[
+            CanvasOperator
+        ] = canvas_stream_processor.get_operator("Tc")
+        assert (
+            set_character_spacing_op
+        ), 'Operator Tc must be defined for operator " to function'
+        set_character_spacing_op.invoke(canvas_stream_processor, [operands[1]])
 
         move_to_next_line_show_text_op: typing.Optional[
             CanvasOperator
-        ] = canvas.get_operator("'")
-        assert move_to_next_line_show_text_op
-        move_to_next_line_show_text_op.invoke(canvas, [operands[2]])
+        ] = canvas_stream_processor.get_operator("'")
+        assert (
+            move_to_next_line_show_text_op
+        ), "Operator ' must be defined for operator \" to function"
+        move_to_next_line_show_text_op.invoke(canvas_stream_processor, [operands[2]])

@@ -1,32 +1,35 @@
-import logging
 import unittest
+from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
     Paragraph,
 )
+from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_output_dir, get_log_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-write-paragraph-preserve-space.log"),
-    level=logging.DEBUG,
-)
 
 
 class TestWriteParagraphPreserveSpace(unittest.TestCase):
+    """
+    This test creates a PDF with a Paragraph object in it. The space characters are explicitly preserved.
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-write-paragraph-preserve-space")
-
-    def test_write_document(self):
-
-        # create output directory if it does not exist yet
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
+
+    def test_write_document(self):
 
         # create document
         pdf = Document()
@@ -36,10 +39,26 @@ class TestWriteParagraphPreserveSpace(unittest.TestCase):
         pdf.append_page(page)
         layout = SingleColumnLayout(page)
 
+        # write test information
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a Paragraph object in it. The space characters are explicitly preserved."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
         for i in range(0, 10):
             space = "".join([" " for _ in range(0, i + 1)])
             txt = "".join(
-                [x + space for x in ["apple", "banana", "carrot", "dragonfruit"]]
+                [x + space for x in ["Lorem", "ipsum", "dolor", "sit", "amet"]]
             )
             layout.add(Paragraph(txt, respect_spaces_in_text=True))
 

@@ -7,11 +7,12 @@
     "Resource Dictionaries"). The associated value shall be a stream whose
     Type entry, if present, is XObject.
 """
-from typing import List
+import io
+import typing
 
 import PIL  # type: ignore [import]
 
-from ptext.io.read.types import AnyPDFType, Name
+from ptext.io.read.types import AnyPDFType, Name, Stream
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -32,13 +33,14 @@ class Do(CanvasOperator):
     def __init__(self):
         super().__init__("Do", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: typing.List[AnyPDFType] = []):  # type: ignore [name-defined]
         """
         Invoke the Do operator
         """
 
         # get Page
-        page = canvas.get_parent()  # type: ignore [attr-defined]
+        canvas = canvas_stream_processor.get_canvas()
+        page = canvas_stream_processor.get_page()  # type: ignore [attr-defined]
 
         # get XObject
         assert isinstance(operands[0], Name)
@@ -48,7 +50,29 @@ class Do(CanvasOperator):
             else None
         )
 
+        # render Image objects
         if isinstance(xobject, PIL.Image.Image):
             canvas._event_occurred(
                 ImageRenderEvent(graphics_state=canvas.graphics_state, image=xobject)
             )
+            return
+
+        # Form XObject
+        if (
+            isinstance(xobject, Stream)
+            and "Subtype" in xobject
+            and xobject["Subtype"] == "Form"
+        ):
+
+            # execute XObject
+            child_canvas_stream_processor = (
+                canvas_stream_processor.create_child_canvas_stream_processor(
+                    xobject["Resources"]
+                )
+            )
+            child_canvas_stream_processor.read(io.BytesIO(xobject["DecodedBytes"]))
+
+            # return
+            return
+
+        pass

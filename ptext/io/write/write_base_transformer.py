@@ -45,14 +45,9 @@ class WriteTransformerContext:
 
 class WriteBaseTransformer:
     """
-    <<<<<<< HEAD
-        This class represents the base transformer for persisting a PDF Document.
-        It allows you to add child BaseWriteTransformer implementations to handle specific cases,
-        such as persisting Image objects, or Dictionary objects, etc.
-    =======
-        This class is the base implementation of a transformer pattern.
-        It reads bytes from a PDF document, and converts it to JSON-like datastructures.
-    >>>>>>> feature/font-improvements
+    This class represents the base transformer for persisting a PDF Document.
+    It allows you to add child BaseWriteTransformer implementations to handle specific cases,
+    such as persisting Image objects, or Dictionary objects, etc.
     """
 
     def __init__(self):

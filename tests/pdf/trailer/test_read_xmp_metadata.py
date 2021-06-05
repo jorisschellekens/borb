@@ -1,45 +1,38 @@
-import logging
 import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
-from tests.test import Test
-from tests.util import get_log_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-read-xmp-meta-data.log"), level=logging.DEBUG
-)
 
 
-class TestReadXMPMetaData(Test):
+class TestReadXMPMetaData(unittest.TestCase):
     """
     This test attempts to read the XMPDocumentInfo for each PDF in the corpus
     """
 
-    @unittest.skip
-    def test_corpus(self):
-        super(TestReadXMPMetaData, self).test_corpus()
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
-    def test_exact_document(self):
-        self._test_document(Path("/home/joris/Code/pdf-corpus/0066.pdf"))
-
-    def _test_document(self, file) -> bool:
-        with open(file, "rb") as pdf_file_handle:
+    def test_read_xmp_metadata(self):
+        input_file: Path = Path(__file__).parent / "input_001.pdf"
+        with open(input_file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
             doc_info = doc.get_xmp_document_info()
-            print("title                : %s" % doc_info.get_title())
-            print("author               : %s" % doc_info.get_author())
-            print("creator              : %s" % doc_info.get_creator())
-            print("producer             : %s" % doc_info.get_producer())
-            print("ids                  : %s" % doc_info.get_ids())
-            print("language             : %s" % doc_info.get_language())
-            print("document-ID          : %s" % doc_info.get_document_id())
-            print("original document-ID : %s" % doc_info.get_original_document_id())
-            print("creation date        : %s" % doc_info.get_creation_date())
-            print("modification date    : %s" % doc_info.get_modification_date())
-            print("metadata date        : %s" % doc_info.get_metadata_date())
-            print("")
-        return True
+            assert (
+                doc_info.get_document_id()
+                == "xmp.id:54e5adca-494c-4c10-983a-daa03cdae65a"
+            )
+            assert (
+                doc_info.get_original_document_id()
+                == "xmp.did:b857e947-9e0d-4cd3-aff9-40a81c991e7a"
+            )
 
 
 if __name__ == "__main__":

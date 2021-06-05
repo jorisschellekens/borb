@@ -26,16 +26,16 @@ class ModifyTransformationMatrix(CanvasOperator):
     def __init__(self):
         super().__init__("cm", 6)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the cm operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
-        assert isinstance(operands[2], Decimal)
-        assert isinstance(operands[3], Decimal)
-        assert isinstance(operands[4], Decimal)
-        assert isinstance(operands[5], Decimal)
+        assert isinstance(operands[0], Decimal), "Operand 0 of cm must be a Decimal"
+        assert isinstance(operands[1], Decimal), "Operand 1 of cm must be a Decimal"
+        assert isinstance(operands[2], Decimal), "Operand 2 of cm must be a Decimal"
+        assert isinstance(operands[3], Decimal), "Operand 3 of cm must be a Decimal"
+        assert isinstance(operands[4], Decimal), "Operand 4 of cm must be a Decimal"
+        assert isinstance(operands[5], Decimal), "Operand 5 of cm must be a Decimal"
         mtx = Matrix.matrix_from_six_values(
             operands[0],
             operands[1],
@@ -44,4 +44,5 @@ class ModifyTransformationMatrix(CanvasOperator):
             operands[4],
             operands[5],
         )
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.ctm = mtx.mul(canvas.graphics_state.ctm)

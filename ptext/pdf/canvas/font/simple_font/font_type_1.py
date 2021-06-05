@@ -57,6 +57,27 @@ class Type1Font(SimpleFont):
         last_char: int = int(self["LastChar"])
         self._character_identifier_to_unicode_lookup = {}
 
+        for i in range(first_char, last_char + 1):
+            y: typing.Optional[str] = None
+            try:
+                if self["Encoding"]["BaseEncoding"] == "WinAnsiEncoding":
+                    y = bytes([i]).decode("cp1252")
+                elif self["Encoding"]["BaseEncoding"] == "MacRomanEncoding":
+                    y = bytes([i]).decode("mac-roman")
+                elif self["Encoding"]["BaseEncoding"] == "MacExpertEncoding":
+                    # TODO replace by actual MacExpertEncoding
+                    logger.debug(
+                        "Font %s uses MacExpertEncoding, defaulting to MacRomanEncoding"
+                        % str(self["BaseFont"])
+                    )
+                    y = bytes([i]).decode("mac-roman")
+                elif self["Encoding"]["BaseEncoding"] == "StandardEncoding":
+                    y = adobe_standard_decode(bytes([i]))
+            except:
+                pass
+            if y is not None:
+                self._character_identifier_to_unicode_lookup[i] = y
+
         # apply differences
         i: int = 0
         j: int = 0
@@ -110,6 +131,12 @@ class Type1Font(SimpleFont):
         # if "Encoding" is not present, the implied encoding is StandardEncoding
         if "Encoding" not in self:
             self[Name("Encoding")] = Name("StandardEncoding")
+        if (
+            "Encoding" in self
+            and isinstance(self["Encoding"], Dictionary)
+            and "BaseEncoding" not in self["Encoding"]
+        ):
+            self["Encoding"][Name("BaseEncoding")] = Name("WinAnsiEncoding")
 
         # If the font is a simple font that uses one of the predefined encodings MacRomanEncoding,
         # MacExpertEncoding, or WinAnsiEncoding,
@@ -121,24 +148,27 @@ class Type1Font(SimpleFont):
         ]:
             if character_identifier < 0 or character_identifier > 256:
                 return None
-            if self["Encoding"] == "WinAnsiEncoding":
-                return bytes([character_identifier]).decode("cp1252")
-            elif self["Encoding"] == "MacRomanEncoding":
-                return bytes([character_identifier]).decode("mac-roman")
-            elif self["Encoding"] == "MacExpertEncoding":
-                # TODO replace by actual MacExpertEncoding
-                logger.debug(
-                    "Font %s uses MacExpertEncoding, defaulting to MacRomanEncoding"
-                    % str(self["BaseFont"])
-                )
-                return bytes([character_identifier]).decode("mac-roman")
-            elif self["Encoding"] == "StandardEncoding":
-                return adobe_standard_decode(bytes([character_identifier]))
-            else:
-                logger.debug(
-                    "Font %s uses unknown encoding %s"
-                    % (str(self["BaseFont"]), str(self["Encoding"]))
-                )
+            try:
+                if self["Encoding"] == "WinAnsiEncoding":
+                    return bytes([character_identifier]).decode("cp1252")
+                elif self["Encoding"] == "MacRomanEncoding":
+                    return bytes([character_identifier]).decode("mac-roman")
+                elif self["Encoding"] == "MacExpertEncoding":
+                    # TODO replace by actual MacExpertEncoding
+                    logger.debug(
+                        "Font %s uses MacExpertEncoding, defaulting to MacRomanEncoding"
+                        % str(self["BaseFont"])
+                    )
+                    return bytes([character_identifier]).decode("mac-roman")
+                elif self["Encoding"] == "StandardEncoding":
+                    return adobe_standard_decode(bytes([character_identifier]))
+                else:
+                    logger.debug(
+                        "Font %s uses unknown encoding %s"
+                        % (str(self["BaseFont"]), str(self["Encoding"]))
+                    )
+            except UnicodeDecodeError:
+                return None
 
         # or that has an encoding whose Differences array includes
         # only character names taken from the Adobe standard Latin character set and the set of named characters
@@ -158,9 +188,9 @@ class Type1Font(SimpleFont):
                 "StandardEncoding",
             ]
         ):
+            self._read_encoding_with_differences()
             if character_identifier < 0 or character_identifier > 256:
                 return None
-            self._read_encoding_with_differences()
             return self._character_identifier_to_unicode_lookup.get(
                 character_identifier
             )

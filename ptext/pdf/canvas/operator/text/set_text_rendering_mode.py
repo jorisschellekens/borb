@@ -20,7 +20,7 @@ class SetTextRenderingMode(CanvasOperator):
     def __init__(self):
         super().__init__("Tr", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the Tr operator
         """

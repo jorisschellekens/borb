@@ -14,10 +14,10 @@ class BeginPageEvent(Event):
     """
 
     def __init__(self, page: Page):
-        self.page = page
+        self._page: Page = page
 
     def get_page(self) -> Page:
         """
         This function returns the Page that triggered this BeginPageEvent
         """
-        return self.page
+        return self._page

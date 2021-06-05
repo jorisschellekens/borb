@@ -1,15 +1,9 @@
-import logging
 import unittest
 from pathlib import Path
 
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_log_dir, get_output_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-write-empty-document.log"), level=logging.DEBUG
-)
 
 
 class TestWriteEmptyDocument(unittest.TestCase):
@@ -19,13 +13,16 @@ class TestWriteEmptyDocument(unittest.TestCase):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-write-empty-document")
-
-    def test_write_document(self):
-
-        # create output directory if it does not exist yet
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
+
+    def test_write_document(self):
 
         # create empty document
         pdf: Document = Document()

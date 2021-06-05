@@ -32,7 +32,7 @@ class ColorSpectrumExtraction(EventListener):
         if maximum_number_of_colors is not None:
             self.maximum_number_of_colors = maximum_number_of_colors
         self.colors_per_page: typing.Dict[
-            int, typing.Dict[typing.Tuple[int, int, int], int]
+            int, typing.Dict[typing.Tuple[int, int, int], Decimal]
         ] = {}
         self.current_page = -1
 
@@ -51,8 +51,8 @@ class ColorSpectrumExtraction(EventListener):
     def _render_text(self, event: ChunkOfTextRenderEvent):
         assert event is not None
         bb: typing.Optional[Rectangle] = event.get_bounding_box()
-        s = 0 if bb is None else int(bb.width * bb.height)
-        c = event.font_color.to_rgb()
+        s: Decimal = Decimal(0) if bb is None else (bb.width * bb.height)
+        c: RGBColor = event.font_color.to_rgb()
         self._register_color(s, c)
 
     def _render_image(self, event: ImageRenderEvent):
@@ -68,15 +68,23 @@ class ColorSpectrumExtraction(EventListener):
                 else:
                     color_count[c] += Decimal(1)
         for k, v in color_count.items():
-            self._register_color(int(v * r), k)
+            self._register_color(v * r, k)
 
     @staticmethod
     def _get_rgb_from_image(img: Image, x: int, y: int) -> RGBColor:
         c = img.getpixel((x, y))
         if img.mode == "RGB":
-            return RGBColor(r=Decimal(c[0]), g=Decimal(c[1]), b=Decimal(c[2]))
+            return RGBColor(
+                r=Decimal(c[0]) / Decimal(255),
+                g=Decimal(c[1]) / Decimal(255),
+                b=Decimal(c[2]) / Decimal(255),
+            )
         if img.mode == "RGBA":
-            return RGBColor(r=Decimal(c[0]), g=Decimal(c[1]), b=Decimal(c[2]))
+            return RGBColor(
+                r=Decimal(c[0]) / Decimal(255),
+                g=Decimal(c[1]) / Decimal(255),
+                b=Decimal(c[2]) / Decimal(255),
+            )
         if img.mode == "CMYK":
             r = int((1 - c[0]) * (1 - c[3]) / 255)
             g = int((1 - c[1]) * (1 - c[3]) / 255)
@@ -84,15 +92,15 @@ class ColorSpectrumExtraction(EventListener):
             return RGBColor(r=Decimal(r), g=Decimal(g), b=Decimal(b))
         return RGBColor(Decimal(0), Decimal(0), Decimal(0))
 
-    def _register_color(self, amount: int, color: RGBColor):
+    def _register_color(self, amount: Decimal, color: RGBColor):
         mod_step = int(256 / (self.maximum_number_of_colors ** (1.0 / 3)))
-        r = int(color.to_rgb().red)
+        r = int(color.to_rgb().red * 255)
         r = r - r % mod_step
 
-        g = int(color.to_rgb().green)
+        g = int(color.to_rgb().green * 255)
         g = g - g % mod_step
 
-        b = int(color.to_rgb().blue)
+        b = int(color.to_rgb().blue * 255)
         b = b - b % mod_step
 
         t = (r, g, b)
@@ -103,7 +111,7 @@ class ColorSpectrumExtraction(EventListener):
 
     def get_colors_per_page(
         self, page_number: int, limit: Optional[int] = None
-    ) -> typing.List[typing.Tuple[RGBColor, int]]:
+    ) -> typing.List[typing.Tuple[RGBColor, Decimal]]:
         """
         This function returns the colors used on a given page of a PDF
         """
@@ -111,9 +119,10 @@ class ColorSpectrumExtraction(EventListener):
             limit = 32
         tmp = sorted(
             [
-                (RGBColor(Decimal(k[0]), Decimal(k[1]), Decimal(k[2])), int(v))
+                (RGBColor(Decimal(k[0]), Decimal(k[1]), Decimal(k[2])), v)
                 for k, v in self.colors_per_page[page_number].items()
             ],
             key=lambda x: x[1],
-        )[-limit:]
+            reverse=True,
+        )[0:limit]
         return tmp

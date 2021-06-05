@@ -35,10 +35,24 @@ class FlateDecode:
             return bytes_in
 
         # check \Predictor
-        assert predictor in [1, 2, 10, 11, 12, 13, 14, 15]
+        assert predictor in [
+            1,
+            2,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+        ], "Illegal argument exception. predictor must be in [1, 2, 10, 11, 12, 13, 14, 15]."
 
         # check \BitsPerComponent
-        assert bits_per_component in [1, 2, 4, 8]
+        assert bits_per_component in [
+            1,
+            2,
+            4,
+            8,
+        ], "Illegal argument exception. bits_per_component must be in [1, 2, 4, 8]."
 
         # initial transform
         bytes_after_zlib = zlib.decompress(bytes_in, bufsize=4092)

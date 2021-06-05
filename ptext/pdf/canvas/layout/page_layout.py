@@ -14,9 +14,6 @@ from ptext.io.read.types import Name
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.paragraph import (
     LayoutElement,
-    ChunkOfText,
-    LineOfText,
-    Paragraph,
 )
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -40,63 +37,6 @@ class PageLayout:
         The specific implementation of `PageLayout` should decide where the `LayoutElement` will be placed.
         """
         return self
-
-
-class SingleColumnLayout(PageLayout):
-    """
-    This implementation of PageLayout adds left/right/top/bottom margins to a Page
-    and lays out the content on the Page as if there was a single column to flow text, images, etc into
-    """
-
-    def __init__(self, page: Page):
-        super().__init__(page)
-
-        self.page_width = self.page.get_page_info().get_width()
-        self.page_height = self.page.get_page_info().get_height()
-
-        assert self.page_width
-        assert self.page_height
-
-        self.horizontal_margin = self.page_width * Decimal(0.1)
-        self.vertical_margin = self.page_height * Decimal(0.1)
-
-        self.previous_y = self.page_height - self.vertical_margin
-        self.previous_leading = Decimal(0)
-
-    def add(self, layout_element: LayoutElement):
-        """
-        This method adds a `LayoutElement` to the current `Page`.
-        """
-
-        # calculate next available rectangle
-        assert self.page_width
-        next_available_rect: Rectangle = Rectangle(
-            Decimal(round(self.horizontal_margin)),
-            Decimal(round(self.vertical_margin)),
-            Decimal(round(self.page_width - Decimal(2) * self.horizontal_margin)),
-            Decimal(
-                round(self.previous_y - self.vertical_margin - self.previous_leading)
-            ),
-        )
-        # layout
-        layout_rect = layout_element.layout(self.page, next_available_rect)
-
-        # calculate previous_y
-        self.previous_y = layout_rect.y
-        self.previous_leading = self._calculate_leading(layout_element)
-
-        # return
-        return self
-
-    def _calculate_leading(self, layout_element: LayoutElement) -> Decimal:
-        if isinstance(layout_element, ChunkOfText):
-            return layout_element.font_size * Decimal(1.3)
-        if isinstance(layout_element, LineOfText):
-            return layout_element.font_size * Decimal(1.3)
-        if isinstance(layout_element, Paragraph):
-            return layout_element.font_size * Decimal(1.3)
-        # fixed leading
-        return Decimal(12)
 
 
 class MultiColumnLayout(PageLayout):
@@ -213,11 +153,17 @@ class MultiColumnLayout(PageLayout):
         return self
 
     def _calculate_leading(self, layout_element: LayoutElement) -> Decimal:
-        if isinstance(layout_element, ChunkOfText):
-            return layout_element.font_size * Decimal(1.3)
-        if isinstance(layout_element, LineOfText):
-            return layout_element.font_size * Decimal(1.3)
-        if isinstance(layout_element, Paragraph):
-            return layout_element.font_size * Decimal(1.3)
+        if layout_element.__class__.__name__ in [
+            "ChunkOfText",
+            "LineOfText",
+            "Paragraph",
+        ]:
+            return layout_element.font_size * Decimal(1.3)  # type: ignore[attr-defined]
         # fixed leading
         return Decimal(12)
+
+
+class SingleColumnLayout(MultiColumnLayout):
+    def __init__(self, page: Page):
+        super(SingleColumnLayout, self).__init__(page, number_of_columns=1)
+        self.inter_column_margin = Decimal(0)

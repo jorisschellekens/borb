@@ -6,7 +6,6 @@
     for writing Dictionary objects of \Type \Page
 """
 import logging
-import typing
 from typing import Optional
 
 from ptext.io.read.types import (
@@ -30,9 +29,6 @@ class WritePageTransformer(WriteDictionaryTransformer):
     This implementation of WriteBaseTransformer is responsible
     for writing Dictionary objects of \Type \Page
     """
-
-    def __init__(self):
-        self.queue: typing.List[AnyPDFType] = []
 
     def can_be_transformed(self, any: AnyPDFType):
         """

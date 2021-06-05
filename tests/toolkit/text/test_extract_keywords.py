@@ -1,22 +1,22 @@
-import json
-import logging
 import unittest
+from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 
+from ptext.pdf.canvas.layout.list import UnorderedList
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.document import Document
+from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.stop_words import ENGLISH_STOP_WORDS
 from ptext.toolkit.text.tf_idf_keyword_extraction import (
     TFIDFKeywordExtraction,
 )
-from tests.test import Test
-from tests.util import get_output_dir
-
-logging.basicConfig(
-    filename="../../logs/test-extract-keywords.log", level=logging.DEBUG
-)
 
 
-class TestExtractKeywords(Test):
+class TestExtractKeywords(unittest.TestCase):
     """
     This test attempts to extract the keywords (TF-IDF)
     from each PDF in the corpus
@@ -24,35 +24,117 @@ class TestExtractKeywords(Test):
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-extract-keywords")
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
-    @unittest.skip
-    def test_corpus(self):
-        super(TestExtractKeywords, self).test_corpus()
+    def test_write_document(self):
 
-    def test_exact_document(self):
-        self._test_document(Path("/home/joris/Code/pdf-corpus/0203.pdf"))
+        # create document
+        pdf = Document()
 
-    def _test_document(self, file):
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and a Paragraph of text. "
+                    "A subsequent test will attempt to extract the keywords from this text."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        layout.add(
+            Paragraph(
+                """
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+            when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
+            It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. 
+            It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            """
+            )
+        )
+
+        layout.add(
+            Paragraph(
+                """
+            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. 
+            The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, 
+            as opposed to using 'Content here, content here', making it look like readable English. 
+            Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, 
+            and a search for 'lorem ipsum' will uncover many web sites still in their infancy. 
+            Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+            """
+            )
+        )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
+
+    def test_extract_keywords_from_document(self):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-        with open(file, "rb") as pdf_file_handle:
+        with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
             l = TFIDFKeywordExtraction(ENGLISH_STOP_WORDS)
             doc = PDF.loads(pdf_file_handle, [l])
 
-            # export json
-            output_file = self.output_dir / (file.stem + ".json")
-            with open(output_file, "w") as json_file_handle:
-                json_file_handle.write(
-                    json.dumps(
-                        [x.__dict__ for x in l.get_keywords_per_page(0, 5)], indent=4
-                    )
-                )
+        # create document
+        pdf = Document()
 
-        return True
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and adds the keywords it found"
+                    "in the previously made PDF."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        # add list
+        layout.add(Paragraph("Following keywords were found:"))
+        ul: UnorderedList = UnorderedList()
+        for k in l.get_keywords_per_page(0, 32):
+            ul.add(Paragraph(k.text))
+        layout.add(ul)
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
 
 
 if __name__ == "__main__":

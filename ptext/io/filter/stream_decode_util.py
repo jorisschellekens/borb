@@ -34,6 +34,7 @@ def decode_stream(s: Stream) -> Stream:
     if "DecodeParms" in s:
         if isinstance(s["DecodeParms"], List):
             decode_params = s["DecodeParms"]
+            decode_params = [x or Dictionary() for x in decode_params]
         else:
             assert s["DecodeParms"] is not None
             assert isinstance(s["DecodeParms"], Dictionary)

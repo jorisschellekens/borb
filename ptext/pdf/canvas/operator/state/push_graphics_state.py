@@ -21,8 +21,9 @@ class PushGraphicsState(CanvasOperator):
     def __init__(self):
         super().__init__("q", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the q operator
         """
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state_stack.append(copy.deepcopy(canvas.graphics_state))

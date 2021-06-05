@@ -31,9 +31,6 @@ class WritePagesTransformer(WriteDictionaryTransformer):
     for writing Dictionary objects of \Type \Pages
     """
 
-    def __init__(self):
-        self.queue: typing.List[AnyPDFType] = []
-
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a \Pages Dictionary

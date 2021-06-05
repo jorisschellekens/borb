@@ -14,7 +14,6 @@ from ptext.io.read.types import Decimal as pDecimal
 from ptext.io.read.types import Stream, Name
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.page.page import Page
 
 
 class Alignment(Enum):
@@ -111,7 +110,7 @@ class LayoutElement:
         """
         return self.bounding_box
 
-    def _initialize_page_content_stream(self, page: Page):
+    def _initialize_page_content_stream(self, page: "Page"):  # type: ignore[name-defined]
         if "Contents" in page:
             return
 
@@ -125,14 +124,14 @@ class LayoutElement:
         # set content of page
         page[Name("Contents")] = content_stream
 
-    def _append_to_content_stream(self, page: Page, instructions: str):
+    def _append_to_content_stream(self, page: "Page", instructions: str):  # type: ignore[name-defined]
         self._initialize_page_content_stream(page)
         content_stream = page["Contents"]
         content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
         content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
 
-    def _calculate_layout_box(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def _calculate_layout_box(self, page: "Page", bounding_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
 
         # modify bounding box (to take into account padding)
         modified_bounding_box = Rectangle(
@@ -163,7 +162,7 @@ class LayoutElement:
         return modified_layout_rect
 
     def _calculate_layout_box_without_padding(
-        self, page: Page, bounding_box: Rectangle
+        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
     ) -> Rectangle:
 
         # store previous contents
@@ -184,7 +183,7 @@ class LayoutElement:
         # return
         return layout_rect
 
-    def _do_layout(self, page: Page, layout_box: Rectangle) -> Rectangle:
+    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
 
         # modify bounding box (to take into account padding)
         modified_bounding_box = Rectangle(
@@ -211,7 +210,7 @@ class LayoutElement:
         # return
         return modified_layout_rect
 
-    def layout(self, page: Page, bounding_box: Rectangle) -> Rectangle:
+    def layout(self, page: "Page", bounding_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
         """
         This function calculates the layout box and performs layout for this LayoutElement.
         e.g. for a Paragraph this might involve taking into account the word hyphenation,
@@ -220,7 +219,7 @@ class LayoutElement:
         return self.calculate_layout_box_and_do_layout(page, bounding_box)
 
     def calculate_layout_box_and_do_layout(
-        self, page: Page, bounding_box: Rectangle
+        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
     ) -> Rectangle:
         """
         This function calculates the layout box and performs layout for this LayoutElement.
@@ -296,11 +295,11 @@ class LayoutElement:
         return final_layout_box
 
     def _do_layout_without_padding(
-        self, page: Page, layout_box: Rectangle
+        self, page: "Page", layout_box: Rectangle  # type: ignore[name-defined]
     ) -> Rectangle:
         return Rectangle(layout_box.x, layout_box.y, Decimal(0), Decimal(0))
 
-    def _draw_background(self, page: Page, border_box: Rectangle):
+    def _draw_background(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
         if not self.background_color:
             return
         assert self.background_color
@@ -323,7 +322,7 @@ class LayoutElement:
         )
         self._append_to_content_stream(page, content)
 
-    def _draw_border(self, page: Page, border_box: Rectangle):
+    def _draw_border(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
         # border is not wanted on any side
         if (
             self.border_top

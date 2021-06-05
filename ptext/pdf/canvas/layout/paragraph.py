@@ -438,6 +438,34 @@ class Paragraph(LineOfText):
 
         for i, line_of_text in enumerate(lines_of_text):
 
+            #  When using justification,
+            #  it is customary to treat the last line of a paragraph separately by simply left or right aligning it,
+            #  depending on the language direction.
+            if i == len(lines_of_text) - 1 and len(lines_of_text) > 1:
+                r: Rectangle = LineOfText(
+                    line_of_text,
+                    font=self.font,
+                    font_size=self.font_size,
+                    font_color=self.font_color,
+                    parent=self,
+                ).layout(
+                    page,
+                    bounding_box=Rectangle(
+                        bounding_box.x,
+                        bounding_box.y
+                        + bounding_box.height
+                        - leading * i
+                        - self.font_size,
+                        bounding_box.width,
+                        self.font_size,
+                    ),
+                )
+                min_x = min(r.x, min_x)
+                min_y = min(r.y, min_y)
+                max_x = max(r.x + r.width, max_x)
+                max_y = max(r.y + r.height, max_y)
+                continue
+
             encoded_bytes: bytes = [
                 self.font.unicode_to_character_identifier(c) for c in line_of_text
             ]

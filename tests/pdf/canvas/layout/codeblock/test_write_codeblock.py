@@ -1,35 +1,36 @@
-import logging
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import X11Color
 from ptext.pdf.canvas.layout.codeblock import CodeBlock
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
     Paragraph,
 )
+from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_output_dir, get_log_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-write-codeblock.log"),
-    level=logging.DEBUG,
-)
 
 
 class TestWriteCodeblock(unittest.TestCase):
+    """
+    This test creates a PDF with a CodeBlock element in it.
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-write-codeblock")
-
-    def test_write_document(self):
-
-        # create output directory if it does not exist yet
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
+
+    def test_write_document(self):
 
         # create document
         pdf = Document()
@@ -41,12 +42,16 @@ class TestWriteCodeblock(unittest.TestCase):
         # layout
         layout = SingleColumnLayout(page)
 
+        # add test information
         layout.add(
-            Paragraph(
-                "pText now support codeblock style paragraphs:",
-                font_color=X11Color("YellowGreen"),
-                font_size=Decimal(20),
-            )
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(Paragraph("This test creates a PDF with a CodeBlock element in it."))
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         # read self
@@ -57,14 +62,6 @@ class TestWriteCodeblock(unittest.TestCase):
             CodeBlock(
                 file_contents,
                 font_size=Decimal(5),
-            )
-        )
-
-        layout.add(
-            Paragraph(
-                "By default, these LayoutElements are first formatted by black. "
-                "The font is Courier, and the background and font_color are adjusted as well.",
-                font_size=Decimal(8),
             )
         )
 

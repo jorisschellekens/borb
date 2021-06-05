@@ -10,10 +10,12 @@ import types
 import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal as oDecimal
+from math import floor, ceil
 from typing import Union, Optional
 
 from PIL.Image import Image  # type: ignore [import]
 
+from ptext.io.read.postfix.postfix_eval import PostScriptEval
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 
@@ -404,6 +406,154 @@ class Stream(Dictionary):
         super(Stream, self).__init__()
 
 
+class Function(Dictionary):
+    """
+    A function object may be a dictionary or a stream, depending on the type of function. The term function
+    dictionary is used generically in this sub-clause to refer to either a dictionary object or the dictionary portion of a
+    stream object. A function dictionary specifies the function’s representation, the set of attributes that
+    parameterize that representation, and the additional data needed by that representation. Four types of
+    functions are available, as indicated by the dictionary’s FunctionType entry.
+    """
+
+    def __init__(self):
+        super(Function, self).__init__()
+
+    @staticmethod
+    def _interpolate(
+        x: oDecimal, x_min: oDecimal, x_max: oDecimal, y_min: oDecimal, y_max: oDecimal
+    ) -> oDecimal:
+        return y_min + (x - x_min) * ((y_max - y_min) / (x_max - x_min))
+
+    def _get_sample_number(self, sample: typing.List[oDecimal]) -> typing.Optional[int]:
+        size: typing.List[int] = [int(x) for x in self["Size"]]
+        N: int = 1
+        for s in size:
+            N *= s
+        F: typing.List[int] = [int(N / size[0])]
+        for i in range(1, len(size)):
+            F[i] = int(F[i - 1] / size[i])
+        return sum([F[i] * int(sample[i]) for i in range(0, len(sample))])
+
+    def _get_sample(self, sample_number: int) -> typing.List[oDecimal]:
+        n: int = int(len(self["Range"]) / 2)
+        bps: int = int(self["BitsPerSample"])
+        byte_start_index: int = floor((sample_number * bps * n) / 8)
+        byte_stop_index: int = min(
+            byte_start_index + ceil((n * bps) / 8), len(self["DecodedBytes"])
+        )
+        bit_offset: int = (sample_number * bps * n) - byte_start_index * 8
+        bytes_to_use: bytes = self["DecodedBytes"][byte_start_index:byte_stop_index]
+        byte_str: str = "".join([bin(x)[2:].zfill(8) for x in bytes_to_use])[
+            bit_offset : (bit_offset + n * bps)
+        ]
+        ys: typing.List[oDecimal] = [
+            Decimal(int(byte_str[i : i + bps], 2)) for i in range(0, len(byte_str), bps)
+        ]
+        return ys
+
+    def evaluate(self, xs: typing.List[oDecimal]) -> typing.List[oDecimal]:
+        """
+        This function evaluates this Function in the given arguments, returning a typing.List[Decimal] as output
+        """
+        # Type 0 functions use a sequence of sample values (contained in a stream) to provide an approximation for
+        # functions whose domains and ranges are bounded. The samples are organized as an m-dimensional table in
+        # which each entry has n components.
+        if "FunctionType" in self and int(self["FunctionType"]) == 0:
+            size: typing.List[oDecimal] = self["Size"]
+            bps: int = int(self["BitsPerSample"])
+            m: int = len(size)
+            domain: typing.List[oDecimal] = self["Domain"]
+            encode: typing.List[oDecimal] = []
+            decode: typing.List[oDecimal] = []
+            range2: typing.List[oDecimal] = self["Range"]
+            if "Encode" in self:
+                encode = self["Encode"]
+            else:
+                encode = [
+                    oDecimal(0) if (i % 2 == 0) else size[int((i - 1) / 2)]
+                    for i in range(0, 2 * m)
+                ]
+            if "Decode" in self:
+                decode = self["Decode"]
+            else:
+                decode = range2
+
+            # When a sampled function is called, each input value xi , for 0 £ i < m, shall be clipped to the domain:
+            xs_prime = [
+                min(max(xs[i], domain[2 * i]), domain[2 * i + 1]) for i in range(0, m)
+            ]
+
+            # That value shall be encoded:
+            es = [
+                Function._interpolate(
+                    xs_prime[i],
+                    domain[2 * i],
+                    domain[2 * i + 1],
+                    encode[2 * i],
+                    encode[2 * i + 1],
+                )
+                for i in range(0, m)
+            ]
+
+            # That value shall be clipped to the size of the sample table in that dimension:
+            es_prime = [
+                min(max(es[i], oDecimal(0)), size[i] - 1) for i in range(0, len(es))
+            ]
+
+            # The encoded input values shall be real numbers, not restricted to integers. Interpolation shall be used to
+            # determine output values from the nearest surrounding values in the sample table.
+            sample_number: typing.Optional[int] = self._get_sample_number(es_prime)
+            assert sample_number is not None
+            rs = self._get_sample(sample_number)
+
+            # Each output value rj, for 0 £ j < n, shall then be decoded:
+            rs_prime: typing.List[oDecimal] = [
+                Function._interpolate(
+                    rs[j], oDecimal(0), 2 ** bps - 1, decode[2 * j], decode[2 * j + 1]
+                )
+                for j in range(0, len(rs))
+            ]
+
+            # Finally, each decoded value shall be clipped to the range:
+            ys = [
+                min(max(rs_prime[j], range2[2 * j]), range2[2 * j + 1])
+                for j in range(0, len(rs_prime))
+            ]
+
+            # return
+            return ys
+
+        # Type 2 functions (PDF 1.3) include a set of parameters that define an exponential interpolation of one input
+        # value and n output values:
+        if "FunctionType" in self and int(self["FunctionType"]) == 2:
+            assert len(xs) == 1
+            if xs[0] == oDecimal(0):
+                return self["C0"]
+            if xs[0] == Decimal(1):
+                return self["C1"]
+            n: int = len(self["C0"])
+            N: oDecimal = self["N"]
+            c0: typing.List[oDecimal] = self["C0"]
+            c1: typing.List[oDecimal] = self["C1"]
+            return [(c0[j] + xs[0] ** N * (c1[j] - c0[j])) for j in range(0, n)]
+
+        if "FunctionType" in self and int(self["FunctionType"]) == 3:
+            # TODO : implement stitching function
+            pass
+
+        if "FunctionType" in self and int(self["FunctionType"]) == 4:
+            return PostScriptEval.evaluate(self["DecodedBytes"].decode("latin1"), xs)
+
+        # this should be impossible
+        assert False
+
+    def __deepcopy__(self, memodict={}):
+        out: Function = Function()
+        for k, v in self.items():
+            out[k] = copy.deepcopy(v, memodict)
+        return out
+
+
 class String:
     """
     A literal string shall be written as an arbitrary number of characters enclosed in parentheses. Any characters
@@ -525,7 +675,7 @@ class String:
         """
         if self.encoding is None:
             return [b for b in self.get_content_bytes()]
-        # TODO
+        # TODO: password protected ??
         return None
 
 

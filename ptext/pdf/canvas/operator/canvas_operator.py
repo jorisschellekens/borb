@@ -36,7 +36,7 @@ class CanvasOperator:
         """
         return self.number_of_operands
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invokes this CanvasOperator
         """

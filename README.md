@@ -3,7 +3,7 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Corpus Coverage : 98.2%](https://img.shields.io/badge/corpus%20coverage-98.2%25-green)]()
-[![Text Extraction : 70.7%](https://img.shields.io/badge/text%20extraction-70.7%25-orange)]()
+[![Text Extraction : 84.3%](https://img.shields.io/badge/text%20extraction-84.3%25-orange)]()
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 
 

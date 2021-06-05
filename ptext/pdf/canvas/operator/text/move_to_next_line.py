@@ -32,14 +32,17 @@ class MoveToNextLine(CanvasOperator):
     def __init__(self):
         super().__init__("T*", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the T* operator
         """
-        move_text_position_op: typing.Optional[CanvasOperator] = canvas.get_operator(
-            "Td"
-        )
-        assert move_text_position_op
+        move_text_position_op: typing.Optional[
+            CanvasOperator
+        ] = canvas_stream_processor.get_operator("Td")
+        assert (
+            move_text_position_op
+        ), "Operator Td must be defined for operator T* to function."
+        canvas = canvas_stream_processor.get_canvas()
         move_text_position_op.invoke(
-            canvas, [pDecimal(0), -canvas.graphics_state.leading]
+            canvas_stream_processor, [pDecimal(0), -canvas.graphics_state.leading]
         )

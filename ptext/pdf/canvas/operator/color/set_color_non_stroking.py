@@ -8,7 +8,7 @@ from decimal import Decimal
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
-from ptext.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor
+from ptext.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor, Separation
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -17,34 +17,45 @@ class SetColorNonStroking(CanvasOperator):
     (PDF 1.2) Same as SCN but used for nonstroking operations.
     """
 
-    def __init__(self, canvas: "Canvas"):  # type: ignore [name-defined]
+    def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):  # type: ignore [name-defined]
         super().__init__("scn", 0)
-        self.canvas = canvas
+        self.canvas_stream_processor = canvas_stream_processor
 
     def get_number_of_operands(self) -> int:
         """
         This function returns the number of operands for the scn operator.
         The number of operands and their interpretation depends on the colour space.
         """
-        none_stroke_color_space = self.canvas.graphics_state.stroke_color_space
-        if none_stroke_color_space == "DeviceCMYK":
+        non_stroke_color_space = (
+            self.canvas_stream_processor.get_canvas().graphics_state.non_stroke_color_space
+        )
+        if non_stroke_color_space == "DeviceCMYK":
             return 4
-        if none_stroke_color_space == "DeviceGray":
+        if non_stroke_color_space == "DeviceGray":
             return 1
-        if none_stroke_color_space == "DeviceRGB":
+        if non_stroke_color_space == "DeviceRGB":
             return 3
+        # separation
+        if (
+            isinstance(non_stroke_color_space, List)
+            and len(non_stroke_color_space) == 4
+            and non_stroke_color_space[0] == "Separation"
+        ):
+            return 1
         return self.number_of_operands
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the scn operator
         """
-        non_stroke_color_space = self.canvas.graphics_state.non_stroke_color_space
+        canvas = canvas_stream_processor.get_canvas()
+        non_stroke_color_space = canvas.graphics_state.non_stroke_color_space
         if non_stroke_color_space == "DeviceCMYK":
-            assert isinstance(operands[0], Decimal)
-            assert isinstance(operands[1], Decimal)
-            assert isinstance(operands[2], Decimal)
-            assert isinstance(operands[3], Decimal)
+            # fmt: off
+            assert isinstance(operands[0], Decimal), "Operand 0 of scn must be a Decimal"
+            assert isinstance(operands[1], Decimal), "Operand 1 of scn must be a Decimal"
+            assert isinstance(operands[2], Decimal), "Operand 2 of scn must be a Decimal"
+            assert isinstance(operands[3], Decimal), "Operand 3 of scn must be a Decimal"
             canvas.graphics_state.non_stroke_color = CMYKColor(
                 operands[0],
                 operands[1],
@@ -52,19 +63,35 @@ class SetColorNonStroking(CanvasOperator):
                 operands[3],
             )
             return
+            # fmt: on
 
         if non_stroke_color_space == "DeviceGray":
-            assert isinstance(operands[0], Decimal)
+            # fmt: off
+            assert isinstance(operands[0], Decimal), "Operand 0 of scn must be a Decimal"
             canvas.graphics_state.non_stroke_color = GrayColor(operands[0])
             return
+            # fmt: on
 
         if non_stroke_color_space == "DeviceRGB":
-            assert isinstance(operands[0], Decimal)
-            assert isinstance(operands[1], Decimal)
-            assert isinstance(operands[2], Decimal)
+            # fmt: off
+            assert isinstance(operands[0], Decimal), "Operand 0 of scn must be a Decimal"
+            assert isinstance(operands[1], Decimal), "Operand 1 of scn must be a Decimal"
+            assert isinstance(operands[2], Decimal), "Operand 2 of scn must be a Decimal"
             canvas.graphics_state.non_stroke_color = RGBColor(
                 operands[0],
                 operands[1],
                 operands[2],
             )
             return
+            # fmt: on
+
+        # separation
+        if (
+            isinstance(non_stroke_color_space, List)
+            and non_stroke_color_space[0] == "Separation"
+        ):
+            # fmt: off
+            assert isinstance(operands[0], Decimal), "Operand 0 of scn must be a Decimal"
+            canvas.graphics_state.non_stroke_color = Separation(canvas.graphics_state.non_stroke_color_space, [operands[0]])
+            return
+            # fmt: on

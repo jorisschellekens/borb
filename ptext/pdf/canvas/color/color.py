@@ -5,7 +5,13 @@
     This module provides implementations of various colors and their respective colormodels,
     including: RGB, CMYK, grayscale, hex and X11
 """
+import logging
+import typing
 from decimal import Decimal
+
+from ptext.io.read.types import Function, Name, List
+
+logger = logging.getLogger(__name__)
 
 
 class Color(object):
@@ -154,6 +160,9 @@ class HexColor(RGBColor):
             b = int(hex_string[6:8], 16)
         super(HexColor, self).__init__(Decimal(r), Decimal(g), Decimal(b))
 
+    def __deepcopy__(self, memodict={}):
+        return HexColor(self.to_hex_string())
+
 
 class HSVColor(Color):
     """
@@ -251,6 +260,9 @@ class HSVColor(Color):
         This function returns a darker shade of the current HSV color
         """
         return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
+
+    def __deepcopy__(self, memodict={}):
+        return HSVColor(self.hue, self.saturation, self.value)
 
 
 class X11Color(HexColor):
@@ -406,6 +418,121 @@ class X11Color(HexColor):
         "YellowGreen": "#FF9ACD32",
     }
 
-    def __init__(self, color: str):
-        assert color in X11Color.COLOR_DEFINITION
-        super(X11Color, self).__init__(X11Color.COLOR_DEFINITION[color])
+    def __init__(self, color_name: str):
+        assert color_name in X11Color.COLOR_DEFINITION
+        self.color_name: str = color_name
+        super(X11Color, self).__init__(X11Color.COLOR_DEFINITION[color_name])
+
+    def get_name(self) -> str:
+        return self.color_name
+
+    @staticmethod
+    def find_nearest_x11_color(color: Color) -> "X11Color":
+        rgb_color_001: RGBColor = color.to_rgb()
+        d_min: typing.Optional[Decimal] = None
+        c_min: typing.Optional[str] = None
+        for n, c in X11Color.COLOR_DEFINITION.items():
+            rgb_color_002: RGBColor = HexColor(c)
+            d: Decimal = (
+                (rgb_color_001.red - rgb_color_002.red) ** 2
+                + (rgb_color_001.green - rgb_color_002.green) ** 2
+                + (rgb_color_001.blue - rgb_color_002.blue) ** 2
+            )
+            if d_min is None or d < d_min:
+                d_min = d
+                c_min = n
+        assert d_min is not None
+        assert c_min is not None
+        return X11Color(c_min)
+
+    def __deepcopy__(self, memodict={}):
+        return X11Color(self.color_name)
+
+
+class Separation(Color):
+    """
+    When printing a page, most devices produce a single composite page on which all process colorants (and spot
+    colorants, if any) are combined. However, some devices, such as imagesetters, produce a separate,
+    monochromatic rendition of the page, called a separation, for each colorant. When the separations are later
+    combined—on a printing press, for example—and the proper inks or other colorants are applied to them, the
+    result is a full-colour page.
+    """
+
+    def __init__(self, color_space: typing.List[typing.Any], xs: typing.List[Decimal]):
+        super(Separation, self).__init__()
+        self.color_space = color_space
+        self.xs = xs
+        self._to_rgb_cache: typing.Optional[RGBColor] = None
+        """"
+        except Exception as ex:
+            if len(color_space) != 0 and len(xs) != 0:
+                logger.debug("Unable to instantiate separation color, defaulting to black")
+            self.rgb_color = RGBColor(Decimal(0), Decimal(0), Decimal(0))
+            pass
+        """
+
+    def to_rgb(self) -> "RGBColor":
+        """
+        This method returns the RGB representation of this Color
+        """
+        if self._to_rgb_cache is not None:
+            return self._to_rgb_cache
+
+        assert isinstance(self.color_space[3], Function)
+        tint_function: Function = self.color_space[3]
+
+        # run function
+        try:
+            ys: typing.List[Decimal] = tint_function.evaluate(self.xs)
+            assert ys is not None
+        except:
+            logger.info(
+                "Unable to execute TintFunction for Separation %d, defaulting to black"
+                % id(self)
+            )
+            self._to_rgb_cache = RGBColor(Decimal(0), Decimal(0), Decimal(0))
+            return self._to_rgb_cache
+
+        # determine the color space to map to
+        alternative_color_space: typing.Optional[Name] = None
+        if isinstance(self.color_space[2], Name):
+            alternative_color_space = self.color_space[2]
+        if (
+            isinstance(self.color_space[2], List)
+            and len(self.color_space[2]) == 2
+            and isinstance(self.color_space[2][0], Name)
+        ):
+            alternative_color_space = self.color_space[2][0]
+
+        # DeviceCMYK
+        if alternative_color_space == "DeviceCMYK":
+            self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
+            return self._to_rgb_cache
+
+        # DeviceRGB
+        if alternative_color_space == "DeviceRGB":
+            self._to_rgb_cache = RGBColor(
+                ys[0] * Decimal(255), ys[1] * Decimal(255), ys[2] * Decimal(255)
+            )
+            return self._to_rgb_cache
+
+        # ICCBased
+        if alternative_color_space == "ICCBased":
+            if len(ys) == 1:
+                self._to_rgb_cache = GrayColor(ys[0]).to_rgb()
+            if len(ys) == 3:
+                self._to_rgb_cache = RGBColor(
+                    ys[0] * Decimal(255), ys[1] * Decimal(255), ys[2] * Decimal(255)
+                )
+            if len(ys) == 4:
+                self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
+            assert self._to_rgb_cache is not None
+            return self._to_rgb_cache
+
+        # default
+        return RGBColor(Decimal(0), Decimal(0), Decimal(0))
+
+    def __deepcopy__(self, memodict={}):
+        out: Separation = Separation([], [])
+        out._to_rgb_cache = self.to_rgb()
+        return out

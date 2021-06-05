@@ -26,14 +26,21 @@ class SetRGBStroking(CanvasOperator):
     def __init__(self):
         super().__init__("RG", 3)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the RG operator
         """
-        assert isinstance(operands[0], Decimal)
-        assert isinstance(operands[1], Decimal)
-        assert isinstance(operands[2], Decimal)
+        assert isinstance(
+            operands[0], Decimal
+        ), "operand 0 of RG operator must be of type Decimal"
+        assert isinstance(
+            operands[1], Decimal
+        ), "operand 1 of RG operator must be of type Decimal"
+        assert isinstance(
+            operands[2], Decimal
+        ), "operand 2 of RG operator must be of type Decimal"
         r = operands[0]
         g = operands[1]
         b = operands[2]
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.stroke_color = RGBColor(r, g, b)

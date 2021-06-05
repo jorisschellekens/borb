@@ -8,12 +8,13 @@ Specification (see Bibliography).
 """
 import typing
 import zlib
+from decimal import Decimal
 from pathlib import Path
 
 from fontTools.ttLib import TTFont  # type: ignore [import]
 
 from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Name, List, Dictionary, String, Stream, Decimal
+from ptext.io.read.types import Name, List, Dictionary, String, Stream
 from ptext.pdf.canvas.font.simple_font.font_type_1 import Type1Font
 
 
@@ -82,10 +83,10 @@ class TrueTypeFont(Type1Font):
             font[Name("LastChar")] = pDecimal(len(glyph_order))
             font[Name("Widths")] = List()
             for glyph_name in glyph_order:
-                w: pDecimal = (
+                w: typing.Union[pDecimal, Decimal] = (
                     pDecimal(ttf_font_file.getGlyphSet()[glyph_name].width)
                     / units_per_em
-                ) * pDecimal(1000)
+                ) * Decimal(1000)
                 w = pDecimal(round(w, 2))
                 font["Widths"].append(w)
 

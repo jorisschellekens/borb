@@ -30,12 +30,13 @@ class CloseSubpath(CanvasOperator):
     def __init__(self):
         super().__init__("h", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the h operator
         """
 
         # get graphic state
+        canvas = canvas_stream_processor.get_canvas()
         gs = canvas.graphics_state
 
         # path is empty

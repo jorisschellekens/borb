@@ -66,9 +66,9 @@ class SimpleLineOfTextExtraction(EventListener):
                     continue
                 gap = max(r1.x - (r0.x + r0.width), r0.x - (r1.x + r1.width))
                 space_gap = (
-                    c0.get_space_character_width_estimate()
+                    c0.get_space_character_width_estimate_in_user_space()
                     if r0.x < r1.x
-                    else c1.get_space_character_width_estimate()
+                    else c1.get_space_character_width_estimate_in_user_space()
                 )
                 if gap < space_gap * Decimal(2):
                     chunks_of_text_disjoint_set.union(c0, c1)
@@ -93,7 +93,9 @@ class SimpleLineOfTextExtraction(EventListener):
                     chunks_of_text[i - 1].baseline_bounding_box.x
                     + chunks_of_text[i - 1].baseline_bounding_box.width
                 )
-                space_gap = chunks_of_text[i - 1].get_space_character_width_estimate()
+                space_gap = chunks_of_text[
+                    i - 1
+                ].get_space_character_width_estimate_in_user_space()
                 if gap > space_gap:
                     txt += " "
                 txt += c.text

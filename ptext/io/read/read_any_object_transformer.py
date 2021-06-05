@@ -15,8 +15,14 @@ from ptext.io.read.font.read_font_descriptor_dictionary_transformer import (
 from ptext.io.read.font.read_font_dictionary_transformer import (
     ReadFontDictionaryTransformer,
 )
+from ptext.io.read.function.read_function_dictionary_transformer import (
+    FunctionDictionaryTransformer,
+)
 from ptext.io.read.image.read_ccitt_fax_image_transformer import (
     ReadCCITTFaxImageTransformer,
+)
+from ptext.io.read.image.read_compressed_jpeg_image_transformer import (
+    ReadCompressedJPEGImageTransformer,
 )
 from ptext.io.read.image.read_grayscale_image_transformer import (
     ReadGrayscaleImageTransformer,
@@ -88,12 +94,14 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self.add_child_transformer(ReadJBIG2ImageTransformer())
         self.add_child_transformer(ReadJPEG2000ImageTransformer())
         self.add_child_transformer(ReadJPEGImageTransformer())
+        self.add_child_transformer(ReadCompressedJPEGImageTransformer())
         # pages
         self.add_child_transformer(ReadRootDictionaryTransformer())
         self.add_child_transformer(ReadPageDictionaryTransformer())
         # references
         self.add_child_transformer(ReadReferenceTransformer())
         # primitives
+        self.add_child_transformer(FunctionDictionaryTransformer())
         self.add_child_transformer(ReadStreamTransformer())
         self.add_child_transformer(ReadStringTransformer())
         self.add_child_transformer(ReadNumberTransformer())
@@ -105,11 +113,7 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
         """
-        <<<<<<< HEAD
-                This function returns True if the object to be transformed can be transformed by this ReadBaseTransformer
-        =======
-                This function returns True if the object to be transformed can be transformed by this ReadAnyObjectTransformer
-        >>>>>>> feature/font-improvements
+        This function returns True if the object to be transformed can be transformed by this ReadAnyObjectTransformer
         """
         return isinstance(object, io.IOBase)
 
@@ -121,12 +125,8 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-                This function reads an object from a byte stream.
-        <<<<<<< HEAD
-                The object being read depends on the implementation of ReadBaseTransformer.
-        =======
-                The object being read depends on the implementation of ReadAnyObjectTransformer.
-        >>>>>>> feature/font-improvements
+        This function reads an object from a byte stream.
+        The object being read depends on the implementation of ReadAnyObjectTransformer.
         """
         if context is None:
             return super().transform(

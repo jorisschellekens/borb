@@ -21,9 +21,10 @@ class SetTextRise(CanvasOperator):
     def __init__(self):
         super().__init__("Ts", 1)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the Ts operator
         """
         assert isinstance(operands[0], Decimal)
+        canvas = canvas_stream_processor.get_canvas()
         canvas.graphics_state.text_rise = operands[0]

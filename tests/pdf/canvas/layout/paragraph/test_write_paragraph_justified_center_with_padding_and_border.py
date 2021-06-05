@@ -1,35 +1,36 @@
-import logging
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import X11Color
+from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import (
     Alignment,
     Paragraph,
 )
+from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_log_dir, get_output_dir
-
-logging.basicConfig(
-    filename=Path(
-        get_log_dir(),
-        "test-write-paragraph-justified-center-with-padding-and-border.log",
-    ),
-    level=logging.DEBUG,
-)
 
 
 class TestWriteParagraphJustifiedCenterWithPaddingAndBorder(unittest.TestCase):
+    """
+    This test creates a PDF with a Paragraph object in it. The Paragraph is aligned BOTTOM, CENTERED.
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(
-            get_output_dir(),
-            "test-write-paragraph-justified-center-with-padding-and-border",
-        )
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
 
     def test_write_document(self):
 
@@ -44,22 +45,51 @@ class TestWriteParagraphJustifiedCenterWithPaddingAndBorder(unittest.TestCase):
         page = Page()
         pdf.append_page(page)
 
-        padding = Decimal(5)
-        layout_rect = Paragraph(
-            "Once upon a midnight dreary,\nwhile I pondered weak and weary,\nover many a quaint and curious\nvolume of forgotten lore",
-            font_size=Decimal(20),
-            horizontal_alignment=Alignment.CENTERED,
-            respect_newlines_in_text=True,
-            padding_top=padding,
-            padding_right=padding,
-            padding_bottom=padding,
-            padding_left=padding,
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a Paragraph object in it. "
+                    "The Paragraph is aligned BOTTOM, CENTERED. The dark green box is the rectangle passed to the layout algorithm. The paragraph is given a (partial) border on its right and top side."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        Paragraph(
+            """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            """,
+            font_size=Decimal(12),
+            text_alignment=Alignment.CENTERED,
+            vertical_alignment=Alignment.BOTTOM,
+            padding_top=Decimal(5),
+            padding_right=Decimal(5),
+            padding_bottom=Decimal(5),
+            padding_left=Decimal(5),
             border_right=True,
             border_top=True,
-            border_color=X11Color("Green"),
+            border_color=HexColor("86CD82"),
+            border_width=Decimal(2),
         ).layout(
             page,
-            Rectangle(Decimal(20), Decimal(600), Decimal(500), Decimal(124)),
+            Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124)),
+        )
+
+        # add rectangle annotation
+        page.append_square_annotation(
+            stroke_color=HexColor("72A276"),
+            rectangle=Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124)),
         )
 
         # determine output location

@@ -1,51 +1,122 @@
-import logging
+import json
 import unittest
+from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.document import Document
+from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_output_dir, get_log_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-append-embedded-file.log"), level=logging.DEBUG
-)
 
 
 class TestAppendEmbeddedFile(unittest.TestCase):
+    """
+    This test creates a PDF with a Paragraph object in it.
+    The Paragraph is aligned TOP, LEFT.
+    An embedded file will later be added to this PDF.
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.input_file = Path("/home/joris/Code/pdf-corpus/0203.pdf")
-        self.output_file = Path(
-            get_output_dir(), "test-append-embedded-file/output.pdf"
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
+        if not self.output_dir.exists():
+            self.output_dir.mkdir()
+
+    def test_write_document(self):
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a Paragraph object in it. The Paragraph is aligned TOP, LEFT. An embedded file will later be added to this PDF."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-    def test_document(self):
-
-        # create output directory if it does not exist yet
-        if not self.output_file.parent.exists():
-            self.output_file.parent.mkdir()
-
-        # read document
-        doc = None
-        with open(self.input_file, "rb") as pdf_file_handle:
-            doc = PDF.loads(pdf_file_handle)
-
-        # append document
-        doc.append_embedded_file(
-            "the_raven.txt",
-            b"Once upon a midnight dreary, while I pondered weak and weary over many a quaint and curious volume of forgotten lore.",
+        layout.add(
+            Paragraph(
+                """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            """,
+                font_size=Decimal(10),
+                vertical_alignment=Alignment.TOP,
+                horizontal_alignment=Alignment.LEFT,
+                padding_top=Decimal(5),
+                padding_right=Decimal(5),
+                padding_bottom=Decimal(5),
+                padding_left=Decimal(5),
+            )
         )
+
+        # determine output location
+        out_file = self.output_dir / "output_001.pdf"
 
         # attempt to store PDF
-        with open(self.output_file, "wb") as out_file_handle:
-            print("\twriting ..")
-            PDF.dumps(out_file_handle, doc)
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
 
-        # attempt to re-open PDF
-        with open(self.output_file, "rb") as in_file_handle:
-            print("\treading (2) ..")
+    def test_append_binary_file(self):
+
+        input_file: Path = self.output_dir / "output_001.pdf"
+        with open(input_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
-        embedded_files = doc.get_embedded_files()
-        assert len(embedded_files) == 1
-        assert "the_raven.txt" in embedded_files
-        assert b"Once upon a midnight" in embedded_files["the_raven.txt"]
+        info_dict = doc["XRef"]["Trailer"]["Info"]
+        info_dict_bytes: bytes = json.dumps(
+            info_dict.to_json_serializable(), indent=4
+        ).encode("latin1")
+
+        doc.append_embedded_file("embedded_data.json", info_dict_bytes)
+
+        # determine output location
+        out_file = self.output_dir / "output_002.pdf"
+
+        # attempt to store PDF
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, doc)
+
+    def test_extract_embedded_file(self):
+
+        input_file: Path = self.output_dir / "output_001.pdf"
+        with open(input_file, "rb") as in_file_handle:
+            doc = PDF.loads(in_file_handle)
+
+        info_dict = doc["XRef"]["Trailer"]["Info"]
+        info_dict_json = info_dict.to_json_serializable()
+
+        input_file: Path = self.output_dir / "output_002.pdf"
+        with open(input_file, "rb") as in_file_handle:
+            doc = PDF.loads(in_file_handle)
+
+        info_dict_json_2 = json.loads(doc.get_embedded_file("embedded_data.json"))
+
+        for k, v in info_dict_json.items():
+            assert k in info_dict_json_2
+            assert v == info_dict_json_2[k]

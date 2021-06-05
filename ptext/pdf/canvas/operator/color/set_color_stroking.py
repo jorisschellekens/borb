@@ -9,7 +9,7 @@ from decimal import Decimal
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
-from ptext.pdf.canvas.color.color import GrayColor, RGBColor, CMYKColor
+from ptext.pdf.canvas.color.color import GrayColor, RGBColor, CMYKColor, Separation
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -29,9 +29,9 @@ class SetColorStroking(CanvasOperator):
     specified.
     """
 
-    def __init__(self, canvas: "Canvas"):  # type: ignore [name-defined]
+    def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):  # type: ignore [name-defined]
         super().__init__("SCN", 0)
-        self.canvas = canvas
+        self.canvas = canvas_stream_processor.get_canvas()
 
     def get_number_of_operands(self) -> int:
         """
@@ -45,18 +45,34 @@ class SetColorStroking(CanvasOperator):
             return 1
         if stroke_color_space == "DeviceRGB":
             return 3
+        # separation
+        if (
+            isinstance(stroke_color_space, List)
+            and len(stroke_color_space) == 4
+            and stroke_color_space[0] == "Separation"
+        ):
+            return 1
         return self.number_of_operands
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the SCN operator
         """
-        non_stroke_color_space = self.canvas.graphics_state.non_stroke_color_space
-        if non_stroke_color_space == "DeviceCMYK":
-            assert isinstance(operands[0], Decimal)
-            assert isinstance(operands[1], Decimal)
-            assert isinstance(operands[2], Decimal)
-            assert isinstance(operands[3], Decimal)
+        canvas = canvas_stream_processor.get_canvas()
+        stroke_color_space = canvas.graphics_state.stroke_color_space
+        if stroke_color_space == "DeviceCMYK":
+            assert isinstance(
+                operands[0], Decimal
+            ), "Operand 0 of SCN must be a Decimal"
+            assert isinstance(
+                operands[1], Decimal
+            ), "Operand 1 of SCN must be a Decimal"
+            assert isinstance(
+                operands[2], Decimal
+            ), "Operand 2 of SCN must be a Decimal"
+            assert isinstance(
+                operands[3], Decimal
+            ), "Operand 3 of SCN must be a Decimal"
             canvas.graphics_state.stroke_color = CMYKColor(
                 operands[0],
                 operands[1],
@@ -65,18 +81,39 @@ class SetColorStroking(CanvasOperator):
             )
             return
 
-        if non_stroke_color_space == "DeviceGray":
-            assert isinstance(operands[0], Decimal)
+        if stroke_color_space == "DeviceGray":
+            assert isinstance(
+                operands[0], Decimal
+            ), "Operand 0 of SCN must be a Decimal"
             canvas.graphics_state.stroke_color = GrayColor(operands[0])
             return
 
-        if non_stroke_color_space == "DeviceRGB":
-            assert isinstance(operands[0], Decimal)
-            assert isinstance(operands[1], Decimal)
-            assert isinstance(operands[2], Decimal)
+        if stroke_color_space == "DeviceRGB":
+            assert isinstance(
+                operands[0], Decimal
+            ), "Operand 0 of SCN must be a Decimal"
+            assert isinstance(
+                operands[1], Decimal
+            ), "Operand 1 of SCN must be a Decimal"
+            assert isinstance(
+                operands[2], Decimal
+            ), "Operand 2 of SCN must be a Decimal"
             canvas.graphics_state.stroke_color = RGBColor(
                 operands[0],
                 operands[1],
                 operands[2],
+            )
+            return
+
+        # separation
+        if (
+            isinstance(stroke_color_space, List)
+            and stroke_color_space[0] == "Separation"
+        ):
+            assert isinstance(
+                operands[0], Decimal
+            ), "Operand 0 of SCN must be a Decimal"
+            canvas.graphics_state.stroke_color = Separation(
+                canvas.graphics_state.stroke_color_space, [operands[0]]
             )
             return

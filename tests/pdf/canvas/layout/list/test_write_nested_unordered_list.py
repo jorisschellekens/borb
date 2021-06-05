@@ -1,31 +1,34 @@
-import logging
 import unittest
+from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.layout.list import UnorderedList
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
 from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from tests.util import get_output_dir, get_log_dir
-
-logging.basicConfig(
-    filename=Path(get_log_dir(), "test-write-nested-unordered-list.log"),
-    level=logging.DEBUG,
-)
 
 
 class TestWriteNestedUnorderedList(unittest.TestCase):
+    """
+    This test creates a PDF with a nested unordered list in it.
+    """
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-        self.output_dir = Path(get_output_dir(), "test-write-nested-unordered-list")
-
-    def test_write_document(self):
-
-        # create output directory if it does not exist yet
+        # find output dir
+        p: Path = Path(__file__).parent
+        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
+            p = p.parent
+        p = p / "output"
+        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
+
+    def test_write_document(self):
 
         # create document
         pdf = Document()
@@ -33,6 +36,21 @@ class TestWriteNestedUnorderedList(unittest.TestCase):
         # add page
         page = Page()
         pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph("This test creates a PDF with a nested unordered list in it.")
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
 
         ul0 = UnorderedList()
         ul0.add(Paragraph(text="Ipsum"))
@@ -49,8 +67,6 @@ class TestWriteNestedUnorderedList(unittest.TestCase):
         ul2.add(Paragraph(text="Ipsum"))
         ul2.add(Paragraph(text="Dolor"))
         ul2.add(ul1)
-
-        layout = SingleColumnLayout(page)
         layout.add(ul2)
 
         # determine output location

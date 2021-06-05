@@ -22,8 +22,8 @@ class EndCompatibilitySection(CanvasOperator):
     def __init__(self):
         super().__init__("EX", 0)
 
-    def invoke(self, canvas: "Canvas", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
         Invoke the EX operator
         """
-        canvas.in_compatibility_section = False
+        canvas_stream_processor.get_canvas().in_compatibility_section = False

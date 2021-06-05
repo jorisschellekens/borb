@@ -15,8 +15,11 @@ from ptext.io.read.read_base_transformer import (
 from ptext.io.read.types import (
     Dictionary,
     AnyPDFType,
+    Stream,
+    List,
 )
 from ptext.pdf.canvas.canvas import Canvas
+from ptext.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import EventListener
@@ -53,11 +56,11 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
             return object_to_transform
 
         # convert dictionary like structure
-        tmp = Page().set_parent(parent_object)  # type: ignore [attr-defined]
+        page_out = Page().set_parent(parent_object)  # type: ignore [attr-defined]
 
         # add listener(s)
         for l in event_listeners:
-            tmp.add_event_listener(l)  # type: ignore [attr-defined]
+            page_out.add_event_listener(l)  # type: ignore [attr-defined]
 
         # convert key/value pairs
         assert isinstance(object_to_transform, Dictionary)
@@ -65,30 +68,38 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
             # avoid circular reference
             if k == "Parent":
                 continue
-            v = self.get_root_transformer().transform(v, tmp, context, [])
+            v = self.get_root_transformer().transform(v, page_out, context, [])
             if v is not None:
-                tmp[k] = v
+                page_out[k] = v
 
         # send out BeginPageEvent
-        tmp._event_occurred(BeginPageEvent(tmp))
+        page_out._event_occurred(BeginPageEvent(page_out))
 
         # set up canvas
-        assert "Contents" in tmp
-        contents = tmp["Contents"]
+        if "Contents" not in page_out:
+            return
+        if not (
+            isinstance(page_out["Contents"], List)
+            or isinstance(page_out["Contents"], Stream)
+        ):
+            return
+        contents = page_out["Contents"]
         if contents is not None:
-            canvas = Canvas().set_parent(tmp)  # type: ignore [attr-defined]
+            canvas = Canvas().set_parent(page_out)  # type: ignore [attr-defined]
 
             # process bytes in stream
-            if isinstance(contents, dict):
-                canvas.read(io.BytesIO(contents["DecodedBytes"]))
+            if isinstance(contents, Stream):
+                CanvasStreamProcessor(page_out, canvas, []).read(
+                    io.BytesIO(contents["DecodedBytes"])
+                )
 
             # process bytes in array
-            if isinstance(contents, list):
+            if isinstance(contents, List):
                 bts = b"".join([x["DecodedBytes"] + b" " for x in contents])
-                canvas.read(io.BytesIO(bts))
+                CanvasStreamProcessor(page_out, canvas, []).read(io.BytesIO(bts))
 
         # send out EndPageEvent
-        tmp._event_occurred(EndPageEvent(tmp))
+        page_out._event_occurred(EndPageEvent(page_out))
 
         # return
-        return tmp
+        return page_out
