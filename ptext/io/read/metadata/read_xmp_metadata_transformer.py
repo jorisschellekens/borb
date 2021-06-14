@@ -16,17 +16,11 @@ import io
 import logging
 import typing
 import xml.etree.ElementTree as ET
-from typing import Optional, Any, Union
+from typing import Any, Optional, Union
 
 from ptext.io.read.object.read_stream_transformer import ReadStreamTransformer
-from ptext.io.read.read_base_transformer import (
-    ReadTransformerContext,
-)
-from ptext.io.read.types import (
-    AnyPDFType,
-    Stream,
-    Element,
-)
+from ptext.io.read.read_base_transformer import ReadTransformerContext
+from ptext.io.read.types import AnyPDFType, Element, Stream
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 logger = logging.getLogger(__name__)

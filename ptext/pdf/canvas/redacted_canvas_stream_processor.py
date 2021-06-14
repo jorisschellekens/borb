@@ -7,7 +7,7 @@
 import typing
 from decimal import Decimal
 
-from ptext.io.read.types import AnyPDFType, List, String, HexadecimalString, Name
+from ptext.io.read.types import AnyPDFType, HexadecimalString, List, Name, String
 from ptext.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
@@ -92,7 +92,7 @@ class ShowTextMod(CanvasOperator):
     def _write_chunk_of_text(
         self, canvas_stream_processor: "CanvasStreamProcessor", s: str, f: "Font"  # type: ignore [name-defined]
     ):
-        from ptext.pdf.canvas.layout.paragraph import ChunkOfText
+        from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
         canvas_stream_processor.redacted_content += "\n"  # type: ignore[attr-defined]
         canvas_stream_processor.redacted_content += ChunkOfText(  # type: ignore [attr-defined]
@@ -181,7 +181,7 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
     def _write_chunk_of_text(
         self, canvas_stream_processor: "CanvasStreamProcessor", s: str, f: "Font"  # type: ignore[name-defined]
     ):
-        from ptext.pdf.canvas.layout.paragraph import ChunkOfText
+        from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
         canvas_stream_processor.redacted_content += "\n"  # type: ignore[attr-defined]
         canvas_stream_processor.redacted_content += ChunkOfText(  # type: ignore[attr-defined]
@@ -328,4 +328,7 @@ class RedactedCanvasStreamProcessor(CanvasStreamProcessor):
         self.canvas_operators["TJ"] = ShowTextWithGlyphPositioningMod()
 
     def get_redacted_content(self) -> bytes:
+        """
+        This function returns the redacted content of this implementation of CanvasStreamProcessor
+        """
         return self.redacted_content.encode("latin1")

@@ -9,7 +9,7 @@ import logging
 import typing
 from decimal import Decimal
 
-from ptext.io.read.types import Function, Name, List
+from ptext.io.read.types import Function, List, Name
 
 logger = logging.getLogger(__name__)
 
@@ -424,10 +424,16 @@ class X11Color(HexColor):
         super(X11Color, self).__init__(X11Color.COLOR_DEFINITION[color_name])
 
     def get_name(self) -> str:
+        """
+        This function returns the name of this X11Color
+        """
         return self.color_name
 
     @staticmethod
     def find_nearest_x11_color(color: Color) -> "X11Color":
+        """
+        This function find the nearest X11Color equivalent for a given Color
+        """
         rgb_color_001: RGBColor = color.to_rgb()
         d_min: typing.Optional[Decimal] = None
         c_min: typing.Optional[str] = None

@@ -9,7 +9,7 @@ from typing import List
 from PIL import Image  # type: ignore [import]
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.page.page import Page
 

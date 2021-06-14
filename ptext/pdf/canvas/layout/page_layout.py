@@ -12,9 +12,7 @@ from decimal import Decimal
 from ptext.io.read.types import Decimal as pDecimal
 from ptext.io.read.types import Name
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import (
-    LayoutElement,
-)
+from ptext.pdf.canvas.layout.layout_element import LayoutElement
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 
@@ -42,7 +40,7 @@ class PageLayout:
 class MultiColumnLayout(PageLayout):
     """
     This implementation of PageLayout adds left/right/top/bottom margins to a Page
-    and lays out the content on the Page as if there were mutliple  columns to flow text, images, etc into.
+    and lays out the content on the Page as if there were multiple  columns to flow text, images, etc into.
     Once a column is full, the next column is automatically selected, although the next column can be manually selected.
     """
 
@@ -164,6 +162,12 @@ class MultiColumnLayout(PageLayout):
 
 
 class SingleColumnLayout(MultiColumnLayout):
+    """
+    This implementation of PageLayout adds left/right/top/bottom margins to a Page
+    and lays out the content on the Page as if there were was a single column to flow text, images, etc into.
+    Once this column is full, the next page is automatically created.
+    """
+
     def __init__(self, page: Page):
         super(SingleColumnLayout, self).__init__(page, number_of_columns=1)
         self.inter_column_margin = Decimal(0)

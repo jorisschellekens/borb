@@ -6,19 +6,19 @@
 """
 import io
 import typing
-from typing import Optional, Any, Union
+from typing import Any, Optional, Union
 
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import AnyPDFType, Dictionary
+from ptext.io.read.types import AnyPDFType, Dictionary, Stream
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.canvas.font.composite_font.cid_font_type_0 import CIDType0Font
 from ptext.pdf.canvas.font.composite_font.cid_font_type_2 import CIDType2Font
 from ptext.pdf.canvas.font.composite_font.font_type_0 import Type0Font
 from ptext.pdf.canvas.font.font import Font
-from ptext.pdf.canvas.font.simple_font.font_type_1 import Type1Font, StandardType1Font
+from ptext.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font, Type1Font
 from ptext.pdf.canvas.font.simple_font.font_type_3 import Type3Font
 from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 
@@ -39,7 +39,10 @@ class ReadFontDictionaryTransformer(ReadBaseTransformer):
         This function returns True if the object to be transformed is a \Font Dictionary
         """
         return (
-            isinstance(object, dict) and "Type" in object and object["Type"] == "Font"
+            isinstance(object, dict)
+            and not isinstance(object, Stream)
+            and "Type" in object
+            and object["Type"] == "Font"
         )
 
     def transform(

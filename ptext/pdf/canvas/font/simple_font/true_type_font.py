@@ -14,7 +14,7 @@ from pathlib import Path
 from fontTools.ttLib import TTFont  # type: ignore [import]
 
 from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Name, List, Dictionary, String, Stream
+from ptext.io.read.types import Dictionary, List, Name, Stream, String
 from ptext.pdf.canvas.font.simple_font.font_type_1 import Type1Font
 
 
@@ -66,6 +66,7 @@ class TrueTypeFont(Type1Font):
         font[Name("BaseFont")] = Name(font_name)
 
         cmap: typing.Optional[typing.Dict[int, str]] = ttf_font_file.getBestCmap()
+        assert cmap is not None
         cmap_reverse: typing.Dict[str, int] = {}
         for k, v in cmap.items():
             if v in cmap_reverse:

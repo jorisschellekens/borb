@@ -5,7 +5,8 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import ChunkOfText, Paragraph
+from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page

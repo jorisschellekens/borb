@@ -6,8 +6,8 @@ from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
-from ptext.pdf.canvas.layout.shape import Shape
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
+from ptext.pdf.canvas.layout.image.shape import Shape
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document

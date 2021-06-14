@@ -16,12 +16,18 @@ from ptext.pdf.canvas.event.chunk_of_text_render_event import (
     LeftToRightComparator,
 )
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page import Page
 
 
 class PDFMatch:
+    """
+    This class represents a match of a regular expression in a PDF.
+    It has convenience methods to allow the user to extract information about the text that was matched,
+    as well as the location (on the page) of the match.
+    """
+
     def __init__(
         self,
         re_match: re.Match,

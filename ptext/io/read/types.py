@@ -10,8 +10,8 @@ import types
 import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal as oDecimal
-from math import floor, ceil
-from typing import Union, Optional
+from math import ceil, floor
+from typing import Optional, Union
 
 from PIL.Image import Image  # type: ignore [import]
 

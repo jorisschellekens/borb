@@ -10,13 +10,7 @@ from typing import Optional
 
 from PIL.Image import Image  # type: ignore [import]
 
-from ptext.io.read.types import (
-    AnyPDFType,
-    List,
-    Dictionary,
-    Stream,
-    Reference,
-)
+from ptext.io.read.types import AnyPDFType, Dictionary, List, Reference, Stream
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,

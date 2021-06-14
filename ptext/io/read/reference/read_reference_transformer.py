@@ -8,13 +8,13 @@
 import io
 import logging
 import typing
-from typing import Optional, Any, Union
+from typing import Any, Optional, Union
 
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import Reference, AnyPDFType
+from ptext.io.read.types import AnyPDFType, Reference
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.xref.xref import XREF
 

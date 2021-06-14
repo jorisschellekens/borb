@@ -12,7 +12,7 @@ import time
 import typing
 
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.read.types import Dictionary, CanvasOperatorName, AnyPDFType
+from ptext.io.read.types import AnyPDFType, CanvasOperatorName, Dictionary
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 from ptext.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
 from ptext.pdf.canvas.operator.color.set_cmyk_stroking import SetCMYKStroking
@@ -222,7 +222,9 @@ class CanvasStreamProcessor:
             return self.page["Resources"][resource_type_name][name]
         return None
 
-    def read(self, io_source: io.IOBase) -> "CanvasStreamProcessor":
+    def read(
+        self, io_source: typing.Union[io.BytesIO, io.IOBase]
+    ) -> "CanvasStreamProcessor":
         """
         This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
         """
@@ -242,8 +244,10 @@ class CanvasStreamProcessor:
             # print("<canvas pos='%d' length='%d' percentage='%d'/>" % ( canvas_tokenizer.tell(), length, int(canvas_tokenizer.tell() * 100 / length)))
 
             # attempt to read object
+            tell_before: int = canvas_tokenizer.tell()
             obj = canvas_tokenizer.read_object()
-            if obj is None:
+            tell_after: int = canvas_tokenizer.tell()
+            if obj is None and tell_before == tell_after:
                 break
 
             # push argument onto stack
@@ -277,6 +281,7 @@ class CanvasStreamProcessor:
                 operator.invoke(self, operands)
                 delta = time.time() - delta
                 time_per_operator[on] += delta
+
             except Exception as e:
                 if not self.canvas.in_compatibility_section:
                     raise e

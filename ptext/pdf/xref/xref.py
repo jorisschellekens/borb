@@ -13,12 +13,12 @@ import io
 import logging
 import typing
 from decimal import Decimal
-from typing import Union, Optional
+from typing import Optional, Union
 
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import TokenType
-from ptext.io.read.types import Dictionary, Reference, AnyPDFType, Stream, Name
+from ptext.io.read.types import AnyPDFType, Dictionary, Name, Reference, Stream
 
 logger = logging.getLogger(__name__)
 

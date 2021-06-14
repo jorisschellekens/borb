@@ -11,7 +11,7 @@
 """
 import typing
 from decimal import Decimal
-from math import atan, ceil, cos, exp, floor, log, sin, degrees, sqrt
+from math import atan, ceil, cos, degrees, exp, floor, log, sin, sqrt
 
 
 class PostScriptEval:

@@ -13,17 +13,14 @@ from fontTools.afmLib import AFM  # type: ignore [import]
 from fontTools.agl import toUnicode  # type: ignore [import]
 
 from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Name, Dictionary
+from ptext.io.read.types import Dictionary, Name
 from ptext.pdf.canvas.font.adobe_standard_encoding import (
     adobe_standard_decode,
     adobe_standard_encode,
 )
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.simple_font.simple_font import SimpleFont
-from ptext.pdf.canvas.font.symbol_encoding import (
-    symbol_decode,
-    zapfdingbats_decode,
-)
+from ptext.pdf.canvas.font.symbol_encoding import symbol_decode, zapfdingbats_decode
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +54,7 @@ class Type1Font(SimpleFont):
         last_char: int = int(self["LastChar"])
         self._character_identifier_to_unicode_lookup = {}
 
+        i: int = 0
         for i in range(first_char, last_char + 1):
             y: typing.Optional[str] = None
             try:
@@ -79,8 +77,8 @@ class Type1Font(SimpleFont):
                 self._character_identifier_to_unicode_lookup[i] = y
 
         # apply differences
-        i: int = 0
         j: int = 0
+        i = 0
         while i < len(self["Encoding"]["Differences"]):
             assert isinstance(self["Encoding"]["Differences"][i], pDecimal)
             character_code: int = self["Encoding"]["Differences"][i]
@@ -357,11 +355,11 @@ class StandardType1Font(Type1Font):
             self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {}
 
             if font_name == "Symbol":
-                self._character_identifier_to_unicode_lookup  = {c:symbol_decode([c]) for c in range(0, 256)}
+                self._character_identifier_to_unicode_lookup  = {c:symbol_decode(bytes([c])) for c in range(0, 256)}
                 self._unicode_lookup_to_character_identifier = {v:k for k,v in self._character_identifier_to_unicode_lookup.items()}
 
             elif font_name == "ZapfDingbats":
-                self._character_identifier_to_unicode_lookup = {c:zapfdingbats_decode([c]) for c in range(0, 256)}
+                self._character_identifier_to_unicode_lookup = {c:zapfdingbats_decode(bytes([c])) for c in range(0, 256)}
                 self._unicode_lookup_to_character_identifier = {v:k for k,v in self._character_identifier_to_unicode_lookup.items()}
 
             else:

@@ -6,18 +6,13 @@
 """
 import io
 import typing
-from typing import Optional, Any, Union, Dict
+from typing import Any, Dict, Optional, Union
 
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import (
-    Dictionary,
-    AnyPDFType,
-    Stream,
-    List,
-)
+from ptext.io.read.types import AnyPDFType, Dictionary, List, Stream
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent

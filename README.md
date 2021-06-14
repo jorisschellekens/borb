@@ -2,8 +2,8 @@
 # pText
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Corpus Coverage : 98.2%](https://img.shields.io/badge/corpus%20coverage-98.2%25-green)]()
-[![Text Extraction : 84.3%](https://img.shields.io/badge/text%20extraction-84.3%25-orange)]()
+[![Corpus Coverage : 97.0%](https://img.shields.io/badge/corpus%20coverage-97.0%25-green)]()
+[![Text Extraction : 87.9%](https://img.shields.io/badge/text%20extraction-87.9%25-orange)]()
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 
 
@@ -30,6 +30,35 @@ They include;
 - adding lists to a PDF
 - using a layout
  and much more
+ 
+### 1.1 Hello World
+
+To give you an immediate idea of the way `pText` works, this is the classic `Hello World` example, in `pText`:
+
+    from pathlib import Path
+
+    from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+    from ptext.pdf.canvas.layout.paragraph import Paragraph,
+    from ptext.pdf.document import Document
+    from ptext.pdf.page.page import Page
+    from ptext.pdf.pdf import PDF
+
+    # create an empty Document
+    pdf = Document()
+
+    # add an empty Page
+    page = Page()
+    pdf.append_page(page)
+
+    # use a PageLayout (SingleColumnLayout in this case)
+    layout = SingleColumnLayout(page)
+
+    # add a Paragraph object
+    layout.add(Paragraph("Hello World!"))
+    
+    # store the PDF
+    with open(Path("output.pdf"), "wb") as pdf_file_handle:
+        PDF.dumps(pdf_file_handle, pdf)
  
 ## 2. License
 

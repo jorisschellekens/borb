@@ -4,9 +4,9 @@ from pathlib import Path
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.layout.barcode import Barcode, BarcodeType
+from ptext.pdf.canvas.layout.image.barcode import Barcode, BarcodeType
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -54,7 +54,7 @@ class TestWriteSimpleBarcode(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with a BarcodeType.CODE_128 barcode in yellow(ish)."
+                    "This test creates a PDF with a green-colored BarcodeType.CODE_128 barcode."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))

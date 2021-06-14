@@ -7,7 +7,7 @@
 import io
 import typing
 from decimal import Decimal
-from typing import Union, Any, Optional
+from typing import Any, Optional, Union
 
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read.read_base_transformer import (
@@ -18,9 +18,9 @@ from ptext.io.read.types import (
     AnyPDFType,
     Dictionary,
     Function,
+    Name,
     Reference,
     Stream,
-    Name,
 )
 from ptext.pdf.canvas.event.event_listener import EventListener
 

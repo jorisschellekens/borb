@@ -9,7 +9,7 @@ import typing
 from typing import List
 
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.font.font import Font
 
 

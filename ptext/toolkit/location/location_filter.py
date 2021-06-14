@@ -8,7 +8,7 @@
 import typing
 
 from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 

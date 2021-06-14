@@ -13,38 +13,22 @@ from ptext.io.write.ascii_art.write_ascii_art_transformer import (
     WriteASCIIArtTransformer,
 )
 from ptext.io.write.image.write_image_transformer import WriteImageTransformer
-from ptext.io.write.object.write_array_transformer import (
-    WriteArrayTransformer,
-)
+from ptext.io.write.object.write_array_transformer import WriteArrayTransformer
 from ptext.io.write.object.write_dictionary_transformer import (
     WriteDictionaryTransformer,
 )
-from ptext.io.write.object.write_stream_transformer import (
-    WriteStreamTransformer,
-)
+from ptext.io.write.object.write_stream_transformer import WriteStreamTransformer
 from ptext.io.write.page.write_page_transformer import WritePageTransformer
 from ptext.io.write.page.write_pages_transformer import WritePagesTransformer
-from ptext.io.write.primitive.write_boolean_transformer import (
-    WriteBooleanTransformer,
-)
-from ptext.io.write.primitive.write_name_transformer import (
-    WriteNameTransformer,
-)
-from ptext.io.write.primitive.write_number_transformer import (
-    WriteNumberTransformer,
-)
-from ptext.io.write.primitive.write_string_transformer import (
-    WriteStringTransformer,
-)
-from ptext.io.write.reference.write_reference_transformer import (
-    WriteReferenceTransform,
-)
-from ptext.io.write.reference.write_xref_transformer import (
-    WriteXREFTransformer,
-)
+from ptext.io.write.primitive.write_boolean_transformer import WriteBooleanTransformer
+from ptext.io.write.primitive.write_name_transformer import WriteNameTransformer
+from ptext.io.write.primitive.write_number_transformer import WriteNumberTransformer
+from ptext.io.write.primitive.write_string_transformer import WriteStringTransformer
+from ptext.io.write.reference.write_reference_transformer import WriteReferenceTransform
+from ptext.io.write.reference.write_xref_transformer import WriteXREFTransformer
 from ptext.io.write.write_base_transformer import (
-    WriteTransformerContext,
     WriteBaseTransformer,
+    WriteTransformerContext,
 )
 from ptext.io.write.write_pdf_transformer import WritePDFTransformer
 from ptext.io.write.xmp.write_xmp_transformer import WriteXMPTransformer

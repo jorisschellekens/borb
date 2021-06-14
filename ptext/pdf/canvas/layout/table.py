@@ -9,10 +9,10 @@ import zlib
 from decimal import Decimal
 
 from ptext.io.read.types import Name
-from ptext.pdf.canvas.color.color import X11Color, Color
+from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.paragraph import LayoutElement
+from ptext.pdf.canvas.layout.layout_element import Alignment, LayoutElement
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.page.page import Page
 
 
@@ -58,6 +58,7 @@ class TableCell(LayoutElement):
         assert not isinstance(layout_element, Table)
         self.row_span = row_span
         self.col_span = col_span
+        self.table_coordinates: typing.List[typing.Tuple[int, int]] = []
 
     def layout(self, page: Page, layout_box: Rectangle) -> Rectangle:
         """
@@ -209,40 +210,118 @@ class Table(LayoutElement):
         self.set_borders_on_all_cells(False, False, False, False)
         return self
 
-    def outer_borders(self):
+    def outer_borders(self) -> "Table":
         """
         This method unsets the border(s) on all TableCell objects in this Table
         except for the borders that form the outside edge of the Table
         """
         self.no_borders()
-        # TODO
+        self._determine_table_coordinates_per_cell()
+        for c in self._get_cells_at_row(0):
+            c.border_top = True
+        for c in self._get_cells_at_row(self.number_of_rows - 1):
+            c.border_bottom = True
+        for c in self._get_cells_at_column(0):
+            c.border_left = True
+        for c in self._get_cells_at_column(self.number_of_columns - 1):
+            c.border_right = True
         return self
+
+    def internal_borders(self) -> "Table":
+        """
+        This method sets the border(s) on all TableCell objects in this Table
+        except for the borders that form the outside edge of the Table
+        """
+        for tc in self.content:
+            tc.border_top = True
+            tc.border_right = True
+            tc.border_bottom = True
+            tc.border_left = True
+        self._determine_table_coordinates_per_cell()
+        for c in self._get_cells_at_row(0):
+            c.border_top = False
+        for c in self._get_cells_at_row(self.number_of_rows - 1):
+            c.border_bottom = False
+        for c in self._get_cells_at_column(0):
+            c.border_left = False
+        for c in self._get_cells_at_column(self.number_of_columns - 1):
+            c.border_right = False
+        return self
+
+    def even_odd_row_colors(
+        self, even_row_color: Color, odd_row_color: Color
+    ) -> "Table":
+        """
+        This function colors the table with the classic "zebra stripes"
+        e.a. one color for all even rows, and a contrasting color for the odd rows.
+        This function returns self.
+        """
+        self._determine_table_coordinates_per_cell()
+        for r in range(0, self.number_of_rows):
+            for tc in self._get_cells_at_row(r):
+                if r % 2 == 0:
+                    tc.background_color = even_row_color
+                else:
+                    tc.background_color = odd_row_color
+        return self
+
+    def _cell_is_occupied(self, r: int, c: int) -> bool:
+        return self._get_cell_at(r, c) is not None
+
+    def _get_cell_at(self, r: int, c: int) -> typing.Optional[TableCell]:
+        for tc in self.content:
+            for p in tc.table_coordinates:
+                if p[0] == r and p[1] == c:
+                    return tc
+        return None
+
+    def _get_cells_at_row(self, r: int) -> typing.List[TableCell]:
+        out: typing.List[TableCell] = []
+        for tc in self.content:
+            for p in tc.table_coordinates:
+                if p[0] == r:
+                    out.append(tc)
+        return out
+
+    def _get_cells_at_column(self, c: int) -> typing.List[TableCell]:
+        out: typing.List[TableCell] = []
+        for tc in self.content:
+            for p in tc.table_coordinates:
+                if p[1] == c:
+                    out.append(tc)
+        return out
+
+    def _determine_table_coordinates_per_cell(self) -> None:
+        c = 0
+        r = 0
+        for tc in self.content:
+            tc.table_coordinates = []
+        for i, e in enumerate(self.content):
+            while self._cell_is_occupied(r, c):
+                c += 1
+                if c == self.number_of_columns:
+                    c = 0
+                    r += 1
+            for j in range(0, e.row_span):
+                for k in range(0, e.col_span):
+                    e.table_coordinates.append((j + r, k + c))
 
     def _do_layout_without_padding(
         self, page: Page, bounding_box: Rectangle
     ) -> Rectangle:
 
+        # auto fill table
+        empty_cells: int = self.number_of_rows * self.number_of_columns - sum(
+            [(x.row_span * x.col_span) for x in self.content]
+        )
+        for _ in range(0, empty_cells):
+            self.content.append(TableCell(Paragraph(" ", respect_spaces_in_text=True)))
+
         content_stream = page["Contents"]
         len_decoded_bytes_before = len(content_stream[Name("DecodedBytes")])
 
         # layout elements in grid
-        # this matrix ensures we can easily check which element is located at (x,y) even if there are
-        # TableCell elements with row_span and col_span
-        mtx = [
-            [-1 for _ in range(0, self.number_of_columns)]
-            for _ in range(0, self.number_of_rows)
-        ]
-        c = 0
-        r = 0
-        for i, e in enumerate(self.content):
-            while mtx[r][c] != -1:
-                c += 1
-                if c == len(mtx[r]):
-                    c = 0
-                    r += 1
-            for j in range(0, e.row_span):
-                for k in range(0, e.col_span):
-                    mtx[r + j][c + k] = i
+        self._determine_table_coordinates_per_cell()
 
         # calculate column edges
         column_boundaries = [
@@ -255,19 +334,17 @@ class Table(LayoutElement):
 
         # set up datastructures for main layout loop
         already_laid_out: typing.List[LayoutElement] = []
-        bottom_row_mtx = [
-            [Decimal(-1) for _ in range(0, self.number_of_columns)]
-            for _ in range(0, self.number_of_rows)
-        ]
 
         # execute main layout loop
         previous_row_bottom = bounding_box.y + bounding_box.height
         row_boundaries: typing.List[Decimal] = [previous_row_bottom]
         for r in range(0, self.number_of_rows):
             for c in range(0, self.number_of_columns):
-                e = self.content[mtx[r][c]]
+                e = self._get_cell_at(r, c)
+                assert e is not None, "table has no content at %d, %d" % (r, c)
                 if e in already_laid_out:
                     continue
+
                 rect_out = e.layout(
                     page,
                     Rectangle(
@@ -281,20 +358,17 @@ class Table(LayoutElement):
                 # mark element as laid out
                 already_laid_out.append(e)
 
-                # keep track of bottom row
-                for i in range(0, e.row_span):
-                    for j in range(0, e.col_span):
-                        bottom_row_mtx[r + i][c + j] = rect_out.y
-
             # recalculate previous bottom row
-            previous_row_bottom = min(
-                [
-                    v
-                    for i, v in enumerate(bottom_row_mtx[r])
-                    if self.content[mtx[r][i]].row_span == 1
-                    and self.content[mtx[r][i]].get_bounding_box().height > 0
-                ]
-            )
+            for e in self._get_cells_at_row(r):
+                cell_bounding_box: typing.Optional[Rectangle] = e.get_bounding_box()
+                assert cell_bounding_box is not None
+                if cell_bounding_box.get_height() == 0:
+                    continue
+                if e.row_span != 1:
+                    continue
+                previous_row_bottom = min(
+                    cell_bounding_box.get_y(), previous_row_bottom
+                )
             row_boundaries.append(previous_row_bottom)
 
         layout_rect = Rectangle(
@@ -308,7 +382,8 @@ class Table(LayoutElement):
         already_drawn_border: typing.Dict[LayoutElement, Rectangle] = {}
         for r in range(0, self.number_of_rows):
             for c in range(0, self.number_of_columns):
-                e = self.content[mtx[r][c]]
+                e = self._get_cell_at(r, c)
+                assert e is not None
                 if e in already_drawn_border:
                     continue
 
@@ -328,7 +403,7 @@ class Table(LayoutElement):
                     border_box.y = Decimal(int(border_box.y))
 
                 if r != 0:
-                    nb = self.content[mtx[r - 1][c]]
+                    nb = self._get_cell_at(r - 1, c)
                     if nb is not None and nb in already_drawn_border:
                         up_bb = already_drawn_border[nb]
                         border_box.y = Decimal(int(border_box.y))

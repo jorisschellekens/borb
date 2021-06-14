@@ -9,7 +9,8 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
-from PIL import Image as PILImage, ImageFont, ImageDraw  # type: ignore [import]
+from PIL import Image as PILImage  # type: ignore [import]
+from PIL import ImageDraw, ImageFont
 
 from ptext.pdf.canvas.color.color import Color
 from ptext.pdf.page.page_size import PageSize

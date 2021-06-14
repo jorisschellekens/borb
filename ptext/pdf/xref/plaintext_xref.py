@@ -6,11 +6,11 @@
     that the entire file need not be read to locate any particular object.
 """
 import io
-from typing import Optional, List, Union
+from typing import List, Optional, Union
 
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import TokenType
-from ptext.io.read.types import Reference, Dictionary, Name
+from ptext.io.read.types import Dictionary, Name, Reference
 from ptext.pdf.xref.xref import XREF
 
 

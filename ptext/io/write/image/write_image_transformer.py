@@ -9,8 +9,9 @@ from typing import Optional
 
 from PIL import Image as PILImage  # type: ignore [import]
 
-from ptext.io.read.types import AnyPDFType, Name, Stream, Reference, add_base_methods
+from ptext.io.read.types import AnyPDFType
 from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Name, Reference, Stream, add_base_methods
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,

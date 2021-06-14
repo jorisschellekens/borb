@@ -7,7 +7,7 @@
 import io
 import logging
 import typing
-from typing import Optional, Any, Union
+from typing import Any, Optional, Union
 
 from PIL import Image  # type: ignore [import]
 
@@ -15,7 +15,7 @@ from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import add_base_methods, AnyPDFType, Stream
+from ptext.io.read.types import AnyPDFType, Stream, add_base_methods
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 logger = logging.getLogger(__name__)

@@ -17,7 +17,8 @@ from ptext.pdf.canvas.event.chunk_of_text_render_event import (
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
 from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import LineOfText, LayoutElement
+from ptext.pdf.canvas.layout.layout_element import LayoutElement
+from ptext.pdf.canvas.layout.text.line_of_text import LineOfText
 from ptext.pdf.page.page import Page
 
 

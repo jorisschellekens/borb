@@ -12,7 +12,7 @@ import typing
 
 import PIL  # type: ignore [import]
 
-from ptext.io.read.types import AnyPDFType, Name, Stream
+from ptext.io.read.types import AnyPDFType, Dictionary, Name, Stream
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -65,9 +65,12 @@ class Do(CanvasOperator):
         ):
 
             # execute XObject
+            xobject_resources: Dictionary = (
+                xobject["Resources"] if "Resources" in xobject else {}
+            )
             child_canvas_stream_processor = (
                 canvas_stream_processor.create_child_canvas_stream_processor(
-                    xobject["Resources"]
+                    [xobject_resources]
                 )
             )
             child_canvas_stream_processor.read(io.BytesIO(xobject["DecodedBytes"]))

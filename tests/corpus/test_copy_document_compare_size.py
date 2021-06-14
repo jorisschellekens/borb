@@ -5,11 +5,10 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.layout.chart import Chart
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout, PageLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.image.chart import Chart
+from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -45,15 +44,16 @@ class TestCopyDocumentCompareSize(unittest.TestCase):
             if x.endswith(".pdf") and "page_0" in x and (x not in ["0566_page_0.pdf"])
         ]
         self._test_list_of_documents(pdfs)
+        plt.close("all")
 
     def _test_list_of_documents(self, documents: typing.List[Path]):
         self.number_of_documents = len(documents)
         self.number_of_passes = 0
         self.number_of_fails = 0
         self.memory_stats_per_document = {}
-        for doc in documents:
+        for i, doc in enumerate(documents):
             try:
-                print("processing %s ..." % doc.stem)
+                print("processing %s [%d/%d] ..." % (doc.stem, i + 1, len(documents)))
                 file_size_001: int = os.path.getsize(doc)
                 file_size_002: int = self._test_single_document(doc)
                 self.memory_stats_per_document[doc.stem] = (
@@ -177,3 +177,6 @@ class TestCopyDocumentCompareSize(unittest.TestCase):
         file = self.output_dir / "output.pdf"
         with open(file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
+
+        # close figure(s)
+        plt.close("all")

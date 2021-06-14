@@ -13,7 +13,7 @@ from ptext.pdf.canvas.event.chunk_of_text_render_event import (
     LeftToRightComparator,
 )
 from ptext.pdf.canvas.event.end_page_event import EndPageEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.page.page import Page
 
 

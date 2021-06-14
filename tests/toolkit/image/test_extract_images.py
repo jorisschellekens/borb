@@ -2,9 +2,7 @@ import unittest
 from pathlib import Path
 
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.image.simple_image_extraction import (
-    SimpleImageExtraction,
-)
+from ptext.toolkit.image.simple_image_extraction import SimpleImageExtraction
 
 
 class TestExtractImages(unittest.TestCase):

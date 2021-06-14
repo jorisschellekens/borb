@@ -8,17 +8,11 @@
 import logging
 from typing import Optional
 
-from ptext.io.read.types import (
-    AnyPDFType,
-    Dictionary,
-    Name,
-)
+from ptext.io.read.types import AnyPDFType, Dictionary, Name
 from ptext.io.write.object.write_dictionary_transformer import (
     WriteDictionaryTransformer,
 )
-from ptext.io.write.write_base_transformer import (
-    WriteTransformerContext,
-)
+from ptext.io.write.write_base_transformer import WriteTransformerContext
 from ptext.pdf.document import Document
 
 logger = logging.getLogger(__name__)

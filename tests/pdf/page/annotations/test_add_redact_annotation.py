@@ -1,12 +1,14 @@
+import typing
 import unittest
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.color.color import HexColor
+from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -14,6 +16,8 @@ from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+
+unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestAddRedactAnnotation(unittest.TestCase):
@@ -76,7 +80,7 @@ class TestAddRedactAnnotation(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
-    def test_add_line_annotation(self):
+    def test_add_redact_annotation(self):
 
         # attempt to read PDF
         doc = None
@@ -94,4 +98,69 @@ class TestAddRedactAnnotation(unittest.TestCase):
 
         # attempt to store PDF
         with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
+
+    def test_add_redact_annotation_to_wild_caught_document(self):
+
+        doc: typing.Optional[Document] = None
+        input_dir: Path = Path(__file__).parent
+
+        # read Document
+        l = RegularExpressionTextExtraction("[sS]orbitol")
+        with open(input_dir / "input_001.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle, [l])
+
+        for m in l.get_all_matches(0):
+            for bb in m.get_bounding_boxes():
+                bb = bb.grow(Decimal(2))
+                doc.get_page(0).append_redact_annotation(
+                    bb,
+                    stroke_color=HexColor("FF0000"),
+                )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
+
+    def test_create_document_with_truetype_font(self):
+
+        pdf_doc: Document = Document()
+
+        page: Page = Page()
+        pdf_doc.append_page(page)
+
+        layout: PageLayout = SingleColumnLayout(page)
+
+        true_type_font_file: Path = Path(__file__).parent / "Jsfont-Regular.ttf"
+        layout.add(
+            Paragraph(
+                "Lorem ipsum",
+                font_size=Decimal(20),
+                font=TrueTypeFont.true_type_font_from_file(true_type_font_file),
+            )
+        )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_004.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf_doc)
+
+    def test_add_redact_annotation_to_document_with_truetype_font(self):
+
+        doc: typing.Optional[Document] = None
+
+        # read Document
+        l = RegularExpressionTextExtraction("[lL]orem")
+        with open(self.output_dir / "output_004.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle, [l])
+
+        for m in l.get_all_matches(0):
+            for bb in m.get_bounding_boxes():
+                bb = bb.grow(Decimal(2))
+                doc.get_page(0).append_redact_annotation(
+                    bb,
+                    stroke_color=HexColor("FF0000"),
+                )
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_005.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)

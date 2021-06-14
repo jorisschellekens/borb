@@ -7,19 +7,16 @@ from decimal import Decimal
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-
 from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.layout.chart import Chart
-from ptext.pdf.canvas.layout.list import UnorderedList
+from ptext.pdf.canvas.layout.image.chart import Chart
+from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
 from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table, TableCell
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
-from ptext.toolkit.text.simple_text_extraction import (
-    SimpleTextExtraction,
-)
+from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
 class TestExtractTextExpectGroundTruth(unittest.TestCase):
@@ -53,6 +50,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             if x.endswith(".pdf") and "page_0" in x and (x not in ["0566_page_0.pdf"])
         ]
         self._test_list_of_documents(pdfs)
+        plt.close("all")
 
     @unittest.skip
     def test_single_document(self):
@@ -65,10 +63,10 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         self.number_of_fails = 0
         self.time_per_document = {}
         self.fails_per_document = {}
-        for doc in documents:
+        for i, doc in enumerate(documents):
             try:
                 delta: float = time.time()
-                print("processing %s ..." % doc.stem)
+                print("processing %s [%d/%d] ..." % (doc.stem, i + 1, len(documents)))
                 differences: typing.Dict[str, int] = self._test_single_document(doc)
                 delta = time.time() - delta
                 if len(differences) == 0:
@@ -300,6 +298,9 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         file = self.output_dir / "output.pdf"
         with open(file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
+
+        # close figure(s)
+        plt.close("all")
 
     def _test_single_document(self, file) -> typing.Dict[str, int]:
 

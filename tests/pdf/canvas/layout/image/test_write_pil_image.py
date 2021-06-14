@@ -4,12 +4,11 @@ from pathlib import Path
 
 import requests
 from PIL import Image as PILImage
-
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.layout.image import Image
+from ptext.pdf.canvas.layout.image.image import Image
 from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page

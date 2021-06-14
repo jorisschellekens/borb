@@ -3,7 +3,6 @@ import unittest
 
 import requests
 from PIL import Image as PILImage  # type: ignore [import]
-
 from ptext.io.read.types import add_base_methods
 
 

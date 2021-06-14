@@ -6,18 +6,14 @@
 """
 import io
 import typing
-from typing import Optional, Any, Union
+from typing import Any, Optional, Union
 
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import (
-    Stream,
-    Reference,
-    AnyPDFType,
-)
+from ptext.io.read.types import AnyPDFType, Reference, Stream
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 

@@ -2,12 +2,14 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
+from ptext.pdf.canvas.layout.layout_element import Alignment
+
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import X11Color, HexColor
+from ptext.pdf.canvas.color.color import HexColor, X11Color
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph, Alignment
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page

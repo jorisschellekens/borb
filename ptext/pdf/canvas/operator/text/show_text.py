@@ -7,7 +7,7 @@
 import typing
 from typing import List
 
-from ptext.io.read.types import AnyPDFType, String, Name
+from ptext.io.read.types import AnyPDFType, Name, String
 from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 

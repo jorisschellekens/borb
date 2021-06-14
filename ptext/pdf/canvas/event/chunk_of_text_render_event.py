@@ -13,7 +13,7 @@ from ptext.pdf.canvas.event.event_listener import Event
 from ptext.pdf.canvas.font.font import Font
 from ptext.pdf.canvas.font.glyph_line import GlyphLine
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import ChunkOfText
+from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
 
 class ChunkOfTextRenderEvent(Event, ChunkOfText):

@@ -9,15 +9,9 @@ import typing
 import zlib
 from typing import Optional
 
-from ptext.io.read.types import (
-    AnyPDFType,
-    Dictionary,
-    Stream,
-    Reference,
-    List,
-    Name,
-)
+from ptext.io.read.types import AnyPDFType
 from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Dictionary, List, Name, Reference, Stream
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,

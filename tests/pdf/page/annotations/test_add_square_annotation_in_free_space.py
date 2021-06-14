@@ -7,6 +7,8 @@ from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from ptext.pdf.pdf import PDF
 
+unittest.TestLoader.sortTestMethodsUsing = None
+
 
 class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
     def __init__(self, methodName="runTest"):

@@ -11,7 +11,7 @@ from decimal import Decimal
 from enum import Enum
 
 from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Stream, Name
+from ptext.io.read.types import Name, Stream
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 
@@ -328,7 +328,7 @@ class LayoutElement:
             self.border_top
             == self.border_right
             == self.border_bottom
-            == self.border_right
+            == self.border_left
             == False
         ):
             return

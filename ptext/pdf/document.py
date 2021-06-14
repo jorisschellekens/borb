@@ -8,15 +8,8 @@
 import typing
 import zlib
 
-from ptext.io.read.types import (
-    Dictionary,
-    Decimal,
-    List,
-    Name,
-    String,
-    Stream,
-)
-from ptext.pdf.page.page import Page, DestinationType
+from ptext.io.read.types import Decimal, Dictionary, List, Name, Stream, String
+from ptext.pdf.page.page import DestinationType, Page
 from ptext.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
 

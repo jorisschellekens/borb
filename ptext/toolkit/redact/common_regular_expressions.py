@@ -1,9 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This class contains some useful (common) regular expressions.
+"""
 import re
 from enum import Enum
 from re import Pattern
 
 
 class CommonRegularExpression(Enum):
+    """
+    This class contains some useful (common) regular expressions.
+    """
 
     # fmt: off
     BITCOIN_ADDRESS: Pattern = re.compile("([13][a-km-zA-HJ-NP-Z0-9]{26,33})")

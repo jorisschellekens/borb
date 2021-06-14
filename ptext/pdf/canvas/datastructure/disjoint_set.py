@@ -6,7 +6,7 @@
     is a data structure that stores a collection of disjoint (non-overlapping) sets.
 """
 import typing
-from typing import List, Any
+from typing import Any, List
 
 
 class disjointset:

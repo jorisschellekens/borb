@@ -11,7 +11,7 @@ from typing import Optional, Union
 
 from ptext.io.filter.stream_decode_util import decode_stream
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from ptext.io.read.types import Reference, Stream, Dictionary, List, Name
+from ptext.io.read.types import Dictionary, List, Name, Reference, Stream
 from ptext.pdf.xref.xref import XREF
 
 

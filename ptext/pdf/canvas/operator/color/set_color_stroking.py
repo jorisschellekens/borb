@@ -9,7 +9,7 @@ from decimal import Decimal
 from typing import List
 
 from ptext.io.read.types import AnyPDFType
-from ptext.pdf.canvas.color.color import GrayColor, RGBColor, CMYKColor, Separation
+from ptext.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor, Separation
 from ptext.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 

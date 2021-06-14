@@ -4,12 +4,10 @@ from pathlib import Path
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
+from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import (
-    Alignment,
-    Paragraph,
-)
-from ptext.pdf.canvas.layout.shape import Shape
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
+from ptext.pdf.canvas.layout.image.shape import Shape
 from ptext.pdf.canvas.layout.table import Table, TableCell
 from ptext.pdf.canvas.line_art.blob_factory import BlobFactory
 from ptext.pdf.document import Document

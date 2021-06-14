@@ -7,13 +7,7 @@
 import typing
 from typing import Optional
 
-from ptext.io.read.types import (
-    AnyPDFType,
-    Dictionary,
-    Name,
-    Reference,
-    Decimal,
-)
+from ptext.io.read.types import AnyPDFType, Decimal, Dictionary, Name, Reference
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,

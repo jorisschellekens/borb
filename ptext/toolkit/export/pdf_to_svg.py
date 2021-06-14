@@ -15,7 +15,7 @@ from PIL import Image as PILImage  # type: ignore [import]
 from ptext.pdf.canvas.color.color import Color
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
 from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.page.page import Page
 from ptext.pdf.page.page_size import PageSize

@@ -11,7 +11,7 @@ from ptext.io.filter.ascii85_decode import ASCII85Decode
 from ptext.io.filter.flate_decode import FlateDecode
 from ptext.io.filter.lzw_decode import LZWDecode
 from ptext.io.filter.run_length_decode import RunLengthDecode
-from ptext.io.read.types import Stream, List, Decimal, Dictionary, Name
+from ptext.io.read.types import Decimal, Dictionary, List, Name, Stream
 
 
 def decode_stream(s: Stream) -> Stream:

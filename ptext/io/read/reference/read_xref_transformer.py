@@ -8,7 +8,7 @@ import io
 import os
 import typing
 from decimal import Decimal
-from typing import Union, Optional, Any
+from typing import Any, Optional, Union
 
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
@@ -16,11 +16,27 @@ from ptext.io.read.read_base_transformer import (
 )
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.types import AnyPDFType, Dictionary, Name
-from ptext.pdf.canvas.event.event_listener import EventListener
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.document import Document
 from ptext.pdf.xref.plaintext_xref import PlainTextXREF
 from ptext.pdf.xref.stream_xref import StreamXREF
 from ptext.pdf.xref.xref import XREF
+
+
+class BeginDocumentEvent(Event):
+    """
+    This implementation of Event is triggered right before the Document is processed
+    """
+
+    pass
+
+
+class EndDocumentEvent(Event):
+    """
+    This implementation of Event is triggered right after the Document was processed
+    """
+
+    pass
 
 
 class ReadXREFTransformer(ReadBaseTransformer):
@@ -59,6 +75,9 @@ class ReadXREFTransformer(ReadBaseTransformer):
         # add listener(s)
         for l in event_listeners:
             context.root_object.add_event_listener(l)  # type: ignore [attr-defined]
+
+        # notify
+        context.root_object._event_occurred(BeginDocumentEvent())  # type: ignore [attr-defined]
 
         # remove prefix
         ReadXREFTransformer._remove_prefix(context)
@@ -101,6 +120,9 @@ class ReadXREFTransformer(ReadBaseTransformer):
         for k in ["DecodeParms", "Filter", "Index", "Length", "Prev", "W"]:
             if k in xref["Trailer"]:
                 xref["Trailer"].pop(k)
+
+        # notify
+        context.root_object._event_occurred(EndDocumentEvent())  # type: ignore [attr-defined]
 
         # return
         return context.root_object

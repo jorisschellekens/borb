@@ -7,7 +7,7 @@
 """
 import io
 import typing
-from typing import Optional, Any, Union
+from typing import Any, Optional, Union
 
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.types import AnyPDFType, Reference

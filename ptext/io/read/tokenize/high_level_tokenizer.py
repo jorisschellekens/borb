@@ -11,17 +11,17 @@ from typing import Optional
 
 from ptext.io.read.tokenize.low_level_tokenizer import LowLevelTokenizer, TokenType
 from ptext.io.read.types import (
-    List,
-    Dictionary,
-    Reference,
-    HexadecimalString,
-    String,
-    CanvasOperatorName,
-    Name,
-    Decimal,
     AnyPDFType,
     Boolean,
+    CanvasOperatorName,
+    Decimal,
+    Dictionary,
+    HexadecimalString,
+    List,
+    Name,
+    Reference,
     Stream,
+    String,
 )
 
 

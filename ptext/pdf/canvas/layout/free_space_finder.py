@@ -12,7 +12,7 @@ from decimal import Decimal
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from ptext.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
-from ptext.pdf.canvas.event.event_listener import EventListener, Event
+from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.page.page import Page
@@ -123,13 +123,13 @@ class FreeSpaceFinder(EventListener):
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
             assert isinstance(event, ChunkOfTextRenderEvent)
-            bb: typing.Optional[Rectangle] = event.get_bounding_box()
-            if bb is not None:
-                self._mark_as_unavailable(bb)
+            bounding_box_001: typing.Optional[Rectangle] = event.get_bounding_box()
+            if bounding_box_001 is not None:
+                self._mark_as_unavailable(bounding_box_001)
         if isinstance(event, ImageRenderEvent):
             assert isinstance(event, ImageRenderEvent)
-            bb: typing.Optional[Rectangle] = Rectangle(
+            bounding_box_002: typing.Optional[Rectangle] = Rectangle(
                 event.get_x(), event.get_y(), event.get_width(), event.get_height()
             )
-            if bb is not None:
-                self._mark_as_unavailable(bb)
+            if bounding_box_002 is not None:
+                self._mark_as_unavailable(bounding_box_002)

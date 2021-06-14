@@ -6,13 +6,13 @@
 """
 import io
 import typing
-from typing import Union, Any, Optional
+from typing import Any, Optional, Union
 
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import List, AnyPDFType
+from ptext.io.read.types import AnyPDFType, List
 from ptext.pdf.canvas.event.event_listener import EventListener
 
 

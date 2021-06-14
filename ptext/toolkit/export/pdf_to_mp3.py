@@ -10,7 +10,7 @@ from decimal import Decimal
 from gtts import gTTS  # type: ignore [import]
 
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.page.page import Page
 from ptext.toolkit.structure.simple_paragraph_extraction import (
     SimpleParagraphExtraction,

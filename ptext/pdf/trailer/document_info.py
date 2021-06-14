@@ -4,7 +4,9 @@
 """
     This class represents the meta-information belonging to a PDF document
 """
-from typing import Optional, List
+import typing
+from decimal import Decimal
+from typing import List, Optional
 
 
 class DocumentInfo:
@@ -14,14 +16,35 @@ class DocumentInfo:
 
     def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super().__init__()
-        self.document = document
+        self._document = document
+
+    def has_optional_content(self) -> bool:
+        """
+        Optional content (PDF 1.5) refers to sub-clauses of content in a PDF document that can be selectively viewed
+        or hidden by document authors or consumers. This capability is useful in items such as CAD drawings, layered
+        artwork, maps, and multi-language documents.
+        """
+        return "OCProperties" in self._document["XRef"]["Trailer"]
+
+    def get_optional_content_group_names(self) -> typing.List[str]:
+        """
+        This function returns the name(s) of the optional content group(s),
+        suitable for presentation in a reader’s user interface
+        """
+        if not self.has_optional_content():
+            return []
+        return [
+            str(x["Name"])
+            for x in self._document["XRef"]["Trailer"]["OCProperties"]
+            if "Name" in x
+        ]
 
     def get_title(self) -> Optional[str]:
         """
         (Optional; PDF 1.1) The document’s title.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["Title"]
+            return self._document["XRef"]["Trailer"]["Info"]["Title"]
         except:
             return None
 
@@ -32,7 +55,7 @@ class DocumentInfo:
         from which it was converted.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["Creator"]
+            return self._document["XRef"]["Trailer"]["Info"]["Creator"]
         except:
             return None
 
@@ -41,7 +64,7 @@ class DocumentInfo:
         (Optional; PDF 1.1) The name of the person who created the document.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["Author"]
+            return self._document["XRef"]["Trailer"]["Info"]["Author"]
         except:
             return None
 
@@ -51,7 +74,7 @@ class DocumentInfo:
         readable form (see 7.9.4, “Dates”).
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["CreationDate"]
+            return self._document["XRef"]["Trailer"]["Info"]["CreationDate"]
         except:
             return None
 
@@ -62,7 +85,7 @@ class DocumentInfo:
         most recently modified, in human-readable form (see 7.9.4, “Dates”).
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["ModDate"]
+            return self._document["XRef"]["Trailer"]["Info"]["ModDate"]
         except:
             return None
 
@@ -71,7 +94,7 @@ class DocumentInfo:
         (Optional; PDF 1.1) The subject of the document.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["Subject"]
+            return self._document["XRef"]["Trailer"]["Info"]["Subject"]
         except:
             return None
 
@@ -80,7 +103,7 @@ class DocumentInfo:
         (Optional; PDF 1.1) Keywords associated with the document.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["Keywords"]
+            return self._document["XRef"]["Trailer"]["Info"]["Keywords"]
         except:
             return None
 
@@ -90,21 +113,21 @@ class DocumentInfo:
         the name of the conforming product that converted it to PDF.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Info"]["Producer"]
+            return self._document["XRef"]["Trailer"]["Info"]["Producer"]
         except:
             return None
 
-    def get_number_of_pages(self) -> Optional[int]:
+    def get_number_of_pages(self) -> Optional[Decimal]:
         """
         This function returns the number of pages in the Document
         """
-        return self.document["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
+        return self._document["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
 
     def get_file_size(self) -> Optional[int]:
         """
         This function returns the filesize (in bytes) of this Document
         """
-        return int(self.document("FileSize"))
+        return int(self._document("FileSize"))
 
     def get_ids(self) -> Optional[List[str]]:
         """
@@ -118,11 +141,11 @@ class DocumentInfo:
         of the correct file has been found.
         """
         if (
-            "XRef" in self.document
-            and "Trailer" in self.document["XRef"]
-            and "ID" in self.document["XRef"]["Trailer"]
+            "XRef" in self._document
+            and "Trailer" in self._document["XRef"]
+            and "ID" in self._document["XRef"]["Trailer"]
         ):
-            return self.document["XRef"]["Trailer"]["ID"]
+            return self._document["XRef"]["Trailer"]["ID"]
         return None
 
     def get_language(self) -> Optional[str]:
@@ -134,7 +157,7 @@ class DocumentInfo:
         this entry is absent, the language shall be considered unknown.
         """
         try:
-            return self.document["XRef"]["Trailer"]["Root"]["Lang"]
+            return self._document["XRef"]["Trailer"]["Root"]["Lang"]
         except:
             return None
 
@@ -154,7 +177,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}CreateDate")[0]
                 .text
             )
@@ -169,7 +192,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}ModifyDate")[0]
                 .text
             )
@@ -183,7 +206,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}MetadataDate")[0]
                 .text
             )
@@ -196,7 +219,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}title")[0]
                 .text
             )
@@ -211,7 +234,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}creator")[0]
                 .text
             )
@@ -224,7 +247,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}publisher")[0]
                 .text
             )
@@ -238,7 +261,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}InstanceID")[0]
                 .text
             )
@@ -251,7 +274,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}OriginalDocumentID")[0]
                 .text
             )
@@ -265,7 +288,7 @@ class XMPDocumentInfo(DocumentInfo):
         """
         try:
             return (
-                self.document["XRef"]["Trailer"]["Root"]["Metadata"]
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
                 .findall(".//{*}DocumentID")[0]
                 .text
             )

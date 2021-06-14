@@ -8,13 +8,9 @@ import logging
 import xml.etree.ElementTree as ET
 from typing import Optional
 
-from ptext.io.read.types import (
-    AnyPDFType,
-    Stream,
-    Reference,
-    Name,
-)
+from ptext.io.read.types import AnyPDFType
 from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Name, Reference, Stream
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerContext,

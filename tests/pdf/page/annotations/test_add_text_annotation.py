@@ -6,14 +6,16 @@ from pathlib import Path
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
-from ptext.pdf.page.page import TextAnnotationIconType, Page
+from ptext.pdf.page.page import Page, TextAnnotationIconType
 from ptext.pdf.pdf import PDF
 from ptext.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+
+unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestAddTextAnnotation(unittest.TestCase):

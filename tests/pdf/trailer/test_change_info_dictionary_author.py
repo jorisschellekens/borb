@@ -2,14 +2,16 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from ptext.io.read.types import String, Name, Dictionary, Decimal
+from ptext.io.read.types import Decimal, Dictionary, Name, String
 from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
+
+unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestChangeInfoDictionaryAuthor(unittest.TestCase):

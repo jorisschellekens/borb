@@ -16,11 +16,12 @@ Today, the font is a digital file.
 import copy
 import io
 import typing
+from decimal import Decimal
 
 from ptext.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from ptext.io.read.tokenize.low_level_tokenizer import Token, TokenType
 from ptext.io.read.types import Decimal as pDecimal
-from ptext.io.read.types import Dictionary, Name, List, Decimal
+from ptext.io.read.types import Dictionary, List, Name
 
 
 class Font(Dictionary):

@@ -8,7 +8,7 @@
 import typing
 
 from ptext.io.filter.stream_decode_util import decode_stream
-from ptext.io.read.types import Dictionary, List, Name, Decimal, Stream
+from ptext.io.read.types import Decimal, Dictionary, List, Name, Stream
 from ptext.pdf.document import Document
 
 

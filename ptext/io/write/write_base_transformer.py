@@ -58,17 +58,12 @@ class WriteBaseTransformer:
         self, handler: "WriteBaseTransformer"  # type: ignore [name-defined]
     ) -> "WriteBaseTransformer":  # type: ignore [name-defined]
         """
-        <<<<<<< HEAD
-                This function allows you to add BaseWriteTransformer implementations to handle specific
-                cases, such as a BaseWriteTransformer specifically designed to persist Image objects.
-        =======
-                This function adds a BaseWriteTransformer to this WriteBaseTransformer.
-                Children of this WriteBaseTransformer will be called in turn, and their
-                `can_be_transformed` method should return True if the child WriteBaseTransformer
-                can handle the object to be transformed. The first child to return True will have its
-                `transform` method called.
-        >>>>>>> feature/font-improvements
-                This function returns self.
+        This function adds a BaseWriteTransformer to this WriteBaseTransformer.
+        Children of this WriteBaseTransformer will be called in turn, and their
+        `can_be_transformed` method should return True if the child WriteBaseTransformer
+        can handle the object to be transformed. The first child to return True will have its
+        `transform` method called.
+        This function returns self.
         """
         self.handlers.append(handler)
         handler.parent = self
@@ -76,15 +71,10 @@ class WriteBaseTransformer:
 
     def get_root_transformer(self) -> "WriteBaseTransformer":  # type: ignore [name-defined]
         """
-        <<<<<<< HEAD
-                This function returns the WriteBaseTransformer at the root of this WriteBaseTransformer hierarchy.
-                This allows child WriteBaseTransformer implementations to call the root transformer.
-                This is useful for instance when transforming a dictionary, where each key/value would then be transformed
-                by delegating the call to the root WriteBaseTransformer.
-        =======
-                This function gets the root WriteBaseTransformer of this WriteBaseTransformer.
-                WriteBaseTransformer implementations can be nested to allow a facade design pattern.
-        >>>>>>> feature/font-improvements
+        This function returns the WriteBaseTransformer at the root of this WriteBaseTransformer hierarchy.
+        This allows child WriteBaseTransformer implementations to call the root transformer.
+        This is useful for instance when transforming a dictionary, where each key/value would then be transformed
+        by delegating the call to the root WriteBaseTransformer.
         """
         p = self
         while p.parent is not None:

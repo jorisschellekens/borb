@@ -6,22 +6,16 @@
 """
 import io
 import typing
-from typing import Optional, List, Any, Union, Dict
+from typing import Any, Dict, List, Optional, Union
 
-from ptext.io.read.object.read_dictionary_transformer import (
-    ReadDictionaryTransformer,
-)
+from ptext.io.read.object.read_dictionary_transformer import ReadDictionaryTransformer
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import (
-    Dictionary,
-    AnyPDFType,
-    Decimal,
-    Name,
-)
+from ptext.io.read.types import AnyPDFType, Decimal, Dictionary
 from ptext.io.read.types import List as pList
+from ptext.io.read.types import Name
 from ptext.pdf.canvas.event.event_listener import EventListener
 from ptext.pdf.page.page import Page
 

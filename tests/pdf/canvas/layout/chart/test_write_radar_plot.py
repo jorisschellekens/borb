@@ -5,11 +5,10 @@ from pathlib import Path
 
 import matplotlib.pyplot as MatPlotLibPlot
 import pandas as pd
-
 from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.layout.chart import Chart
+from ptext.pdf.canvas.layout.image.chart import Chart
 from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.paragraph import Paragraph
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page

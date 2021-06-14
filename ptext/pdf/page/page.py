@@ -12,8 +12,9 @@ import zlib
 from decimal import Decimal
 from typing import Optional, Tuple
 
-from ptext.io.read.types import Decimal as pDecimal, Stream
-from ptext.io.read.types import Dictionary, Name, List, String, Boolean
+from ptext.io.read.types import Boolean
+from ptext.io.read.types import Decimal as pDecimal
+from ptext.io.read.types import Dictionary, List, Name, Stream, String
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.color.color import Color, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle

@@ -13,10 +13,10 @@ from typing import Any, Optional
 from ptext.io.read.types import (
     AnyPDFType,
     Dictionary,
-    String,
-    Name,
-    List,
     HexadecimalString,
+    List,
+    Name,
+    String,
 )
 from ptext.io.write.write_base_transformer import (
     WriteBaseTransformer,
