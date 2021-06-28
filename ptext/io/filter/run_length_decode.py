@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Decompresses data encoded using a byte-oriented run-length
-    encoding algorithm, reproducing the original text or binary data
-    (typically monochrome image data, or any data that contains
-    frequent long runs of a single byte value).
+Decompresses data encoded using a byte-oriented run-length
+encoding algorithm, reproducing the original text or binary data
+(typically monochrome image data, or any data that contains
+frequent long runs of a single byte value).
 """
 
 

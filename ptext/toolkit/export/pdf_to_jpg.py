@@ -31,13 +31,13 @@ class PDFToJPG(PDFToSVG):
             default_page_width=default_page_width,
             default_page_height=default_page_height,
         )
-        self.image_per_page: typing.Dict[Decimal, PILImage] = {}
+        self._jpg_image_per_page: typing.Dict[int, PILImage] = {}
 
         # figure out fonts
-        self.regular_font: typing.Optional[Path] = None
-        self.bold_font: typing.Optional[Path] = None
-        self.italic_font: typing.Optional[Path] = None
-        self.bold_italic_font: typing.Optional[Path] = None
+        self._regular_font: typing.Optional[Path] = None
+        self._bold_font: typing.Optional[Path] = None
+        self._italic_font: typing.Optional[Path] = None
+        self._bold_italic_font: typing.Optional[Path] = None
         self._find_font_families()
 
     def _find_font_families(self):
@@ -70,23 +70,23 @@ class PDFToJPG(PDFToSVG):
                 ]
             )
             if all_fonts_present:
-                self.regular_font = [
+                self._regular_font = [
                     x for x in ttf_font_files if x.name.endswith(c + "-Regular.ttf")
                 ][0]
-                self.bold_font = [
+                self._bold_font = [
                     x for x in ttf_font_files if x.name.endswith(c + "-Bold.ttf")
                 ][0]
-                self.italic_font = [
+                self._italic_font = [
                     x for x in ttf_font_files if x.name.endswith(c + "-Italic.ttf")
                 ][0]
-                self.bold_italic_font = [
+                self._bold_italic_font = [
                     x for x in ttf_font_files if x.name.endswith(c + "-BoldItalic.ttf")
                 ][0]
 
     def _begin_page(
         self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
     ) -> None:
-        self.image_per_page[page_nr] = PILImage.new(
+        self._jpg_image_per_page[int(page_nr)] = PILImage.new(
             "RGB", (page_width, page_height), color=(255, 255, 255)
         )
 
@@ -107,25 +107,25 @@ class PDFToJPG(PDFToSVG):
         if len(text.strip()) == 0:
             return
 
-        assert self.bold_font
-        assert self.bold_italic_font
-        assert self.italic_font
-        assert self.regular_font
+        assert self._bold_font
+        assert self._bold_italic_font
+        assert self._italic_font
+        assert self._regular_font
 
-        font_path = self.regular_font
+        font_path = self._regular_font
         if bold and italic:
-            font_path = self.bold_italic_font
+            font_path = self._bold_italic_font
         elif bold:
-            font_path = self.bold_font
+            font_path = self._bold_font
         elif italic:
-            font_path = self.italic_font
+            font_path = self._italic_font
 
         # instantiate font
         font = ImageFont.truetype(str(font_path), int(font_size))
 
         # draw text
-        assert self.image_per_page.get(page_nr) is not None
-        draw = ImageDraw.Draw(self.image_per_page[page_nr])
+        assert self._jpg_image_per_page.get(int(page_nr)) is not None
+        draw = ImageDraw.Draw(self._jpg_image_per_page[int(page_nr)])
         draw.text(
             (x, page_height - y),
             text,
@@ -148,7 +148,7 @@ class PDFToJPG(PDFToSVG):
         image_height: Decimal,
         image: PILImage,
     ):
-        page_image = self.image_per_page.get(page_nr)
+        page_image = self._jpg_image_per_page.get(int(page_nr))
         assert page_image is not None
 
         # resize
@@ -156,3 +156,10 @@ class PDFToJPG(PDFToSVG):
 
         # paste
         page_image.paste(image, (int(x), int(page_height - y - image_height)))
+
+    def get_image(self, page_nr: int) -> PILImage:
+        """
+        This function returns the PIL.Image for a given page_nr
+        """
+        assert page_nr in self._jpg_image_per_page
+        return self._jpg_image_per_page[page_nr]

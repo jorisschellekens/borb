@@ -28,13 +28,13 @@ class ColorSpectrumExtraction(EventListener):
         """
         Constructs a new ColorSpectrumExtraction
         """
-        self.maximum_number_of_colors = 64
+        self._maximum_number_of_colors = 64
         if maximum_number_of_colors is not None:
-            self.maximum_number_of_colors = maximum_number_of_colors
-        self.colors_per_page: typing.Dict[
+            self._maximum_number_of_colors = maximum_number_of_colors
+        self._colors_per_page: typing.Dict[
             int, typing.Dict[typing.Tuple[int, int, int], Decimal]
         ] = {}
-        self.current_page = -1
+        self._current_page: int = -1
 
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
@@ -45,14 +45,14 @@ class ColorSpectrumExtraction(EventListener):
             self._render_image(event)
 
     def _begin_page(self, page: Page):
-        self.current_page += 1
-        self.colors_per_page[self.current_page] = {}
+        self._current_page += 1
+        self._colors_per_page[self._current_page] = {}
 
     def _render_text(self, event: ChunkOfTextRenderEvent):
         assert event is not None
         bb: typing.Optional[Rectangle] = event.get_bounding_box()
         s: Decimal = Decimal(0) if bb is None else (bb.width * bb.height)
-        c: RGBColor = event.font_color.to_rgb()
+        c: RGBColor = event._font_color.to_rgb()
         self._register_color(s, c)
 
     def _render_image(self, event: ImageRenderEvent):
@@ -93,7 +93,7 @@ class ColorSpectrumExtraction(EventListener):
         return RGBColor(Decimal(0), Decimal(0), Decimal(0))
 
     def _register_color(self, amount: Decimal, color: RGBColor):
-        mod_step = int(256 / (self.maximum_number_of_colors ** (1.0 / 3)))
+        mod_step = int(256 / (self._maximum_number_of_colors ** (1.0 / 3)))
         r = int(color.to_rgb().red * 255)
         r = r - r % mod_step
 
@@ -104,10 +104,10 @@ class ColorSpectrumExtraction(EventListener):
         b = b - b % mod_step
 
         t = (r, g, b)
-        if t not in self.colors_per_page[self.current_page]:
-            self.colors_per_page[self.current_page][t] = amount
+        if t not in self._colors_per_page[self._current_page]:
+            self._colors_per_page[self._current_page][t] = amount
         else:
-            self.colors_per_page[self.current_page][t] += amount
+            self._colors_per_page[self._current_page][t] += amount
 
     def get_colors_per_page(
         self, page_number: int, limit: Optional[int] = None
@@ -120,7 +120,7 @@ class ColorSpectrumExtraction(EventListener):
         tmp = sorted(
             [
                 (RGBColor(Decimal(k[0]), Decimal(k[1]), Decimal(k[2])), v)
-                for k, v in self.colors_per_page[page_number].items()
+                for k, v in self._colors_per_page[page_number].items()
             ],
             key=lambda x: x[1],
             reverse=True,

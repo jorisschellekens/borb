@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing String objects
+This implementation of WriteBaseTransformer is responsible for writing String objects
 """
 from typing import Optional
 
@@ -32,7 +32,9 @@ class WriteStringTransformer(WriteBaseTransformer):
         """
         This method writes a String object to a byte stream
         """
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write String objects."
         assert context.destination is not None
         assert isinstance(object_to_transform, String)
 

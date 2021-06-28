@@ -29,7 +29,7 @@ class StreamXREF(XREF):
 
     def __init__(self, initial_offset: Optional[int] = None):
         super().__init__()
-        self.initial_offset = initial_offset
+        self._initial_offset = initial_offset
 
     def read(
         self,

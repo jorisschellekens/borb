@@ -2,13 +2,15 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from ptext.pdf.canvas.layout.layout_element import Alignment
-
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HSVColor, X11Color
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.base_table import TableCell
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table, TableCell
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -60,7 +62,7 @@ class TestWriteTableWithRainbowBackground(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=20, number_of_columns=20)
+        t = Table(number_of_rows=20, number_of_columns=20, margin_top=Decimal(5))
         colors = [
             HSVColor(Decimal(x / 360), Decimal(1), Decimal(1))
             for x in range(0, 360, int(360 / 20))

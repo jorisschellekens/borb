@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading the XRef object
+This implementation of ReadBaseTransformer is responsible for reading the XRef object
 """
 import io
 import os
@@ -158,7 +158,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
             bts = bts[index_of_pdf_comment:end_of_file]
             # reset values in context
             context.source = io.BytesIO(bts)
-            context.tokenizer.io_source = context.source
+            context.tokenizer._io_source = context.source
 
     @staticmethod
     def _check_header(context: ReadTransformerContext) -> None:
@@ -177,7 +177,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
             if t is not None
         ]
         assert len(arr) > 0
-        assert any([t.text.startswith("%PDF") for t in arr])
+        assert any([t.get_text().startswith("%PDF") for t in arr])
 
     def _read_xref(
         self, context: ReadTransformerContext, initial_offset: Optional[int] = None

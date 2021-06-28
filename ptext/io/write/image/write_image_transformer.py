@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing Image objects
+This implementation of WriteBaseTransformer is responsible for writing Image objects
 """
 import io
+import typing
 from typing import Optional
 
 from PIL import Image as PILImage  # type: ignore [import]
@@ -29,12 +30,16 @@ class WriteImageTransformer(WriteBaseTransformer):
         """
         return isinstance(any, PILImage.Image)
 
-    def _convert_png_to_jpg(self, image: PILImage.Image) -> PILImage.Image:
+    def _convert_to_rgb_mode(self, image: PILImage.Image) -> PILImage.Image:
+
+        # build image_out
+        image_out: PILImage.Image = image
 
         # omit transparency
-        fill_color = (255, 255, 255)  # new background color
-        image_out = image.convert("RGBA")  # it had mode P after DL it from OP
-        if image_out.mode in ("RGBA", "LA"):
+        if image_out.mode == "P":
+            image_out = image_out.convert("RGBA")
+        if image_out.mode in ["RGBA", "LA"]:
+            fill_color = (255, 255, 255)  # new background color
             background = PILImage.new(image_out.mode[:-1], image_out.size, fill_color)
             background.paste(image_out, image_out.split()[-1])  # omit transparency
             image_out = background
@@ -57,15 +62,21 @@ class WriteImageTransformer(WriteBaseTransformer):
         """
         This method writes an Image to a byte stream
         """
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write Image objects."
         assert context.destination is not None
         assert isinstance(object_to_transform, PILImage.Image)
 
         # get image bytes
-        contents = None
+        contents: typing.Optional[bytes] = None
         filter_name: Optional[Name] = None
         try:
             with io.BytesIO() as output:
+                assert isinstance(object_to_transform, PILImage.Image)
+                object_to_transform = self._convert_to_rgb_mode(
+                    object_to_transform
+                )  # TODO: find a better solution than converting everything to mode RGB
                 assert isinstance(object_to_transform, PILImage.Image)
                 object_to_transform.save(output, format="JPEG")
                 contents = output.getvalue()
@@ -73,17 +84,7 @@ class WriteImageTransformer(WriteBaseTransformer):
         except Exception as e:
             pass
 
-        if contents is None:
-            try:
-                # TODO : properly store PNG (instead of converting it)
-                with io.BytesIO() as output:
-                    object_to_transform = self._convert_png_to_jpg(object_to_transform)
-                    assert isinstance(object_to_transform, PILImage.Image)
-                    object_to_transform.save(output, format="JPEG")
-                    contents = output.getvalue()
-                filter_name = Name("DCTDecode")
-            except Exception as e:
-                pass
+        # assert that the image has some byte-representation
         assert contents is not None
 
         # build corresponding Stream (XObject)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This class represents a line segment
+This class represents a line segment
 """
 from decimal import Decimal
 from math import sqrt

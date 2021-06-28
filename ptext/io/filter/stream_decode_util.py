@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This function decodes a Stream, applying the filters specified in the Filter entry
-    of its stream dictionary
+This function decodes a Stream, applying the filters specified in the Filter entry
+of its stream dictionary
 """
 import typing
 
@@ -19,8 +19,10 @@ def decode_stream(s: Stream) -> Stream:
     This function decodes a Stream, applying the filters specified in the Filter entry
     of its stream dictionary
     """
-    assert isinstance(s, Stream)
-    assert "Bytes" in s
+    assert isinstance(s, Stream), "decode_stream only works on Stream objects"
+    assert (
+        "Bytes" in s
+    ), "decode_stream only works on Stream objects with a `Bytes` key."
 
     # determine filter(s) to apply
     filters: typing.List[str] = []

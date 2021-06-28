@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of BaseTransformer converts a PDFArray to a List
+This implementation of BaseTransformer converts a PDFArray to a List
 """
 import io
 import typing

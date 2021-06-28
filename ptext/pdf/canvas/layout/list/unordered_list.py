@@ -32,6 +32,10 @@ class UnorderedList(List):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        margin_top: Decimal = None,
+        margin_right: Decimal = None,
+        margin_bottom: Decimal = None,
+        margin_left: Decimal = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
@@ -46,6 +50,10 @@ class UnorderedList(List):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            margin_top=margin_top,
+            margin_right=margin_right,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
             background_color=background_color,
             parent=parent,
         )
@@ -53,55 +61,21 @@ class UnorderedList(List):
     def _determine_level(self, layout_element: LayoutElement) -> int:
         level = 0
         e = layout_element
-        while e.parent is not None:
+        while e._parent is not None:
             if isinstance(e, UnorderedList):
                 level += 1
-            e = e.parent
+            e = e._parent
         return level
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-        last_item_bottom: Decimal = bounding_box.y + bounding_box.height
-        bullet_margin: Decimal = Decimal(20)
-        for i in self.items:
-            # bullet character
-            ChunkOfText(
-                text=["●", "❍", "✦"][self._determine_level(i) % 3],
-                font_size=self._get_first_item_font_size(),
-                font_color=X11Color("Black"),
-                font="Zapfdingbats",
-            ).layout(
-                page=page,
-                bounding_box=Rectangle(
-                    bounding_box.x,
-                    bounding_box.y,
-                    bullet_margin,
-                    last_item_bottom - bounding_box.y,
-                ),
-            )
-            # content
-            item_rect = i.layout(
-                page,
-                bounding_box=Rectangle(
-                    bounding_box.x + bullet_margin,
-                    bounding_box.y,
-                    bounding_box.width - bullet_margin,
-                    last_item_bottom - bounding_box.y,
-                ),
-            )
-            # set new last_item_bottom
-            last_item_bottom = item_rect.y
+    def _get_bullet_text(self, item_index: int, item: LayoutElement) -> str:
+        return ["●", "❍", "✦"][self._determine_level(item) % 3]
 
-        layout_rect = Rectangle(
-            bounding_box.x,
-            last_item_bottom,
-            bounding_box.width,
-            bounding_box.y + bounding_box.height - last_item_bottom,
+    def _get_bullet_layout_element(
+        self, item_index: int, item: LayoutElement
+    ) -> LayoutElement:
+        return ChunkOfText(
+            text=self._get_bullet_text(item_index, item),
+            font_size=self.get_font_size(),
+            font_color=X11Color("Black"),
+            font="Zapfdingbats",
         )
-
-        # set bounding box
-        self.set_bounding_box(layout_rect)
-
-        # return
-        return layout_rect

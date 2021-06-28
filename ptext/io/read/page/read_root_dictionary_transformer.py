@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading the \Catalog object
+This implementation of ReadBaseTransformer is responsible for reading the \Catalog object
 """
 import io
 import typing
@@ -55,7 +55,7 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
 
         # convert using Dictionary transformer
         transformed_root_dictionary: Optional[Dictionary] = None
-        for t in self.get_root_transformer().children:
+        for t in self.get_root_transformer().get_children():
             if isinstance(t, ReadDictionaryTransformer):
                 transformed_root_dictionary = t.transform(
                     object_to_transform, parent_object, context, []

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing Dictionary objects
+This implementation of WriteBaseTransformer is responsible for writing Dictionary objects
 """
 import logging
 import typing
@@ -39,7 +39,9 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
         This method writes a Dictionary to a byte stream
         """
         assert isinstance(object_to_transform, Dictionary)
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write Dictionary objects."
         assert context.destination is not None
         assert context.destination
 

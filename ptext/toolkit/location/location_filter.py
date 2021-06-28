@@ -20,14 +20,14 @@ class LocationFilter(EventListener):
     """
 
     def __init__(self, rectangle: Rectangle):
-        self.rectangle = rectangle
-        self.listeners: typing.List[EventListener] = []
+        self._rectangle = rectangle
+        self._listeners: typing.List[EventListener] = []
 
     def add_listener(self, listener: "EventListener") -> "LocationFilter":
         """
         This methods add an EventListener to this (meta)-EventListener
         """
-        self.listeners.append(listener)
+        self._listeners.append(listener)
         return self
 
     def _event_occurred(self, event: "Event") -> None:
@@ -35,24 +35,26 @@ class LocationFilter(EventListener):
         if isinstance(event, ChunkOfTextRenderEvent):
             bb: typing.Optional[Rectangle] = event.get_bounding_box()
             assert bb is not None
-            if self.rectangle.x < bb.x < (
-                self.rectangle.x + self.rectangle.width
-            ) and self.rectangle.y < bb.y < (self.rectangle.y + self.rectangle.height):
-                for l in self.listeners:
+            if self._rectangle.x < bb.x < (
+                self._rectangle.x + self._rectangle.width
+            ) and self._rectangle.y < bb.y < (
+                self._rectangle.y + self._rectangle.height
+            ):
+                for l in self._listeners:
                     l._event_occurred(event)
             return
 
         # filter ImageRenderEvent
         if isinstance(event, ImageRenderEvent):
-            if self.rectangle.get_x() < event.get_x() < (
-                self.rectangle.get_x() + self.rectangle.get_width()
-            ) and self.rectangle.get_y() < event.get_y() < (
-                self.rectangle.get_y() + self.rectangle.get_height()
+            if self._rectangle.get_x() < event.get_x() < (
+                self._rectangle.get_x() + self._rectangle.get_width()
+            ) and self._rectangle.get_y() < event.get_y() < (
+                self._rectangle.get_y() + self._rectangle.get_height()
             ):
-                for l in self.listeners:
+                for l in self._listeners:
                     l._event_occurred(event)
             return
 
         # default
-        for l in self.listeners:
+        for l in self._listeners:
             l._event_occurred(event)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading CCITT fax images
+This implementation of ReadBaseTransformer is responsible for reading CCITT fax images
 """
 import io
 import logging

@@ -39,6 +39,7 @@ class PDFMatch:
         self._page_nr: int = page_nr
         self._glyph_bounding_boxes: typing.List["Rectangle"] = glyph_bounding_boxes
         self._re_match: re.Match = re_match
+        # these fields are kept public to align with the existing python re.match object
         self.pos = self._re_match.pos
         self.endpos = self._re_match.endpos
         self.lastindex = self._re_match.lastindex
@@ -161,11 +162,13 @@ class RegularExpressionTextExtraction(EventListener):
     """
 
     def __init__(self, regular_expression):
-        self.regular_expression = regular_expression
-        self.text_render_info_events_per_page = {}
-        self.matches_per_page: typing.Dict[int, typing.List[PDFMatch]] = {}
-        self.text_per_page = {}
-        self.current_page = -1
+        self._regular_expression = regular_expression
+        self._text_render_info_events_per_page: typing.Dict[
+            int, typing.List[ChunkOfTextRenderEvent]
+        ] = {}
+        self._matches_per_page: typing.Dict[int, typing.List[PDFMatch]] = {}
+        self._text_per_page: typing.Dict[int, str] = {}
+        self._current_page: int = -1
 
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
@@ -175,36 +178,30 @@ class RegularExpressionTextExtraction(EventListener):
         if isinstance(event, EndPageEvent):
             self._end_page(event.get_page())
 
-    def get_text_per_page(self, page_nr: int) -> str:
-        """
-        This function returns the text on a given page
-        """
-        return self.text_per_page[page_nr] if page_nr in self.text_per_page else ""
-
     def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
 
         # init if needed
-        if self.current_page not in self.text_render_info_events_per_page:
-            self.text_render_info_events_per_page[self.current_page] = []
+        if self._current_page not in self._text_render_info_events_per_page:
+            self._text_render_info_events_per_page[self._current_page] = []
 
         # append TextRenderInfo
         for e in text_render_info.split_on_glyphs():
-            self.text_render_info_events_per_page[self.current_page].append(e)
+            self._text_render_info_events_per_page[self._current_page].append(e)
 
     def _begin_page(self, page: Page):
-        self.current_page += 1
+        self._current_page += 1
 
     def _end_page(self, page: Page):
 
         # get ChunkOfTextRenderEvent objects on page
         tris: typing.List[ChunkOfTextRenderEvent] = (
-            self.text_render_info_events_per_page[self.current_page]
-            if self.current_page in self.text_render_info_events_per_page
+            self._text_render_info_events_per_page[self._current_page]
+            if self._current_page in self._text_render_info_events_per_page
             else []
         )
 
         # remove no-op
-        tris = [x for x in tris if len(x.text.replace(" ", "")) != 0]
+        tris = [x for x in tris if len(x.get_text().replace(" ", "")) != 0]
 
         # skip empty
         if len(tris) == 0:
@@ -231,7 +228,7 @@ class RegularExpressionTextExtraction(EventListener):
                 if text.endswith(" "):
                     text = text[0:-1]
                 text += "\n"
-                text += t.text
+                text += t.get_text()
                 last_baseline_right = (
                     chunk_of_text_bounding_box.get_x()
                     + chunk_of_text_bounding_box.get_width()
@@ -241,8 +238,8 @@ class RegularExpressionTextExtraction(EventListener):
                 continue
 
             # check text
-            if t.text.startswith(" ") or text.endswith(" "):
-                text += t.text
+            if t.get_text().startswith(" ") or text.endswith(" "):
+                text += t.get_text()
                 last_baseline_right = (
                     chunk_of_text_bounding_box.get_x()
                     + chunk_of_text_bounding_box.get_width()
@@ -256,7 +253,7 @@ class RegularExpressionTextExtraction(EventListener):
             text += " " if (space_width * Decimal(0.90) < delta) else ""
 
             # normal append
-            text += t.text
+            text += t.get_text()
             last_baseline_right = (
                 chunk_of_text_bounding_box.get_x()
                 + chunk_of_text_bounding_box.get_width()
@@ -265,25 +262,25 @@ class RegularExpressionTextExtraction(EventListener):
             continue
 
         # attempt to match
-        for m in re.finditer(self.regular_expression, text):
+        for m in re.finditer(self._regular_expression, text):
             tri_start_index = len(
                 [x for x in poss if x <= m.start()]
             )  # here we use '<=' because poss contains the number of characters we have seen at position x, with x included
             tri_stop_index = len([x for x in poss if x < m.end()])
 
             # set up list if we don't have information yet for this Page
-            if self.current_page not in self.matches_per_page:
-                self.matches_per_page[self.current_page] = []
+            if self._current_page not in self._matches_per_page:
+                self._matches_per_page[self._current_page] = []
 
             # extend collection
-            self.matches_per_page[self.current_page].append(
+            self._matches_per_page[self._current_page].append(
                 PDFMatch(
                     m,
                     [
-                        x.get_bounding_box()
+                        x.get_bounding_box()  # type: ignore [misc]
                         for x in tris[tri_start_index : (tri_stop_index + 1)]
                     ],
-                    self.current_page,
+                    self._current_page,
                 )
             )
 
@@ -291,6 +288,12 @@ class RegularExpressionTextExtraction(EventListener):
         """
         This function returns a typing.List[PDFMatch] matching the regular expression, on a given page
         """
-        if page_number not in self.matches_per_page:
+        if page_number not in self._matches_per_page:
             return []
-        return self.matches_per_page[page_number]
+        return self._matches_per_page[page_number]
+
+    def get_text(self, page_nr: int) -> str:
+        """
+        This function returns all text on a given page
+        """
+        return self._text_per_page[page_nr] if page_nr in self._text_per_page else ""

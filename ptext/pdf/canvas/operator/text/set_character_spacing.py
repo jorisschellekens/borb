@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    Set the character spacing, Tc , to charSpace, which shall be a number
-    expressed in unscaled text space units. Character spacing shall be used
-    by the Tj, TJ, and ' operators. Initial value: 0.
+Set the character spacing, Tc , to charSpace, which shall be a number
+expressed in unscaled text space units. Character spacing shall be used
+by the Tj, TJ, and ' operators. Initial value: 0.
 """
 from decimal import Decimal
 from typing import List

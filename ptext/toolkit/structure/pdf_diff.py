@@ -19,16 +19,16 @@ class PDFDiff:
     """
 
     def __init__(self, pdf_a: Document, pdf_b: Document):
-        self.document_a: Document = pdf_a
-        self.document_b: Document = pdf_b
-        self.already_compared: typing.List[int] = []
-        self.errors: typing.List[str] = []
+        self._document_a: Document = pdf_a
+        self._document_b: Document = pdf_b
+        self._already_compared: typing.List[int] = []
+        self._errors: typing.List[str] = []
 
     def compare(self) -> None:
         """
         This method compares the given PDF documents, logging any differences between them.
         """
-        self._compare(self.document_a, self.document_b, "", "")
+        self._compare(self._document_a, self._document_b, "", "")
 
     @staticmethod
     def _get_reference_or_none(obj) -> str:
@@ -41,16 +41,16 @@ class PDFDiff:
 
     def _log_difference(self, error_msg: str) -> None:
         print(error_msg)
-        self.errors.append(error_msg)
+        self._errors.append(error_msg)
 
     def _compare(self, a, b, path_to_a, path_to_b) -> None:
 
-        if id(a) in self.already_compared:
+        if id(a) in self._already_compared:
             return
-        if id(b) in self.already_compared:
+        if id(b) in self._already_compared:
             return
-        self.already_compared.append(id(a))
-        self.already_compared.append(id(b))
+        self._already_compared.append(id(a))
+        self._already_compared.append(id(b))
 
         # check type
         if a.__class__.__name__ != b.__class__.__name__:
@@ -89,14 +89,14 @@ class PDFDiff:
             dba: bytes = a["DecodedBytes"]
             dbb: bytes = b["DecodedBytes"]
             if len(dba) != len(dbb):
-                self.errors.append(
+                self._errors.append(
                     "Stream Length mismatch : %s %d <--> %s %d"
                     % (path_to_a + ref_a, len(a), path_to_b + ref_b, len(b))
                 )
             else:
                 for i in range(0, len(dba)):
                     if dba[i] != dbb[i]:
-                        self.errors.append(
+                        self._errors.append(
                             "Stream content mismatch : %s %d <--> %s %d"
                             % (path_to_a + ref_a, i, path_to_b + ref_b, i)
                         )
@@ -129,7 +129,7 @@ class PDFDiff:
         # compare array
         if isinstance(a, List):
             if len(a) != len(b):
-                self.errors.append(
+                self._errors.append(
                     "Array Length mismatch : %s %d <--> %s %d"
                     % (path_to_a + ref_a, len(a), path_to_b + ref_b, len(b))
                 )

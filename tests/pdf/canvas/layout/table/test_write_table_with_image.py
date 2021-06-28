@@ -2,14 +2,14 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-import requests
-from PIL import Image as PILImage
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.image.image import Image
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -58,7 +58,7 @@ class TestWriteTableWithImage(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=3, number_of_columns=3)
+        t = Table(number_of_rows=3, number_of_columns=3, margin_top=Decimal(5))
 
         # fmt: off
         t.add(Paragraph(" ", respect_spaces_in_text=True))

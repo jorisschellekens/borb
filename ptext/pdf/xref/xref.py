@@ -35,8 +35,8 @@ class XREF(Dictionary):
 
     def __init__(self):
         super(XREF, self).__init__()
-        self.entries: typing.List[Reference] = []
-        self.cache: typing.Dict[int, Union[AnyPDFType, None]] = {}
+        self._entries: typing.List[Reference] = []
+        self._cache: typing.Dict[int, Union[AnyPDFType, None]] = {}
 
     ##
     ## LOWLEVEL IO
@@ -86,17 +86,17 @@ class XREF(Dictionary):
         src.seek(start_of_xref_token_byte_offset)
         token = tok.next_non_comment_token()
         assert token is not None
-        if token.text == "xref":
+        if token.get_text() == "xref":
             src.seek(start_of_xref_token_byte_offset)
             return
 
         # if we are at startxref, we are reading the XREF table backwards
         # and we need to go back to the start of XREF
-        if token.text == "startxref":
+        if token.get_text() == "startxref":
             token = tok.next_non_comment_token()
             assert token is not None
-            assert token.token_type == TokenType.NUMBER
-            start_of_xref_offset = int(token.text)
+            assert token.get_token_type() == TokenType.NUMBER
+            start_of_xref_offset = int(token.get_text())
             src.seek(start_of_xref_offset)
 
     ##
@@ -107,23 +107,23 @@ class XREF(Dictionary):
         """
         Add a new Reference to this XREF
         """
-        self.entries.append(r)
+        self._entries.append(r)
         return self
 
     def merge(self, other_xref: "XREF") -> "XREF":
         """
         Merge this XREF with another XREF
         """
-        for r in other_xref.entries:
+        for r in other_xref._entries:
             duplicate_entries = []
             if r.object_number is not None:
                 duplicate_entries = [
-                    x for x in self.entries if x.object_number == r.object_number
+                    x for x in self._entries if x.object_number == r.object_number
                 ]
             elif r.parent_stream_object_number is not None:
                 duplicate_entries = [
                     x
-                    for x in self.entries
+                    for x in self._entries
                     if x.parent_stream_object_number == r.parent_stream_object_number
                     and x.index_in_parent_stream == r.index_in_parent_stream
                 ]
@@ -147,7 +147,7 @@ class XREF(Dictionary):
             and indirect_reference.parent_stream_object_number is None
         ):
             assert indirect_reference.object_number is not None
-            cached_obj = self.cache.get(indirect_reference.object_number, None)
+            cached_obj = self._cache.get(indirect_reference.object_number, None)
             if cached_obj is not None:
                 return cached_obj
 
@@ -157,7 +157,7 @@ class XREF(Dictionary):
             indirect_reference, Decimal
         ):
             refs = [
-                x for x in self.entries if x.object_number == int(indirect_reference)
+                x for x in self._entries if x.object_number == int(indirect_reference)
             ]
             if len(refs) == 0:
                 return None
@@ -167,7 +167,7 @@ class XREF(Dictionary):
         elif isinstance(indirect_reference, Reference):
             refs = [
                 x
-                for x in self.entries
+                for x in self._entries
                 if x.object_number == indirect_reference.object_number
             ]
             if len(refs) == 0:
@@ -237,7 +237,7 @@ class XREF(Dictionary):
         # update cache
         if indirect_reference.parent_stream_object_number is None:
             assert indirect_reference.object_number is not None
-            self.cache[indirect_reference.object_number] = obj
+            self._cache[indirect_reference.object_number] = obj
 
         # return
         return obj
@@ -247,7 +247,7 @@ class XREF(Dictionary):
     ##
 
     def __len__(self):
-        return len(self.entries)
+        return len(self._entries)
 
     def __str__(self):
         out = "xref\n"

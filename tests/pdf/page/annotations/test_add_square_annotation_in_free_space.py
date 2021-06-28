@@ -34,11 +34,15 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         space_finder = FreeSpaceFinder(doc.get_page(0))
 
         # write (debug purposes)
-        for i in range(0, len(space_finder.grid)):
-            for j in range(0, len(space_finder.grid[i])):
-                if space_finder.grid[i][j]:
+        for i in range(0, space_finder.get_number_of_rows_in_grid()):
+            print(
+                "adding annotations, row %d / %d"
+                % (i + 1, space_finder.get_number_of_rows_in_grid())
+            )
+            for j in range(0, space_finder.get_number_of_columns_in_grid()):
+                if space_finder._grid[i][j]:
                     continue
-                w = Decimal(space_finder.grid_resolution)
+                w = Decimal(space_finder.get_grid_resolution())
                 x = Decimal(i) * w
                 y = Decimal(j) * w
                 doc.get_page(0).append_square_annotation(

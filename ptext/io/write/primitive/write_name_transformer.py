@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing Name objects
+This implementation of WriteBaseTransformer is responsible for writing Name objects
 """
 from typing import Optional
 

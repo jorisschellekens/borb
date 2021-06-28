@@ -57,7 +57,7 @@ class PlainTextXREF(XREF):
         # now we should be back to the start of XREF
         token = tok.next_non_comment_token()
         assert token is not None
-        assert token.text == "xref"
+        assert token.get_text() == "xref"
 
         # read xref sections
         while True:
@@ -84,36 +84,36 @@ class PlainTextXREF(XREF):
         tokens = [tok.next_non_comment_token() for _ in range(0, 2)]
         assert tokens[0] is not None
         assert tokens[1] is not None
-        if tokens[0].text in ["trailer", "startxref"]:
-            src.seek(tokens[0].byte_offset)
+        if tokens[0].get_text() in ["trailer", "startxref"]:
+            src.seek(tokens[0].get_byte_offset())
             return []
-        assert tokens[0].token_type == TokenType.NUMBER
-        assert tokens[1].token_type == TokenType.NUMBER
+        assert tokens[0].get_token_type() == TokenType.NUMBER
+        assert tokens[1].get_token_type() == TokenType.NUMBER
 
-        start_object_number = int(tokens[0].text)
-        number_of_objects = int(tokens[1].text)
+        start_object_number = int(tokens[0].get_text())
+        number_of_objects = int(tokens[1].get_text())
         indirect_references = []
 
         # read subsection
         for i in range(0, number_of_objects):
             tokens = [tok.next_non_comment_token() for _ in range(0, 3)]
             assert tokens[0] is not None
-            assert tokens[0].text not in ["trailer", "startxref"]
-            assert tokens[0].token_type == TokenType.NUMBER
+            assert tokens[0].get_text() not in ["trailer", "startxref"]
+            assert tokens[0].get_token_type() == TokenType.NUMBER
 
             assert tokens[1] is not None
-            assert tokens[1].token_type == TokenType.NUMBER
+            assert tokens[1].get_token_type() == TokenType.NUMBER
 
             assert tokens[2] is not None
-            assert tokens[2].token_type == TokenType.OTHER
-            assert tokens[2].text in ["f", "n"]
+            assert tokens[2].get_token_type() == TokenType.OTHER
+            assert tokens[2].get_text() in ["f", "n"]
 
             indirect_references.append(
                 Reference(
                     object_number=start_object_number + i,
-                    byte_offset=int(tokens[0].text),
-                    generation_number=int(tokens[1].text),
-                    is_in_use=(tokens[2].text == "n"),
+                    byte_offset=int(tokens[0].get_text()),
+                    generation_number=int(tokens[1].get_text()),
+                    is_in_use=(tokens[2].get_text() == "n"),
                 )
             )
 
@@ -129,13 +129,13 @@ class PlainTextXREF(XREF):
         # return None if there is no trailer
         token = tok.next_non_comment_token()
         assert token is not None
-        if token.text != "trailer":
+        if token.get_text() != "trailer":
             return Dictionary()
 
         # if there is a keyword "trailer" the next token should be TokenType.START_DICT
         token = tok.next_non_comment_token()
         assert token is not None
-        assert token.token_type == TokenType.START_DICT
+        assert token.get_token_type() == TokenType.START_DICT
 
         # go back 2 chars "<<"
         src.seek(-2, io.SEEK_CUR)
@@ -146,8 +146,8 @@ class PlainTextXREF(XREF):
         # process startxref
         token = tok.next_non_comment_token()
         assert token is not None
-        assert token.token_type == TokenType.OTHER
-        assert token.text == "startxref"
+        assert token.get_token_type() == TokenType.OTHER
+        assert token.get_text() == "startxref"
 
         # return
         return trailer_dict

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer acts as an aggregator for
-    its child transformers, allowing it to transform AnyPDFType
+This implementation of WriteBaseTransformer acts as an aggregator for
+its child transformers, allowing it to transform AnyPDFType
 """
 import io
 from typing import Optional, Union

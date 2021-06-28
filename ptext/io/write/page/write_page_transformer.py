@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible
-    for writing Dictionary objects of \Type \Page
+This implementation of WriteBaseTransformer is responsible
+for writing Dictionary objects of \Type \Page
 """
 import logging
 from typing import Optional
@@ -39,7 +39,9 @@ class WritePageTransformer(WriteDictionaryTransformer):
         This method writes a \Page Dictionary to a byte stream
         """
         assert isinstance(object_to_transform, Dictionary)
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write Page objects."
         assert context.root_object is not None
 
         assert isinstance(context.root_object, Document)

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Move to the start of the next line, offset from the start of the current line by
-    (tx , ty). t x and t y shall denote numbers expressed in unscaled text space
-    units. More precisely, this operator shall perform these assignments:
-    Tm = Tlm = [[1,0,0], [0,1,0],[tx,ty,1]] * Tlm
+Move to the start of the next line, offset from the start of the current line by
+(tx , ty). t x and t y shall denote numbers expressed in unscaled text space
+units. More precisely, this operator shall perform these assignments:
+Tm = Tlm = [[1,0,0], [0,1,0],[tx,ty,1]] * Tlm
 """
 import copy
 from decimal import Decimal

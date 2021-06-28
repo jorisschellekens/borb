@@ -5,6 +5,7 @@
     This Enum provides a convenient way of getting all common paper page sizes
 """
 import enum
+from decimal import Decimal
 
 
 class PageSize(enum.Enum):
@@ -12,83 +13,83 @@ class PageSize(enum.Enum):
     This Enum provides a convenient way of getting all common paper page sizes
     """
 
-    A0_PORTRAIT = (2384, 3370)
-    A0_LANDSCAPE = (3370, 2384)
+    A0_PORTRAIT = (Decimal(2384), Decimal(3370))
+    A0_LANDSCAPE = (Decimal(3370), Decimal(2384))
 
-    A1_PORTRAIT = (1684, 2384)
-    A1_LANDSCAPE = (2384, 1684)
+    A1_PORTRAIT = (Decimal(1684), Decimal(2384))
+    A1_LANDSCAPE = (Decimal(2384), Decimal(1684))
 
-    A2_PORTRAIT = (1190, 1684)
-    A2_LANDSCAPE = (1684, 1190)
+    A2_PORTRAIT = (Decimal(1190), Decimal(1684))
+    A2_LANDSCAPE = (Decimal(1684), Decimal(1190))
 
-    A3_PORTRAIT = (842, 1190)
-    A3_LANDSCAPE = (842, 1190)
+    A3_PORTRAIT = (Decimal(842), Decimal(1190))
+    A3_LANDSCAPE = (Decimal(842), Decimal(1190))
 
-    A4_PORTRAIT = (595, 842)
-    A4_LANDSCAPE = (842, 595)
+    A4_PORTRAIT = (Decimal(595), Decimal(842))
+    A4_LANDSCAPE = (Decimal(842), Decimal(595))
 
-    A5_PORTRAIT = (420, 595)
-    A5_LANDSCAPE = (595, 420)
+    A5_PORTRAIT = (Decimal(420), Decimal(595))
+    A5_LANDSCAPE = (Decimal(595), Decimal(420))
 
-    A6_PORTRAIT = (298, 420)
-    A6_LANDSCAPE = (420, 298)
+    A6_PORTRAIT = (Decimal(298), Decimal(420))
+    A6_LANDSCAPE = (Decimal(420), Decimal(298))
 
-    A7_PORTRAIT = (210, 298)
-    A7_LANDSCAPE = (298, 210)
+    A7_PORTRAIT = (Decimal(210), Decimal(298))
+    A7_LANDSCAPE = (Decimal(298), Decimal(210))
 
-    A8_PORTRAIT = (148, 210)
-    A8_LANDSCAPE = (210, 148)
+    A8_PORTRAIT = (Decimal(148), Decimal(210))
+    A8_LANDSCAPE = (Decimal(210), Decimal(148))
 
-    A9_PORTRAIT = (105, 547)
-    A9_LANDSCAPE = (547, 105)
+    A9_PORTRAIT = (Decimal(105), Decimal(547))
+    A9_LANDSCAPE = (Decimal(547), Decimal(105))
 
-    A10_PORTRAIT = (74, 105)
-    A10_LANDSCAPE = (105, 74)
+    A10_PORTRAIT = (Decimal(74), Decimal(105))
+    A10_LANDSCAPE = (Decimal(105), Decimal(74))
 
-    B0_PORTRAIT = (2834, 4008)
-    B0_LANDSCAPE = (4008, 2834)
+    B0_PORTRAIT = (Decimal(2834), Decimal(4008))
+    B0_LANDSCAPE = (Decimal(4008), Decimal(2834))
 
-    B1_PORTRAIT = (2004, 2834)
-    B1_LANDSCAPE = (2834, 2004)
+    B1_PORTRAIT = (Decimal(2004), Decimal(2834))
+    B1_LANDSCAPE = (Decimal(2834), Decimal(2004))
 
-    B2_PORTRAIT = (1417, 2004)
-    B2_LANDSCAPE = (2004, 1417)
+    B2_PORTRAIT = (Decimal(1417), Decimal(2004))
+    B2_LANDSCAPE = (Decimal(2004), Decimal(1417))
 
-    B3_PORTRAIT = (1000, 1417)
-    B3_LANDSCAPE = (1417, 1000)
+    B3_PORTRAIT = (Decimal(1000), Decimal(1417))
+    B3_LANDSCAPE = (Decimal(1417), Decimal(1000))
 
-    B4_PORTRAIT = (708, 1000)
-    B4_LANDSCAPE = (1000, 708)
+    B4_PORTRAIT = (Decimal(708), Decimal(1000))
+    B4_LANDSCAPE = (Decimal(1000), Decimal(708))
 
-    B5_PORTRAIT = (498, 708)
-    B5_LANDSCAPE = (708, 498)
+    B5_PORTRAIT = (Decimal(498), Decimal(708))
+    B5_LANDSCAPE = (Decimal(708), Decimal(498))
 
-    B6_PORTRAIT = (354, 498)
-    B6_LANDSCAPE = (498, 354)
+    B6_PORTRAIT = (Decimal(354), Decimal(498))
+    B6_LANDSCAPE = (Decimal(498), Decimal(354))
 
-    B7_PORTRAIT = (249, 354)
-    B7_LANDSCAPE = (354, 249)
+    B7_PORTRAIT = (Decimal(249), Decimal(354))
+    B7_LANDSCAPE = (Decimal(354), Decimal(249))
 
-    B8_PORTRAIT = (175, 249)
-    B8_LANDSCAPE = (249, 175)
+    B8_PORTRAIT = (Decimal(175), Decimal(249))
+    B8_LANDSCAPE = (Decimal(249), Decimal(175))
 
-    B9_PORTRAIT = (124, 175)
-    B9_LANDSCAPE = (175, 124)
+    B9_PORTRAIT = (Decimal(124), Decimal(175))
+    B9_LANDSCAPE = (Decimal(175), Decimal(124))
 
-    B10_PORTRAIT = (88, 124)
-    B10_LANDSCAPE = (124, 88)
+    B10_PORTRAIT = (Decimal(88), Decimal(124))
+    B10_LANDSCAPE = (Decimal(124), Decimal(88))
 
-    LETTER_PORTRAIT = (612, 792)
-    LETTER_LANDSCAPE = (792, 612)
+    LETTER_PORTRAIT = (Decimal(612), Decimal(792))
+    LETTER_LANDSCAPE = (Decimal(792), Decimal(612))
 
-    LEGAL_PORTRAIT = (612, 1008)
-    LEGAL_LANDSCAPE = (1008, 612)
+    LEGAL_PORTRAIT = (Decimal(612), Decimal(1008))
+    LEGAL_LANDSCAPE = (Decimal(1008), Decimal(612))
 
-    TABLOID_PORTRAIT = (792, 1224)
-    TABLOID_LANDSCAPE = (792, 1224)
+    TABLOID_PORTRAIT = (Decimal(792), Decimal(1224))
+    TABLOID_LANDSCAPE = (Decimal(792), Decimal(1224))
 
-    LEDGER_PORTRAIT = (1224, 792)
-    LEDGER_LANDSCAPE = (792, 1224)
+    LEDGER_PORTRAIT = (Decimal(1224), Decimal(792))
+    LEDGER_LANDSCAPE = (Decimal(792), Decimal(1224))
 
-    EXECUTIVE_PORTRAIT = (522, 756)
-    EXECUTIVE_LANDSCAPE = (756, 522)
+    EXECUTIVE_PORTRAIT = (Decimal(522), Decimal(756))
+    EXECUTIVE_LANDSCAPE = (Decimal(756), Decimal(522))

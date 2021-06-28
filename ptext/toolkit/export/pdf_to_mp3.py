@@ -34,27 +34,27 @@ class PDFToMP3(SimpleParagraphExtraction):
         super(PDFToMP3, self).__init__()
 
         # tts info
-        self.include_position = include_position
-        self.language = language
-        self.slow = slow
+        self._include_position = include_position
+        self._language = language
+        self._speak_slowly = slow
 
         # page info
-        self.text_to_speak_for_page: typing.Dict[int, str] = {}
+        self._text_to_speak_for_page: typing.Dict[int, str] = {}
 
     def _end_page(self, page: Page):
         super(PDFToMP3, self)._end_page(page)
-        self.text_to_speak_for_page[self.current_page_number] = "".join(
+        self._text_to_speak_for_page[self._current_page_number] = "".join(
             [
-                self._get_text_for_paragraph(p, i, self.current_page_number)
+                self._get_text_for_paragraph(p, i, self._current_page_number)
                 for i, p in enumerate(
-                    self.paragraphs_per_page[self.current_page_number]
+                    self._paragraphs_per_page[self._current_page_number]
                 )
             ]
         )
 
     def _get_text_for_x(self, bounding_box: Rectangle) -> str:
-        assert self.current_page
-        w = self.current_page.get_page_info().get_width()
+        assert self._current_page
+        w = self._current_page.get_page_info().get_width()
         assert w is not None
         xs: typing.List[Decimal] = [Decimal(0), w * Decimal(0.33), w * Decimal(0.66), w]
         x = bounding_box.x + bounding_box.width * Decimal(0.5)
@@ -67,8 +67,8 @@ class PDFToMP3(SimpleParagraphExtraction):
         return ""
 
     def _get_text_for_y(self, bounding_box: Rectangle) -> str:
-        assert self.current_page
-        h = self.current_page.get_page_info().get_height()
+        assert self._current_page
+        h = self._current_page.get_page_info().get_height()
         assert h is not None
         assert h is not None
         ys: typing.List[Decimal] = [h, h * Decimal(0.66), h * Decimal(0.33), Decimal(0)]
@@ -89,7 +89,7 @@ class PDFToMP3(SimpleParagraphExtraction):
         text_to_speak_for_paragraph = ""
 
         # position
-        if self.include_position:
+        if self._include_position:
             assert paragraph.bounding_box is not None
             text_to_speak_for_paragraph += "Page %d, paragraph %d, %s %s." % (
                 page_number + 1,
@@ -98,7 +98,7 @@ class PDFToMP3(SimpleParagraphExtraction):
                 self._get_text_for_x(paragraph.bounding_box),
             )
         # text of paragraph
-        text_to_speak_for_paragraph += paragraph.text
+        text_to_speak_for_paragraph += paragraph._text
 
         # force period if needed
         if text_to_speak_for_paragraph[-1] not in ["?", "!", "."]:
@@ -111,6 +111,8 @@ class PDFToMP3(SimpleParagraphExtraction):
         """
         This function creates and then returns the audio-file for the text spoken at the given page
         """
-        sound = gTTS(text=self.text_to_speak_for_page[page_number], lang=self.language)
+        sound = gTTS(
+            text=self._text_to_speak_for_page[page_number], lang=self._language
+        )
         sound.save(path)
         return path

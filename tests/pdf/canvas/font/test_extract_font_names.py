@@ -5,9 +5,12 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -18,7 +21,7 @@ unittest.TestLoader.sortTestMethodsUsing = None
 
 class TestExtractFontNames(unittest.TestCase):
     """
-    This test creates a PDF with 3 paragraphs of text in it, each in a different (standard 14) font.
+    This test creates a PDF with 3 paragraphs of text in it, each in a different (standard 14) _font.
     """
 
     def __init__(self, methodName="runTest"):
@@ -55,7 +58,7 @@ class TestExtractFontNames(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with 3 paragraphs of text in it, each in a different (standard 14) font."
+                    "This test creates a PDF with 3 paragraphs of text in it, each in a different (standard 14) _font."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -91,7 +94,7 @@ class TestExtractFontNames(unittest.TestCase):
 
     def test_extract_font_names(self):
 
-        # extract font names
+        # extract _font names
         font_names = []
         with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
             l = FontExtraction()

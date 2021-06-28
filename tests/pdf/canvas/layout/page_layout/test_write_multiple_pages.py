@@ -3,9 +3,11 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF

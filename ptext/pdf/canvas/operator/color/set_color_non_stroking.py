@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    (PDF 1.2) Same as SCN but used for nonstroking operations.
+(PDF 1.2) Same as SCN but used for nonstroking operations.
 """
 from decimal import Decimal
 from typing import List
@@ -19,16 +19,14 @@ class SetColorNonStroking(CanvasOperator):
 
     def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):  # type: ignore [name-defined]
         super().__init__("scn", 0)
-        self.canvas_stream_processor = canvas_stream_processor
+        self._canvas = canvas_stream_processor.get_canvas()
 
     def get_number_of_operands(self) -> int:
         """
         This function returns the number of operands for the scn operator.
         The number of operands and their interpretation depends on the colour space.
         """
-        non_stroke_color_space = (
-            self.canvas_stream_processor.get_canvas().graphics_state.non_stroke_color_space
-        )
+        non_stroke_color_space = self._canvas.graphics_state.non_stroke_color_space
         if non_stroke_color_space == "DeviceCMYK":
             return 4
         if non_stroke_color_space == "DeviceGray":
@@ -42,7 +40,7 @@ class SetColorNonStroking(CanvasOperator):
             and non_stroke_color_space[0] == "Separation"
         ):
             return 1
-        return self.number_of_operands
+        return self._number_of_operands
 
     def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    Restore the graphics state by removing the most recently saved
-    state from the stack and making it the current state (see 8.4.2,
-    "Graphics State Stack").
+Restore the graphics state by removing the most recently saved
+state from the stack and making it the current state (see 8.4.2,
+"Graphics State Stack").
 """
 from typing import List
 

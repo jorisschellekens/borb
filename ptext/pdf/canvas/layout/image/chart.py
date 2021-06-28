@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of LayoutElement represents a Chart
+This implementation of LayoutElement represents a Chart
 """
 import io
 from decimal import Decimal

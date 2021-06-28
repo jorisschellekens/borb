@@ -28,18 +28,18 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
         maximum_multiplied_leading: Decimal = Decimal(1.40),
     ):
         super(SimpleParagraphExtraction, self).__init__()
-        self.minimum_horizontal_overlap_percentage = (
+        self._minimum_horizontal_overlap_percentage = (
             minimum_horizontal_overlap_percentage
         )
-        self.maximum_multiplied_leading = maximum_multiplied_leading
-        self.paragraphs_per_page: typing.Dict[int, typing.List[Paragraph]] = {}
+        self._maximum_multiplied_leading = maximum_multiplied_leading
+        self._paragraphs_per_page: typing.Dict[int, typing.List[Paragraph]] = {}
 
     def _end_page(self, page: Page):
         super(SimpleParagraphExtraction, self)._end_page(page)
 
         # build initial disjointset
         line_of_text_disjoint_set = disjointset()
-        for line_of_text in self.lines_of_text_per_page[self.current_page_number]:
+        for line_of_text in self._lines_of_text_per_page[self._current_page_number]:
             line_of_text_disjoint_set.add(line_of_text)
 
         # merge all LineOfText objects that represent a line of text
@@ -66,8 +66,8 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
                 )
 
                 if (
-                    overlap_percentage >= self.minimum_horizontal_overlap_percentage
-                    and leading <= self.maximum_multiplied_leading
+                    overlap_percentage >= self._minimum_horizontal_overlap_percentage
+                    and leading <= self._maximum_multiplied_leading
                 ):
                     line_of_text_disjoint_set.union(l0, l1)
                     break
@@ -78,14 +78,14 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
             lines_of_text = [x for x in line_of_text_partition]
 
             # determine text
-            txt = "".join([x.text + "\n" for x in lines_of_text])[:-1]
+            txt = "".join([x._text + "\n" for x in lines_of_text])[:-1]
 
             # create / append paragraph
             p: LayoutElement = Paragraph(
                 text=txt,
-                font=lines_of_text[0].font,
-                font_color=lines_of_text[0].font_color,
-                font_size=lines_of_text[0].font_size,
+                font=lines_of_text[0]._font,
+                font_color=lines_of_text[0]._font_color,
+                font_size=lines_of_text[0]._font_size,
             ).set_bounding_box(
                 Rectangle(
                     min([l.bounding_box.x for l in lines_of_text]),
@@ -107,13 +107,13 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
             paragraphs.append(p)
 
         # add to dict
-        self.paragraphs_per_page[self.current_page_number] = paragraphs
+        self._paragraphs_per_page[self._current_page_number] = paragraphs
 
     def get_paragraphs(self, page: int) -> typing.List[Paragraph]:
         """
         This function returns the paragraphs on a given page
         """
-        return self.paragraphs_per_page.get(page, [])
+        return self._paragraphs_per_page.get(page, [])
 
     def _overlap(self, r0: Rectangle, r1: Rectangle) -> Decimal:
         # rectangles do not overlap (r0 is on the left side)

@@ -108,7 +108,7 @@ class OCRImageRenderEventListener(EventListener):
         assert tesseract_data_dir.exists()
         assert tesseract_data_dir.is_dir()
         self._tesseract_data_dir: Path = tesseract_data_dir
-        self._minimal_confidence: Decimal = minimal_confidence
+        self._minimum_confidence: Decimal = minimal_confidence
         self._helvetica: Font = StandardType1Font("Helvetica")
         self._page: typing.Optional[Page] = None
 
@@ -165,7 +165,7 @@ class OCRImageRenderEventListener(EventListener):
 
                 # get confidence
                 confidence: Decimal = Decimal(data["conf"][i])
-                if confidence < self._minimal_confidence:
+                if confidence < self._minimum_confidence:
                     continue
 
                 # delegate call

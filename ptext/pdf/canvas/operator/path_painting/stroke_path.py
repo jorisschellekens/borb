@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Stroke the path.
+Stroke the path.
 """
 from typing import List
 

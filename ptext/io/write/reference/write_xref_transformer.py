@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing XREF objects
+This implementation of WriteBaseTransformer is responsible for writing XREF objects
 """
 import typing
 from typing import Optional
@@ -37,7 +37,9 @@ class WriteXREFTransformer(WriteBaseTransformer):
         assert isinstance(object_to_transform, XREF)
         assert "Trailer" in object_to_transform
         assert isinstance(object_to_transform["Trailer"], Dictionary)
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write XREF objects."
         assert context.destination is not None
 
         # Transform the Trailer dictionary (replacing objects by references)
@@ -112,7 +114,9 @@ class WriteXREFTransformer(WriteBaseTransformer):
         context.destination.write(bytes("%%EOF", "latin1"))
 
     def _section_xref(self, context: Optional[WriteTransformerContext] = None):
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write XREF objects."
 
         # get all references
         indirect_objects: typing.List[AnyPDFType] = [

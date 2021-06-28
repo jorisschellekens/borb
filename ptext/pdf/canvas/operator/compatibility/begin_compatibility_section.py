@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    (PDF 1.1) Begin a compatibility section. Unrecognized operators (along with
-    their operands) shall be ignored without error until the balancing EX operator
-    is encountered.
+(PDF 1.1) Begin a compatibility section. Unrecognized operators (along with
+their operands) shall be ignored without error until the balancing EX operator
+is encountered.
 """
 
 from typing import List

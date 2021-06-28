@@ -23,9 +23,27 @@ class Glyph:
     """
 
     def __init__(self, character_code: int, unicode_str: str, width: Decimal):
-        self.character_code: int = character_code
-        self.unicode_str: str = unicode_str
-        self.width: Decimal = width
+        self._character_code: int = character_code
+        self._unicode_str: str = unicode_str
+        self._width: Decimal = width
+
+    def get_character_code(self) -> int:
+        """
+        This function returns the character code of this Glyph object
+        """
+        return self._character_code
+
+    def get_unicode_str(self) -> str:
+        """
+        This function returns the unicode str that this Glyph represents
+        """
+        return self._unicode_str
+
+    def get_width(self) -> Decimal:
+        """
+        This function returns the width (in text space) of this Glyph
+        """
+        return self._width
 
 
 class GlyphLine:
@@ -134,10 +152,10 @@ class GlyphLine:
         """
         w: Decimal = Decimal(0)
         for g in self._glyphs:
-            glyph_width_in_text_space = g.width * self._font_size * Decimal(0.001)
+            glyph_width_in_text_space = g.get_width() * self._font_size * Decimal(0.001)
 
             # add word spacing where applicable
-            if len(g.unicode_str) == 1 and isspace(g.unicode_str):
+            if len(g.get_unicode_str()) == 1 and isspace(g.get_unicode_str()):
                 glyph_width_in_text_space += self._word_spacing
 
             # horizontal scaling
@@ -159,7 +177,7 @@ class GlyphLine:
         """
         This function returns the unicode str represented by the Glyph objects in this GlyphLine
         """
-        return "".join([x.unicode_str for x in self._glyphs])
+        return "".join([x.get_unicode_str() for x in self._glyphs])
 
     def __len__(self):
         return len(self._glyphs)

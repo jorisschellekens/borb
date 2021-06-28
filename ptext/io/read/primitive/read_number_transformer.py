@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading Decimal objects
+This implementation of ReadBaseTransformer is responsible for reading Decimal objects
 """
 import io
 import typing

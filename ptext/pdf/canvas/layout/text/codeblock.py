@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-    In computer programming, a block or code block is a lexical structure of source code which is grouped together.
-    Blocks consist of one or more declarations and statements. A programming language that permits the creation of blocks,
-    including blocks nested within other blocks, is called a block-structured programming language.
-    Blocks are fundamental to structured programming, where control structures are formed from blocks.
+In computer programming, a block or code block is a lexical structure of source code which is grouped together.
+Blocks consist of one or more declarations and statements. A programming language that permits the creation of blocks,
+including blocks nested within other blocks, is called a block-structured programming language.
+Blocks are fundamental to structured programming, where control structures are formed from blocks.
 
-    The function of blocks in programming is to enable groups of statements to be treated as if they were one statement,
-    and to narrow the lexical scope of objects such as variables,
-    procedures and functions declared in a block so that they do not conflict with those having the same name used elsewhere.
-    In a block-structured programming language, the objects named in outer blocks are visible inside inner blocks,
-    unless they are masked by an object declared with the same name.
+The function of blocks in programming is to enable groups of statements to be treated as if they were one statement,
+and to narrow the lexical scope of objects such as variables,
+procedures and functions declared in a block so that they do not conflict with those having the same name used elsewhere.
+In a block-structured programming language, the objects named in outer blocks are visible inside inner blocks,
+unless they are masked by an object declared with the same name.
 """
 import typing
 from decimal import Decimal

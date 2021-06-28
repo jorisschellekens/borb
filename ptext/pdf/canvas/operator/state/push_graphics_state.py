@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    Save the current graphics state on the graphics state stack (see
-    8.4.2, "Graphics State Stack").
+Save the current graphics state on the graphics state stack (see
+8.4.2, "Graphics State Stack").
 """
 import copy
 from typing import List

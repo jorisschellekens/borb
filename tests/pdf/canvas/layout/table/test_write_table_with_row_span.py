@@ -4,9 +4,12 @@ from pathlib import Path
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor, X11Color
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.base_table import TableCell
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table, TableCell
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -59,7 +62,7 @@ class TestWriteTableWithRowSpan(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=5, number_of_columns=3)
+        t = Table(number_of_rows=5, number_of_columns=3, margin_top=Decimal(5))
         t.add(
             TableCell(
                 Paragraph(" ", respect_spaces_in_text=True),

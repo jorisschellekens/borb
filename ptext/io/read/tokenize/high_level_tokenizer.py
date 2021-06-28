@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    This module contains everything needed to perform low-level tokenization against PDF syntax.
-    Low-level tokenization aims to separate numbers, strings, names, comments, start of dictionary, start of array, etc
-    The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
+This module contains everything needed to perform low-level tokenization against PDF syntax.
+Low-level tokenization aims to separate numbers, strings, names, comments, start of dictionary, start of array, etc
+The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
 """
 import re
 from typing import Optional
@@ -42,18 +42,18 @@ class HighLevelTokenizer(LowLevelTokenizer):
         """
         token = self.next_non_comment_token()
         assert token is not None
-        assert token.token_type == TokenType.START_ARRAY
+        assert token.get_token_type() == TokenType.START_ARRAY
         out = List()
 
         while True:
             token = self.next_non_comment_token()
             assert token is not None
-            if token.token_type == TokenType.END_ARRAY:
+            if token.get_token_type() == TokenType.END_ARRAY:
                 break
-            assert token.token_type != TokenType.END_DICT
+            assert token.get_token_type() != TokenType.END_DICT
 
             # go back
-            self.seek(token.byte_offset)
+            self.seek(token.get_byte_offset())
 
             # read
             obj = self.read_object()
@@ -71,7 +71,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         """
         token = self.next_non_comment_token()
         assert token is not None
-        assert token.token_type == TokenType.START_DICT
+        assert token.get_token_type() == TokenType.START_DICT
 
         out_dict = Dictionary()
         while True:
@@ -79,12 +79,12 @@ class HighLevelTokenizer(LowLevelTokenizer):
             # attempt to read name token
             token = self.next_non_comment_token()
             assert token is not None
-            if token.token_type == TokenType.END_DICT:
+            if token.get_token_type() == TokenType.END_DICT:
                 break
-            assert token.token_type == TokenType.NAME
+            assert token.get_token_type() == TokenType.NAME
 
             # store name
-            name = Name(token.text[1:])
+            name = Name(token.get_text()[1:])
 
             # attempt to read value
             value = self.read_object()
@@ -105,24 +105,28 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # read object number
         token = self.next_non_comment_token()
         assert token is not None
-        byte_offset = token.byte_offset
-        if token.token_type != TokenType.NUMBER or not re.match("^[0-9]+$", token.text):
+        byte_offset = token.get_byte_offset()
+        if token.get_token_type() != TokenType.NUMBER or not re.match(
+            "^[0-9]+$", token.get_text()
+        ):
             self.seek(byte_offset)
             return None
-        object_number = int(token.text)
+        object_number = int(token.get_text())
 
         # read generation number
         token = self.next_non_comment_token()
         assert token is not None
-        if token.token_type != TokenType.NUMBER or not re.match("^[0-9]+$", token.text):
+        if token.get_token_type() != TokenType.NUMBER or not re.match(
+            "^[0-9]+$", token.get_text()
+        ):
             self.seek(byte_offset)
             return None
-        generation_number = int(token.text)
+        generation_number = int(token.get_text())
 
         # read 'obj'
         token = self.next_non_comment_token()
         assert token is not None
-        if token.token_type != TokenType.OTHER or token.text != "obj":
+        if token.get_token_type() != TokenType.OTHER or token.get_text() != "obj":
             self.seek(byte_offset)
             return None
 
@@ -147,24 +151,28 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # read object number
         token = self.next_non_comment_token()
         assert token is not None
-        byte_offset = token.byte_offset
-        if token.token_type != TokenType.NUMBER or not re.match("^[0-9]+$", token.text):
+        byte_offset = token.get_byte_offset()
+        if token.get_token_type() != TokenType.NUMBER or not re.match(
+            "^[0-9]+$", token.get_text()
+        ):
             self.seek(byte_offset)
             return None
-        object_number = int(token.text)
+        object_number = int(token.get_text())
 
         # read generation number
         token = self.next_non_comment_token()
         assert token is not None
-        if token.token_type != TokenType.NUMBER or not re.match("^[0-9]+$", token.text):
+        if token.get_token_type() != TokenType.NUMBER or not re.match(
+            "^[0-9]+$", token.get_text()
+        ):
             self.seek(byte_offset)
             return None
-        generation_number = int(token.text)
+        generation_number = int(token.get_text())
 
         # read 'R'
         token = self.next_non_comment_token()
         assert token is not None
-        if token.token_type != TokenType.OTHER or token.text != "R":
+        if token.get_token_type() != TokenType.OTHER or token.get_text() != "R":
             self.seek(byte_offset)
             return None
 
@@ -180,20 +188,20 @@ class HighLevelTokenizer(LowLevelTokenizer):
         It fails and throws various errors if the next tokens do not represent a pdf object.
         """
         token = self.next_non_comment_token()
-        if token is None or len(token.text) == 0:
+        if token is None or len(token.get_text()) == 0:
             return None
 
-        if token.token_type == TokenType.START_DICT:
-            self.seek(token.byte_offset)  # go to start of dictionary
+        if token.get_token_type() == TokenType.START_DICT:
+            self.seek(token.get_byte_offset())  # go to start of dictionary
             return self.read_dictionary()
 
-        if token.token_type == TokenType.START_ARRAY:
-            self.seek(token.byte_offset)  # go to start of array
+        if token.get_token_type() == TokenType.START_ARRAY:
+            self.seek(token.get_byte_offset())  # go to start of array
             return self.read_array()
 
         # <number> <number> "R"
-        if token.token_type == TokenType.NUMBER:
-            self.seek(token.byte_offset)  # go to start of indirect reference
+        if token.get_token_type() == TokenType.NUMBER:
+            self.seek(token.get_byte_offset())  # go to start of indirect reference
             potential_indirect_reference = self.read_indirect_reference()
             if potential_indirect_reference is not None:
                 return potential_indirect_reference
@@ -203,45 +211,48 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # "stream"
         # <bytes>
         # "endstream"
-        if token.token_type == TokenType.NUMBER:
-            self.seek(token.byte_offset)
+        if token.get_token_type() == TokenType.NUMBER:
+            self.seek(token.get_byte_offset())
             potential_stream = self.read_stream(xref)
             if potential_stream is not None:
                 return potential_stream
 
         # <number> <number> "obj"
-        if token.token_type == TokenType.NUMBER:
-            self.seek(token.byte_offset)
+        if token.get_token_type() == TokenType.NUMBER:
+            self.seek(token.get_byte_offset())
             potential_indirect_object = self.read_indirect_object()
             if potential_indirect_object is not None:
                 return potential_indirect_object
 
         # numbers
-        if token.token_type == TokenType.NUMBER:
-            self.seek(self.tell() + len(token.text))
-            return Decimal(Decimal(token.text))
+        if token.get_token_type() == TokenType.NUMBER:
+            self.seek(self.tell() + len(token.get_text()))
+            return Decimal(Decimal(token.get_text()))
 
         # boolean
-        if token.token_type == TokenType.OTHER and token.text in ["true", "false"]:
-            return Boolean(token.text == "true")
+        if token.get_token_type() == TokenType.OTHER and token.get_text() in [
+            "true",
+            "false",
+        ]:
+            return Boolean(token.get_text() == "true")
 
         # canvas operators
         if (
-            token.token_type == TokenType.OTHER
-            and token.text in CanvasOperatorName.VALID_NAMES
+            token.get_token_type() == TokenType.OTHER
+            and token.get_text() in CanvasOperatorName.VALID_NAMES
         ):
-            return CanvasOperatorName(token.text)
+            return CanvasOperatorName(token.get_text())
 
         # names
-        if token.token_type == TokenType.NAME:
-            return Name(token.text[1:])
+        if token.get_token_type() == TokenType.NAME:
+            return Name(token.get_text()[1:])
 
         # literal strings and hex strings
-        if token.token_type in [TokenType.STRING, TokenType.HEX_STRING]:
-            if token.token_type == TokenType.STRING:
-                return String(token.text[1:-1])
+        if token.get_token_type() in [TokenType.STRING, TokenType.HEX_STRING]:
+            if token.get_token_type() == TokenType.STRING:
+                return String(token.get_text()[1:-1])
             else:
-                return HexadecimalString(token.text[1:-1])
+                return HexadecimalString(token.get_text()[1:-1])
 
         # default
         return None
@@ -263,7 +274,10 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # attempt to read keyword "stream"
         stream_token = self.next_non_comment_token()
         assert stream_token is not None
-        if stream_token.token_type != TokenType.OTHER or stream_token.text != "stream":
+        if (
+            stream_token.get_token_type() != TokenType.OTHER
+            or stream_token.get_text() != "stream"
+        ):
             self.seek(byte_offset)
             return None
 
@@ -277,7 +291,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
                 )
             pos_before = self.tell()
             length_of_stream = int(
-                xref.get_object(length_of_stream, src=self.io_source, tok=self)
+                xref.get_object(length_of_stream, src=self._io_source, tok=self)
             )
             self.seek(pos_before)
 
@@ -288,13 +302,13 @@ class HighLevelTokenizer(LowLevelTokenizer):
             ch = self._next_char()
             assert ch == "\n"
 
-        bytes = self.io_source.read(int(length_of_stream))
+        bytes = self._io_source.read(int(length_of_stream))
 
         # attempt to read token "endstream"
         end_of_stream_token = self.next_non_comment_token()
         assert end_of_stream_token is not None
-        assert end_of_stream_token.token_type == TokenType.OTHER
-        assert end_of_stream_token.text == "endstream"
+        assert end_of_stream_token.get_token_type() == TokenType.OTHER
+        assert end_of_stream_token.get_text() == "endstream"
 
         # set Bytes
         stream_dictionary[Name("Bytes")] = bytes

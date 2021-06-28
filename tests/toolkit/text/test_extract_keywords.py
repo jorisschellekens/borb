@@ -4,9 +4,11 @@ from decimal import Decimal
 from pathlib import Path
 
 from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -129,7 +131,7 @@ class TestExtractKeywords(unittest.TestCase):
         layout.add(Paragraph("Following keywords were found:"))
         ul: UnorderedList = UnorderedList()
         for k in l.get_keywords_per_page(0, 32):
-            ul.add(Paragraph(k.text))
+            ul.add(Paragraph(k.get_text()))
         layout.add(ul)
 
         # attempt to store PDF

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Show a text string.
+Show a text string.
 """
 import typing
 from typing import List

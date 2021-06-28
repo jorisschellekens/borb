@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    (PDF 1.2) Decompresses data encoded using the zlib/deflate
-    compression method, reproducing the original text or binary
-    data.
+(PDF 1.2) Decompresses data encoded using the zlib/deflate
+compression method, reproducing the original text or binary
+data.
 """
 import copy
 import zlib

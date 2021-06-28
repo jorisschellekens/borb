@@ -5,11 +5,16 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.layout.image.chart import Chart
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -171,7 +176,23 @@ class TestCopyDocumentCompareSize(unittest.TestCase):
             startangle=90,
         )
         ax1.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
-        layout.add(Chart(plt.gcf()))
+        layout.add(Chart(plt.gcf(), width=Decimal(200), height=Decimal(200)))
+
+        # raw data
+        ul: UnorderedList = UnorderedList()
+        ul.add(
+            Paragraph(
+                "processed %d documents"
+                % (self.number_of_fails + self.number_of_passes)
+            )
+        )
+        ul.add(
+            Paragraph(
+                "%d fail(s), %d pass(es)"
+                % (self.number_of_fails, self.number_of_passes)
+            )
+        )
+        layout.add(ul)
 
         # write
         file = self.output_dir / "output.pdf"

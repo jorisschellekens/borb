@@ -7,11 +7,14 @@ from pathlib import Path
 from ptext.pdf.canvas.color.color import HexColor, RGBColor, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
 from ptext.pdf.canvas.layout.image.image import Image
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.image.shape import Shape
-from ptext.pdf.canvas.layout.table import Table, TableCell
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.base_table import TableCell
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -74,10 +77,6 @@ class TestExtractColors(unittest.TestCase):
             Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             """,
                     font_size=Decimal(10),
-                    padding_top=Decimal(5),
-                    padding_right=Decimal(5),
-                    padding_bottom=Decimal(5),
-                    padding_left=Decimal(5),
                     font_color=HexColor(c),
                 )
             )

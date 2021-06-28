@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Set the line width in the graphics state (see 8.4.3.2, "Line Width").
+Set the line width in the graphics state (see 8.4.3.2, "Line Width").
 """
 from decimal import Decimal
 from typing import List

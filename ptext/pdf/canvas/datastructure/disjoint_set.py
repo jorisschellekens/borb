@@ -20,17 +20,17 @@ class disjointset:
     """
 
     def __init__(self):
-        self.parents = {}
-        self.ranks = {}
+        self._parents = {}
+        self._ranks = {}
 
     def find(self, x: Any) -> Any:
         """
         Find the root of an element in this disjointset
         """
-        if self.parents[x] == x:
+        if self._parents[x] == x:
             return x
         else:
-            return self.find(self.parents[x])
+            return self.find(self._parents[x])
 
     def union(self, x: Any, y: Any) -> "disjointset":
         """
@@ -41,21 +41,21 @@ class disjointset:
         y_parent = self.find(y)
         if x_parent is y_parent:
             return self
-        if self.ranks[x_parent] > self.ranks[y_parent]:
-            self.parents[y_parent] = x_parent
-        elif self.ranks[y_parent] > self.ranks[x_parent]:
-            self.parents[x_parent] = y_parent
+        if self._ranks[x_parent] > self._ranks[y_parent]:
+            self._parents[y_parent] = x_parent
+        elif self._ranks[y_parent] > self._ranks[x_parent]:
+            self._parents[x_parent] = y_parent
         else:
-            self.parents[y_parent] = x_parent
-            self.ranks[x_parent] += 1
+            self._parents[y_parent] = x_parent
+            self._ranks[x_parent] += 1
         return self
 
     def add(self, x: Any) -> "disjointset":
         """
         Add an element to this disjointset
         """
-        self.parents[x] = x
-        self.ranks[x] = 0
+        self._parents[x] = x
+        self._ranks[x] = 0
         return self
 
     def pop(self, x: Any) -> "disjointset":
@@ -69,7 +69,7 @@ class disjointset:
         This function returns all equivalence sets in this disjointset
         """
         cluster_parents: typing.Dict[Any, Any] = {}
-        for x, _ in self.parents.items():
+        for x, _ in self._parents.items():
             p = self.find(x)
             if p not in cluster_parents:
                 cluster_parents[p] = []
@@ -77,10 +77,10 @@ class disjointset:
         return [v for k, v in cluster_parents.items()]
 
     def __len__(self):
-        return len(self.parents)
+        return len(self._parents)
 
     def __contains__(self, item):
-        return item in self.parents
+        return item in self._parents
 
     def __iter__(self):
-        return self.parents.__iter__()
+        return self._parents.__iter__()

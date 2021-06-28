@@ -11,6 +11,7 @@ from decimal import Decimal
 from typing import Tuple
 
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
+from ptext.pdf.canvas.line_art.blob_factory import BlobFactory
 
 
 class LineArtFactory:
@@ -33,7 +34,7 @@ class LineArtFactory:
         and indeed many kinds of knots, including those known as Lissajous knots, project to the plane as Lissajous figures.
         """
         pts = []
-        r = min(bounding_box.width, bounding_box.height)
+        r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         for i in range(0, 360 * x_frequency * y_frequency):
             x = Decimal(math.sin(math.radians(i * x_frequency))) * r
             y = Decimal(math.cos(math.radians(i * y_frequency))) * r
@@ -227,7 +228,7 @@ class LineArtFactory:
         It represents magnetic tape storage which is also called sequential access storage.
         """
         pts = []
-        r = min(bounding_box.width, bounding_box.height)
+        r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r
         for i in range(0, 320):
@@ -502,7 +503,7 @@ class LineArtFactory:
         Just as described, this shape indicates that the process flow continues two paths or more.
         """
         pts = []
-        r = min(bounding_box.width, bounding_box.height)
+        r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r
         for i in range(0, 360):
@@ -544,7 +545,7 @@ class LineArtFactory:
         Indicates a point in the flowchart where multiple branches converge back into a single process.
         """
         pts = []
-        r = min(bounding_box.width, bounding_box.height)
+        r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r
         for i in range(0, 360):
@@ -632,6 +633,17 @@ class LineArtFactory:
         The Transport flowchart shape represents the step in the flowchart where information or materials are being transported from the process.
         """
         return []
+
+    @staticmethod
+    def smooth_dragon_curve(bounding_box: Rectangle, number_of_iterations: int = 10):
+        """
+        This function returns the coordinates for the Heighway dragon (also known as the Harter–Heighway dragon,
+        or the Jurassic Park dragon) curve that fits in the given bounding box
+        """
+        points = LineArtFactory.dragon_curve(bounding_box, number_of_iterations)
+
+        # smooth lines
+        return BlobFactory._smooth_polygon(points, 2)[:-8]
 
     @staticmethod
     def dragon_curve(

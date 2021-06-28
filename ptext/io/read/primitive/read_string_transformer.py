@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading String objects
+This implementation of ReadBaseTransformer is responsible for reading String objects
 """
 import io
 import typing

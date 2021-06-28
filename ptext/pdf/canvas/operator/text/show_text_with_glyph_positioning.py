@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    Show one or more text strings, allowing individual glyph positioning. Each
-    element of array shall be either a string or a number.
+Show one or more text strings, allowing individual glyph positioning. Each
+element of array shall be either a string or a number.
 """
 import typing
 from decimal import Decimal

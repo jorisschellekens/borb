@@ -3,6 +3,7 @@ import unittest
 
 import requests
 from PIL import Image as PILImage  # type: ignore [import]
+
 from ptext.io.read.types import add_base_methods
 
 
@@ -15,7 +16,7 @@ class TestTypeAddedMethods(unittest.TestCase):
                 stream=True,
             ).raw
         )
-        im0.parent = None
+        im0._parent = None
 
         im1 = PILImage.open(
             requests.get(
@@ -27,7 +28,7 @@ class TestTypeAddedMethods(unittest.TestCase):
         # add methods
         add_base_methods(im1)
 
-        # set parent
+        # set _parent
         im1.set_parent(im0)
 
         # copy

@@ -8,16 +8,19 @@ import re
 import typing
 from decimal import Decimal
 
-from ptext.pdf.canvas.color.color import HexColor
+from ptext.pdf.canvas.color.color import HexColor, Color
 from ptext.pdf.canvas.layout.horizontal_rule import HorizontalRule
 from ptext.pdf.canvas.layout.image.image import Image
 from ptext.pdf.canvas.layout.layout_element import Alignment
 from ptext.pdf.canvas.layout.list.ordered_list import OrderedList
 from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
-from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from ptext.pdf.canvas.layout.table.base_table import BaseTable
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from ptext.pdf.canvas.layout.text.chunks_of_text import ChunksOfText
+from ptext.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
+from ptext.pdf.canvas.layout.text.heading import Heading
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -37,17 +40,28 @@ class MarkdownToPDF:
     ) -> int:
         if markdown_input[position].startswith("#"):
             heading_level: int = sum([1 for c in markdown_input[position] if c == "#"])
+            assert 1 <= heading_level <= 6, "Unsupported heading level."
             heading_level_font_size: Decimal = {
-                1: Decimal(18.2),
-                2: Decimal(16.1),
-                3: Decimal(14.1),
-            }.get(heading_level, Decimal(14.1))
+                1: Decimal(27),
+                2: Decimal(21),
+                3: Decimal(18),
+                4: Decimal(15),
+                5: Decimal(12),
+                6: Decimal(12),
+            }.get(heading_level, Decimal(12))
+            heading_level_font_color: Color = HexColor("333333")
+            if heading_level == 6:
+                heading_level_font_color = HexColor("777777")
             layout.add(
-                Paragraph(
+                Heading(
                     markdown_input[position].replace("#", "").strip(),
                     font_size=heading_level_font_size,
+                    font_color=heading_level_font_color,
+                    outline_level=(heading_level - 1),
                 )
             )
+            if heading_level == 1 or heading_level == 2:
+                layout.add(HorizontalRule())
             position += 1
         return position
 
@@ -112,7 +126,8 @@ class MarkdownToPDF:
                     "".join([(x + "\n") for x in blockquote_items]),
                     font="Helvetica",
                     respect_newlines_in_text=True,
-                    border_color=HexColor("D3D3D3"),
+                    border_color=HexColor("777777"),
+                    font_color=HexColor("777777"),
                     border_left=True,
                     border_top=False,
                     border_right=False,
@@ -141,7 +156,8 @@ class MarkdownToPDF:
                     "".join([(x + "\n") for x in code_snippet_items_001]),
                     font="Courier",
                     respect_newlines_in_text=True,
-                    background_color=HexColor("D3D3D3"),
+                    background_color=HexColor("e2e2e2"),
+                    font_color=HexColor("333333"),
                     padding_top=Decimal(10),
                     padding_right=Decimal(10),
                     padding_bottom=Decimal(10),
@@ -169,7 +185,8 @@ class MarkdownToPDF:
                     "".join([(x + "\n") for x in code_snippet_items_002]),
                     font="Courier",
                     respect_newlines_in_text=True,
-                    background_color=HexColor("D3D3D3"),
+                    background_color=HexColor("e2e2e2"),
+                    font_color=HexColor("333333"),
                     padding_top=Decimal(10),
                     padding_right=Decimal(10),
                     padding_bottom=Decimal(10),
@@ -191,7 +208,15 @@ class MarkdownToPDF:
         image_pattern_match: typing.Optional[re.Match] = image_pattern.match(markdown_input[position])
         # fmt: on
         if image_pattern_match:
-            layout.add(Image(image_pattern_match["url"]))
+            image: Image = Image(image_pattern_match["url"])
+            if image._width > Decimal(475) or image._height > Decimal(
+                293
+            ):  # size of A4 page minus margins
+                horizontal_scale_factor: Decimal = Decimal(475) / image._width
+                vertical_scale_factor: Decimal = Decimal(293) / image._height
+                image._width *= min(horizontal_scale_factor, vertical_scale_factor)
+                image._height *= min(horizontal_scale_factor, vertical_scale_factor)
+            layout.add(image)
             position += 1
         return position
 
@@ -256,7 +281,7 @@ class MarkdownToPDF:
                 j += 1
 
             # build table from array of str
-            table: Table = Table(
+            table: BaseTable = FixedColumnWidthTable(
                 number_of_rows=len(table_data), number_of_columns=len(table_data[0])
             )
             for r in range(0, len(table_data)):
@@ -266,6 +291,7 @@ class MarkdownToPDF:
                             Paragraph(
                                 table_data[r][c],
                                 font="Helvetica-Bold",
+                                font_color=HexColor("333333"),
                                 text_alignment=table_column_alignment[c],
                             )
                         )
@@ -274,14 +300,15 @@ class MarkdownToPDF:
                             Paragraph(
                                 table_data[r][c],
                                 text_alignment=table_column_alignment[c],
+                                font_color=HexColor("333333"),
                             )
                         )
 
             table.set_padding_on_all_cells(
-                Decimal(2), Decimal(2), Decimal(2), Decimal(2)
+                Decimal(5), Decimal(5), Decimal(5), Decimal(5)
             )
-            table.set_border_color_on_all_cells(HexColor("D3D3D3"))
-            table.even_odd_row_colors(HexColor("FFFFFF"), HexColor("D3D3D3"))
+            table.set_border_color_on_all_cells(HexColor("dddddd"))
+            table.even_odd_row_colors(HexColor("f8f8f8"), HexColor("ffffff"))
             layout.add(table)
         return position
 
@@ -317,7 +344,7 @@ class MarkdownToPDF:
             is_code: bool = False
             chunks_of_text: typing.List[ChunkOfText] = []
 
-            def get_font_name():
+            def _get_font_name():
                 if is_italic and is_bold:
                     return "Helvetica-bold-oblique"
                 elif is_italic:
@@ -334,16 +361,31 @@ class MarkdownToPDF:
                 if paragraph_text[i] == " ":
                     word_being_built += paragraph_text[i]
                     if is_code:
-                        chunks_of_text.append(ChunkOfText(word_being_built, font=get_font_name(), background_color=HexColor("D3D3D3")))
+                        chunks_of_text.append(
+                            ChunkOfText(
+                                word_being_built,
+                                font=_get_font_name(),
+                                background_color=HexColor("e2e2e2"),
+                                font_color=HexColor("333333"),
+                            )
+                        )
                     else:
-                        chunks_of_text.append(ChunkOfText(word_being_built, font=get_font_name()))
+                        chunks_of_text.append(
+                            ChunkOfText(word_being_built, font=_get_font_name())
+                        )
                     word_being_built = ""
                     i += 1
                     continue
                 # toggle code "`"
-                if paragraph_text[i:(i+1)] == "`":
+                if paragraph_text[i : (i + 1)] == "`":
                     if is_code:
-                        chunks_of_text.append(ChunkOfText(word_being_built, font=get_font_name(), background_color=HexColor("D3D3D3")))
+                        chunks_of_text.append(
+                            ChunkOfText(
+                                word_being_built,
+                                font=_get_font_name(),
+                                background_color=HexColor("D3D3D3"),
+                            )
+                        )
                         word_being_built = ""
                     else:
                         assert not is_bold, "illegal nesting of operators"
@@ -359,7 +401,7 @@ class MarkdownToPDF:
                         ), "mismatched end of BOLD style, expected **"
                         prev_bold_char = ""
                         chunks_of_text.append(
-                            ChunkOfText(word_being_built, font=get_font_name())
+                            ChunkOfText(word_being_built, font=_get_font_name())
                         )
                         word_being_built = ""
                     else:
@@ -375,7 +417,7 @@ class MarkdownToPDF:
                         ), "mismatched end of BOLD style, expected __"
                         prev_bold_char = ""
                         chunks_of_text.append(
-                            ChunkOfText(word_being_built, font=get_font_name())
+                            ChunkOfText(word_being_built, font=_get_font_name())
                         )
                         word_being_built = ""
                     else:
@@ -391,7 +433,7 @@ class MarkdownToPDF:
                         ), "mismatched end of ITALIC style, expected *"
                         prev_italic_char = ""
                         chunks_of_text.append(
-                            ChunkOfText(word_being_built, font=get_font_name())
+                            ChunkOfText(word_being_built, font=_get_font_name())
                         )
                         word_being_built = ""
                     else:
@@ -407,7 +449,7 @@ class MarkdownToPDF:
                         ), "mismatched end of ITALIC style, expected _"
                         prev_italic_char = ""
                         chunks_of_text.append(
-                            ChunkOfText(word_being_built, font=get_font_name())
+                            ChunkOfText(word_being_built, font=_get_font_name())
                         )
                         word_being_built = ""
                     else:
@@ -421,9 +463,9 @@ class MarkdownToPDF:
             assert not is_italic, "missing end of ITALIC style"
             if len(word_being_built) > 0:
                 chunks_of_text.append(
-                    ChunkOfText(word_being_built, font=get_font_name())
+                    ChunkOfText(word_being_built, font=_get_font_name())
                 )
-            layout.add(ChunksOfText(chunks_of_text))
+            layout.add(HeterogeneousParagraph(chunks_of_text))
         else:
             # homogeneous paragraph
             layout.add(

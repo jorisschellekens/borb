@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Same as RG but used for nonstroking operations.
+Same as RG but used for nonstroking operations.
 """
 from decimal import Decimal
 from typing import List

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    Decompresses data encoded using the LZW (Lempel-Ziv-
-    Welch) adaptive compression method, reproducing the original
-    text or binary data.
+Decompresses data encoded using the LZW (Lempel-Ziv-Welch)
+adaptive compression method, reproducing the original
+text or binary data.
 """
 import copy
 
@@ -48,7 +48,7 @@ class LZWDecode:
                 entry = copy.deepcopy(w)
                 entry.append(w[0])
             else:
-                assert False
+                assert False, "Unexpected error while performing LZW decode."
             bytes_out.extend(entry)
 
             # Add w+entry[0] to the dictionary.

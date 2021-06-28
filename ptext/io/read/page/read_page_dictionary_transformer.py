@@ -2,17 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading Page objects
+This implementation of ReadBaseTransformer is responsible for reading Page objects
 """
 import io
 import typing
+import zlib
 from typing import Any, Dict, Optional, Union
 
 from ptext.io.read.read_base_transformer import (
     ReadBaseTransformer,
     ReadTransformerContext,
 )
-from ptext.io.read.types import AnyPDFType, Dictionary, List, Stream
+from ptext.io.read.types import AnyPDFType, Dictionary, List, Stream, Name
+from ptext.io.read.types import Decimal as pDecimal
 from ptext.pdf.canvas.canvas import Canvas
 from ptext.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from ptext.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -70,28 +72,34 @@ class ReadPageDictionaryTransformer(ReadBaseTransformer):
         # send out BeginPageEvent
         page_out._event_occurred(BeginPageEvent(page_out))
 
-        # set up canvas
+        # check whether `Contents` exists
         if "Contents" not in page_out:
             return
-        if not (
-            isinstance(page_out["Contents"], List)
-            or isinstance(page_out["Contents"], Stream)
+        if not isinstance(page_out["Contents"], List) and not isinstance(
+            page_out["Contents"], Stream
         ):
             return
+
+        # Force content to be Stream (rather than List)
         contents = page_out["Contents"]
-        if contents is not None:
-            canvas = Canvas().set_parent(page_out)  # type: ignore [attr-defined]
+        if isinstance(contents, List):
+            bts = b"".join([x["DecodedBytes"] + b" " for x in contents])
+            page_out[Name("Contents")] = Stream()
+            assert isinstance(page_out["Contents"], Stream)
+            page_out["Contents"][Name("DecodedBytes")] = bts
+            page_out["Contents"][Name("Bytes")] = zlib.compress(bts, 9)
+            page_out["Contents"][Name("Filter")] = Name("FlateDecode")
+            page_out["Contents"][Name("Length")] = pDecimal(len(bts))
+            contents = page_out["Contents"]
+            contents.set_parent(page_out)  # type: ignore [attr-defined]
 
-            # process bytes in stream
-            if isinstance(contents, Stream):
-                CanvasStreamProcessor(page_out, canvas, []).read(
-                    io.BytesIO(contents["DecodedBytes"])
-                )
+        # create Canvas
+        canvas = Canvas().set_parent(page_out)  # type: ignore [attr-defined]
 
-            # process bytes in array
-            if isinstance(contents, List):
-                bts = b"".join([x["DecodedBytes"] + b" " for x in contents])
-                CanvasStreamProcessor(page_out, canvas, []).read(io.BytesIO(bts))
+        # create CanvasStreamProcessor
+        CanvasStreamProcessor(page_out, canvas, []).read(
+            io.BytesIO(contents["DecodedBytes"])
+        )
 
         # send out EndPageEvent
         page_out._event_occurred(EndPageEvent(page_out))

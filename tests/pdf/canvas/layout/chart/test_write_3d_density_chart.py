@@ -5,11 +5,14 @@ from pathlib import Path
 import matplotlib.pyplot as MatPlotLibPlot
 import numpy as np
 import pandas as pd
+
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.layout.image.chart import Chart
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -77,7 +80,7 @@ class TestWrite3DDensityChart(unittest.TestCase):
         )
 
         # add chart
-        layout.add(Chart(self._create_plot()))
+        layout.add(Chart(self._create_plot(), width=Decimal(256), height=Decimal(256)))
 
         # write
         file = self.output_dir / "output.pdf"

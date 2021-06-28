@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing ASCII art in every PDF
+This implementation of WriteBaseTransformer is responsible for writing ASCII art in every PDF
 """
 from pathlib import Path
 from typing import Optional

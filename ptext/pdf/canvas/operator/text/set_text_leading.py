@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    Set the text leading, T l , to leading, which shall be a number expressed in
-    unscaled text space units. Text leading shall be used only by the T*, ', and
-    " operators. Initial value: 0.
+Set the text leading, T l , to leading, which shall be a number expressed in
+unscaled text space units. Text leading shall be used only by the T*, ', and
+" operators. Initial value: 0.
 """
 from decimal import Decimal
 from typing import List

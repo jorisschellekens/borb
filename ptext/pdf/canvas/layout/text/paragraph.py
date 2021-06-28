@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This file contains all the classes needed to perform layout of text-elements.
-    This includes; ChunkOfText, LineOfText, Paragraph and Heading
+This file contains all the classes needed to perform layout of text-elements.
+This includes; ChunkOfText, LineOfText, Paragraph and Heading
 """
 import typing
 from decimal import Decimal
@@ -48,6 +48,11 @@ class Paragraph(LineOfText):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        margin_top: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
+        line_height: Decimal = Decimal(1),
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
@@ -68,6 +73,10 @@ class Paragraph(LineOfText):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            margin_top=margin_top or font_size,
+            margin_right=margin_right,
+            margin_bottom=margin_bottom or font_size,
+            margin_left=margin_left,
             background_color=background_color,
             parent=parent,
         )
@@ -80,8 +89,13 @@ class Paragraph(LineOfText):
             Alignment.JUSTIFIED,
         ]
         self.text_alignment = text_alignment
+        assert line_height >= Decimal(1)
+        self._line_height = line_height
 
     def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
+        # asserts
+        assert self._font_size is not None
+
         # attempt to split into words (preserve space if needed)
         words: typing.List[str] = [""]
         tokens_to_split_on: typing.List[str] = [" ", "\t", "\n"]
@@ -93,7 +107,7 @@ class Paragraph(LineOfText):
             tokens_to_preserve.append(" ")
             tokens_to_preserve.append("\t")
 
-        for c in self.text:
+        for c in self._text:
             if c in tokens_to_split_on:
                 # we have a token we split on, and preserve
                 # add it to the list of words
@@ -128,18 +142,18 @@ class Paragraph(LineOfText):
             # check the width of this piece of text
             encoded_bytes: bytes = bytes(
                 [
-                    self.font.unicode_to_character_identifier(c) or 0
+                    self._font.unicode_to_character_identifier(c) or 0
                     for c in potential_text
                 ]
             )
             potential_width = GlyphLine(
-                encoded_bytes, self.font, self.font_size
+                encoded_bytes, self._font, self._font_size
             ).get_width_in_text_space()
 
             # if this text is larger than the bounding box, split the text
             remaining_space_in_box: Decimal = bounding_box.width - potential_width
-            if remaining_space_in_box > Decimal(
-                -1
+            if remaining_space_in_box >= Decimal(
+                0
             ):  # checking with 0 is not a great idea due to rounding errors
                 if len(lines_of_text) == 0:
                     lines_of_text.append(w)
@@ -158,7 +172,7 @@ class Paragraph(LineOfText):
 
     def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
         # easy case
-        if len(self.text) == 0:
+        if len(self._text) == 0:
             return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
 
         # other easy cases
@@ -173,26 +187,32 @@ class Paragraph(LineOfText):
             )
 
         # delegate
+        assert self._font_size is not None
+        assert self._line_height is not None
         min_x: Decimal = Decimal(2048)
         min_y: Decimal = Decimal(2048)
         max_x: Decimal = Decimal(0)
         max_y: Decimal = Decimal(0)
-        leading: Decimal = self.font_size * Decimal(1.3)
+        line_height: Decimal = self._font_size * self._line_height
+        assert self._font_size is not None
         for i, l in enumerate(lines_of_text):
             r = LineOfText(
                 l,
-                font=self.font,
-                font_size=self.font_size,
-                font_color=self.font_color,
+                font=self._font,
+                font_size=self._font_size,
+                font_color=self._font_color,
                 horizontal_alignment=self.text_alignment,
                 parent=self,
             ).layout(
                 page,
                 bounding_box=Rectangle(
                     bounding_box.x,
-                    bounding_box.y + bounding_box.height - leading * i - self.font_size,
+                    bounding_box.y
+                    + bounding_box.height
+                    - line_height * i
+                    - self._font_size,
                     bounding_box.width,
-                    self.font_size,
+                    self._font_size,
                 ),
             )
             min_x = min(r.x, min_x)
@@ -214,7 +234,9 @@ class Paragraph(LineOfText):
         min_y: Decimal = Decimal(2048)
         max_x: Decimal = Decimal(0)
         max_y: Decimal = Decimal(0)
-        leading: Decimal = self.font_size * Decimal(1.3)
+        assert self._font_size is not None
+        assert self._line_height is not None
+        leading: Decimal = self._font_size * self._line_height
 
         for i, line_of_text in enumerate(lines_of_text):
 
@@ -224,9 +246,9 @@ class Paragraph(LineOfText):
             if i == len(lines_of_text) - 1 and len(lines_of_text) > 1:
                 last_line_rectangle: Rectangle = LineOfText(
                     line_of_text,
-                    font=self.font,
-                    font_size=self.font_size,
-                    font_color=self.font_color,
+                    font=self._font,
+                    font_size=self._font_size,
+                    font_color=self._font_color,
                     parent=self,
                 ).layout(
                     page,
@@ -235,9 +257,9 @@ class Paragraph(LineOfText):
                         bounding_box.y
                         + bounding_box.height
                         - leading * i
-                        - self.font_size,
+                        - self._font_size,
                         bounding_box.width,
-                        self.font_size,
+                        self._font_size,
                     ),
                 )
                 min_x = min(last_line_rectangle.x, min_x)
@@ -248,12 +270,12 @@ class Paragraph(LineOfText):
 
             encoded_bytes: bytes = bytes(
                 [
-                    self.font.unicode_to_character_identifier(c) or 0
+                    self._font.unicode_to_character_identifier(c) or 0
                     for c in line_of_text
                 ]
             )
             estimated_width: Decimal = GlyphLine(
-                encoded_bytes, self.font, self.font_size
+                encoded_bytes, self._font, self._font_size
             ).get_width_in_text_space()
             remaining_space: Decimal = bounding_box.width - estimated_width
 
@@ -273,9 +295,9 @@ class Paragraph(LineOfText):
                 s = w + " "
                 r: Rectangle = ChunkOfText(
                     s,
-                    font=self.font,
-                    font_size=self.font_size,
-                    font_color=self.font_color,
+                    font=self._font,
+                    font_size=self._font_size,
+                    font_color=self._font_color,
                     parent=self,
                 ).layout(
                     page,
@@ -284,9 +306,9 @@ class Paragraph(LineOfText):
                         bounding_box.y
                         + bounding_box.height
                         - leading * i
-                        - self.font_size,
+                        - self._font_size,
                         bounding_box.width,
-                        self.font_size,
+                        self._font_size,
                     ),
                 )
                 min_x = min(r.x, min_x)
@@ -296,10 +318,10 @@ class Paragraph(LineOfText):
 
                 # line up our next x
                 encoded_bytes = bytes(
-                    [self.font.unicode_to_character_identifier(c) or 0 for c in s]
+                    [self._font.unicode_to_character_identifier(c) or 0 for c in s]
                 )
                 word_size = GlyphLine(
-                    encoded_bytes, self.font, self.font_size
+                    encoded_bytes, self._font, self._font_size
                 ).get_width_in_text_space()
                 x += word_size
                 x += space_per_space

@@ -51,13 +51,13 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         )
 
         # set baseline box
-        self.baseline_bounding_box = Rectangle(
+        self._baseline_bounding_box = Rectangle(
             min(p0[0], p1[0]), min(p0[1], p1[1]), abs(p1[0] - p0[0]), abs(p1[1] - p0[1])
         )
 
         # calculate bounding box
         uses_descent = any(
-            [x in self.text.lower() for x in ["y", "p", "q", "f", "g", "j"]]
+            [x in self._text.lower() for x in ["y", "p", "q", "f", "g", "j"]]
         )
         if uses_descent:
             p0 = m.cross(
@@ -81,7 +81,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
                 )
             )
         else:
-            self.set_bounding_box(self.baseline_bounding_box)
+            self.set_bounding_box(self._baseline_bounding_box)
 
         # calculate space character width estimate
         current_font: Font = graphics_state.font
@@ -91,7 +91,10 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
             * graphics_state.text_matrix[0][0]
             * Decimal(0.001)
         )
-        self._font_size = graphics_state.font_size * graphics_state.text_matrix[0][0]
+        assert graphics_state.font_size is not None
+        self._font_size: Decimal = (
+            graphics_state.font_size * graphics_state.text_matrix[0][0]
+        )
 
         # store graphics state
         self._graphics_state = graphics_state
@@ -115,7 +118,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         return (
             self._space_character_width_estimate_in_user_space
             * Decimal(1000)
-            / self.font_size
+            / self._font_size
         )
 
     def get_baseline(self) -> Rectangle:
@@ -123,7 +126,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         This function returns the bounding box of this ChunkOfTextRenderEvent,
         starting at the baseline (not at the descent)
         """
-        return self.baseline_bounding_box
+        return self._baseline_bounding_box
 
     def split_on_glyphs(self) -> typing.List["ChunkOfTextRenderEvent"]:
         """
@@ -137,10 +140,10 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         font: Font = self._graphics_state.font
         for g in self._glyph_line.split():
             e = ChunkOfTextRenderEvent(self._graphics_state, String(" "))
-            e.font_size = self.font_size
-            e.font_color = self.font_color
-            e.font = self.font
-            e.text = g.get_text()
+            e._font_size = self._font_size
+            e._font_color = self._font_color
+            e._font = self._font
+            e._text = g.get_text()
             e._space_character_width_estimate_in_user_space = (
                 self._space_character_width_estimate_in_user_space
             )
@@ -156,10 +159,10 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
                 y + font.get_ascent() * Decimal(0.001),
                 Decimal(1),
             )
-            e.baseline_bounding_box = Rectangle(
+            e._baseline_bounding_box = Rectangle(
                 p0[0], p0[1], p1[0] - p0[0], p1[1] - p0[1]
             )
-            e.bounding_box = e.baseline_bounding_box
+            e.bounding_box = e._baseline_bounding_box
 
             # change bounding box (descent)
             if g.uses_descent():

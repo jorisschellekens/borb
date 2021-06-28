@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Move to the next line and show a text string. This operator shall have the
-    same effect as the code
-    T*
-    string Tj
+Move to the next line and show a text string. This operator shall have the
+same effect as the code
+T*
+string Tj
 """
 import typing
 from typing import List

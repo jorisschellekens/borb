@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This module contains all classes needed to apply redaction on a Page in a PDF Document
+This module contains all classes needed to apply redaction on a Page in a PDF Document
 """
 import typing
 from decimal import Decimal
@@ -21,19 +21,19 @@ class CopyCommandOperator(CanvasOperator):
 
     def __init__(self, operator_to_copy: CanvasOperator):
         super().__init__("", 0)
-        self.operator_to_copy = operator_to_copy
+        self._operator_to_copy = operator_to_copy
 
     def get_text(self) -> str:
         """
         Return the str that invokes this CanvasOperator
         """
-        return self.operator_to_copy.get_text()
+        return self._operator_to_copy.get_text()
 
     def get_number_of_operands(self) -> int:
         """
         Return the number of operands for this CanvasOperator
         """
-        return self.operator_to_copy.get_number_of_operands()
+        return self._operator_to_copy.get_number_of_operands()
 
     def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: typing.List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """
@@ -41,7 +41,7 @@ class CopyCommandOperator(CanvasOperator):
         """
 
         # execute command
-        self.operator_to_copy.invoke(canvas_stream_processor, operands)
+        self._operator_to_copy.invoke(canvas_stream_processor, operands)
 
         # copy command in content stream
         canvas = canvas_stream_processor.get_canvas()
@@ -53,16 +53,16 @@ class CopyCommandOperator(CanvasOperator):
                 op_str.append(str(op))
                 continue
             if isinstance(op, HexadecimalString):
-                op_str.append("<" + op.text + ">")
+                op_str.append("<" + op._text + ">")
                 continue
             if isinstance(op, String):
-                op_str.append("(" + op.text + ")")
+                op_str.append("(" + op._text + ")")
                 continue
             if isinstance(op, Name):
                 op_str.append("/" + str(op))
                 continue
 
-        canvas_stream_processor.redacted_content += (  # type: ignore [attr-defined]
+        canvas_stream_processor._redacted_content += (  # type: ignore [attr-defined]
             "\n" + "".join([(s + " ") for s in op_str]) + self.get_text()
         )
 
@@ -84,18 +84,18 @@ class ShowTextMod(CanvasOperator):
         self, canvas_stream_processor: "CanvasStreamProcessor", s: String
     ) -> None:
         if isinstance(s, HexadecimalString):
-            canvas_stream_processor.redacted_content += "\n<" + str(s) + "> Tj"  # type: ignore [attr-defined]
+            canvas_stream_processor._redacted_content += "\n<" + str(s) + "> Tj"  # type: ignore [attr-defined]
             return
         if isinstance(s, String):
-            canvas_stream_processor.redacted_content += "\n(" + str(s) + ") Tj"  # type: ignore [attr-defined]
+            canvas_stream_processor._redacted_content += "\n(" + str(s) + ") Tj"  # type: ignore [attr-defined]
 
     def _write_chunk_of_text(
         self, canvas_stream_processor: "CanvasStreamProcessor", s: str, f: "Font"  # type: ignore [name-defined]
     ):
         from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
-        canvas_stream_processor.redacted_content += "\n"  # type: ignore[attr-defined]
-        canvas_stream_processor.redacted_content += ChunkOfText(  # type: ignore [attr-defined]
+        canvas_stream_processor._redacted_content += "\n"  # type: ignore[attr-defined]
+        canvas_stream_processor._redacted_content += ChunkOfText(  # type: ignore [attr-defined]
             s, f
         )._write_text_bytes()
 
@@ -131,7 +131,7 @@ class ShowTextMod(CanvasOperator):
             letter_should_be_redacted: bool = any(
                 [
                     x.intersects(evt.get_bounding_box())
-                    for x in canvas_stream_processor.redacted_rectangles  # type: ignore[attr-defined]
+                    for x in canvas_stream_processor._redacted_rectangles  # type: ignore[attr-defined]
                 ]
             )
             graphics_state = canvas_stream_processor.get_canvas().graphics_state
@@ -148,7 +148,7 @@ class ShowTextMod(CanvasOperator):
             else:
                 # write position command if needed
                 if jump_from_redacted:
-                    canvas_stream_processor.redacted_content += "\n%f %f %f %f %f %f Tm" % (  # type: ignore[attr-defined]
+                    canvas_stream_processor._redacted_content += "\n%f %f %f %f %f %f Tm" % (  # type: ignore[attr-defined]
                         graphics_state.text_matrix[0][0],
                         graphics_state.text_matrix[0][1],
                         graphics_state.text_matrix[1][0],
@@ -158,7 +158,9 @@ class ShowTextMod(CanvasOperator):
                     )
                     jump_from_redacted = False
                 # write command
-                self._write_chunk_of_text(canvas_stream_processor, evt.text, evt.font)
+                self._write_chunk_of_text(
+                    canvas_stream_processor, evt.get_text(), evt.get_font()
+                )
                 # update text_matrix
                 graphics_state.text_matrix[2][0] += w
 
@@ -183,8 +185,8 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
     ):
         from ptext.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
-        canvas_stream_processor.redacted_content += "\n"  # type: ignore[attr-defined]
-        canvas_stream_processor.redacted_content += ChunkOfText(  # type: ignore[attr-defined]
+        canvas_stream_processor._redacted_content += "\n"  # type: ignore[attr-defined]
+        canvas_stream_processor._redacted_content += ChunkOfText(  # type: ignore[attr-defined]
             s, f
         )._write_text_bytes()
 
@@ -220,7 +222,7 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
                     letter_should_be_redacted: bool = any(
                         [
                             x.intersects(evt.get_bounding_box())
-                            for x in canvas_stream_processor.redacted_rectangles  # type: ignore[attr-defined]
+                            for x in canvas_stream_processor._redacted_rectangles  # type: ignore[attr-defined]
                         ]
                     )
                     graphics_state = canvas_stream_processor.get_canvas().graphics_state
@@ -239,7 +241,7 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
                     else:
                         # write position command if needed
                         if jump_from_redacted:
-                            canvas_stream_processor.redacted_content += "\n%f %f %f %f %f %f Tm" % (  # type: ignore[attr-defined]
+                            canvas_stream_processor._redacted_content += "\n%f %f %f %f %f %f Tm" % (  # type: ignore[attr-defined]
                                 graphics_state.text_matrix[0][0],
                                 graphics_state.text_matrix[0][1],
                                 graphics_state.text_matrix[1][0],
@@ -250,7 +252,7 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
                             jump_from_redacted = False
                         # write command
                         self._write_chunk_of_text(
-                            canvas_stream_processor, evt.text, evt.font
+                            canvas_stream_processor, evt.get_text(), evt.get_font()
                         )
                         # update text_matrix
                         graphics_state.text_matrix[2][0] += w
@@ -271,7 +273,7 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
                 gs.text_matrix[2][0] -= adjust_scaled
 
                 # write operator
-                canvas_stream_processor.redacted_content += "\n%f %f %f %f %f %f Tm" % (  # type: ignore [attr-defined]
+                canvas_stream_processor._redacted_content += "\n%f %f %f %f %f %f Tm" % (  # type: ignore [attr-defined]
                     gs.text_matrix[0][0],
                     gs.text_matrix[0][1],
                     gs.text_matrix[1][0],
@@ -307,28 +309,25 @@ class RedactedCanvasStreamProcessor(CanvasStreamProcessor):
         super(RedactedCanvasStreamProcessor, self).__init__(page, canvas, [])
 
         # redacted content
-        self.redacted_content = ""
+        self._redacted_content = ""
 
         # redacted rectangle
-        self.redacted_rectangles = redacted_rectangles
-
-        # content stream being rebuilt
-        self.content_stream = ""
+        self._redacted_rectangles = redacted_rectangles
 
         # every operator is replaced by the CopyCommandOperator
-        for name, operator in self.canvas_operators.items():
-            self.canvas_operators[name] = CopyCommandOperator(
-                self.canvas_operators[name]
+        for name, operator in self._canvas_operators.items():
+            self._canvas_operators[name] = CopyCommandOperator(
+                self._canvas_operators[name]
             )
 
         # Tj
-        self.canvas_operators["Tj"] = ShowTextMod()
+        self._canvas_operators["Tj"] = ShowTextMod()
 
         # TJ
-        self.canvas_operators["TJ"] = ShowTextWithGlyphPositioningMod()
+        self._canvas_operators["TJ"] = ShowTextWithGlyphPositioningMod()
 
     def get_redacted_content(self) -> bytes:
         """
         This function returns the redacted content of this implementation of CanvasStreamProcessor
         """
-        return self.redacted_content.encode("latin1")
+        return self._redacted_content.encode("latin1")

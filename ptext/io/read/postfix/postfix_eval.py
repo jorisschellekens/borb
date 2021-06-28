@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-    The language that shall be used in a type 4 function contains expressions involving integers, real numbers, and
-    boolean values only. There shall be no composite data structures such as strings or arrays, no procedures, and
-    no variables or names. Table 42 lists the operators that can be used in this type of function. (For more
-    information on these operators, see Appendix B of the PostScript Language Reference, Third Edition.)
-    Although the semantics are those of the corresponding PostScript operators, a full PostScript interpreter is not
-    required.
+The language that shall be used in a type 4 function contains expressions involving integers, real numbers, and
+boolean values only. There shall be no composite data structures such as strings or arrays, no procedures, and
+no variables or names. Table 42 lists the operators that can be used in this type of function. (For more
+information on these operators, see Appendix B of the PostScript Language Reference, Third Edition.)
+Although the semantics are those of the corresponding PostScript operators, a full PostScript interpreter is not
+required.
 """
 import typing
 from decimal import Decimal

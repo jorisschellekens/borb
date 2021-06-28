@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    Set the text matrix, Tm , and the text line matrix, Tlm :
-    Tm = Tlm = [[a,b,0], [c,d,0],[e,f,1]]
+Set the text matrix, Tm , and the text line matrix, Tlm :
+Tm = Tlm = [[a,b,0], [c,d,0],[e,f,1]]
 """
 import copy
 from decimal import Decimal

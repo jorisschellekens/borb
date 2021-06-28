@@ -29,7 +29,7 @@ class TestExportPDFToSVG(unittest.TestCase):
             l = PDFToSVG()
             doc = PDF.loads(pdf_file_handle, [l])
             with open(self.output_dir / "output.svg", "wb") as svg_file_handle:
-                svg_file_handle.write(ET.tostring(l.svg_per_page.get(0)))
+                svg_file_handle.write(ET.tostring(l.get_image(0)))
 
 
 if __name__ == "__main__":

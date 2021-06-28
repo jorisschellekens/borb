@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing Stream objects
+This implementation of WriteBaseTransformer is responsible for writing Stream objects
 """
 import logging
 import typing
@@ -39,7 +39,9 @@ class WriteStreamTransformer(WriteBaseTransformer):
         """
         This method writes a Stream to a byte stream
         """
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write Stream objects."
         assert context.destination is not None
         assert isinstance(object_to_transform, Stream)
 

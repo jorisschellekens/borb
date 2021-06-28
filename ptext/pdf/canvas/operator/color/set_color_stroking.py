@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    (PDF 1.2) Same as SC but also supports Pattern, Separation, DeviceN
-    and ICCBased colour spaces.
+(PDF 1.2) Same as SC but also supports Pattern, Separation, DeviceN
+and ICCBased colour spaces.
 """
 from decimal import Decimal
 from typing import List
@@ -31,14 +31,14 @@ class SetColorStroking(CanvasOperator):
 
     def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):  # type: ignore [name-defined]
         super().__init__("SCN", 0)
-        self.canvas = canvas_stream_processor.get_canvas()
+        self._canvas = canvas_stream_processor.get_canvas()
 
     def get_number_of_operands(self) -> int:
         """
         This function returns the number of operands for the SCN operator.
         The number of operands and their interpretation depends on the colour space.
         """
-        stroke_color_space = self.canvas.graphics_state.stroke_color_space
+        stroke_color_space = self._canvas.graphics_state.stroke_color_space
         if stroke_color_space == "DeviceCMYK":
             return 4
         if stroke_color_space == "DeviceGray":
@@ -52,7 +52,7 @@ class SetColorStroking(CanvasOperator):
             and stroke_color_space[0] == "Separation"
         ):
             return 1
-        return self.number_of_operands
+        return self._number_of_operands
 
     def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
         """

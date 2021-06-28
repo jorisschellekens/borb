@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of EventListener keeps track of which space on a Page is available
+This implementation of EventListener keeps track of which space on a Page is available
 """
 import copy
 import io
@@ -24,55 +24,73 @@ class FreeSpaceFinder(EventListener):
     """
 
     def __init__(self, page: Page):
-        self.page_width: typing.Optional[Decimal] = page.get_page_info().get_width()
-        self.page_height: typing.Optional[Decimal] = page.get_page_info().get_height()
-        assert self.page_width
-        assert self.page_height
+        self._page_width: typing.Optional[Decimal] = page.get_page_info().get_width()
+        self._page_height: typing.Optional[Decimal] = page.get_page_info().get_height()
+        assert self._page_width
+        assert self._page_height
 
         # mock Page and Canvas
-        self.mock_page: Page = copy.deepcopy(page)
-        self.mock_canvas: Canvas = Canvas().set_parent(self.mock_page)  # type: ignore [attr-defined]
+        self._mock_page: Page = copy.deepcopy(page)
+        self._mock_canvas: Canvas = Canvas().set_parent(self._mock_page)  # type: ignore [attr-defined]
 
         # grid information
-        self.grid_resolution: int = 10
-        self.grid: typing.List[typing.List[bool]] = [[]]
+        self._grid_resolution: int = 10
+        self._grid: typing.List[typing.List[bool]] = []
 
         # render canvas
         self._render_canvas()
 
+    def get_grid_resolution(self) -> int:
+        """
+        This function returns the grid resolution of the FreeSpaceFinder.
+        """
+        return self._grid_resolution
+
+    def get_number_of_columns_in_grid(self) -> int:
+        """
+        This function returns the number of columns in the grid used by this FreeSpaceFinder
+        """
+        return len(self._grid[0])
+
+    def get_number_of_rows_in_grid(self) -> int:
+        """
+        This function returns the number of rows in the grid used by this FreeSpaceFinder
+        """
+        return len(self._grid)
+
     def _mark_as_unavailable(self, rectangle: Rectangle):
-        x_grid = int(int(rectangle.x) / self.grid_resolution)
-        y_grid = int(int(rectangle.y) / self.grid_resolution)
-        w = int(int(rectangle.width) / self.grid_resolution)
-        h = int(int(rectangle.height) / self.grid_resolution)
+        x_grid = int(int(rectangle.x) / self._grid_resolution)
+        y_grid = int(int(rectangle.y) / self._grid_resolution)
+        w = int(int(rectangle.width) / self._grid_resolution)
+        h = int(int(rectangle.height) / self._grid_resolution)
         for i in range(x_grid - 1, x_grid + w + 1):
             for j in range(y_grid - 1, y_grid + h + 1):
-                if i < 0 or i >= len(self.grid):
+                if i < 0 or i >= len(self._grid):
                     continue
-                if j < 0 or j >= len(self.grid[i]):
+                if j < 0 or j >= len(self._grid[i]):
                     continue
-                self.grid[i][j] = False
+                self._grid[i][j] = False
 
     def _render_canvas(self):
-        w = int(int(self.page_width) / self.grid_resolution)
-        h = int(int(self.page_height) / self.grid_resolution)
+        w = int(int(self._page_width) / self._grid_resolution)
+        h = int(int(self._page_height) / self._grid_resolution)
 
         # mark everything as available
         for i in range(0, w):
-            self.grid.append([True for x in range(0, h)])
+            self._grid.append([True for x in range(0, h)])
 
         # add listeners
-        self.mock_canvas.add_event_listener(self)
+        self._mock_canvas.add_event_listener(self)
 
         # process canvas
-        contents = self.mock_page["Contents"]
+        contents = self._mock_page["Contents"]
         if isinstance(contents, dict):
-            CanvasStreamProcessor(self.mock_page, self.mock_canvas).read(
+            CanvasStreamProcessor(self._mock_page, self._mock_canvas).read(
                 io.BytesIO(contents["DecodedBytes"])
             )
         if isinstance(contents, list):
             bts = b"".join([x["DecodedBytes"] + b" " for x in contents])
-            CanvasStreamProcessor(self.mock_page, self.mock_canvas).read(
+            CanvasStreamProcessor(self._mock_page, self._mock_canvas).read(
                 io.BytesIO(bts)
             )
 
@@ -80,15 +98,15 @@ class FreeSpaceFinder(EventListener):
         """
         This function returns a Rectangle (or None) of free space (no text rendering operations, no drawing operations) near the given Rectangle
         """
-        w = int(int(needed_space.width) / self.grid_resolution)
-        h = int(int(needed_space.height) / self.grid_resolution)
+        w = int(int(needed_space.width) / self._grid_resolution)
+        h = int(int(needed_space.height) / self._grid_resolution)
         possible_points: typing.List[typing.Tuple[Decimal, Decimal]] = []
-        for i in range(0, len(self.grid) - w):
-            for j in range(0, len(self.grid[i]) - h):
+        for i in range(0, len(self._grid) - w):
+            for j in range(0, len(self._grid[i]) - h):
                 is_free = True
                 for k in range(0, w):
                     for l in range(0, h):
-                        if not self.grid[i + k][j + l]:
+                        if not self._grid[i + k][j + l]:
                             is_free = False
                             break
                     if not is_free:
@@ -96,8 +114,8 @@ class FreeSpaceFinder(EventListener):
                 if is_free:
                     possible_points.append(
                         (
-                            Decimal(i * self.grid_resolution),
-                            Decimal(j * self.grid_resolution),
+                            Decimal(i * self._grid_resolution),
+                            Decimal(j * self._grid_resolution),
                         )
                     )
         # find point closest to desired location

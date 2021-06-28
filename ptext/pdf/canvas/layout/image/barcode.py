@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This module contains everything needed to implement a LayoutElement representing a barcode.
+This module contains everything needed to implement a LayoutElement representing a barcode.
 """
 import typing
 from decimal import Decimal
@@ -54,7 +54,8 @@ class InMemoryBarcodeWriter(BarcodeImageWriter):
         self.output_image: typing.Optional[PILImage] = None
 
     def save(self, filename, output):
-        """Saves the rendered output to `filename` storing the output.
+        """
+        Saves the rendered output to `filename` storing the output.
 
         :parameters:
             filename : String
@@ -88,10 +89,10 @@ class Barcode(Image):
         stroke_color: Color = X11Color("Black"),
         fill_color: Color = X11Color("White"),
     ):
-        self.data = data
-        self.type = type
-        self.stroke_color = stroke_color
-        self.fill_color = fill_color
+        self._data = data
+        self._type = type
+        self._stroke_color = stroke_color
+        self._fill_color = fill_color
 
         assert stroke_color != fill_color
 
@@ -110,8 +111,8 @@ class Barcode(Image):
         ean.save(
             "",
             options={
-                "foreground": self.stroke_color.to_rgb().to_hex_string(),
-                "background": self.fill_color.to_rgb().to_hex_string(),
+                "foreground": self._stroke_color.to_rgb().to_hex_string(),
+                "background": self._fill_color.to_rgb().to_hex_string(),
             },
         )
 
@@ -136,8 +137,8 @@ class Barcode(Image):
 
         # png to jpg
         png_image: PILImage = qr.make_image(
-            fill_color=self.stroke_color.to_rgb().to_hex_string(),
-            back_color=self.fill_color.to_rgb().to_hex_string(),
+            fill_color=self._stroke_color.to_rgb().to_hex_string(),
+            back_color=self._fill_color.to_rgb().to_hex_string(),
         )
         jpg_image = png_image.convert("RGB")
 

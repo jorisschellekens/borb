@@ -5,6 +5,8 @@
     This implementation of EventListener extracts all text from a PDF Document,
     substituting composite glyphs for their simpler representations
 """
+import typing
+
 from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
@@ -16,7 +18,7 @@ class SimpleNonLigatureTextExtraction(SimpleTextExtraction):
 
     def __init__(self):
         super(SimpleNonLigatureTextExtraction, self).__init__()
-        self.ligatures_to_replace = {
+        self._ligatures_to_replace: typing.Dict[str, str] = {
             "Ꜳ": "AA",
             "ꜳ": "aa",
             "Æ": "AE",
@@ -66,9 +68,9 @@ class SimpleNonLigatureTextExtraction(SimpleTextExtraction):
         This function returns all text on a given page
         """
         text: str = ""
-        if page_nr in self.text_per_page:
-            text = self.text_per_page[page_nr]
-            while any([k in text for k, v in self.ligatures_to_replace]):
-                for k, v in self.ligatures_to_replace.items():
+        if page_nr in self._text_per_page:
+            text = self._text_per_page[page_nr]
+            while any([k in text for k, v in self._ligatures_to_replace]):
+                for k, v in self._ligatures_to_replace.items():
                     text = text.replace(k, v)
         return text

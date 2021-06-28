@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    In Euclidean plane geometry, a rectangle is a quadrilateral with four right angles.
+In Euclidean plane geometry, a rectangle is a quadrilateral with four right angles.
 """
 from decimal import Decimal
 
@@ -22,8 +22,8 @@ class Rectangle:
         width: Decimal,
         height: Decimal,
     ):
-        assert width >= 0
-        assert height >= 0
+        assert width >= 0, "A Rectangle must have a non-negative width."
+        assert height >= 0, "A Rectangle must have a non-negative height."
         self.x = lower_left_x
         self.y = lower_left_y
         self.width = width

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing booleans
+This implementation of WriteBaseTransformer is responsible for writing booleans
 """
 from typing import Optional
 
@@ -36,7 +36,7 @@ class WriteBooleanTransformer(WriteBaseTransformer):
         assert context.destination is not None
         assert isinstance(object_to_transform, Boolean)
 
-        if object_to_transform.value:
+        if bool(object_to_transform):
             context.destination.write(bytes("true", "latin1"))
         else:
             context.destination.write(bytes("false", "latin1"))

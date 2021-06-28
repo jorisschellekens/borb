@@ -60,6 +60,10 @@ class LineOfText(ChunkOfText):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        margin_top: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
@@ -78,6 +82,10 @@ class LineOfText(ChunkOfText):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            margin_top=margin_top or Decimal(0),
+            margin_right=margin_right or Decimal(0),
+            margin_bottom=margin_bottom or Decimal(0),
+            margin_left=margin_left or Decimal(0),
             background_color=background_color,
             vertical_alignment=vertical_alignment,
             horizontal_alignment=horizontal_alignment,

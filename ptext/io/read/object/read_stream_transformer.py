@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading Stream objects
+This implementation of ReadBaseTransformer is responsible for reading Stream objects
 """
 import io
 import typing
@@ -53,7 +53,7 @@ class ReadStreamTransformer(ReadBaseTransformer):
         xref = parent_object.get_root().get("XRef")
         for k, v in object_to_transform.items():
             if isinstance(v, Reference):
-                v = xref.get_object(v, context.tokenizer.io_source, context.tokenizer)
+                v = xref.get_object(v, context.source, context.tokenizer)
                 object_to_transform[k] = v
 
         # apply filter(s)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    This class is the base implementation of a transformer pattern.
-    It reads bytes from a PDF document, and converts it to JSON-like datastructures.
+This class is the base implementation of a transformer pattern.
+It reads bytes from a PDF document, and converts it to JSON-like datastructures.
 """
 import io
 import typing
@@ -51,8 +51,8 @@ class WriteBaseTransformer:
     """
 
     def __init__(self):
-        self.handlers = []
-        self.parent = None
+        self._handlers: typing.List["WriteBaseTransformer"] = []
+        self._parent: typing.Optional["WriteBaseTransformer"] = None
 
     def add_child_transformer(
         self, handler: "WriteBaseTransformer"  # type: ignore [name-defined]
@@ -65,8 +65,8 @@ class WriteBaseTransformer:
         `transform` method called.
         This function returns self.
         """
-        self.handlers.append(handler)
-        handler.parent = self
+        self._handlers.append(handler)
+        handler._parent = self
         return self
 
     def get_root_transformer(self) -> "WriteBaseTransformer":  # type: ignore [name-defined]
@@ -77,8 +77,8 @@ class WriteBaseTransformer:
         by delegating the call to the root WriteBaseTransformer.
         """
         p = self
-        while p.parent is not None:
-            p = p.parent
+        while p._parent is not None:
+            p = p._parent
         return p
 
     def can_be_transformed(self, any: AnyPDFType):
@@ -98,7 +98,7 @@ class WriteBaseTransformer:
         """
         # transform object
         return_value = None
-        for h in self.handlers:
+        for h in self._handlers:
             if h.can_be_transformed(object_to_transform):
                 return_value = h.transform(
                     object_to_transform,

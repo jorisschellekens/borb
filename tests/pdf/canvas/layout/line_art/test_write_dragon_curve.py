@@ -5,10 +5,13 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.image.shape import Shape
-from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -38,10 +41,12 @@ class TestWriteDragonCurve(unittest.TestCase):
         assert h is not None
         layout.add(
             Shape(
-                LineArtFactory.dragon_curve(
-                    bounding_box=Rectangle(Decimal(0), Decimal(0), w, h),
+                LineArtFactory.smooth_dragon_curve(
+                    bounding_box=Rectangle(Decimal(0), Decimal(0), w * Decimal(0.75), h * Decimal(0.75)),
                     number_of_iterations=10,
                 ),
+                horizontal_alignment=Alignment.CENTERED,
+                vertical_alignment=Alignment.MIDDLE,
                 stroke_color=HexColor("86CD82"),
                 line_width=Decimal(1),
                 fill_color=None,

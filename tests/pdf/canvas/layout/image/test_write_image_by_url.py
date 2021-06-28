@@ -5,9 +5,11 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.layout.image.image import Image
 from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -64,6 +66,7 @@ class TestSimpleImageByURL(unittest.TestCase):
             Image(
                 "https://images.unsplash.com/photo-1597826368522-9f4cb5a6ba48?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw",
                 width=Decimal(256),
+                height=Decimal(256),
                 horizontal_alignment=Alignment.CENTERED,
             )
         )

@@ -3,7 +3,7 @@
 
 """
     CID-keyed fonts provide a convenient and efficient method for defining multiple-byte character encodings and
-    fonts with a large number of glyphs. These capabilities provide great flexibility for representing text in writing
+   fonts with a large number of glyphs. These capabilities provide great flexibility for representing text in writing
     systems for languages with large character sets, such as Chinese, Japanese, and Korean (CJK).
 
     The CID-keyed font architecture specifies the external representation of certain font programs, called CMap

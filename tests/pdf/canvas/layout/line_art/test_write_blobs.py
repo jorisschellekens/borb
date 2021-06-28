@@ -4,11 +4,14 @@ from pathlib import Path
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.image.shape import Shape
-from ptext.pdf.canvas.layout.table import Table, TableCell
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.base_table import TableCell
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.line_art.blob_factory import BlobFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -55,7 +58,7 @@ class TestWriteBlobs(unittest.TestCase):
 
         N = 4
         colors = [HexColor("72A276"), HexColor("86CD82")]
-        t = Table(number_of_rows=N, number_of_columns=N)
+        t = Table(number_of_rows=N, number_of_columns=N, padding_top=Decimal(5))
         for i in range(0, N):
             for _ in range(0, N):
                 t.add(

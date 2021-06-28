@@ -16,7 +16,7 @@ class DocumentInfo:
 
     def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super().__init__()
-        self._document = document
+        self._document: "Document" = document  # type: ignore [name-defined]
 
     def has_optional_content(self) -> bool:
         """

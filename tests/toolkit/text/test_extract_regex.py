@@ -5,9 +5,11 @@ from pathlib import Path
 
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -89,7 +91,7 @@ class TestExtractRegularExpression(unittest.TestCase):
 
         bb = l.get_all_matches(0)[0].get_bounding_boxes()[0]
         assert int(bb.x) == 197
-        assert int(bb.y) == 623
+        assert int(bb.y) == 638
         assert int(bb.width) == 75
         assert int(bb.height) == 7
 

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    Close and stroke the path. This operator shall have the same effect as the
-    sequence h S.
+Close and stroke the path. This operator shall have the same effect as the
+sequence h S.
 """
 import typing
 from typing import List

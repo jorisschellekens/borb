@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing List objects
+This implementation of WriteBaseTransformer is responsible for writing List objects
 """
 import logging
 import typing
@@ -39,7 +39,9 @@ class WriteArrayTransformer(WriteBaseTransformer):
         This method writes a List to a byte stream
         """
         assert isinstance(object_to_transform, List)
-        assert context is not None
+        assert (
+            context is not None
+        ), "A WriteTransformerContext must be defined in order to write Array objects."
         assert context.destination is not None
         assert context.destination
 

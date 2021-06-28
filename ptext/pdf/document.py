@@ -336,9 +336,7 @@ class Document(Dictionary):
 
         return self
 
-    def append_embedded_file(
-        self, file_name: str, file_bytes: bytes, apply_compression: bool = True
-    ) -> "Document":
+    def append_embedded_file(self, file_name: str, file_bytes: bytes) -> "Document":
         """
         If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
         some provision should be made to ensure that the external references will remain valid. One way to do this is to
@@ -403,12 +401,7 @@ class Document(Dictionary):
             # build actual file stream
             stream = Stream()
             stream[Name("Type")] = Name("EmbeddedFile")
-            if not apply_compression:
-                stream[Name("Bytes")] = file_bytes
-            else:
-                stream[Name("DecodedBytes")] = file_bytes
-                stream[Name("Bytes")] = zlib.compress(stream[Name("DecodedBytes")], 9)
-                stream[Name("Filter")] = Name("FlateDecode")
+            stream[Name("Bytes")] = file_bytes
             stream[Name("Length")] = Decimal(len(stream[Name("Bytes")]))
 
             # build leaf \Filespec dictionary

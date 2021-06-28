@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of LayoutElement represents an Image
+This implementation of LayoutElement represents an Image
 """
 import typing
 from decimal import Decimal
@@ -27,6 +27,10 @@ class Image(LayoutElement):
         image: typing.Union[str, PILImage.Image],
         width: Optional[Decimal] = None,
         height: Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
     ):
@@ -38,13 +42,18 @@ class Image(LayoutElement):
                 ).raw
             )
         super(Image, self).__init__(
+            font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
             vertical_alignment=vertical_alignment,
+            margin_top=margin_top or Decimal(5),
+            margin_right=margin_right or Decimal(5),
+            margin_bottom=margin_bottom or Decimal(5),
+            margin_left=margin_left or Decimal(5),
         )
         add_base_methods(image)
-        self.image: PILImage = image
-        self.width = width
-        self.height = height
+        self._image: PILImage = image
+        self._width = width or Decimal(self._image.width)
+        self._height = height or Decimal(self._image.height)
 
     def _get_image_resource_name(self, image: PILImage, page: Page):
         # create resources if needed
@@ -68,52 +77,32 @@ class Image(LayoutElement):
         self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
     ) -> Rectangle:
 
-        # calculate width and height
-        if self.width is None and self.height is None:
-            self.width = self.image.width
-            self.height = self.image.height
-        else:
-            if self.width is None:
-                h_scale: Decimal = self.height / self.image.height
-                self.width = self.image.width * h_scale
-            if self.height is None:
-                w_scale: Decimal = self.width / self.image.width
-                self.height = self.image.height * w_scale
-
-        # adjust width to bounding box
-        if self.width > bounding_box.width:
-            self.height = self.height * (bounding_box.width / self.width)
-            self.width = bounding_box.width
-
-        # adjust height to bounding box
-        if self.height > bounding_box.height:
-            self.width = self.width * (bounding_box.height / self.height)
-            self.height = bounding_box.height
-
         # return
-        return Rectangle(
+        layout_box: Rectangle = Rectangle(
             bounding_box.x,
-            bounding_box.y + bounding_box.height - self.height,
-            self.width,
-            self.height,
+            bounding_box.y + bounding_box.get_height() - self._height,
+            self._width,
+            self._height,
         )
+        self.set_bounding_box(layout_box)
+        return layout_box
 
     def _do_layout_without_padding(
         self, page: Page, bounding_box: Rectangle
     ) -> Rectangle:
 
         # add image to resources
-        image_resource_name = self._get_image_resource_name(self.image, page)
+        image_resource_name = self._get_image_resource_name(self._image, page)
 
-        assert self.width is not None
-        assert self.height is not None
+        assert self._width is not None
+        assert self._height is not None
 
         # write Do operator
         content = " q %f 0 0 %f %f %f cm /%s Do Q " % (
-            self.width,
-            self.height,
-            bounding_box.x,
-            bounding_box.y + bounding_box.height - self.height,
+            self._width,
+            self._height,
+            bounding_box.get_x(),
+            bounding_box.get_y() + bounding_box.get_height() - self._height,
             image_resource_name,
         )
 
@@ -123,7 +112,7 @@ class Image(LayoutElement):
         # return
         return Rectangle(
             bounding_box.x,
-            bounding_box.y + bounding_box.height - self.height,
-            self.width,
-            self.height,
+            bounding_box.y + bounding_box.get_height() - self._height,
+            self._width,
+            self._height,
         )

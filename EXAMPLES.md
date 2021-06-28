@@ -1106,6 +1106,45 @@ The constructor of `PDFToMP3` has some arguments that allow us to tweak the expo
 - `language` : This is the 2-letter abbreviation of the language you expect the text to be in. Default is `en`
 - `slow`: This indicates whether you want the speaking-voice to go (extra) slow, or not
 
+#### 1.9.3 Exporting Markdown to PDF
+    
+First we open the markdown file and read its contents:
+    
+    markdown_txt: str = ""
+    with open("readme.md", "r") as markdown_file_handle:
+        markdown_txt = markdown_file_handle.read()
+    
+Then we call the `convert_markdown_to_pdf` method of the `MarkdownToPDF` class:
+
+    # convert
+    document: Document = MarkdownToPDF.convert_markdown_to_pdf(markdown_txt)
+
+Finally, we store the resulting `Document`:
+
+    # store
+    with open("output.pdf", "wb") as pdf_file_handle:
+        PDF.dumps(pdf_file_handle, document)
+        
+        
+#### 1.9.4 Exporting HTML to PDF
+
+First we open the HTML file and read its contents:
+    
+    html_txt: str = ""
+    with open("readme.html", "r") as html_file_handle:
+        html_txt = html_file_handle.read()
+    
+Then we call the `convert_html_to_pdf` method of the `HTMLToPDF` class:
+
+    # convert
+    document: Document = HTMLToPDF.convert_html_to_pdf(html_txt)
+
+Finally, we store the resulting `Document`:
+
+    # store
+    with open("output.pdf", "wb") as pdf_file_handle:
+        PDF.dumps(pdf_file_handle, document)
+
 ### 1.10 Concatenating PDFs, and other page-manipulations
 
 A common scenario, when working with existing PDF `Document` objects is concatenation.

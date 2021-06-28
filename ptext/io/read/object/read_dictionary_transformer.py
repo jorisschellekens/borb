@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading a Dictionary object
+This implementation of ReadBaseTransformer is responsible for reading a Dictionary object
 """
 import io
 import typing

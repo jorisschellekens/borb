@@ -16,11 +16,11 @@ class LineRenderEvent(Event):
 
     def __init__(self, graphics_state: CanvasGraphicsState, line_segment: LineSegment):
         super(LineRenderEvent, self).__init__()
-        self.graphics_state = graphics_state
-        self.line_segment = line_segment
+        self._graphics_state = graphics_state
+        self._line_segment = line_segment
 
     def get_line_segment(self) -> LineSegment:
         """
         Get the LineSegment that was constructed through various path-painting operators
         """
-        return self.line_segment
+        return self._line_segment

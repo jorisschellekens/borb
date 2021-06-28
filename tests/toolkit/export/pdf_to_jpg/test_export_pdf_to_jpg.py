@@ -27,7 +27,7 @@ class TestExportPDFToJPG(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             l = PDFToJPG()
             doc = PDF.loads(pdf_file_handle, [l])
-            im = l.image_per_page.get(0)
+            im = l.get_image(0)
             im.save(self.output_dir / "output.jpg")
 
         return True

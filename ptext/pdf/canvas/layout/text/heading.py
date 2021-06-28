@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of LayoutElement acts just like Paragraph.
-    It also adds an outline in the document outline tree.
+This implementation of LayoutElement acts just like Paragraph.
+It also adds an outline in the document outline tree.
 """
 import typing
 from decimal import Decimal
@@ -44,6 +44,10 @@ class Heading(Paragraph):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        margin_top: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
@@ -65,12 +69,34 @@ class Heading(Paragraph):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            margin_top=margin_top
+            or {
+                1: Decimal(0.335),
+                2: Decimal(0.553),
+                3: Decimal(0.855),
+                4: Decimal(1.333),
+                5: Decimal(2.012),
+                6: Decimal(3.477),
+            }.get(outline_level + 1, Decimal(1))
+            * font_size,
+            margin_right=margin_right or Decimal(0),
+            margin_bottom=margin_bottom
+            or {
+                1: Decimal(0.335),
+                2: Decimal(0.553),
+                3: Decimal(0.855),
+                4: Decimal(1.333),
+                5: Decimal(2.012),
+                6: Decimal(3.477),
+            }.get(outline_level + 1, Decimal(1))
+            * font_size,
+            margin_left=margin_left or Decimal(0),
             background_color=background_color,
             parent=parent,
         )
-        self.outline_text = outline_text or text
-        self.outline_level = outline_level
-        self.has_added_outline = False
+        self._outline_text = outline_text or text
+        self._outline_level = outline_level
+        self._has_added_outline = False
 
     def _do_layout_without_padding(
         self, page: Page, bounding_box: Rectangle
@@ -78,7 +104,7 @@ class Heading(Paragraph):
         layout_rect = super(Heading, self)._do_layout_without_padding(
             page, bounding_box
         )
-        if not self.has_added_outline:
+        if not self._has_added_outline:
             self._add_outline(page)
         return layout_rect
 
@@ -91,11 +117,11 @@ class Heading(Paragraph):
         page_nr = page.get_page_info().get_page_number()
         assert page_nr is not None
         p.add_outline(
-            text=self.outline_text,
-            level=self.outline_level,
+            text=self._outline_text,
+            level=self._outline_level,
             destination_type=DestinationType.FIT,
             page_nr=int(page_nr),
         )
 
         # mark
-        self.has_added_outline = True
+        self._has_added_outline = True

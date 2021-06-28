@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading Reference objects
-    e.g. 97 0 R
+This implementation of ReadBaseTransformer is responsible for reading Reference objects
+e.g. 97 0 R
 """
 import io
 import logging
@@ -116,6 +116,10 @@ class ReadReferenceTransformer(ReadBaseTransformer):
         try:
             transformed_referenced_object.set_reference(object_to_transform)
         except:
+            logger.debug(
+                "Unable to set reference on object %s"
+                % str(transformed_referenced_object)
+            )
             pass
 
         # return

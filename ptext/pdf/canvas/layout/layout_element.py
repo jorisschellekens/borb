@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This file contains all the classes needed to perform layout.
-    This includes an Alignment Enum type, and the base implementation of LayoutElement
+This file contains all the classes needed to perform layout.
+This includes an Alignment Enum type, and the base implementation of LayoutElement
 """
 import typing
 import zlib
@@ -43,39 +43,60 @@ class LayoutElement:
 
     def __init__(
         self,
-        border_top: bool = False,
-        border_right: bool = False,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
-        border_left: bool = False,
         border_color: Color = X11Color("Black"),
+        border_left: bool = False,
+        border_right: bool = False,
+        border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
+        font_size: typing.Optional[Decimal] = None,
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
-        horizontal_alignment: Alignment = Alignment.LEFT,
-        vertical_alignment: Alignment = Alignment.TOP,
-        background_color: typing.Optional[Color] = None,
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
         parent: typing.Optional["LayoutElement"] = None,
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
+        # background color
+        self._background_color = background_color
+
         # borders
-        self.border_top = border_top
-        self.border_right = border_right
-        self.border_bottom = border_bottom
-        self.border_left = border_left
+        self._border_top = border_top
+        self._border_right = border_right
+        self._border_bottom = border_bottom
+        self._border_left = border_left
         assert border_width >= 0
-        self.border_width = border_width
-        self.border_color = border_color
+        self._border_width = border_width
+        self._border_color = border_color
+
+        # font_size
+        self._font_size = font_size
+
+        # margin
+        assert margin_top is None or margin_top >= 0
+        assert margin_right is None or margin_right >= 0
+        assert margin_bottom is None or margin_bottom >= 0
+        assert margin_left is None or margin_left >= 0
+        self._margin_top = margin_top
+        self._margin_right = margin_right
+        self._margin_bottom = margin_bottom
+        self._margin_left = margin_left
 
         # padding
         assert padding_top >= 0
         assert padding_right >= 0
         assert padding_bottom >= 0
         assert padding_left >= 0
-        self.padding_top = padding_top
-        self.padding_right = padding_right
-        self.padding_bottom = padding_bottom
-        self.padding_left = padding_left
+        self._padding_top = padding_top
+        self._padding_right = padding_right
+        self._padding_bottom = padding_bottom
+        self._padding_left = padding_left
 
         # alignment
         assert horizontal_alignment in [
@@ -85,17 +106,44 @@ class LayoutElement:
             Alignment.JUSTIFIED,
         ]
         assert vertical_alignment in [Alignment.TOP, Alignment.MIDDLE, Alignment.BOTTOM]
-        self.horizontal_alignment = horizontal_alignment
-        self.vertical_alignment = vertical_alignment
-
-        # background color
-        self.background_color = background_color
+        self._horizontal_alignment = horizontal_alignment
+        self._vertical_alignment = vertical_alignment
 
         # linkage (for lists, tables, etc)
-        self.parent = parent
+        self._parent = parent
 
         # layout
         self.bounding_box: typing.Optional[Rectangle] = None
+
+    def get_font_size(self) -> Decimal:
+        """
+        This function returns the font size of this LayoutElement
+        """
+        return self._font_size or Decimal(0)
+
+    def get_margin_top(self) -> Decimal:
+        """
+        This function returns the top margin of this LayoutElement
+        """
+        return self._margin_top or Decimal(0)
+
+    def get_margin_right(self) -> Decimal:
+        """
+        This function returns the right margin of this LayoutElement
+        """
+        return self._margin_right or Decimal(0)
+
+    def get_margin_bottom(self) -> Decimal:
+        """
+        This function returns the bottom margin of this LayoutElement
+        """
+        return self._margin_bottom or Decimal(0)
+
+    def get_margin_left(self) -> Decimal:
+        """
+        This function returns the left margin of this LayoutElement
+        """
+        return self._margin_left or Decimal(0)
 
     def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
         """
@@ -134,32 +182,37 @@ class LayoutElement:
     def _calculate_layout_box(self, page: "Page", bounding_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
 
         # modify bounding box (to take into account padding)
-        modified_bounding_box = Rectangle(
-            bounding_box.x + self.padding_left,
-            bounding_box.y + self.padding_bottom,
+        modified_layout_box = Rectangle(
+            bounding_box.x + self._padding_left,
+            bounding_box.y + self._padding_bottom,
             max(
-                bounding_box.width - self.padding_right - self.padding_left, Decimal(0)
+                bounding_box.width - self._padding_right - self._padding_left,
+                Decimal(0),
             ),
             max(
-                bounding_box.height - self.padding_top - self.padding_bottom, Decimal(0)
+                bounding_box.height - self._padding_top - self._padding_bottom,
+                Decimal(0),
             ),
         )
 
         # delegate
-        layout_rect = self._calculate_layout_box_without_padding(
-            page, modified_bounding_box
+        returned_layout_box = self._calculate_layout_box_without_padding(
+            page, modified_layout_box
         )
 
         # modify rectangle (to take into account padding)
-        modified_layout_rect = Rectangle(
-            layout_rect.x - self.padding_left,
-            layout_rect.y - self.padding_bottom,
-            layout_rect.width + self.padding_left + self.padding_right,
-            layout_rect.height + self.padding_top + self.padding_bottom,
+        modified_returned_layout_box = Rectangle(
+            returned_layout_box.x - self._padding_left,
+            returned_layout_box.y - self._padding_bottom,
+            returned_layout_box.width + self._padding_left + self._padding_right,
+            returned_layout_box.height + self._padding_top + self._padding_bottom,
         )
 
+        # set
+        self.set_bounding_box(modified_returned_layout_box)
+
         # return
-        return modified_layout_rect
+        return modified_returned_layout_box
 
     def _calculate_layout_box_without_padding(
         self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
@@ -187,10 +240,14 @@ class LayoutElement:
 
         # modify bounding box (to take into account padding)
         modified_bounding_box = Rectangle(
-            layout_box.x + self.padding_left,
-            layout_box.y + self.padding_bottom,
-            max(layout_box.width - self.padding_right - self.padding_left, Decimal(0)),
-            max(layout_box.height - self.padding_top - self.padding_bottom, Decimal(0)),
+            layout_box.x + self._padding_left,
+            layout_box.y + self._padding_bottom,
+            max(
+                layout_box.width - self._padding_right - self._padding_left, Decimal(0)
+            ),
+            max(
+                layout_box.height - self._padding_top - self._padding_bottom, Decimal(0)
+            ),
         )
 
         # delegate
@@ -198,10 +255,10 @@ class LayoutElement:
 
         # modify rectangle (to take into account padding)
         modified_layout_rect = Rectangle(
-            output_box.x - self.padding_left,
-            output_box.y - self.padding_bottom,
-            output_box.width + self.padding_left + self.padding_right,
-            output_box.height + self.padding_top + self.padding_bottom,
+            output_box.x - self._padding_left,
+            output_box.y - self._padding_bottom,
+            output_box.width + self._padding_left + self._padding_right,
+            output_box.height + self._padding_top + self._padding_bottom,
         )
 
         # draw border
@@ -234,7 +291,7 @@ class LayoutElement:
         len_decoded_bytes_before = len(content_stream[Name("DecodedBytes")])
 
         # set the vertical alignment
-        if self.vertical_alignment == Alignment.MIDDLE:
+        if self._vertical_alignment == Alignment.MIDDLE:
             bounding_box = Rectangle(
                 bounding_box.x,
                 bounding_box.y,
@@ -243,7 +300,7 @@ class LayoutElement:
                 - bounding_box.height / Decimal(2)
                 + layout_box.height / Decimal(2),
             )
-        if self.vertical_alignment == Alignment.BOTTOM:
+        if self._vertical_alignment == Alignment.BOTTOM:
             bounding_box = Rectangle(
                 bounding_box.x,
                 bounding_box.y,
@@ -252,14 +309,14 @@ class LayoutElement:
             )
 
         # set the horizontal alignment
-        if self.horizontal_alignment == Alignment.CENTERED:
+        if self._horizontal_alignment == Alignment.CENTERED:
             bounding_box = Rectangle(
                 bounding_box.x + (bounding_box.width - layout_box.width) / Decimal(2),
                 bounding_box.y,
                 layout_box.width,
                 bounding_box.height,
             )
-        if self.horizontal_alignment == Alignment.RIGHT:
+        if self._horizontal_alignment == Alignment.RIGHT:
             bounding_box = Rectangle(
                 bounding_box.x + (bounding_box.width - layout_box.width),
                 bounding_box.y,
@@ -272,7 +329,7 @@ class LayoutElement:
         self.set_bounding_box(final_layout_box)
 
         # add background
-        if self.background_color is not None:
+        if self._background_color is not None:
 
             # change content stream to put background before rendering of the content
             added_content = content_stream[Name("DecodedBytes")][
@@ -300,10 +357,10 @@ class LayoutElement:
         return Rectangle(layout_box.x, layout_box.y, Decimal(0), Decimal(0))
 
     def _draw_background(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
-        if not self.background_color:
+        if not self._background_color:
             return
-        assert self.background_color
-        rgb_color = self.background_color.to_rgb()
+        assert self._background_color
+        rgb_color = self._background_color.to_rgb()
         COLOR_MAX = Decimal(255.0)
         content = """
             q %f %f %f rg %f %f m %f %f l %f %f l %f %f l f Q
@@ -325,51 +382,51 @@ class LayoutElement:
     def _draw_border(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
         # border is not wanted on any side
         if (
-            self.border_top
-            == self.border_right
-            == self.border_bottom
-            == self.border_left
+            self._border_top
+            == self._border_right
+            == self._border_bottom
+            == self._border_left
             == False
         ):
             return
 
         # border width is set to zero
-        if self.border_width == 0:
+        if self._border_width == 0:
             return
 
         # print("R %f %f %f %f " % (border_box.x, border_box.y, border_box.width, border_box.height))
 
         # draw border(s)
-        rgb_color = self.border_color.to_rgb()
+        rgb_color = self._border_color.to_rgb()
         COLOR_MAX = Decimal(255.0)
         content = "q %f %f %f RG %f w" % (
             Decimal(rgb_color.red / COLOR_MAX),
             Decimal(rgb_color.green / COLOR_MAX),
             Decimal(rgb_color.blue / COLOR_MAX),
-            self.border_width,
+            self._border_width,
         )
-        if self.border_top:
+        if self._border_top:
             content += " %f %f m %f %f l s" % (
                 border_box.x,
                 border_box.y + border_box.height,
                 border_box.x + border_box.width,
                 border_box.y + border_box.height,
             )
-        if self.border_right:
+        if self._border_right:
             content += " %d %d m %d %d l s" % (
                 border_box.x + border_box.width,
                 border_box.y + border_box.height,
                 border_box.x + border_box.width,
                 border_box.y,
             )
-        if self.border_bottom:
+        if self._border_bottom:
             content += " %d %d m %d %d l s" % (
                 border_box.x + border_box.width,
                 border_box.y,
                 border_box.x,
                 border_box.y,
             )
-        if self.border_left:
+        if self._border_left:
             content += " %d %d m %d %d l s" % (
                 border_box.x,
                 border_box.y,

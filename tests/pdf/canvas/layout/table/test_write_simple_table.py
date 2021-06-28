@@ -4,11 +4,12 @@ from pathlib import Path
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor, X11Color
-from ptext.pdf.canvas.color.pantone import Pantone
 from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -48,7 +49,7 @@ class TestWriteSimpleTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=5, number_of_columns=2)
+        t = Table(number_of_rows=5, number_of_columns=2, margin_top=Decimal(5))
         t.add(
             Paragraph(
                 "Language",
@@ -130,7 +131,7 @@ class TestWriteSimpleTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=5, number_of_columns=2)
+        t = Table(number_of_rows=5, number_of_columns=2, margin_top=Decimal(5))
         t.add(
             Paragraph(
                 "Language",
@@ -213,7 +214,7 @@ class TestWriteSimpleTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=5, number_of_columns=2)
+        t = Table(number_of_rows=5, number_of_columns=2, margin_top=Decimal(5))
         t.add(
             Paragraph(
                 "Language",
@@ -296,7 +297,7 @@ class TestWriteSimpleTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=5, number_of_columns=2)
+        t = Table(number_of_rows=5, number_of_columns=2, margin_top=Decimal(5))
         t.add(
             Paragraph(
                 "Language",
@@ -379,7 +380,7 @@ class TestWriteSimpleTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=5, number_of_columns=2)
+        t = Table(number_of_rows=5, number_of_columns=2, margin_top=Decimal(5))
         t.add(
             Paragraph(
                 "Language",

@@ -4,9 +4,12 @@ from pathlib import Path
 
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -14,7 +17,7 @@ from ptext.pdf.pdf import PDF
 
 class TestWriteWithTrueTypeFont(unittest.TestCase):
     """
-    This test loads a truetype font from a .ttf file and attempts to use it to write 2 paragraphs of lorem ipsum.
+    This test loads a truetype _font from a .ttf file and attempts to use it to write 2 paragraphs of lorem ipsum.
     """
 
     def __init__(self, methodName="runTest"):
@@ -51,13 +54,13 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test loads a truetype font from a .ttf file and attempts to use it to write 2 paragraphs of lorem ipsum."
+                    "This test loads a truetype _font from a .ttf file and attempts to use it to write 2 paragraphs of lorem ipsum."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        # path to font
+        # path to _font
         font_path: Path = Path(__file__).parent / "Jsfont-Regular.ttf"
         assert font_path.exists()
 

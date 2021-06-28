@@ -5,9 +5,11 @@ from pathlib import Path
 
 from ptext.io.read.types import List
 from ptext.pdf.canvas.color.color import X11Color
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -63,7 +65,7 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
         )
 
         layout.add(
-            Table(number_of_rows=5, number_of_columns=2)
+            Table(number_of_rows=5, number_of_columns=2, margin_top=Decimal(12))
             # heading
             .add(Paragraph("Information Type", font="Helvetica-Bold"))
             .add(Paragraph("Example", font="Helvetica-Bold"))
@@ -92,9 +94,6 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
         doc = None
         ls = [
             RegularExpressionTextExtraction(CommonRegularExpression.EMAIL.value),
-            RegularExpressionTextExtraction(
-                CommonRegularExpression.SOCIAL_SECURITY_NUMBER.value
-            ),
         ]
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, ls)

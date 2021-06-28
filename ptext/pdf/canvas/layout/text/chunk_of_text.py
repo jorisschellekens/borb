@@ -38,12 +38,17 @@ class ChunkOfText(LayoutElement):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        margin_top: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
         vertical_alignment: Alignment = Alignment.TOP,
         horizontal_alignment: Alignment = Alignment.LEFT,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
         super().__init__(
+            font_size=font_size,
             border_top=border_top,
             border_right=border_right,
             border_bottom=border_bottom,
@@ -54,19 +59,34 @@ class ChunkOfText(LayoutElement):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            margin_top=margin_top or Decimal(0),
+            margin_right=margin_right or Decimal(0),
+            margin_bottom=margin_bottom or Decimal(0),
+            margin_left=margin_left or Decimal(0),
             vertical_alignment=vertical_alignment,
             horizontal_alignment=horizontal_alignment,
             background_color=background_color,
             parent=parent,
         )
-        self.text = text
+        self._text = text
         if isinstance(font, str):
-            self.font: Font = StandardType1Font(font)
-            assert self.font
+            self._font: Font = StandardType1Font(font)
+            assert self._font
         else:
-            self.font = font
-        self.font_color = font_color
-        self.font_size = font_size
+            self._font = font
+        self._font_color = font_color
+
+    def get_text(self) -> str:
+        """
+        This function returns the text of this LayoutElement
+        """
+        return self._text
+
+    def get_font(self) -> Font:
+        """
+        This function returns the Font of this LayoutElement
+        """
+        return self._font
 
     def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed
@@ -88,8 +108,8 @@ class ChunkOfText(LayoutElement):
 
     def _write_text_bytes(self) -> str:
         hex_mode: bool = False
-        for c in self.text:
-            if ord(c) != self.font.unicode_to_character_identifier(c):
+        for c in self._text:
+            if ord(c) != self._font.unicode_to_character_identifier(c):
                 hex_mode = True
                 break
         if hex_mode:
@@ -99,10 +119,10 @@ class ChunkOfText(LayoutElement):
 
     def _write_text_bytes_in_hex(self) -> str:
         sOut: str = ""
-        for c in self.text:
-            cid: typing.Optional[int] = self.font.unicode_to_character_identifier(c)
+        for c in self._text:
+            cid: typing.Optional[int] = self._font.unicode_to_character_identifier(c)
             assert cid is not None, "Font %s can not represent '%s'" % (
-                self.font.get_font_name(),
+                self._font.get_font_name(),
                 c,
             )
             hex_rep: str = hex(int(cid))[2:]
@@ -116,7 +136,7 @@ class ChunkOfText(LayoutElement):
         This function escapes certain reserved characters in PDF strings.
         """
         sOut: str = ""
-        for c in self.text:
+        for c in self._text:
             if c == "\r":
                 sOut += "\\r"
             elif c == "\n":
@@ -139,9 +159,10 @@ class ChunkOfText(LayoutElement):
         return "".join(["(", sOut, ") Tj"])
 
     def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
-        assert self.font
-        rgb_color = self.font_color.to_rgb()
+        assert self._font
+        rgb_color = self._font_color.to_rgb()
         COLOR_MAX = Decimal(255.0)
+        assert self._font_size is not None
         content = """
             q
             BT
@@ -155,25 +176,25 @@ class ChunkOfText(LayoutElement):
             Decimal(rgb_color.red / COLOR_MAX),  # rg
             Decimal(rgb_color.green / COLOR_MAX),  # rg
             Decimal(rgb_color.blue / COLOR_MAX),  # rg
-            self._get_font_resource_name(self.font, page),  # Tf
+            self._get_font_resource_name(self._font, page),  # Tf
             Decimal(1),  # Tf
-            float(self.font_size),  # Tm
-            float(self.font_size),  # Tm
+            float(self._font_size),  # Tm
+            float(self._font_size),  # Tm
             float(bounding_box.x),  # Tm
-            float(bounding_box.y + bounding_box.height - self.font_size),  # Tm
+            float(bounding_box.y + bounding_box.height - self._font_size),  # Tm
             self._write_text_bytes(),  # Tj
         )
         self._append_to_content_stream(page, content)
-        encoded_bytes: bytes = bytes(
-            [self.font.unicode_to_character_identifier(c) or 0 for c in self.text]
-        )
+        encoded_bytes: bytes = [
+            self._font.unicode_to_character_identifier(c) or 0 for c in self._text
+        ]
         layout_rect = Rectangle(
             bounding_box.x,
-            bounding_box.y + bounding_box.height - self.font_size,
+            bounding_box.y + bounding_box.height - self._font_size,
             GlyphLine(
-                encoded_bytes, self.font, self.font_size
+                encoded_bytes, self._font, self._font_size
             ).get_width_in_text_space(),
-            self.font_size,
+            self._font_size,
         )
 
         # set bounding box

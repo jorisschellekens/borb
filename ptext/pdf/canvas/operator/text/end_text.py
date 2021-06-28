@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    End a text object, discarding the text matrix.
+End a text object, discarding the text matrix.
 """
 from typing import List
 

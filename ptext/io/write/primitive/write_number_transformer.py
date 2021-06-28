@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of WriteBaseTransformer is responsible for writing Decimal objects
+This implementation of WriteBaseTransformer is responsible for writing Decimal objects
 """
 from typing import Optional
 

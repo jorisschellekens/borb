@@ -5,9 +5,11 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.image.barcode import Barcode, BarcodeType
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -66,6 +68,7 @@ class TestWriteSimpleBarcode(unittest.TestCase):
                 data="123456789128",
                 type=BarcodeType.CODE_128,
                 width=Decimal(128),
+                height=Decimal(128),
                 stroke_color=HexColor("#080708"),
             )
         )

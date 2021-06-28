@@ -166,17 +166,17 @@ class Font(Dictionary):
             assert token is not None
 
             # beginbfchar
-            if token.text == "beginbfchar":
+            if token.get_text() == "beginbfchar":
                 assert prev_token is not None
-                number_of_lines_001: int = int(prev_token.text)
+                number_of_lines_001: int = int(prev_token.get_text())
                 for _ in range(0, number_of_lines_001):
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
-                    char_code: int = int(token.text[1:-1], 16)
+                    char_code: int = int(token.get_text()[1:-1], 16)
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
-                    unicode_str: str = str(token.text)[1:-1].replace(" ","")
+                    unicode_str: str = str(token.get_text())[1:-1].replace(" ","")
                     unicode_str = "".join(
                         [
                             chr(int(unicode_str[j: j + 4], 16))
@@ -185,48 +185,48 @@ class Font(Dictionary):
                     )
                     out_map[char_code] = unicode_str
 
-            if token.text == "begincidrange":
+            if token.get_text() == "begincidrange":
                 assert prev_token is not None
-                number_of_lines_002: int = int(prev_token.text)
+                number_of_lines_002: int = int(prev_token.get_text())
                 for _ in range(0, number_of_lines_002):
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
-                    char_code_start_002: int = int(token.text[1:-1], 16)
+                    char_code_start_002: int = int(token.get_text()[1:-1], 16)
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
-                    char_code_stop_002: int = int(token.text[1:-1], 16)
+                    char_code_stop_002: int = int(token.get_text()[1:-1], 16)
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
 
                     # <FFFF> <FFFF> 0000
-                    if token.token_type == TokenType.NUMBER:
-                        unicode_base: int = int(token.text)
+                    if token.get_token_type() == TokenType.NUMBER:
+                        unicode_base: int = int(token.get_text())
                         for i in range(char_code_start_002, char_code_stop_002 + 1):
                             out_map[i] = chr(unicode_base + (i - char_code_start_002))
 
             # beginbfrange
-            if token.text == "beginbfrange":
+            if token.get_text() == "beginbfrange":
                 assert prev_token is not None
-                number_of_lines_003: int = int(prev_token.text)
+                number_of_lines_003: int = int(prev_token.get_text())
                 for _ in range(0, number_of_lines_003):
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
-                    char_code_start_003: int = int(token.text[1:-1], 16)
+                    char_code_start_003: int = int(token.get_text()[1:-1], 16)
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
-                    char_code_stop_003: int = int(token.text[1:-1], 16)
+                    char_code_stop_003: int = int(token.get_text()[1:-1], 16)
 
                     token = cmap_tokenizer.next_non_comment_token()
                     assert token is not None
 
                     # <FFFF> <FFFF> <FFFF>
-                    if token.token_type == TokenType.HEX_STRING:
-                        unicode_base_str: str = str(token.text)[1:-1]
+                    if token.get_token_type() == TokenType.HEX_STRING:
+                        unicode_base_str: str = str(token.get_text())[1:-1]
                         for i in range(char_code_start_003, char_code_stop_003 + 1):
                             unicode_hex: str = hex(int(unicode_base_str, 16) + (i - char_code_start_003))[2:]
                             unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_hex) % 4)]) + unicode_hex)
@@ -235,18 +235,18 @@ class Font(Dictionary):
                         continue
 
                     # <FFFF> <FFFF> [ <FFFF>* ]
-                    if token.token_type == TokenType.START_ARRAY:
+                    if token.get_token_type() == TokenType.START_ARRAY:
                         for i in range(char_code_start_003, char_code_stop_003 + 1):
                             token = cmap_tokenizer.next_non_comment_token()
                             assert token is not None
-                            unicode_base_str_003: str = str(token.text)[1:-1]
+                            unicode_base_str_003: str = str(token.get_text())[1:-1]
                             unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_base_str_003) % 4)]) + unicode_base_str_003)
                             unicode_hex = "".join([chr(int(unicode_hex[j: j + 4], 16)) for j in range(0, len(unicode_hex), 4)])
                             out_map[i] = unicode_hex
                         # read END_ARRAY
                         token = cmap_tokenizer.next_non_comment_token()
                         assert token is not None
-                        assert token.token_type == TokenType.END_ARRAY
+                        assert token.get_token_type() == TokenType.END_ARRAY
                         continue
 
             # set previous token

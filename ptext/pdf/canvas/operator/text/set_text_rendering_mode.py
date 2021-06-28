@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    Set the text rendering mode, T mode , to render, which shall be an integer.
-    Initial value: 0.
+Set the text rendering mode, T mode , to render, which shall be an integer.
+Initial value: 0.
 """
 from typing import List
 

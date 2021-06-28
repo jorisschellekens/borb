@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Move to the next line and show a text string, using a w as the word spacing
-    and a c as the character spacing (setting the corresponding parameters in
-    the text state). a w and a c shall be numbers expressed in unscaled text
-    space units.
+Move to the next line and show a text string, using a w as the word spacing
+and a c as the character spacing (setting the corresponding parameters in
+the text state). a w and a c shall be numbers expressed in unscaled text
+space units.
 """
 import typing
 from typing import List

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This module defines all the base types used in processing PDFs
-    e.g. Boolean, CanvasOperatorName, Decimal, Dictionary, Element, Name, Stream, String, ..
+This module defines all the base types used in processing PDFs
+e.g. Boolean, CanvasOperatorName, Decimal, Dictionary, Element, Name, Stream, String, ..
 """
 import copy
 import types
@@ -95,7 +95,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
         # return
         return out
 
-    # get_parent
+    # get parent
     def get_parent(self):
         """
         This function returns the parent Object of the current Object
@@ -104,7 +104,7 @@ def add_base_methods(object: typing.Any) -> typing.Any:
             setattr(self, "_parent", None)
         return self._parent
 
-    # set_parent
+    # set parent
     def set_parent(self, parent):
         """
         This function sets the parent Object of the current Object
@@ -228,20 +228,20 @@ class Boolean:
 
     def __init__(self, value: bool):
         super(Boolean, self).__init__()
-        self.value = value
+        self._value = value
 
     def __bool__(self):
-        return self.value
+        return self._value
 
     def __eq__(self, other):
         if isinstance(other, bool):
-            return other == self.value
+            return other == self._value
         if isinstance(other, Boolean):
-            return other.value == self.value
+            return other._value == self._value
         return False
 
     def __str__(self):
-        if self.value:
+        if self._value:
             return "True"
         else:
             return "False"
@@ -281,21 +281,21 @@ class CanvasOperatorName:
 
     def __init__(self, text: str):
         super(CanvasOperatorName, self).__init__()
-        self.text = text
+        self._text = text
         add_base_methods(self)
 
     def __eq__(self, other):
         if isinstance(other, CanvasOperatorName):
-            return other.text == self.text
+            return other._text == self._text
         if isinstance(other, str):
-            return other == self.text
+            return other == self._text
         return False
 
     def __hash__(self):
-        return self.text.__hash__()
+        return self._text.__hash__()
 
     def __str__(self):
-        return self.text
+        return self._text
 
 
 class Decimal(oDecimal):  # type: ignore [no-redef]
@@ -378,21 +378,21 @@ class Name:
     """
 
     def __init__(self, text: str):
-        self.text = text
+        self._text = text
         add_base_methods(self)
 
     def __eq__(self, other):
         if isinstance(other, Name):
-            return other.text == self.text
+            return other._text == self._text
         if isinstance(other, str):
-            return other == self.text
+            return other == self._text
         return False
 
     def __hash__(self):
-        return self.text.__hash__()
+        return self._text.__hash__()
 
     def __str__(self):
-        return self.text
+        return self._text
 
 
 class Stream(Dictionary):
@@ -563,28 +563,28 @@ class String:
     """
 
     def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
-        self.text = text
-        self.encoding = encoding
+        self._text = text
+        self._encoding = encoding
         add_base_methods(self)
 
     def __eq__(self, other):
         if isinstance(other, String):
-            return other.text == self.text
+            return other._text == self._text
         if isinstance(other, str):
-            return other == self.text
+            return other == self._text
         return False
 
     def __hash__(self):
-        return self.text.__hash__()
+        return self._text.__hash__()
 
     def __str__(self):
-        return self.text
+        return self._text
 
     def __len__(self):
-        return len(self.text)
+        return len(self._text)
 
     def __getitem__(self, item):
-        return self.text[item]
+        return self._text[item]
 
     def get_content_bytes(self) -> bytearray:
         """
@@ -673,7 +673,7 @@ class String:
         This function returns the bytes that represent the content (as it was present in the PDF)
         of this String
         """
-        if self.encoding is None:
+        if self._encoding is None:
             return [b for b in self.get_content_bytes()]
         # TODO: password protected ??
         return None

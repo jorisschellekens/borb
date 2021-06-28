@@ -7,12 +7,17 @@ from decimal import Decimal
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+
 from ptext.pdf.canvas.color.color import HexColor
 from ptext.pdf.canvas.layout.image.chart import Chart
 from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from ptext.pdf.canvas.layout.table.base_table import TableCell
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table, TableCell
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -52,11 +57,6 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         self._test_list_of_documents(pdfs)
         plt.close("all")
 
-    @unittest.skip
-    def test_single_document(self):
-        input_file: Path = Path(self.corpus_dir / "0480_page_0.pdf")
-        self._test_list_of_documents([input_file])
-
     def _test_list_of_documents(self, documents: typing.List[Path]):
         self.number_of_documents = len(documents)
         self.number_of_passes = 0
@@ -79,7 +79,6 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
                         [abs(v) for k, v in differences.items()]
                     )
             except Exception as ex:
-                print(ex)
                 self.number_of_fails += 1
                 pass
             self._build_document()
@@ -196,27 +195,21 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
                 % (self.number_of_fails, self.number_of_passes)
             )
         )
-        ul.add(
-            Paragraph(
-                "avg. processing time: %f seconds"
-                % (
-                    sum([v for k, v in self.time_per_document.items()])
-                    / len(self.time_per_document)
-                )
-            )
-        )
-        ul.add(
-            Paragraph(
-                "max. processing time: %f seconds"
-                % max([v for k, v in self.time_per_document.items()])
-            )
-        )
-        ul.add(
-            Paragraph(
-                "min. processing time: %f seconds"
-                % min([v for k, v in self.time_per_document.items()])
-            )
-        )
+        avg_processing_time: float = 0
+        if len(self.time_per_document) > 0:
+            avg_processing_time = sum([v for k, v in self.time_per_document.items()]) / len(self.time_per_document)
+        ul.add(Paragraph("avg. processing time: %f seconds" % avg_processing_time))
+
+        max_processing_time: float = 0
+        if len(self.time_per_document) > 0:
+            max_processing_time = max([v for k, v in self.time_per_document.items()])
+        ul.add(Paragraph("max. processing time: %f seconds" % max_processing_time))
+
+        min_processing_time: float = 0
+        if len(self.time_per_document) > 0:
+            min_processing_time = min([v for k, v in self.time_per_document.items()])
+        ul.add(Paragraph("min. processing time: %f seconds" % min_processing_time))
+
         layout.add(ul)
 
         # tables processing

@@ -5,10 +5,13 @@ from pathlib import Path
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.color.color import HexColor, X11Color
 from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.page_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.layout.image.shape import Shape
-from ptext.pdf.canvas.layout.table import Table
+from ptext.pdf.canvas.layout.layout_element import Alignment
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
+from ptext.pdf.canvas.layout.text.paragraph import Paragraph
 from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
@@ -58,14 +61,15 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
         )
 
         # table
-        fixed_bb = Rectangle(Decimal(0), Decimal(0), Decimal(100), Decimal(100))
-        t = Table(number_of_rows=10, number_of_columns=6)
+        fixed_bb = Rectangle(Decimal(0), Decimal(0), Decimal(32), Decimal(32))
+        t = Table(number_of_rows=10, number_of_columns=6, margin_top=Decimal(12))
         t.add(
             Shape(
                 LineArtFactory.flowchart_process(fixed_bb),
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -74,6 +78,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -82,6 +87,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -90,6 +96,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(Paragraph(" "))
@@ -99,6 +106,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
 
@@ -117,6 +125,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(Paragraph(" "))
@@ -126,6 +135,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -134,6 +144,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(Paragraph(" "))
@@ -143,6 +154,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
 
@@ -161,6 +173,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -169,6 +182,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -177,6 +191,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(Paragraph(" "))
@@ -186,6 +201,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -194,6 +210,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
 
@@ -213,6 +230,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(Paragraph(" "))
@@ -222,6 +240,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -230,6 +249,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -238,6 +258,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
 
@@ -256,6 +277,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -264,6 +286,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(Paragraph(" "))
@@ -273,6 +296,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -281,6 +305,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
         t.add(
@@ -289,6 +314,7 @@ class TestWriteFlowchartLineArt(unittest.TestCase):
                 fill_color=HexColor("86CD82"),
                 stroke_color=X11Color("Black"),
                 line_width=Decimal(1),
+                horizontal_alignment = Alignment.CENTERED
             )
         )
 

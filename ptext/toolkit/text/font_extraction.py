@@ -20,8 +20,8 @@ class FontExtraction(EventListener):
     """
 
     def __init__(self):
-        self.fonts_per_page = {}
-        self.current_page = -1
+        self._fonts_per_page: typing.Dict[int, typing.List[Font]] = {}
+        self._current_page: int = -1
 
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
@@ -30,8 +30,8 @@ class FontExtraction(EventListener):
     def _begin_page(self, event: BeginPageEvent):
 
         # update page number
-        self.current_page += 1
-        self.fonts_per_page[self.current_page] = []
+        self._current_page += 1
+        self._fonts_per_page[self._current_page] = []
 
         # get page
         page = event.get_page()
@@ -47,15 +47,15 @@ class FontExtraction(EventListener):
             return
 
         for _, f in page["Resources"]["Font"].items():
-            self.fonts_per_page[self.current_page].append(f)
+            self._fonts_per_page[self._current_page].append(f)
 
     def get_fonts_per_page(self, page_number: int) -> List[Font]:
         """
         This function returns all fonts used on a given page
         """
         return (
-            self.fonts_per_page[page_number]
-            if page_number in self.fonts_per_page
+            self._fonts_per_page[page_number]
+            if page_number in self._fonts_per_page
             else []
         )
 

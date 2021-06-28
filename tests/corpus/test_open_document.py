@@ -5,11 +5,15 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+
 from ptext.io.read.types import Decimal
 from ptext.pdf.canvas.layout.image.chart import Chart
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.layout.table import Table
 from ptext.pdf.document import Document
 from ptext.pdf.page.page import Page
 from ptext.pdf.pdf import PDF
@@ -36,20 +40,16 @@ class TestOpenDocument(unittest.TestCase):
         self.number_of_fails: int = 0
         self.memory_stats_per_document: typing.Dict[str, typing.Tuple[int, int]] = {}
 
+    @unittest.skip
     def test_against_entire_corpus(self):
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [
             (self.corpus_dir / x)
             for x in pdf_file_names
-            if x.endswith(".pdf") and "page_0" in x and (x not in ["0566_page_0.pdf"])
+            if x.endswith(".pdf") and "page_0" in x and (x not in ["0566_page_0.pdf", "0213.pdf"])
         ]
         self._test_list_of_documents(pdfs)
         plt.close("all")
-
-    @unittest.skip
-    def test_single_document(self):
-        with open(self.corpus_dir / "0188_page_0.pdf", "rb") as fh:
-            PDF.loads(fh)
 
     def _test_list_of_documents(self, documents: typing.List[Path]):
         self.number_of_documents = len(documents)
@@ -113,7 +113,7 @@ class TestOpenDocument(unittest.TestCase):
             startangle=90,
         )
         ax1.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
-        layout.add(Chart(plt.gcf()))
+        layout.add(Chart(plt.gcf(), width=Decimal(200), height=Decimal(200)))
 
         # write
         file = self.output_dir / "output.pdf"

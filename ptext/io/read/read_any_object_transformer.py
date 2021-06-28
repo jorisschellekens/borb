@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer aggregates all other implementations
-    of ReadBaseTransformer
+This implementation of ReadBaseTransformer aggregates all
+other implementations of ReadBaseTransformer
 """
 import io
 import typing

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Set the stroking colour space to DeviceGray (or the DefaultGray colour
-    space; see 8.6.5.6, "Default Colour Spaces") and set the gray level to use
-    for stroking operations. gray shall be a number between 0.0 (black) and
-    1.0 (white).
+Set the stroking colour space to DeviceGray (or the DefaultGray colour
+space; see 8.6.5.6, "Default Colour Spaces") and set the gray level to use
+for stroking operations. gray shall be a number between 0.0 (black) and
+1.0 (white).
 """
 from decimal import Decimal
 from typing import List

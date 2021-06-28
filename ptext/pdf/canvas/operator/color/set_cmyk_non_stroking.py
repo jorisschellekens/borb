@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Same as K but used for nonstroking operations.
+Same as K but used for nonstroking operations.
 """
 from decimal import Decimal
 from typing import List

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading a Function Dictionary
+This implementation of ReadBaseTransformer is responsible for reading a Function Dictionary
 """
 import io
 import typing
@@ -82,7 +82,7 @@ class FunctionDictionaryTransformer(ReadBaseTransformer):
         xref = parent_object.get_root().get("XRef")
         for k, v in object_to_transform.items():
             if isinstance(v, Reference):
-                v = xref.get_object(v, context.tokenizer.io_source, context.tokenizer)
+                v = xref.get_object(v, context.source, context.tokenizer)
                 transformed_object[k] = v
 
         # convert (remainder of) stream dictionary

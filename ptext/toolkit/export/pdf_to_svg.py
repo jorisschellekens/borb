@@ -31,29 +31,29 @@ class PDFToSVG(EventListener):
         default_page_width: Decimal = Decimal(PageSize.A4_PORTRAIT.value[0]),
         default_page_height: Decimal = Decimal(PageSize.A4_PORTRAIT.value[1]),
     ):
-        self.default_page_width = default_page_width
-        self.default_page_height = default_page_height
-        self.page: typing.Optional[Page] = None
-        self.page_nr = Decimal(-1)
-        self.svg_per_page: typing.Dict[Decimal, ET.Element] = {}
+        self._default_page_width = default_page_width
+        self._default_page_height = default_page_height
+        self._page: typing.Optional[Page] = None
+        self._page_nr = Decimal(-1)
+        self._svg_per_page: typing.Dict[int, ET.Element] = {}
 
     def _event_occurred(self, event: Event) -> None:
         # BeginPageEvent
         if isinstance(event, BeginPageEvent):
-            self.page_nr += Decimal(1)
-            self.page = event.get_page()
+            self._page_nr += Decimal(1)
+            self._page = event.get_page()
             self._begin_page(
-                self.page_nr,
-                self.page.get_page_info().get_width() or self.default_page_width,
-                self.page.get_page_info().get_height() or self.default_page_height,
+                self._page_nr,
+                self._page.get_page_info().get_width() or self._default_page_width,
+                self._page.get_page_info().get_height() or self._default_page_height,
             )
         # ImageRenderEvent
         if isinstance(event, ImageRenderEvent):
-            assert self.page is not None
+            assert self._page is not None
             self._render_image(
-                self.page_nr,
-                self.page.get_page_info().get_width() or self.default_page_width,
-                self.page.get_page_info().get_height() or self.default_page_height,
+                self._page_nr,
+                self._page.get_page_info().get_width() or self._default_page_width,
+                self._page.get_page_info().get_height() or self._default_page_height,
                 event.get_x(),
                 event.get_y(),
                 event.get_width(),
@@ -62,18 +62,18 @@ class PDFToSVG(EventListener):
             )
         # ChunkOfTextRenderEvent
         if isinstance(event, ChunkOfTextRenderEvent):
-            assert self.page is not None
+            assert self._page is not None
             font_name_as_str = "Helvetica"
-            if event.font.get_font_name():
-                font_name_as_str = str(event.font.get_font_name())
+            if event._font.get_font_name():
+                font_name_as_str = str(event._font.get_font_name())
             self._render_text(
-                self.page_nr,
-                self.page.get_page_info().get_width() or self.default_page_width,
-                self.page.get_page_info().get_height() or self.default_page_height,
+                self._page_nr,
+                self._page.get_page_info().get_width() or self._default_page_width,
+                self._page.get_page_info().get_height() or self._default_page_height,
                 event.get_baseline().get_x(),
                 event.get_baseline().get_y(),
-                event.font_color,
-                event.font_size,
+                event._font_color,
+                event._font_size,
                 font_name_as_str.replace("#20", " ")
                 .replace(",Bold", "")
                 .replace(",bold", "")
@@ -85,7 +85,7 @@ class PDFToSVG(EventListener):
                 .replace("italic", ""),
                 "BOLD" in font_name_as_str.upper(),
                 "ITALIC" in font_name_as_str.upper(),
-                event.text,
+                event._text,
             )
 
     def _begin_page(
@@ -104,7 +104,7 @@ class PDFToSVG(EventListener):
         rct_element.set("height", str(page_height))
         rct_element.set("style", "fill:rgb(255, 255, 255);")
         svg_element.append(rct_element)
-        self.svg_per_page[page_nr] = svg_element  # type: ignore [assignment]
+        self._svg_per_page[int(page_nr)] = svg_element  # type: ignore [assignment]
 
     def _render_text(
         self,
@@ -127,17 +127,17 @@ class PDFToSVG(EventListener):
 
         # bold
         if bold:
-            text_element.set("font-weight", "bold")
+            text_element.set("_font-weight", "bold")
 
         # italic
         if italic:
-            text_element.set("font-style", "italic")
+            text_element.set("_font-style", "italic")
 
         # font_color, font_size, preserve space
         font_color_rgb = font_color.to_rgb()
         text_element.set(
             "style",
-            "fill:rgb(%d, %d, %d); font-size:%d px; white-space: pre;"
+            "fill:rgb(%d, %d, %d); _font-size:%d px; white-space: pre;"
             % (
                 font_color_rgb.red,
                 font_color_rgb.green,
@@ -148,7 +148,7 @@ class PDFToSVG(EventListener):
         text_element.set("xml:space", "preserve")
 
         # set font-family
-        text_element.set("font-family", font_name)
+        text_element.set("_font-family", font_name)
 
         # text
         text_element.text = text
@@ -158,8 +158,8 @@ class PDFToSVG(EventListener):
         text_element.set("y", str(int(page_height - y)))
 
         # append
-        assert self.svg_per_page[page_nr] is not None
-        self.svg_per_page[page_nr].append(text_element)
+        assert self._svg_per_page[int(page_nr)] is not None
+        self._svg_per_page[int(page_nr)].append(text_element)
 
     def _render_image(
         self,
@@ -191,5 +191,12 @@ class PDFToSVG(EventListener):
         image_element.set("y", str(int(page_height - y - image_height)))
 
         # append
-        assert self.svg_per_page[page_nr] is not None
-        self.svg_per_page[page_nr].append(image_element)
+        assert self._svg_per_page[int(page_nr)] is not None
+        self._svg_per_page[int(page_nr)].append(image_element)
+
+    def get_image(self, page_nr: int) -> ET.Element:
+        """
+        This function returns the ET.Element for a given page_nr
+        """
+        assert page_nr in self._svg_per_page
+        return self._svg_per_page[page_nr]

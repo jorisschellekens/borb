@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-    Base Transformer implementation.
-    Add children to handle specific cases (transforming dictionaries, arrays, xref, etc)
+Base Transformer implementation.
+Add children to handle specific cases (transforming dictionaries, arrays, xref, etc)
 """
 import io
 import typing
@@ -43,10 +43,16 @@ class ReadBaseTransformer:
     """
 
     def __init__(self):
-        self.children = []
-        self.parent = None
-        self.level = 0
-        self.invocation_count = 0
+        self._children = []
+        self._parent = None
+        self._level = 0
+        self._invocation_count = 0
+
+    def get_children(self) -> typing.List["ReadBaseTransformer"]:
+        """
+        This functions returns all child ReadBaseTransformers of this ReadBaseTransformer
+        """
+        return self._children
 
     def add_child_transformer(self, child_transformer: "ReadBaseTransformer") -> "ReadBaseTransformer":  # type: ignore[name-defined]
         """
@@ -56,8 +62,8 @@ class ReadBaseTransformer:
         :param handler: the ReadBaseTransformer implementation to be added
         :type handler:  ReadBaseTransformer
         """
-        self.children.append(child_transformer)
-        child_transformer.parent = self
+        self._children.append(child_transformer)
+        child_transformer._parent = self
         return self
 
     def get_root_transformer(self) -> "ReadBaseTransformer":  # type: ignore[name-defined]
@@ -68,8 +74,8 @@ class ReadBaseTransformer:
         calling top-level ReadBaseTransformer
         """
         p = self
-        while p.parent is not None:
-            p = p.parent
+        while p._parent is not None:
+            p = p._parent
         return p
 
     def can_be_transformed(
@@ -106,18 +112,18 @@ class ReadBaseTransformer:
         """
         if self._is_recursive_object(object_to_transform):
             return object_to_transform
-        for h in self.children:
+        for h in self._children:
             if h.can_be_transformed(object_to_transform):
                 # print("%s<%s level='%d' invocation='%d'>" % ("   " * self.level, h.__class__.__name__, self.level, self.invocation_count), flush=True)
-                self.level += 1
-                self.invocation_count += 1
+                self._level += 1
+                self._invocation_count += 1
                 out = h.transform(
                     object_to_transform,
                     parent_object=parent_object,
                     context=context,
                     event_listeners=event_listeners,
                 )
-                self.level -= 1
+                self._level -= 1
                 # print("%s</%s>" % ("   " * self.level, h.__class__.__name__))
                 return out
         return None

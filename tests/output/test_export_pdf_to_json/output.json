@@ -35,56 +35,12 @@
                                 857.221,
                                 616.276
                             ],
-                            "Contents": [
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 1952.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 1588.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 1691.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 1893.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 1427.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 1828.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 2522.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                },
-                                {
-                                    "Filter": "FlateDecode",
-                                    "Length": 2011.0,
-                                    "Bytes": null,
-                                    "DecodedBytes": null
-                                }
-                            ],
+                            "Contents": {
+                                "DecodedBytes": null,
+                                "Bytes": null,
+                                "Filter": "FlateDecode",
+                                "Length": 41799.0
+                            },
                             "CropBox": [
                                 0.0,
                                 0.0,

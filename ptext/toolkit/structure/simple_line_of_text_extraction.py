@@ -28,18 +28,18 @@ class SimpleLineOfTextExtraction(EventListener):
     """
 
     def __init__(self):
-        self.chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
-        self.current_page_number = -1
-        self.current_page: typing.Optional[Page] = None
-        self.lines_of_text_per_page: typing.Dict[int, typing.List[LineOfText]] = {}
+        self._chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
+        self._current_page_number: int = -1
+        self._current_page: typing.Optional[Page] = None
+        self._lines_of_text_per_page: typing.Dict[int, typing.List[LineOfText]] = {}
 
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
-            self.chunks_of_text.append(event)
+            self._chunks_of_text.append(event)
         if isinstance(event, BeginPageEvent):
-            self.current_page = event.get_page()
-            self.current_page_number += 1
-            self.chunks_of_text = []
+            self._current_page = event.get_page()
+            self._current_page_number += 1
+            self._chunks_of_text = []
         if isinstance(event, EndPageEvent):
             self._end_page(event.get_page())
 
@@ -47,13 +47,13 @@ class SimpleLineOfTextExtraction(EventListener):
         """
         This function returns the lines of text on a given page
         """
-        return self.lines_of_text_per_page.get(page, [])
+        return self._lines_of_text_per_page.get(page, [])
 
     def _end_page(self, page: Page):
 
         # build initial disjointset
         chunks_of_text_disjoint_set = disjointset()
-        for x in self.chunks_of_text:
+        for x in self._chunks_of_text:
             chunks_of_text_disjoint_set.add(x)
 
         # merge all ChunkOfText objects that represent a line of text
@@ -61,8 +61,8 @@ class SimpleLineOfTextExtraction(EventListener):
             for c1 in chunks_of_text_disjoint_set:
                 if c0 == c1:
                     continue
-                r0 = c0.baseline_bounding_box
-                r1 = c1.baseline_bounding_box
+                r0 = c0._baseline_bounding_box
+                r1 = c1._baseline_bounding_box
                 if r0.y != r1.y:
                     continue
                 gap = max(r1.x - (r0.x + r0.width), r0.x - (r1.x + r1.width))
@@ -87,38 +87,38 @@ class SimpleLineOfTextExtraction(EventListener):
             txt = ""
             for i, c in enumerate(chunks_of_text):
                 if i == 0:
-                    txt += c.text
+                    txt += c._text
                     continue
                 # decide whether we need to insert space or not
-                gap = c.baseline_bounding_box.x - (
-                    chunks_of_text[i - 1].baseline_bounding_box.x
-                    + chunks_of_text[i - 1].baseline_bounding_box.width
+                gap = c._baseline_bounding_box.x - (
+                    chunks_of_text[i - 1]._baseline_bounding_box.x
+                    + chunks_of_text[i - 1]._baseline_bounding_box.width
                 )
                 space_gap = chunks_of_text[
                     i - 1
                 ].get_space_character_width_estimate_in_user_space()
                 if gap > space_gap:
                     txt += " "
-                txt += c.text
+                txt += c._text
 
             # build LineOfText
             l: LayoutElement = LineOfText(
                 text=txt,
-                font=chunks_of_text[0].font,
-                font_size=chunks_of_text[0].font_size,
-                font_color=chunks_of_text[0].font_color,
+                font=chunks_of_text[0]._font,
+                font_size=chunks_of_text[0]._font_size,
+                font_color=chunks_of_text[0]._font_color,
             ).set_bounding_box(
                 Rectangle(
-                    chunks_of_text[0].baseline_bounding_box.x,
-                    chunks_of_text[0].baseline_bounding_box.y,
-                    chunks_of_text[-1].baseline_bounding_box.x
-                    + chunks_of_text[-1].baseline_bounding_box.width
-                    - chunks_of_text[0].baseline_bounding_box.x,
-                    chunks_of_text[0].baseline_bounding_box.height,
+                    chunks_of_text[0]._baseline_bounding_box.x,
+                    chunks_of_text[0]._baseline_bounding_box.y,
+                    chunks_of_text[-1]._baseline_bounding_box.x
+                    + chunks_of_text[-1]._baseline_bounding_box.width
+                    - chunks_of_text[0]._baseline_bounding_box.x,
+                    chunks_of_text[0]._baseline_bounding_box.height,
                 )
             )
             assert isinstance(l, LineOfText)
             lines_of_text.append(l)
 
         # add to dict
-        self.lines_of_text_per_page[self.current_page_number] = lines_of_text
+        self._lines_of_text_per_page[self._current_page_number] = lines_of_text

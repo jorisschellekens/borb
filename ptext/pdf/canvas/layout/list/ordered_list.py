@@ -32,6 +32,10 @@ class OrderedList(List):
         padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
+        margin_top: Decimal = None,
+        margin_right: Decimal = None,
+        margin_bottom: Decimal = None,
+        margin_left: Decimal = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
@@ -46,55 +50,19 @@ class OrderedList(List):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
+            margin_top=margin_top,
+            margin_right=margin_right,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
             background_color=background_color,
             parent=parent,
         )
-        self.parent = parent
-        self.index_offset = 0
-        self.items: typing.List[LayoutElement] = []
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-        last_item_bottom: Decimal = bounding_box.y + bounding_box.height
-        bullet_margin: Decimal = Decimal(20)
-        for index, i in enumerate(self.items):
-            # bullet character
-            ChunkOfText(
-                text=str(index + 1 + self.index_offset) + ".",
-                font_size=self._get_first_item_font_size(),
-                font_color=X11Color("Black"),
-            ).layout(
-                page=page,
-                bounding_box=Rectangle(
-                    bounding_box.x,
-                    bounding_box.y,
-                    bullet_margin,
-                    last_item_bottom - bounding_box.y,
-                ),
-            )
-            # content
-            item_rect = i.layout(
-                page,
-                bounding_box=Rectangle(
-                    bounding_box.x + bullet_margin,
-                    bounding_box.y,
-                    bounding_box.width - bullet_margin,
-                    last_item_bottom - bounding_box.y,
-                ),
-            )
-            # set new last_item_bottom
-            last_item_bottom = item_rect.y
-
-        layout_rect = Rectangle(
-            bounding_box.x,
-            last_item_bottom,
-            bounding_box.width,
-            bounding_box.y + bounding_box.height - last_item_bottom,
+    def _get_bullet_layout_element(
+        self, item_index: int, item: LayoutElement
+    ) -> LayoutElement:
+        return ChunkOfText(
+            text=str(item_index + 1) + ".",
+            font_size=self.get_font_size(),
+            font_color=X11Color("Black"),
         )
-
-        # set bounding box
-        self.set_bounding_box(layout_rect)
-
-        # return
-        return layout_rect

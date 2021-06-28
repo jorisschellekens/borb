@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-    Begin a new subpath by moving the current point to
-    coordinates (x, y), omitting any connecting line segment. If
-    the previous path construction operator in the current path
-    was also m, the new m overrides it; no vestige of the
-    previous m operation remains in the path.
+Begin a new subpath by moving the current point to
+coordinates (x, y), omitting any connecting line segment. If
+the previous path construction operator in the current path
+was also m, the new m overrides it; no vestige of the
+previous m operation remains in the path.
 """
 from decimal import Decimal
 from typing import List

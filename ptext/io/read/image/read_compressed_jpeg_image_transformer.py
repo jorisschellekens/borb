@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    This implementation of ReadBaseTransformer is responsible for reading a jpeg image object
+This implementation of ReadBaseTransformer is responsible for reading a jpeg image object
 """
 import io
 import logging

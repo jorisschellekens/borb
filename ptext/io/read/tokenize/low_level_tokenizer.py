@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-    This module contains everything needed to perform low-level tokenization against PDF syntax.
-    Low-level tokenization aims to separate numbers, strings, names, comments, start of dictionary, start of array, etc
-    The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
+This module contains everything needed to perform low-level tokenization against PDF syntax.
+Low-level tokenization aims to separate numbers, strings, names, comments, start of dictionary, start of array, etc
+The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
 """
 import enum
 import io
@@ -41,30 +41,48 @@ class Token:
     """
 
     def __init__(self, byte_offset: int, token_type: TokenType, text: str):
-        self.byte_offset = byte_offset
-        self.token_type = token_type
-        self.text = text
+        self._byte_offset = byte_offset
+        self._token_type = token_type
+        self._text = text
 
     def set_byte_offset(self, byte_offset: int) -> "Token":
         """
         Set the byte offset of this Token
         """
-        self.byte_offset = byte_offset
+        self._byte_offset = byte_offset
         return self
+
+    def get_byte_offset(self) -> int:
+        """
+        Get the byte offset of this Token
+        """
+        return self._byte_offset
 
     def set_text(self, text: str) -> "Token":
         """
         Set the text of this Token
         """
-        self.text = text
+        self._text = text
         return self
+
+    def get_text(self) -> str:
+        """
+        Get the text of this Token
+        """
+        return self._text
 
     def set_token_type(self, token_type: TokenType) -> "Token":
         """
         Set the TokenType of this Token
         """
-        self.token_type = token_type
+        self._token_type = token_type
         return self
+
+    def get_token_type(self) -> TokenType:
+        """
+        Get the TokenType of this Token
+        """
+        return self._token_type
 
 
 class LowLevelTokenizer:
@@ -78,7 +96,7 @@ class LowLevelTokenizer:
     """
 
     def __init__(self, io_source):
-        self.io_source = io_source
+        self._io_source = io_source
         self._is_pseudo_digit = set("0123456789+-.").__contains__
         self._is_delimiter = set("\x00\t\n\x0c\r %()/<>[]").__contains__
         self._is_whitespace = set("\x00\t\n\x0c\r ").__contains__
@@ -89,7 +107,7 @@ class LowLevelTokenizer:
         It returns None if no such Token exists (end of stream/file)
         """
         t = self.next_token()
-        while t is not None and t.token_type == TokenType.COMMENT:
+        while t is not None and t.get_token_type() == TokenType.COMMENT:
             t = self.next_token()
         return t
 
@@ -107,16 +125,16 @@ class LowLevelTokenizer:
 
         # START_ARRAY
         if ch == "[":
-            return Token(self.io_source.tell() - 1, TokenType.START_ARRAY, "[")
+            return Token(self._io_source.tell() - 1, TokenType.START_ARRAY, "[")
 
         # END ARRAY
         if ch == "]":
-            return Token(self.io_source.tell() - 1, TokenType.END_ARRAY, "]")
+            return Token(self._io_source.tell() - 1, TokenType.END_ARRAY, "]")
 
         # NAME
         if ch == "/":
             out_str = "/"
-            out_pos = self.io_source.tell() - 1
+            out_pos = self._io_source.tell() - 1
             while True:
                 ch = self._next_char()
                 if len(ch) == 0:
@@ -130,7 +148,7 @@ class LowLevelTokenizer:
 
         # END_DICT
         if ch == ">":
-            out_pos = self.io_source.tell() - 1
+            out_pos = self._io_source.tell() - 1
             ch = self._next_char()
             # CHECK UNEXPECTED CHARACTER AFTER >
             assert ch == ">"
@@ -139,7 +157,7 @@ class LowLevelTokenizer:
         # COMMENT
         if ch == "%":
             out_str = ""
-            out_pos = self.io_source.tell() - 1
+            out_pos = self._io_source.tell() - 1
             while len(ch) != 0 and ch != "\r" and ch != "\n":
                 out_str += ch
                 ch = self._next_char()
@@ -149,7 +167,7 @@ class LowLevelTokenizer:
 
         # HEX_STRING OR DICT
         if ch == "<":
-            out_pos = self.io_source.tell() - 1
+            out_pos = self._io_source.tell() - 1
             ch = self._next_char()
 
             # DICT
@@ -175,7 +193,7 @@ class LowLevelTokenizer:
         # NUMBER
         if ch in "-+.0123456789":
             out_str = ""
-            out_pos = self.io_source.tell() - 1
+            out_pos = self._io_source.tell() - 1
             while len(ch) != 0 and ch in "-+.0123456789":
                 out_str += ch
                 ch = self._next_char()
@@ -187,7 +205,7 @@ class LowLevelTokenizer:
         if ch == "(":
             bracket_nesting_level = 1
             out_str = "("
-            out_pos = self.io_source.tell() - 1
+            out_pos = self._io_source.tell() - 1
             while True:
                 ch = self._next_char()
                 if len(ch) == 0:
@@ -209,7 +227,7 @@ class LowLevelTokenizer:
 
         # OTHER
         out_str = ""
-        out_pos = self.io_source.tell() - 1
+        out_pos = self._io_source.tell() - 1
         while len(ch) != 0 and not self._is_delimiter(ch):
             out_str += ch
             ch = self._next_char()
@@ -226,16 +244,16 @@ class LowLevelTokenizer:
         SEEK_END or 2 – end of the stream; offset is usually negative
         Return the new absolute position.
         """
-        return self.io_source.seek(pos, whence)
+        return self._io_source.seek(pos, whence)
 
     def tell(self) -> int:
         """
         Return the current stream position.
         """
-        return self.io_source.tell()
+        return self._io_source.tell()
 
     def _next_char(self):
-        return self.io_source.read(1).decode("latin-1")
+        return self._io_source.read(1).decode("latin-1")
 
     def _prev_char(self):
-        return self.io_source.seek(-1, io.SEEK_CUR)
+        return self._io_source.seek(-1, io.SEEK_CUR)
