@@ -26,7 +26,8 @@ class PDFToJPG(PDFToSVG):
 
     @staticmethod
     def convert_pdf_to_jpg(
-        file: typing.Union[io.BufferedIOBase, io.RawIOBase], page_number: int
+        file: Path,
+        page_number: int
     ) -> PILImage:
         l: "PDFToJPG" = PDFToJPG()
         with open(file, "rb") as pdf_file_handle:

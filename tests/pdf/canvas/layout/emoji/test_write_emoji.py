@@ -63,6 +63,8 @@ class TestWriteEmoji(unittest.TestCase):
         page_layout.add(Emojis.OCTOCAT.value)
         page_layout.add(ChunkOfText("-repo."))
 
+        page_layout.add(Paragraph("If you are working with a font that does not offer (color) emoji, you can now ask pText to insert the image corresponding to the emoji of your choice. Emoji offer some convenience methods to make it easier to interact with them as if they were text, rather than images."))
+
         # write
         file = self.output_dir / "output.pdf"
         with open(file, "wb") as pdf_file_handle:

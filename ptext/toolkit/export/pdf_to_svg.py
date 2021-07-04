@@ -9,6 +9,7 @@ import io
 import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal
+from pathlib import Path
 
 from PIL import Image as PILImage  # type: ignore [import]
 
@@ -29,7 +30,8 @@ class PDFToSVG(EventListener):
 
     @staticmethod
     def convert_pdf_to_svg(
-        file: typing.Union[io.BufferedIOBase, io.RawIOBase], page_number: int
+        file: Path,
+        page_number: int
     ) -> ET.Element:
         l: "PDFToSVG" = PDFToSVG()
         with open(file, "rb") as pdf_file_handle:

@@ -1,6 +1,6 @@
-import io
 import typing
 from decimal import Decimal
+from pathlib import Path
 
 from PIL import Image as PILImage  # type: ignore [import]
 import xml.etree.ElementTree as ET
@@ -13,7 +13,8 @@ from ptext.toolkit.export.pdf_to_svg import PDFToSVG
 class PDFToHTML(PDFToSVG):
     @staticmethod
     def convert_pdf_to_html(
-        file: typing.Union[io.BufferedIOBase, io.RawIOBase], page_number: int
+        file: Path,
+            page_number: int
     ) -> ET.Element:
         l: "PDFToHTML" = PDFToHTML()
         with open(file, "rb") as pdf_file_handle:
@@ -27,7 +28,7 @@ class PDFToHTML(PDFToSVG):
     def _begin_page(
         self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
     ) -> None:
-        self._html_per_page[page_nr] = ET.fromstring(
+        self._html_per_page[int(page_nr)] = ET.fromstring(
             "<html><head></head><body></body></html>"
         )
 

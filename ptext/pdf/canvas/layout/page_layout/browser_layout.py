@@ -270,6 +270,7 @@ class BrowserLayout(PageLayout):
 
     def _add_inline_element(self, layout_element: LayoutElement) -> None:
         assert self._page_width is not None
+        assert self._page_height is not None
 
         # set margins
         layout_element._margin_top = Decimal(0)

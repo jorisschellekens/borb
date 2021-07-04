@@ -4,7 +4,6 @@
 """
 This implementation of EventListener exports a Page as an mp3 file, essentially reading the text on the Page
 """
-import io
 import tempfile
 import typing
 from decimal import Decimal
@@ -28,7 +27,8 @@ class PDFToMP3(SimpleParagraphExtraction):
 
     @staticmethod
     def convert_pdf_to_mp3(
-        file: typing.Union[io.BufferedIOBase, io.RawIOBase], page_number: int
+        file: Path,
+        page_number: int
     ) -> Path:
         l: "PDFToMP3" = PDFToMP3()
         with open(file, "rb") as pdf_file_handle:
@@ -36,7 +36,7 @@ class PDFToMP3(SimpleParagraphExtraction):
         temporary_file: Path = Path(
             tempfile.NamedTemporaryFile(prefix="pdf_to_mp3", suffix=".mp3").name
         )
-        return l.get_audio_file_per_page(page_number, temporary_file)
+        return l.get_audio_file(page_number, str(temporary_file))
 
     def __init__(
         self,
@@ -123,7 +123,7 @@ class PDFToMP3(SimpleParagraphExtraction):
         # return
         return text_to_speak_for_paragraph
 
-    def get_audio_file_per_page(self, page_number: int, path: str) -> Path:
+    def get_audio_file(self, page_number: int, path: str) -> Path:
         """
         This function creates and then returns the audio-file for the text spoken at the given page
         """
