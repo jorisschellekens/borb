@@ -287,6 +287,7 @@ class LayoutElement:
         # calculate initial layout box
         layout_box = self._calculate_layout_box(page, bounding_box)
 
+        self._initialize_page_content_stream(page)
         content_stream = page["Contents"]
         len_decoded_bytes_before = len(content_stream[Name("DecodedBytes")])
 

@@ -6,6 +6,7 @@ This implementation of LayoutElement represents an Image
 """
 import typing
 from decimal import Decimal
+from pathlib import Path
 from typing import Optional
 
 import requests
@@ -24,7 +25,7 @@ class Image(LayoutElement):
 
     def __init__(
         self,
-        image: typing.Union[str, PILImage.Image],
+        image: typing.Union[str, Path, PILImage.Image],
         width: Optional[Decimal] = None,
         height: Optional[Decimal] = None,
         margin_top: typing.Optional[Decimal] = None,
@@ -41,6 +42,8 @@ class Image(LayoutElement):
                     stream=True,
                 ).raw
             )
+        if isinstance(image, Path):
+            image = PILImage.open(image)
         super(Image, self).__init__(
             font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,

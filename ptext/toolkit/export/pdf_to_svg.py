@@ -19,12 +19,22 @@ from ptext.pdf.canvas.event.event_listener import Event, EventListener
 from ptext.pdf.canvas.event.image_render_event import ImageRenderEvent
 from ptext.pdf.page.page import Page
 from ptext.pdf.page.page_size import PageSize
+from ptext.pdf.pdf import PDF
 
 
 class PDFToSVG(EventListener):
     """
     This implementation of EventListener renders a PDF to an SVG image
     """
+
+    @staticmethod
+    def convert_pdf_to_svg(
+        file: typing.Union[io.BufferedIOBase, io.RawIOBase], page_number: int
+    ) -> ET.Element:
+        l: "PDFToSVG" = PDFToSVG()
+        with open(file, "rb") as pdf_file_handle:
+            PDF.loads(pdf_file_handle, [l])
+        return l.get_image(page_number)
 
     def __init__(
         self,

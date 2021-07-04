@@ -284,7 +284,7 @@ class BrowserLayout(PageLayout):
         ):
             self._rows.append(BrowserLayoutRow(DisplayValue.INLINE))
 
-        prev_row_bottom: Decimal = Decimal(0)
+        prev_row_bottom: Decimal = self._page_height - self._vertical_margin
         prev_row_margin_bottom: Decimal = Decimal(0)
         if len(self._rows) > 1:
             prev_row_bottom = self._rows[-2].get_bottom()

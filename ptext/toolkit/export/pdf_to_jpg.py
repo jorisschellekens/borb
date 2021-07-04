@@ -4,6 +4,7 @@
 """
     This implementation of EventListener renders a PDF to a PIL Image
 """
+import io
 import platform
 import typing
 from decimal import Decimal
@@ -14,6 +15,7 @@ from PIL import ImageDraw, ImageFont
 
 from ptext.pdf.canvas.color.color import Color
 from ptext.pdf.page.page_size import PageSize
+from ptext.pdf.pdf import PDF
 from ptext.toolkit.export.pdf_to_svg import PDFToSVG
 
 
@@ -21,6 +23,15 @@ class PDFToJPG(PDFToSVG):
     """
     This implementation of EventListener renders a PDF to a PIL Image
     """
+
+    @staticmethod
+    def convert_pdf_to_jpg(
+        file: typing.Union[io.BufferedIOBase, io.RawIOBase], page_number: int
+    ) -> PILImage:
+        l: "PDFToJPG" = PDFToJPG()
+        with open(file, "rb") as pdf_file_handle:
+            PDF.loads(pdf_file_handle, [l])
+        return l.get_image(page_number)
 
     def __init__(
         self,

@@ -21,17 +21,20 @@ class TestExportPDFToJPG(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_convert_pdf_to_jpg(self):
+    def test_convert_pdf_to_jpg_001(self):
 
         input_file: Path = Path(__file__).parent / "input_001.pdf"
         with open(input_file, "rb") as pdf_file_handle:
             l = PDFToJPG()
             doc = PDF.loads(pdf_file_handle, [l])
             im = l.get_image(0)
-            im.save(self.output_dir / "output.jpg")
+            im.save(self.output_dir / "output_001.jpg")
 
         return True
 
+    def test_convert_pdf_to_jpg_002(self):
+        input_file: Path = Path(__file__).parent / "input_001.pdf"
+        PDFToJPG.convert_pdf_to_jpg(input_file, 0).save(self.output_dir / "output_002.jpg")
 
 if __name__ == "__main__":
     unittest.main()
