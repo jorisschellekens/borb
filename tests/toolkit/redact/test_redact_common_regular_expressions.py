@@ -3,18 +3,18 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.io.read.types import List
-from ptext.pdf.canvas.color.color import X11Color
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import List
+from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.redact.common_regular_expressions import CommonRegularExpression
-from ptext.toolkit.text.regular_expression_text_extraction import (
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
+from borb.toolkit.redact.common_regular_expressions import CommonRegularExpression
+from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
 

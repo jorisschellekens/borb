@@ -1,9 +1,9 @@
 import unittest
 from pathlib import Path
 
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestWriteEmptyDocument(unittest.TestCase):

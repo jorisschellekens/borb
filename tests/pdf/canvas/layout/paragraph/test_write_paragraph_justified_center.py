@@ -2,18 +2,18 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.color.color import HexColor, X11Color
+from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestWriteParagraphJustifiedCenter(unittest.TestCase):
@@ -32,7 +32,54 @@ class TestWriteParagraphJustifiedCenter(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_write_document(self):
+    def test_write_document_001(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a Paragraph object in it. The Paragraph is aligned TOP, CENTERED."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        p: Paragraph = Paragraph(
+            "Hello World!", horizontal_alignment=Alignment.CENTERED
+        )
+
+        # the next line of code uses absolute positioning
+        r: Rectangle = Rectangle(
+            Decimal(59),  # x: 0 + page_margin
+            Decimal(
+                848 - 84 - 200 - 100
+            ),  # y: page_height - page_margin - y - height_of_textbox
+            Decimal(595 - 59 * 2),  # width: page_width - 2 * page_margin
+            Decimal(100),
+        )  # height
+
+        # this is a quick and dirty way to draw a rectangle on the page
+        page.append_square_annotation(r, stroke_color=X11Color("Red"))
+
+        # add the paragraph to the page
+        p.layout(page, r)
+
+        # determine output location
+        out_file = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, doc)
+
+    def test_write_document_002(self):
 
         # create output directory if it does not exist yet
         if not self.output_dir.exists():
@@ -84,7 +131,7 @@ class TestWriteParagraphJustifiedCenter(unittest.TestCase):
         )
 
         # determine output location
-        out_file = self.output_dir / "output.pdf"
+        out_file = self.output_dir / "output_002.pdf"
 
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:

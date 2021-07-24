@@ -6,18 +6,18 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.layout.image.chart import Chart
-from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.layout.image.chart import Chart
+from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestCopyDocumentCompareSize(unittest.TestCase):
@@ -41,6 +41,7 @@ class TestCopyDocumentCompareSize(unittest.TestCase):
         self.number_of_fails: int = 0
         self.memory_stats_per_document: typing.Dict[str, typing.Tuple[int, int]] = {}
 
+    @unittest.skip
     def test_against_entire_corpus(self):
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [

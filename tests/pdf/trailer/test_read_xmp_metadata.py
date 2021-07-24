@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from ptext.pdf.pdf import PDF
+from borb.pdf.pdf import PDF
 
 
 class TestReadXMPMetaData(unittest.TestCase):

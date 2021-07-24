@@ -5,16 +5,16 @@ from pathlib import Path
 
 from PIL import Image as PILImage
 
-from ptext.pdf.canvas.layout.image.image import Image
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestModifyImage(unittest.TestCase):

@@ -2,18 +2,18 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import HSVColor, X11Color
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.base_table import TableCell
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.color.color import HSVColor, X11Color
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestWriteTableWithRainbowBackground(unittest.TestCase):

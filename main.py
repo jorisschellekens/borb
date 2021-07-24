@@ -6,17 +6,16 @@ from argparse import RawTextHelpFormatter
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.layout.page_layout import PageLayout, SingleColumnLayout
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.image.simple_image_extraction import SimpleImageExtraction
-from ptext.toolkit.ocr.ocr_as_optional_content_group import \
-    OCRAsOptionalContentGroup
-from ptext.toolkit.text.regular_expression_text_extraction import \
-    RegularExpressionTextExtraction
-from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
+from borb.toolkit.image.simple_image_extraction import SimpleImageExtraction
+from borb.toolkit.ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
+from borb.toolkit.text.regular_expression_text_extraction import RegularExpressionTextExtraction
+from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
 def _build_output_path(input_file: Path, extension: str = "pdf") -> Path:
@@ -203,7 +202,7 @@ def main():
 
     # build main parser
     parser = argparse.ArgumentParser(
-        description="pText", formatter_class=RawTextHelpFormatter
+        description="borb", formatter_class=RawTextHelpFormatter
     )
     command_sub_parser = parser.add_subparsers(dest="command", help="Command Name")
 

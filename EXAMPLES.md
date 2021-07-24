@@ -4,7 +4,7 @@
 
 ### 0.1 Installation using `pip`
 
-Getting started with `pText` is easy.
+Getting started with `borb` is easy.
 
 1. Create a virtual environment (if you have not done so already)
 
@@ -14,26 +14,21 @@ Getting started with `pText` is easy.
 
     `source venv/bin/activate`
      
-3. Install `pText` using pip
+3. Install `borb` using pip
 
-    `pip install ptext-joris-schellekens`
-
-    If you have installed `pText` before, and you want to ensure you're installing the latest version, execute the following commands
-    
-    `pip uninstall ptext-joris-schellekens`  
-    `pip install --no-cache ptext-joris-schellekens`
+    `pip install borb`
 
 4. Done :tada: You are all ready to go.  
-Try out some of the examples to get to know `pText`.
+Try out some of the examples to get to know `borb`.
 
-**Note**: if you have used `pText` in the past, it's best to ensure that pip is not serving
-you a version of `pText` from its cache. Uninstall your previous version using:
+**Note**: if you have used `borb` in the past, it's best to ensure that pip is not serving
+you a version of `borb` from its cache. Uninstall your previous version using:
 
-`pip uninstall ptext-joris-schellekens`
+`pip uninstall borb`
 
 and install the latest version using:
 
-`pip install --no-cache ptext-joris-schellekens`
+`pip install --no-cache borb`
 
 ### 0.2 About AGPLv3
 
@@ -72,7 +67,7 @@ Now that we've processed the `Page`, we can get the resulting text and store it.
             with open("output.txt", "w") as txt_file_handle:
                 txt_file_handle.write(l.get_text(0))
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 1.2 Working with ligatures using `SimpleNonLigatureTextExtraction`
 
@@ -98,7 +93,7 @@ Once the `Document` is done processing, we can easily obtain and store the text:
             with open("output.txt", "w") as txt_file_handle:
                 txt_file_handle.write(l.get_text(0))
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 1.3 Looking for a regular expression in a `Document` using `RegularExpressionTextExtraction`
 
@@ -143,7 +138,7 @@ In the example `Document`, this was the output:
     },
     ...
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 1.4 Extracting keywords from a `Document` using `TFIDFKeywordExtraction`
 
@@ -181,7 +176,7 @@ For the document I picked, this gives me the following output:
     },
     ...
     
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 1.5 Meta-Information
 
@@ -217,7 +212,7 @@ This dictionary could contain an entry for `\Author`.
                 author = doc["XRef"]["Trailer"]["Info"]["Author"]
                 print("The author of this PDF is %s" % author)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 1.5.1.2 Getting all meta-information of an existing PDF using `DocumentInfo`
 
@@ -234,7 +229,7 @@ You can use it to quickly query the meta-information.
             print("ids      : %s" % doc_info.get_ids())
             print("language : %s" % doc_info.get_language())
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 1.5.1.3 Changing the author of an existing PDF
 
@@ -266,7 +261,7 @@ Now we can store the PDF `Document` again:
         with open("output.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 1.5.1.4 Changing the producer of an existing PDF
 
@@ -291,14 +286,14 @@ If there is no `\Info` dictionary in the `\Trailer`, we create it
 Let's set the `\Producer` entry in the `\Info` dictionary
 
         # change author
-        doc["XRef"]["Trailer"]["Info"]["Producer"] = String("pText")
+        doc["XRef"]["Trailer"]["Info"]["Producer"] = String("borb")
 
 Now we can store the PDF `Document` again:
 
         with open("output.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.5.2 Using the XMP metadata in a `Document`
 
@@ -338,7 +333,7 @@ I tried this on a `Document` with XMP meta-data, and it printed the following:
     modification date    : 2017-12-15T16:23:53+01:00
     metadata date        : 2017-12-15T16:23:53+01:00
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 1.6 Images
 
@@ -436,7 +431,7 @@ The result should be something like this (keep in mind the rendering of the rubb
 
 ![adding an annotation to an existing pdf](readme_img/adding_a_rubber_stamp_annotation_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.2 Adding all possible rubber stamp annotations to an existing PDF
 
@@ -483,7 +478,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding an annotation to an existing pdf](readme_img/adding_all_rubber_stamp_annotations_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.3 Adding a circle annotation to an existing PDF
 
@@ -511,7 +506,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding an annotation to an existing pdf](readme_img/adding_a_circle_annotation_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.4 Adding a square annotation to an existing PDF
 
@@ -539,7 +534,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding an annotation to an existing pdf](readme_img/adding_a_square_annotation_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.5 Adding a polygon annotation to an existing PDF
 
@@ -569,7 +564,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding an annotation to an existing pdf](readme_img/adding_a_polygon_annotation_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.6 Adding a polyline annotation to an existing PDF
 
@@ -599,7 +594,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding a_polyline_annotation](readme_img/adding_a_polyline_annotation.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.7 Adding an annotation using a shape from the `LineArtFactory` to an existing PDF
 
@@ -640,7 +635,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding_a_polyline_annotation_using_line_art_factory](readme_img/adding_a_polyline_annotation_using_line_art_factory.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.8 Adding a highlight annotation to an existing PDF
 
@@ -670,7 +665,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding a_highlight_annotation to an existing pdf](readme_img/adding_a_highlight_annotation_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.9 Adding a link annotation to an existing PDF
 
@@ -702,7 +697,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding a_link_annotation to an existing pdf](readme_img/adding_a_link_annotation.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.10 Adding a text annotation to an existing PDF
 
@@ -728,7 +723,7 @@ Finally, we need to store the resulting PDF `Document`.
         with open("output.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.11 Adding a square annotation around a regular expression match to an existing PDF
 
@@ -768,7 +763,7 @@ The end result (at least the annotations) should look something like this:
 
 ![adding an annotation to an existing pdf](readme_img/adding_an_annotation_around_a_regular_expression_match_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.12 Adding a square annotation in the free space of a page to an existing PDF
 
@@ -777,7 +772,7 @@ as long as it does not block any other visible content.
 
 Finding the available free space on a `Page` can be tricky, 
 it would involve re-parsing all the content to figure out where existing content intersects with the desired location of the annotation.
-That is why `pText` comes with `FreeSpaceFinder`, this class searches for an `Rectangle` of a given size, nearest to a given point (in Euclidean space).
+That is why `borb` comes with `FreeSpaceFinder`, this class searches for an `Rectangle` of a given size, nearest to a given point (in Euclidean space).
 
 Let's see it in action.
 We start by reading the PDF:
@@ -826,7 +821,7 @@ Notice how our use of `FreeSpaceFinder` meant that the annotation did not collid
 
 ![adding an annotation to an existing pdf](readme_img/adding_a_square_annotation_in_free_space_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.13 Getting all annotations from a PDF
 
@@ -843,7 +838,7 @@ Let's check the first `Page`.
             if "Annots" in page:
                 print("%s has %d annotations" % ("input.pdf", len(page["Annots"])))
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.14 Showcase : Adding a collection of annotations shaped like super mario to an existing PDF
 
@@ -937,7 +932,7 @@ The result should be something like this:
 
 ![adding an annotation to an existing pdf](readme_img/adding_multiple_annotations_shaped_like_super_mario_to_an_existing_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 1.8.15 Adding redaction annotations to a PDF
 
@@ -1011,7 +1006,7 @@ The last step is to actually apply the redaction annotations. You could do this 
 
 #### 1.9.1 Exporting a PDF as JSON
 
-This scenario is particularly useful when debugging. It enables you to see the PDF `Document` in the same way `pText` sees it.
+This scenario is particularly useful when debugging. It enables you to see the PDF `Document` in the same way `borb` sees it.
 
 We'll start by opening and reading the `Document`:
 
@@ -1061,7 +1056,7 @@ This table acts as the starting point of the document, it contains references to
 
 #### 1.9.2 Exporting a PDF as SVG
 
-Sometimes, all you need is an image. With `pText` you can easily convert any `Page` of a `Document` into an SVG image.                               
+Sometimes, all you need is an image. With `borb` you can easily convert any `Page` of a `Document` into an SVG image.                               
 
 As usual, we start by reading the `Document`:
 
@@ -1084,12 +1079,12 @@ This was the input document:
 
 ![export_a_pdf_to_svg_original](readme_img/export_a_pdf_to_svg_original.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.            
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.            
 
 #### 1.9.2 Exporting a PDF as MP3
 
 For those with hearing-impairments, it can be very useful to be able to convert a PDF `Document` to an MP3 file.
-This is perfectly possible with `pText`.
+This is perfectly possible with `borb`.
 
     with open("input.pdf", "rb") as pdf_file_handle:
         l = PDFToMP3()
@@ -1232,7 +1227,7 @@ And finally we store the modified `Document`
 
 ### 2.0 Creating an empty PDF
 
-This basic example gives you an idea of how to create a `Document` using `pText`.
+This basic example gives you an idea of how to create a `Document` using `borb`.
 Other examples will show you how to add rich content to it.
 
         # create empty document
@@ -1252,7 +1247,7 @@ The result should be something like this:
 
 ![write_empty_document](readme_img/write_empty_document.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.1 Adding text to a `Document`
 
@@ -1338,7 +1333,7 @@ The result should be something like this:
 #### 2.1.2 Adding text to a `Document` using `ChunkOfText`
 
 Luckily, there is an easier way to get content on a PDF.
-Let's look at the convenience classes `pText` provides.
+Let's look at the convenience classes `borb` provides.
 
 We'll start similar to our previous example, by creating an empty `Document` and `Page`.
 
@@ -1349,7 +1344,7 @@ We'll start similar to our previous example, by creating an empty `Document` and
         page = Page()
         pdf.append_page(page)
 
-Now instead of having to figure out all these instructions ourselves, we can let `pText` do the heavy lifting.
+Now instead of having to figure out all these instructions ourselves, we can let `borb` do the heavy lifting.
 Here we add a `ChunkOfText` to the `Page`, but other classes allow you to add lines of text, paragraphs, tables, etc.
 
         ChunkOfText(
@@ -1371,7 +1366,7 @@ The result should be something like this:
 
 ![create_hello_world_using_low_level_commands](readme_img/create_hello_world_using_low_level_commands.png)
           
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.1.2 (ctd) Adding text to a `Document` using `ChunkOfText`
 
@@ -1409,7 +1404,7 @@ The result should be something like this:
 
 ![creating_a_colorful_hello_world](readme_img/creating_a_colorful_hello_world.png)
                         
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.1.3 Adding text to a `Document` using `LineOfText`
 
@@ -1424,7 +1419,7 @@ We start by creating an empty `Document` (just like the other examples).
         pdf.append_page(page)
 
 Here we're going to add 4 lines of text, all of them will be justified `RIGHT`
-That means we're going to give them all the same bounding box (apart from the y-coordinate), and have `pText` work out where to start the text to achieve the correct Alignment.
+That means we're going to give them all the same bounding box (apart from the y-coordinate), and have `borb` work out where to start the text to achieve the correct Alignment.
 
         for i, s in enumerate(
             [
@@ -1465,7 +1460,7 @@ The result should be something like this:
 
 ![adding lines of text justified right](readme_img/adding_lines_of_text_justified_right.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.1.3 Adding text to a `Document` using `Paragraph`
 
@@ -1516,7 +1511,7 @@ The result should be something like this:
 
 ![adding paragraph](readme_img/adding_a_paragraph.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 2.1.3.2 Setting justification
 
@@ -1552,7 +1547,7 @@ The result should be something like this:
 
 ![adding paragraph_justified_full](readme_img/adding_paragraph_justified_full.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 2.1.3.3 Setting padding
 
@@ -1586,11 +1581,11 @@ The result should be something like this:
 
 ![adding_paragraph_justified_center_with_padding](readme_img/adding_paragraph_justified_center_with_padding.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 2.1.3.4 Setting borders
 
-`pText` also allows you to set borders on any `LayoutElement`
+`borb` also allows you to set borders on any `LayoutElement`
 Let's try that:
 
         padding = Decimal(5)
@@ -1615,7 +1610,7 @@ The result should be something like this:
 
 ![adding_paragraph_justified_center_with_padding_and_border](readme_img/adding_paragraph_justified_center_with_padding_and_border.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 2.1.3.5 Setting color
 
@@ -1645,7 +1640,7 @@ The result should be something like this (maybe salmon was not the greatest colo
 
 ![adding_paragraph_justified_center_with_padding_and_border_salmon](readme_img/adding_paragraph_justified_center_with_padding_and_border_salmon.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 2.1.3.6 Forcing a split
 
@@ -1691,11 +1686,11 @@ The result should be something like this:
 
 ![adding_a_paragraph_forcing_split](readme_img/adding_a_paragraph_forcing_split.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ##### 2.1.3.7 Setting the Font
 
-`Font` objects in `pText` are as close to the PDF level as possible, whilst still keeping it user-friendly.
+`Font` objects in `borb` are as close to the PDF level as possible, whilst still keeping it user-friendly.
 In the PDF spec, there are 2 kinds of `Fonts`. `SimpleFont` (in general) represents a `Font` that maps only the bytes `0..255` to unicode characters. 
 
 Among these `SimpleFonts` are the so called 'standard 14 fonts'. These are fonts that any conforming reader should have available to it.
@@ -1787,14 +1782,14 @@ The result should be something like this:
 
 ![adding_headings_to_a_document.png](readme_img/adding_headings_to_a_document.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.2 Using a `PageLayout`
 
 So far we've used absolute positioning whenever we wanted to add something to a `Page`.
 Although this gives us precise control over where the content needs to go, it makes it harder to add multiple `LayoutElement` objects.
 
-Luckily, `pText` comes with various `PageLayout` classes. These keep track of what parts of a `Page` are free, and where to flow content to.
+Luckily, `borb` comes with various `PageLayout` classes. These keep track of what parts of a `Page` are free, and where to flow content to.
 
 #### 2.2.1 Using `SingleColumnLayout`
 
@@ -1834,11 +1829,11 @@ The result should be something like this:
 
 ![adding_paragraphs_using_single_column_layout.png](readme_img/adding_paragraphs_using_single_column_layout.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.2.2 Using `MultiColumnLayout`
 
-`pText` also comes with `MultiColumnLayout`, which enables you to create a `Document` with multiple columns on each page.
+`borb` also comes with `MultiColumnLayout`, which enables you to create a `Document` with multiple columns on each page.
 
 Most of our previous code will stay the same. We will need to change the `PageLayout` we used.
 Now we're using `MultiColumnLayout`.
@@ -1870,7 +1865,7 @@ The result should be something like this:
 
 ![adding_paragraphs_using_multi_column_layout.png](readme_img/adding_paragraphs_using_multi_column_layout.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.2.3 Mixing various `PageLayout` instances 
 
@@ -2052,7 +2047,7 @@ The result should be something like this:
 
 ![showcase_writing_the_raven_document](readme_img/showcase_writing_the_raven_document.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.3 Using `Table`
 
@@ -2109,7 +2104,7 @@ The result should be something like this:
 
 ![adding a_simple_table](readme_img/adding_a_simple_table.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.3.2 Using `row_span`
 
@@ -2168,7 +2163,7 @@ The result should be something like this:
 
 ![adding a_table_with_row_span](readme_img/adding_a_table_with_row_span.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.3.3 Using `col_span`
 
@@ -2187,7 +2182,7 @@ The result should be something like this:
 
 ![adding a_table_with_col_span](readme_img/adding_a_table_with_col_span.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.3.4 Using other `LayoutElement` objects in a `Table`
 
@@ -2203,7 +2198,7 @@ This method will accept the URL of the `Image`, and a `Table` as arguments:
         )
         table.add(Image(im, width=Decimal(128), height=Decimal(128)))
 
-In order to keep `pText` `Image` separate from `PIL` `Image` I use the following import statement:
+In order to keep `borb` `Image` separate from `PIL` `Image` I use the following import statement:
 
     from PIL import Image as PILImage
 
@@ -2268,7 +2263,7 @@ The result should be something like this:
 
 ![adding_image_objects_to_a_table](readme_img/adding_image_objects_to_a_table.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.3.5 Showcase : displaying a `Table` that doubles as a heatmap-plot
 
@@ -2326,7 +2321,7 @@ We're going to make the border on each cell a bit thinner than the default:
         # set border
         table.set_border_width_on_all_cells(Decimal(0.2))
 
-Padding can make a `Table` a lot more legible. Let's have a look at how you'd set the padding on a `Table` in `pText`
+Padding can make a `Table` a lot more legible. Let's have a look at how you'd set the padding on a `Table` in `borb`
 Just like with borders, we could set them on each `TableCell` individually.
 But `Table` offers a convenience-method to set the padding on each of its `TableCell`objects:
 
@@ -2349,7 +2344,7 @@ The result should be something like this:
 
 ![using_padding_on_a_table](readme_img/using_padding_on_a_table.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.4 Using `OrderedList` and `UnorderedList`
 
@@ -2382,7 +2377,7 @@ The result should be something like this:
 
 ![adding an_ordered_list](readme_img/adding_an_ordered_list.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.4.2 Using `UnorderedList`
 
@@ -2414,7 +2409,7 @@ The result should be something like this:
 
 ![adding an_unordered_list](readme_img/adding_an_unordered_list.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.4.3 Nested lists
 
@@ -2454,7 +2449,7 @@ The result should be something like this:
 
 ![adding a_nested_unordered_list](readme_img/adding_a_nested_unordered_list.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.4.4 Showcase : Recreating a Wikipedia article 
 
@@ -2561,13 +2556,13 @@ The result should be something like this:
 
 ![showcase_creating_a_wikipedia_article](readme_img/showcase_creating_a_wikipedia_article.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.5 Using `Image`
 
 #### 2.5.1 Using a `PIL` `Image`
 
-As you have seen in earlier examples, `pText` also handles `Image` objects.
+As you have seen in earlier examples, `borb` also handles `Image` objects.
 They act like any other `LayoutElement`.
 The most versatile way of constructing them is by passing a `PIL` `Image` to the constructor.
 
@@ -2581,9 +2576,9 @@ The most versatile way of constructing them is by passing a `PIL` `Image` to the
         layout.add(Image(im, width=Decimal(256)))
 
 You can specify a `width` and `height` for the `Image`.
-If you don't specify anything, `pText` will use the original width and height of the `Image`.
-If you specify only one, `pText` will derive the missing parameter by scaling the original width/height by the same ratio.
-If you specify both, `pText` will stick to the dimensions you've given.
+If you don't specify anything, `borb` will use the original width and height of the `Image`.
+If you specify only one, `borb` will derive the missing parameter by scaling the original width/height by the same ratio.
+If you specify both, `borb` will stick to the dimensions you've given.
 
 #### 2.5.2 Using a `URL` to create an `Image`
 
@@ -2717,7 +2712,7 @@ It seems a bit redundant to repeat that here.
         )
         layout.add(
             Paragraph(
-                "Your support and encouragement have always been the driving factors in the development of pText. "
+                "Your support and encouragement have always been the driving factors in the development of borb. "
                 "I want you to know that I value your appreciation immensely!"
             )
         )
@@ -2732,7 +2727,7 @@ It seems a bit redundant to repeat that here.
 
         layout.add(
             Barcode(
-                data="https://github.com/jorisschellekens/ptext-release/stargazers",
+                data="https://github.com/jorisschellekens/borb-release/stargazers",
                 type=BarcodeType.QR,
                 width=Decimal(128),
                 stroke_color=self.ACCENT_COLOR_1,
@@ -2749,13 +2744,13 @@ The result should be something like this:
 
 ![showcase_100_stars_document](readme_img/showcase_100_stars_document.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.6 Using `Barcode`
 
 #### 2.6.1 Basic Example
 
-`pText` also supports most barcode formats.
+`borb` also supports most barcode formats.
 Let's create an example `Document`:
 
         pdf: Document = Document()
@@ -2785,7 +2780,7 @@ The result should be something like this:
 
 ![adding_a_barcode_to_a_document](readme_img/adding_a_barcode_to_a_document.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.6.2 Using `Color` on `Barcode` objects
 
@@ -2853,7 +2848,7 @@ The result should be something like this:
 
 ![adding_a_table_of_barcodes_to_a_document](readme_img/adding_a_table_of_barcodes_to_a_document.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 #### 2.6.3 Showcase : Outputting the results of a Jenkins run
 
@@ -3061,7 +3056,7 @@ The result should be something like this:
 
 ![showcase_converting_junit_results_to_pdf](readme_img/showcase_converting_junit_results_to_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
 
 ### 2.7 Using `Chart`
 
@@ -3144,7 +3139,7 @@ The result should be something like this:
 
 ![adding_a_chart_to_a_pdf](readme_img/adding_a_chart_to_a_pdf.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
                   
 
 ### 2.8 Using `Shape`
@@ -3208,7 +3203,7 @@ The result should be something like this:
 
 ![adding_a_shape](readme_img/adding_a_shape.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
       
 #### 2.8.2 Using `DisjointShape` to display a maze
 
@@ -3406,5 +3401,5 @@ The end result should be something like this (keeping in mind the maze is genera
 
 ![adding_a_disjointshape](readme_img/adding_a_disjointshape.png)
 
-Check out the `tests` directory to find more tests like this one, and discover what you can do with `pText`.
+Check out the `tests` directory to find more tests like this one, and discover what you can do with `borb`.
         

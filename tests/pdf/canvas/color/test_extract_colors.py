@@ -4,22 +4,22 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.color.color import HexColor, RGBColor, X11Color
-from ptext.pdf.canvas.geometry.rectangle import Rectangle
-from ptext.pdf.canvas.layout.image.image import Image
-from ptext.pdf.canvas.layout.image.shape import Shape
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.base_table import TableCell
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.pdf.canvas.color.color import HexColor, RGBColor, X11Color
+from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.image.shape import Shape
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.canvas.line_art.line_art_factory import LineArtFactory
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.color.color_spectrum_extraction import ColorSpectrumExtraction
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
+from borb.toolkit.color.color_spectrum_extraction import ColorSpectrumExtraction
 
 unittest.TestLoader.sortTestMethodsUsing = None
 

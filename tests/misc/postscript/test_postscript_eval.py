@@ -2,7 +2,7 @@ import typing
 import unittest
 from decimal import Decimal
 
-from ptext.io.read.postfix.postfix_eval import PostScriptEval
+from borb.io.read.postfix.postfix_eval import PostScriptEval
 
 
 class TestPostscriptEval(unittest.TestCase):

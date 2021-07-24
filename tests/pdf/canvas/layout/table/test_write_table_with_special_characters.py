@@ -2,19 +2,19 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import HexColor, X11Color
-from ptext.pdf.canvas.font.font import Font
-from ptext.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.color.color import HexColor, X11Color
+from borb.pdf.canvas.font.font import Font
+from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestWriteTableWithSpecialCharacters(unittest.TestCase):
@@ -168,7 +168,7 @@ class TestWriteTableWithSpecialCharacters(unittest.TestCase):
 
         layout.add(
             Paragraph(
-                text="**These are the characters pText can currently render in a PDF",
+                text="**These are the characters borb can currently render in a PDF",
                 font_size=Decimal(8),
                 font_color=X11Color("Gray"),
                 horizontal_alignment=Alignment.RIGHT,

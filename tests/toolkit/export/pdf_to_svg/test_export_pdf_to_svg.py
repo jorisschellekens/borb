@@ -2,8 +2,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.pdf_to_svg import PDFToSVG
+from borb.pdf.pdf import PDF
+from borb.toolkit.export.pdf_to_svg import PDFToSVG
 
 
 class TestExportPDFToSVG(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestExportPDFToSVG(unittest.TestCase):
             l = PDFToSVG()
             doc = PDF.loads(pdf_file_handle, [l])
             with open(self.output_dir / "output.svg", "wb") as svg_file_handle:
-                svg_file_handle.write(ET.tostring(l.get_image(0)))
+                svg_file_handle.write(ET.tostring(l.get_image_for_page(0)))
 
 
 if __name__ == "__main__":

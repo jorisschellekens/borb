@@ -1,9 +1,9 @@
 import unittest
 from pathlib import Path
 
-from ptext.pdf.document import Document
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
+from borb.pdf.document import Document
+from borb.pdf.pdf import PDF
+from borb.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
 
 
 class TestExportHTMLToPDF(unittest.TestCase):
@@ -59,6 +59,9 @@ class TestExportHTMLToPDF(unittest.TestCase):
 
     def test_example_013(self):
         self._test_convert_document("example-html-input-013.html")
+
+    def test_example_014(self):
+        self._test_convert_document("example-html-input-014.html")
 
     def _test_convert_document(self, file_to_convert: str):
 

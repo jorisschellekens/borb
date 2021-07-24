@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from ptext.pdf.canvas.geometry.matrix import Matrix
+from borb.pdf.canvas.geometry.matrix import Matrix
 
 
 class TestMatrixMultiplication(unittest.TestCase):

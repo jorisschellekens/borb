@@ -3,17 +3,17 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.text.regular_expression_text_extraction import (
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
+from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
 

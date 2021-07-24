@@ -8,20 +8,21 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from ptext.pdf.canvas.color.color import HexColor
-from ptext.pdf.canvas.layout.image.chart import Chart
-from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from ptext.pdf.canvas.layout.table.base_table import TableCell
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Name
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.layout.image.chart import Chart
+from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
+from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
 class TestExtractTextExpectGroundTruth(unittest.TestCase):
@@ -46,8 +47,8 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         self.time_per_document: typing.Dict[str, float] = {}
         self.fails_per_document: typing.Dict[str, int] = []
 
+    @unittest.skip
     def test_against_entire_corpus(self):
-
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [
             (self.corpus_dir / x)
@@ -108,7 +109,12 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        graph_table: Table = Table(number_of_rows=2, number_of_columns=2)
+        graph_table: Table = Table(
+            number_of_rows=2,
+            number_of_columns=2,
+            margin_top=Decimal(5),
+            margin_bottom=Decimal(5),
+        )
         graph_table.add(
             Paragraph(
                 "Timing Information",
@@ -197,7 +203,9 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         )
         avg_processing_time: float = 0
         if len(self.time_per_document) > 0:
-            avg_processing_time = sum([v for k, v in self.time_per_document.items()]) / len(self.time_per_document)
+            avg_processing_time = sum(
+                [v for k, v in self.time_per_document.items()]
+            ) / len(self.time_per_document)
         ul.add(Paragraph("avg. processing time: %f seconds" % avg_processing_time))
 
         max_processing_time: float = 0
@@ -219,7 +227,12 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             tmp = [(k, v) for k, v in self.fails_per_document.items()]
             tmp.sort(key=lambda x: x[1], reverse=True)
             tmp = tmp[0:5]
-            t: Table = Table(number_of_columns=2, number_of_rows=7)
+            t: Table = Table(
+                number_of_columns=2,
+                number_of_rows=7,
+                margin_top=Decimal(5),
+                margin_bottom=Decimal(5),
+            )
             t.add(
                 TableCell(
                     Paragraph(
@@ -243,7 +256,12 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             tmp = [(k, v) for k, v in self.time_per_document.items()]
             tmp.sort(key=lambda x: x[1], reverse=True)
             tmp = tmp[0:5]
-            t: Table = Table(number_of_columns=2, number_of_rows=7)
+            t: Table = Table(
+                number_of_columns=2,
+                number_of_rows=7,
+                margin_top=Decimal(5),
+                margin_bottom=Decimal(5),
+            )
             t.add(
                 TableCell(
                     Paragraph(
@@ -267,7 +285,12 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             tmp = [(k, v) for k, v in self.time_per_document.items()]
             tmp.sort(key=lambda x: x[1])
             tmp = tmp[0:5]
-            t: Table = Table(number_of_columns=2, number_of_rows=7)
+            t: Table = Table(
+                number_of_columns=2,
+                number_of_rows=7,
+                margin_top=Decimal(5),
+                margin_bottom=Decimal(5),
+            )
             t.add(
                 TableCell(
                     Paragraph(

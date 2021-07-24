@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from ptext.pdf.pdf import PDF
+from borb.pdf.pdf import PDF
 
 
 class TestExportPDFToJSON(unittest.TestCase):

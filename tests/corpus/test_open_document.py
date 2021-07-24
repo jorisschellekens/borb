@@ -6,17 +6,18 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.layout.image.chart import Chart
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.layout.image.chart import Chart
+from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestOpenDocument(unittest.TestCase):
@@ -46,7 +47,9 @@ class TestOpenDocument(unittest.TestCase):
         pdfs = [
             (self.corpus_dir / x)
             for x in pdf_file_names
-            if x.endswith(".pdf") and "page_0" in x and (x not in ["0566_page_0.pdf", "0213.pdf"])
+            if x.endswith(".pdf")
+            and "page_0" in x
+            and (x not in ["0566_page_0.pdf", "0213.pdf"])
         ]
         self._test_list_of_documents(pdfs)
         plt.close("all")
@@ -63,7 +66,7 @@ class TestOpenDocument(unittest.TestCase):
                     PDF.loads(pdf_file_handle)
                 self.number_of_passes += 1
             except Exception as e:
-                print(e)
+                print("ERROR, document %s, %s" % (doc.name, str(e)))
                 self.number_of_fails += 1
                 pass
             self._build_document()
@@ -114,6 +117,22 @@ class TestOpenDocument(unittest.TestCase):
         )
         ax1.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
         layout.add(Chart(plt.gcf(), width=Decimal(200), height=Decimal(200)))
+
+        # raw data
+        ul: UnorderedList = UnorderedList()
+        ul.add(
+            Paragraph(
+                "processed %d documents"
+                % (self.number_of_fails + self.number_of_passes)
+            )
+        )
+        ul.add(
+            Paragraph(
+                "%d fail(s), %d pass(es)"
+                % (self.number_of_fails, self.number_of_passes)
+            )
+        )
+        layout.add(ul)
 
         # write
         file = self.output_dir / "output.pdf"

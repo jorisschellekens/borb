@@ -1,8 +1,8 @@
 import unittest
 from pathlib import Path
 
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.export.pdf_to_mp3 import PDFToMP3
+from borb.pdf.pdf import PDF
+from borb.toolkit.export.pdf_to_mp3 import PDFToMP3
 
 
 class TestExportToMP3(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestExportToMP3(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             l = PDFToMP3()
             doc = PDF.loads(pdf_file_handle, [l])
-            l.get_audio_file(0, self.output_dir / "output.mp3")
+            l.get_audio_for_page(0, self.output_dir / "output.mp3")
 
 
 if __name__ == "__main__":

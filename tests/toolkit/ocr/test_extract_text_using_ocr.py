@@ -2,9 +2,9 @@ import typing
 import unittest
 from pathlib import Path
 
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
-from ptext.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from borb.pdf.pdf import PDF
+from borb.toolkit.ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
+from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 unittest.TestLoader.sortTestMethodsUsing = None
 

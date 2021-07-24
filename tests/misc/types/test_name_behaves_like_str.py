@@ -1,6 +1,6 @@
 import unittest
 
-from ptext.io.read.types import Name
+from borb.io.read.types import Name
 
 
 class TestNameBehaves_likeStr(unittest.TestCase):

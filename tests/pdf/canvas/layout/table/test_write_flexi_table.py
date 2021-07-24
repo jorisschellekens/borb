@@ -2,22 +2,23 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from ptext.io.read.types import Decimal
-from ptext.pdf.canvas.color.color import HexColor, X11Color
-from ptext.pdf.canvas.layout.layout_element import Alignment
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.color.color import HexColor, X11Color
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
+from borb.pdf.canvas.layout.table.flexible_column_width_table import (
+    FlexibleColumnWidthTable,
+)
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
 
 class TestWriteFlexiTable(unittest.TestCase):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -51,7 +52,12 @@ class TestWriteFlexiTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = FlexibleColumnWidthTable(number_of_rows=5, number_of_columns=2, padding_top=Decimal(5), horizontal_alignment=Alignment.RIGHT)
+        t = FlexibleColumnWidthTable(
+            number_of_rows=5,
+            number_of_columns=2,
+            padding_top=Decimal(5),
+            horizontal_alignment=Alignment.RIGHT,
+        )
         t.add(
             Paragraph(
                 "Language",
@@ -133,7 +139,12 @@ class TestWriteFlexiTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = FlexibleColumnWidthTable(number_of_rows=5, number_of_columns=2, padding_top=Decimal(5), horizontal_alignment=Alignment.RIGHT)
+        t = FlexibleColumnWidthTable(
+            number_of_rows=5,
+            number_of_columns=2,
+            padding_top=Decimal(5),
+            horizontal_alignment=Alignment.RIGHT,
+        )
         t.add(
             Paragraph(
                 "Language",
@@ -216,7 +227,12 @@ class TestWriteFlexiTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = FlexibleColumnWidthTable(number_of_rows=5, number_of_columns=2, padding_top=Decimal(5), horizontal_alignment=Alignment.RIGHT)
+        t = FlexibleColumnWidthTable(
+            number_of_rows=5,
+            number_of_columns=2,
+            padding_top=Decimal(5),
+            horizontal_alignment=Alignment.RIGHT,
+        )
         t.add(
             Paragraph(
                 "Language",
@@ -299,7 +315,12 @@ class TestWriteFlexiTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = FlexibleColumnWidthTable(number_of_rows=5, number_of_columns=2, padding_top=Decimal(5), horizontal_alignment=Alignment.RIGHT)
+        t = FlexibleColumnWidthTable(
+            number_of_rows=5,
+            number_of_columns=2,
+            padding_top=Decimal(5),
+            horizontal_alignment=Alignment.RIGHT,
+        )
         t.add(
             Paragraph(
                 "Language",
@@ -382,7 +403,12 @@ class TestWriteFlexiTable(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = FlexibleColumnWidthTable(number_of_rows=5, number_of_columns=2, padding_top=Decimal(5), horizontal_alignment=Alignment.RIGHT)
+        t = FlexibleColumnWidthTable(
+            number_of_rows=5,
+            number_of_columns=2,
+            padding_top=Decimal(5),
+            horizontal_alignment=Alignment.RIGHT,
+        )
         t.add(
             Paragraph(
                 "Language",

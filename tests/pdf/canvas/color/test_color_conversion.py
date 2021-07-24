@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal
 
-from ptext.pdf.canvas.color.color import HexColor, HSVColor, RGBColor
+from borb.pdf.canvas.color.color import HexColor, HSVColor, RGBColor
 
 
 class TestColorConversion(unittest.TestCase):

@@ -3,17 +3,17 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from ptext.pdf.canvas.layout.list.unordered_list import UnorderedList
-from ptext.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from ptext.pdf.canvas.layout.table.fixed_column_width_table import (
+from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from ptext.pdf.canvas.layout.text.paragraph import Paragraph
-from ptext.pdf.document import Document
-from ptext.pdf.page.page import Page
-from ptext.pdf.pdf import PDF
-from ptext.toolkit.text.stop_words import ENGLISH_STOP_WORDS
-from ptext.toolkit.text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
+from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
+from borb.toolkit.text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
