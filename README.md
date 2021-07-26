@@ -1,4 +1,3 @@
-
 # ![borb logo](readme_img/logo/borb_64.png) borb
 
 
@@ -37,30 +36,32 @@ They include;
 
 To give you an immediate idea of the way `borb` works, this is the classic `Hello World` example, in `borb`:
 
-    from pathlib import Path
+```python
+from pathlib import Path
 
-    from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-    from borb.pdf.canvas.layout.text.paragraph import Paragraph
-    from borb.pdf.document import Document
-    from borb.pdf.page.page import Page
-    from borb.pdf.pdf import PDF
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
-    # create an empty Document
-    pdf = Document()
+# create an empty Document
+pdf = Document()
 
-    # add an empty Page
-    page = Page()
-    pdf.append_page(page)
+# add an empty Page
+page = Page()
+pdf.append_page(page)
 
-    # use a PageLayout (SingleColumnLayout in this case)
-    layout = SingleColumnLayout(page)
+# use a PageLayout (SingleColumnLayout in this case)
+layout = SingleColumnLayout(page)
 
-    # add a Paragraph object
-    layout.add(Paragraph("Hello World!"))
-    
-    # store the PDF
-    with open(Path("output.pdf"), "wb") as pdf_file_handle:
-        PDF.dumps(pdf_file_handle, pdf)
+# add a Paragraph object
+layout.add(Paragraph("Hello World!"))
+
+# store the PDF
+with open(Path("output.pdf"), "wb") as pdf_file_handle:
+    PDF.dumps(pdf_file_handle, pdf)
+```
  
 ## 2. License
 
