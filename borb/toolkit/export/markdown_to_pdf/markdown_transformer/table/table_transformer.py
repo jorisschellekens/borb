@@ -11,7 +11,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
-from borb.pdf.canvas.layout.table.base_table import BaseTable, TableCell
+from borb.pdf.canvas.layout.table.table import Table, TableCell
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
@@ -96,7 +96,7 @@ class TableTransformer(BaseMarkdownTransformer):
 
         # build Table
         number_of_rows: int = len(table_items_str)
-        ul: BaseTable = FlexibleColumnWidthTable(
+        ul: Table = FlexibleColumnWidthTable(
             number_of_columns=number_of_columns, number_of_rows=number_of_rows
         )
         for tr in table_items_str:
@@ -113,7 +113,7 @@ class TableTransformer(BaseMarkdownTransformer):
 
         # set header row
         for td_table_cell in ul._get_cells_at_row(0):
-            td_table_cell._layout_element._font = StandardType1Font("Helvetica-Bold")
+            td_table_cell._layout_element._font = StandardType1Font("Helvetica-Bold")  # type: ignore [attr-defined]
 
         # set padding and zebra striping
         ul.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))

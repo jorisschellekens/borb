@@ -97,7 +97,7 @@ class TestWriteParagraphAlignment(unittest.TestCase):
                         padding_right=Decimal(5),
                         padding_bottom=Decimal(5),
                         padding_left=Decimal(5),
-                        background_color=HexColor("86CD82"),
+                        background_color=HexColor("56cbf9"),
                     ).layout(
                         page,
                         bb,
@@ -105,7 +105,7 @@ class TestWriteParagraphAlignment(unittest.TestCase):
 
                     # add rectangle annotation
                     page.append_square_annotation(
-                        stroke_color=HexColor("72A276"),
+                        stroke_color=HexColor("f1cd2e"),
                         rectangle=bb,
                     )
 

@@ -12,7 +12,7 @@ from typing import Any, Optional, Union
 from borb.io.filter.stream_decode_util import decode_stream
 from borb.io.read.read_base_transformer import (
     ReadBaseTransformer,
-    ReadTransformerContext,
+    ReadTransformerState,
 )
 from borb.io.read.types import (
     AnyPDFType,
@@ -50,7 +50,7 @@ class FunctionDictionaryTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[ReadTransformerContext] = None,
+        context: Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """

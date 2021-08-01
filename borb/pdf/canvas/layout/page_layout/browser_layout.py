@@ -17,7 +17,7 @@ from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.list.ordered_list import OrderedList
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.base_table import BaseTable
+from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.heading import Heading
@@ -184,7 +184,7 @@ class BrowserLayout(PageLayout):
             display_value = DisplayValue.BLOCK
         elif isinstance(layout_element, Paragraph):
             display_value = DisplayValue.BLOCK
-        elif isinstance(layout_element, BaseTable):
+        elif isinstance(layout_element, Table):
             display_value = DisplayValue.BLOCK
         #
         # INLINE ELEMENTS
@@ -296,6 +296,7 @@ class BrowserLayout(PageLayout):
         ):
             self._rows.append(BrowserLayoutRow(DisplayValue.INLINE))
 
+        assert self._page_height is not None
         prev_row_bottom: Decimal = self._page_height - self._vertical_margin
         prev_row_margin_bottom: Decimal = Decimal(0)
         if len(self._rows) > 1:

@@ -17,10 +17,10 @@ class LineSegment:
     """
 
     def __init__(self, x0: Decimal, y0: Decimal, x1: Decimal, y1: Decimal):
-        self.x0 = x0
-        self.y0 = y0
-        self.x1 = x1
-        self.y1 = y1
+        self.x0: Decimal = x0
+        self.y0: Decimal = y0
+        self.x1: Decimal = x1
+        self.y1: Decimal = y1
 
     def length(self) -> Decimal:
         """

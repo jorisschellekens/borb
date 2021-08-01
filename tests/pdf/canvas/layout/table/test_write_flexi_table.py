@@ -61,7 +61,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Language",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -70,7 +70,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -148,7 +148,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Language",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -157,7 +157,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -236,7 +236,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Language",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -245,7 +245,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -324,7 +324,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Language",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -333,7 +333,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -412,7 +412,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Language",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,
@@ -421,7 +421,7 @@ class TestWriteFlexiTable(unittest.TestCase):
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
                 horizontal_alignment=Alignment.CENTERED,

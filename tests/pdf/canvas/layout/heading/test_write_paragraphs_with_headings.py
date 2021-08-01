@@ -73,7 +73,7 @@ class TestWriteParagraphsWithHeadings(unittest.TestCase):
                 "Lorem Ipsum",
                 font_size=Decimal(18.2),
                 font="Helvetica-Bold",
-                font_color=HexColor("72A276"),
+                font_color=HexColor("0b3954"),
             )
         )
         layout.add(
@@ -81,7 +81,7 @@ class TestWriteParagraphsWithHeadings(unittest.TestCase):
                 "Cicero",
                 font="Helvetica-Oblique",
                 font_size=Decimal(8),
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("56cbf9"),
             )
         )
         N: int = 16
@@ -92,7 +92,7 @@ class TestWriteParagraphsWithHeadings(unittest.TestCase):
                     "Lorem Ipsum",
                     font_size=Decimal(18.2),
                     font="Helvetica-Bold",
-                    font_color=HexColor("72A276"),
+                    font_color=HexColor("f1cd2e"),
                     outline_level=1,
                 )
             )

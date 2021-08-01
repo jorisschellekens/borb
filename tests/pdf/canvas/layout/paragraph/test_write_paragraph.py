@@ -81,7 +81,7 @@ class TestWriteParagraph(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=bb,
         )
 

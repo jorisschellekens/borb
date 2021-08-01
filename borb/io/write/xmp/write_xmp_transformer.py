@@ -14,7 +14,7 @@ from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Name, Reference, Stream
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class WriteXMPTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes an ET.Element (representing XMP meta information) to a byte stream
@@ -42,7 +42,7 @@ class WriteXMPTransformer(WriteBaseTransformer):
         assert isinstance(object_to_transform, ET.Element)
         assert (
             context is not None
-        ), "A WriteTransformerContext must be defined in order to write XMP objects."
+        ), "A WriteTransformerState must be defined in order to write XMP objects."
         assert context.destination is not None
         assert context.destination
 

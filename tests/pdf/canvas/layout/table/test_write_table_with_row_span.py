@@ -5,7 +5,7 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor, X11Color
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -71,18 +71,18 @@ class TestWriteTableWithRowSpan(unittest.TestCase):
             )
         )
         t.add(
-            Paragraph("Language", font_color=HexColor("86CD82"), font_size=Decimal(20))
+            Paragraph("Language", font_color=HexColor("f1cd2e"), font_size=Decimal(20))
         )
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(20),
             )
         )
 
         t.add(
-            TableCell(Paragraph("Front-end", font_color=HexColor("86CD82")), row_span=2)
+            TableCell(Paragraph("Front-end", font_color=HexColor("f1cd2e")), row_span=2)
         )
         t.add(Paragraph("Javascript"))
         t.add(Paragraph("2,167,178"))
@@ -91,7 +91,7 @@ class TestWriteTableWithRowSpan(unittest.TestCase):
         t.add(Paragraph("1,391,524"))
 
         t.add(
-            TableCell(Paragraph("Back-end", font_color=HexColor("86CD82")), row_span=2)
+            TableCell(Paragraph("Back-end", font_color=HexColor("f1cd2e")), row_span=2)
         )
         t.add(Paragraph("C++"))
         t.add(Paragraph("711,944"))

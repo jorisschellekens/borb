@@ -28,7 +28,7 @@ from borb.io.write.reference.write_reference_transformer import WriteReferenceTr
 from borb.io.write.reference.write_xref_transformer import WriteXREFTransformer
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 from borb.io.write.write_pdf_transformer import WritePDFTransformer
 from borb.io.write.xmp.write_xmp_transformer import WriteXMPTransformer
@@ -72,7 +72,7 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
         destination: Optional[Union[io.BufferedIOBase, io.RawIOBase]] = None,
     ):
         """
@@ -81,7 +81,7 @@ class WriteAnyObjectTransformer(WriteBaseTransformer):
         if context is None:
             super().transform(
                 object_to_transform,
-                WriteTransformerContext(
+                WriteTransformerState(
                     destination=destination, root_object=object_to_transform
                 ),
             )

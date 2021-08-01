@@ -19,7 +19,7 @@ import xml.etree.ElementTree as ET
 from typing import Any, Optional, Union
 
 from borb.io.read.object.read_stream_transformer import ReadStreamTransformer
-from borb.io.read.read_base_transformer import ReadTransformerContext
+from borb.io.read.read_base_transformer import ReadTransformerState
 from borb.io.read.types import AnyPDFType, Element, Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 
@@ -57,7 +57,7 @@ class ReadXMPMetadataTransformer(ReadStreamTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[ReadTransformerContext] = None,
+        context: Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """

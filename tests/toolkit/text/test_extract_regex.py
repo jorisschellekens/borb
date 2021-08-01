@@ -98,7 +98,7 @@ class TestExtractRegularExpression(unittest.TestCase):
         bb = bb.grow(Decimal(2))
         doc.get_page(0).append_square_annotation(
             bb,
-            stroke_color=HexColor("86CD82"),
+            stroke_color=HexColor("DE6449"),
         )
 
         # attempt to store PDF

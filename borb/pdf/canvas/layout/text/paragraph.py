@@ -189,9 +189,9 @@ class Paragraph(LineOfText):
                 for i in range(1, len(hyphenated_word_parts)):
                     # fmt: off
                     potential_text_after_hyphenation = potential_text + "".join([x for x in hyphenated_word_parts[0:i]]) + "-"
-                    encoded_bytes: bytes = bytes([self._font.unicode_to_character_identifier(c) or 0 for c in potential_text_after_hyphenation])
+                    encoded_bytes = bytes([self._font.unicode_to_character_identifier(c) or 0 for c in potential_text_after_hyphenation])
                     potential_width = GlyphLine(encoded_bytes, self._font, self._font_size).get_width_in_text_space()
-                    remaining_space_in_box: Decimal = round(bounding_box.width - potential_width, 2)
+                    remaining_space_in_box = round(bounding_box.width - potential_width, 2)
                     # fmt: on
                     if remaining_space_in_box > Decimal(0):
                         hyphenation_split_index = i

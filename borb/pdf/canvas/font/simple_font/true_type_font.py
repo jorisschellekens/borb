@@ -88,7 +88,10 @@ class TrueTypeFont(Type1Font):
             font[Name("LastChar")] = pDecimal(len(glyph_order))
             font[Name("Widths")] = List()
             for glyph_name in glyph_order:
-                w: typing.Union[pDecimal, Decimal] = (pDecimal(ttf_font_file.getGlyphSet()[glyph_name].width) / units_per_em) * Decimal(1000)
+                w: typing.Union[pDecimal, Decimal] = (
+                    pDecimal(ttf_font_file.getGlyphSet()[glyph_name].width)
+                    / units_per_em
+                ) * Decimal(1000)
                 w = pDecimal(round(w, 2))
                 font["Widths"].append(w)
 
@@ -160,7 +163,7 @@ class TrueTypeFont(Type1Font):
         if cap_height is None:
             cap_height = pDecimal(840)
 
-        font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)
+        font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)  # type: ignore[attr-defined]
         font_descriptor["FontBBox"].append(pDecimal(min_x))
         font_descriptor["FontBBox"].append(pDecimal(min_y))
         font_descriptor["FontBBox"].append(pDecimal(max_x))
@@ -168,9 +171,8 @@ class TrueTypeFont(Type1Font):
 
         # fmt: off
         font_descriptor[Name("ItalicAngle")] = pDecimal(ttf_font_file["post"].italicAngle)
-        units_per_em: pDecimal = pDecimal(ttf_font_file["head"].unitsPerEm)
-        font_descriptor[Name("Ascent")] = pDecimal(pDecimal(ttf_font_file["hhea"].ascent) / units_per_em * Decimal(1000))
-        font_descriptor[Name("Descent")] = pDecimal(pDecimal(ttf_font_file["hhea"].descent) / units_per_em * Decimal(1000))
+        font_descriptor[Name("Ascent")] = pDecimal(ttf_font_file["hhea"].ascent / units_per_em * 1000)
+        font_descriptor[Name("Descent")] = pDecimal(ttf_font_file["hhea"].descent / units_per_em * 1000)
         font_descriptor[Name("CapHeight")] = cap_height
         font_descriptor[Name("StemV")] = pDecimal(297)             # TODO
         # fmt: on

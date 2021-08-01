@@ -59,8 +59,8 @@ class TableCell(LayoutElement):
             layout_element, TableCell
         ), "TableCell should not contain other TableCell LayoutElement(s)."
         assert not isinstance(
-            layout_element, BaseTable
-        ), "TableCell should not contain BaseTable LayoutElement(s)."
+            layout_element, Table
+        ), "TableCell should not contain Table LayoutElement(s)."
 
         # grid coordinates taken up by the TableCell
         self._row_span = row_span
@@ -168,7 +168,7 @@ class TableCell(LayoutElement):
         super(TableCell, self)._draw_background(page, border_box)
 
 
-class BaseTable(LayoutElement):
+class Table(LayoutElement):
     """
     This class represents a common base for all LayoutElement implementations
     that attempt to represent tabular data.
@@ -196,7 +196,7 @@ class BaseTable(LayoutElement):
         vertical_alignment: Alignment = Alignment.TOP,
         background_color: typing.Optional[Color] = None,
     ):
-        super(BaseTable, self).__init__(
+        super(Table, self).__init__(
             border_top=border_top,
             border_right=border_right,
             border_bottom=border_bottom,
@@ -221,26 +221,26 @@ class BaseTable(LayoutElement):
         self._number_of_columns = number_of_columns
         self._content: typing.List[TableCell] = []
 
-    def set_background_color_on_all_cells(self, background_color: Color) -> "BaseTable":
+    def set_background_color_on_all_cells(self, background_color: Color) -> "Table":
         """
-        This method sets the background Color on all TableCell objects in this BaseTable
+        This method sets the background Color on all TableCell objects in this Table
         """
         for e in self._content:
             e._background_color = background_color
         return self
 
-    def set_border_width_on_all_cells(self, border_width: Decimal) -> "BaseTable":
+    def set_border_width_on_all_cells(self, border_width: Decimal) -> "Table":
         """
-        This method sets the border width on all TableCell objects in this BaseTable
+        This method sets the border width on all TableCell objects in this Table
         """
         assert border_width >= 0
         for e in self._content:
             e._border_width = border_width
         return self
 
-    def set_border_color_on_all_cells(self, border_color: Color) -> "BaseTable":
+    def set_border_color_on_all_cells(self, border_color: Color) -> "Table":
         """
-        This method sets the border color on all TableCell objects in this BaseTable
+        This method sets the border color on all TableCell objects in this Table
         """
         for e in self._content:
             e._border_color = border_color
@@ -252,9 +252,9 @@ class BaseTable(LayoutElement):
         padding_right: Decimal,
         padding_bottom: Decimal,
         padding_left: Decimal,
-    ) -> "BaseTable":
+    ) -> "Table":
         """
-        This method sets the padding on all TableCell objects in this BaseTable
+        This method sets the padding on all TableCell objects in this Table
         """
         for e in self._content:
             e._padding_top = padding_top
@@ -269,9 +269,9 @@ class BaseTable(LayoutElement):
         border_right: bool,
         border_bottom: bool,
         border_left: bool,
-    ) -> "BaseTable":
+    ) -> "Table":
         """
-        This method sets the border(s) on all TableCell objects in this BaseTable
+        This method sets the border(s) on all TableCell objects in this Table
         """
         for e in self._content:
             e._border_top = border_top
@@ -280,17 +280,17 @@ class BaseTable(LayoutElement):
             e._border_left = border_left
         return self
 
-    def no_borders(self) -> "BaseTable":
+    def no_borders(self) -> "Table":
         """
-        This method unsets the border(s) on all TableCell objects in this BaseTable
+        This method unsets the border(s) on all TableCell objects in this Table
         """
         self.set_borders_on_all_cells(False, False, False, False)
         return self
 
-    def outer_borders(self) -> "BaseTable":
+    def outer_borders(self) -> "Table":
         """
-        This method unsets the border(s) on all TableCell objects in this BaseTable
-        except for the borders that form the outside edge of the BaseTable
+        This method unsets the border(s) on all TableCell objects in this Table
+        except for the borders that form the outside edge of the Table
         """
         self.no_borders()
         for c in self._get_cells_at_row(0):
@@ -303,10 +303,10 @@ class BaseTable(LayoutElement):
             c._border_right = True
         return self
 
-    def internal_borders(self) -> "BaseTable":
+    def internal_borders(self) -> "Table":
         """
-        This method sets the border(s) on all TableCell objects in this BaseTable
-        except for the borders that form the outside edge of the BaseTable
+        This method sets the border(s) on all TableCell objects in this Table
+        except for the borders that form the outside edge of the Table
         """
         for tc in self._content:
             tc._border_top = True
@@ -325,9 +325,9 @@ class BaseTable(LayoutElement):
 
     def even_odd_row_colors(
         self, even_row_color: Color, odd_row_color: Color
-    ) -> "BaseTable":
+    ) -> "Table":
         """
-        This function colors the BaseTable with the classic "zebra stripes"
+        This function colors the Table with the classic "zebra stripes"
         e.a. one color for all even rows, and a contrasting color for the odd rows.
         This function returns self.
         """
@@ -353,7 +353,7 @@ class BaseTable(LayoutElement):
                 out.append(t)
         return out
 
-    def add(self, layout_element: LayoutElement) -> "BaseTable":
+    def add(self, layout_element: LayoutElement) -> "Table":
         """
         This function adds the given LayoutElement to this Table.
         This function returns self.
@@ -380,9 +380,22 @@ class BaseTable(LayoutElement):
                 < self._number_of_columns
             ]
         )
-        first_empty_column: int = sum(
-            [x._col_span for x in self._get_cells_at_row(first_non_complete_row)]
+        # check which columns are already occupied in the current row
+        occupied_cols_in_row: typing.List[int] = []
+        for c in self._get_cells_at_row(first_non_complete_row):
+            occupied_cols_in_row.extend(
+                [x[1] for x in c._table_coordinates if x[0] == first_non_complete_row]
+            )
+        # the first empty column is the lowest number that does not appear in occupied_cols_in_row
+        first_empty_column: int = min(
+            [
+                x
+                for x in range(0, self._number_of_columns)
+                if x not in occupied_cols_in_row
+            ]
         )
+
+        # set _table_coordinates
         for i in range(0, layout_element._row_span):
             for j in range(0, layout_element._col_span):
                 layout_element._table_coordinates.append(

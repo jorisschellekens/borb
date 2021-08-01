@@ -11,7 +11,7 @@ from typing import Optional
 from borb.io.read.types import AnyPDFType, Reference
 
 
-class WriteTransformerContext:
+class WriteTransformerState:
     """
     This class represents all the meta-information used in the process of persisting a PDF document.
     This includes:
@@ -85,10 +85,10 @@ class WriteBaseTransformer:
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes an object (of type AnyPDFType) to a byte stream (specified in the WriteTransformerContext)
+        This method writes an object (of type AnyPDFType) to a byte stream (specified in the WriteTransformerState)
         """
         # transform object
         return_value = None
@@ -106,7 +106,7 @@ class WriteBaseTransformer:
     def _start_object(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext],
+        context: Optional[WriteTransformerState],
     ):
         """
         This function starts a new direct object by writing
@@ -136,7 +136,7 @@ class WriteBaseTransformer:
     def _end_object(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext],
+        context: Optional[WriteTransformerState],
     ):
         """
         This function writes the "endobj" bytes whenever a direct object needs to be closed
@@ -164,7 +164,7 @@ class WriteBaseTransformer:
         return h
 
     def get_reference(
-        self, object: AnyPDFType, context: WriteTransformerContext
+        self, object: AnyPDFType, context: WriteTransformerState
     ) -> Reference:
         """
         This function builds a Reference for the input object

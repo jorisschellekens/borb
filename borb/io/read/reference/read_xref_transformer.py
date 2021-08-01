@@ -12,7 +12,7 @@ from typing import Any, Optional, Union
 
 from borb.io.read.read_base_transformer import (
     ReadBaseTransformer,
-    ReadTransformerContext,
+    ReadTransformerState,
 )
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.types import AnyPDFType, Dictionary, Name
@@ -56,7 +56,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[ReadTransformerContext] = None,
+        context: Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
@@ -128,7 +128,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
         return context.root_object
 
     @staticmethod
-    def _remove_prefix(context: ReadTransformerContext) -> None:
+    def _remove_prefix(context: ReadTransformerState) -> None:
 
         assert context is not None
         assert context.source is not None
@@ -161,7 +161,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
             context.tokenizer._io_source = context.source
 
     @staticmethod
-    def _check_header(context: ReadTransformerContext) -> None:
+    def _check_header(context: ReadTransformerState) -> None:
         """
         This function checks whether or not the first bytes in the document contain the text %PDF
         :param context: the TransformerContext (containing the io source)
@@ -180,7 +180,7 @@ class ReadXREFTransformer(ReadBaseTransformer):
         assert any([t.get_text().startswith("%PDF") for t in arr])
 
     def _read_xref(
-        self, context: ReadTransformerContext, initial_offset: Optional[int] = None
+        self, context: ReadTransformerState, initial_offset: Optional[int] = None
     ) -> None:
         """
         This function attempts to read the XREF table, first as plaintext, then as a stream

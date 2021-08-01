@@ -101,7 +101,7 @@ class TestAddTextAnnotation(unittest.TestCase):
             and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.            
             """,
             text_annotation_icon=TextAnnotationIconType.COMMENT,
-            color=HexColor("86CD82"),
+            color=HexColor("F1CD2E"),
         )
 
         # attempt to store PDF

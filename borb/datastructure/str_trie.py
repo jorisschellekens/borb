@@ -18,7 +18,7 @@ class Trie:
         """
 
         def __init__(self, value: typing.Optional[typing.Any] = None):
-            self._children: typing.Dict[str, "TrieNode"] = {}
+            self._children: typing.Dict[str, "Trie.TrieNode"] = {}
             self._value: typing.Optional[typing.Any] = value
 
         def __len__(self) -> int:

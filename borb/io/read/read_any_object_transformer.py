@@ -45,7 +45,7 @@ from borb.io.read.primitive.read_number_transformer import ReadNumberTransformer
 from borb.io.read.primitive.read_string_transformer import ReadStringTransformer
 from borb.io.read.read_base_transformer import (
     ReadBaseTransformer,
-    ReadTransformerContext,
+    ReadTransformerState,
 )
 from borb.io.read.reference.read_reference_transformer import ReadReferenceTransformer
 from borb.io.read.reference.read_xref_transformer import ReadXREFTransformer
@@ -99,7 +99,7 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[ReadTransformerContext] = None,
+        context: Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
@@ -110,7 +110,7 @@ class ReadAnyObjectTransformer(ReadBaseTransformer):
             return super().transform(
                 object_to_transform,
                 parent_object,
-                ReadTransformerContext(),
+                ReadTransformerState(),
                 event_listeners,
             )
         else:

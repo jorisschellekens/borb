@@ -47,8 +47,8 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
                 y = Decimal(j) * w
                 doc.get_page(0).append_square_annotation(
                     Rectangle(x, y, w, w),
-                    stroke_color=HexColor("72A276"),
-                    fill_color=HexColor("72A276"),
+                    stroke_color=HexColor("BF4E30"),
+                    fill_color=HexColor("BF4E30"),
                 )
 
         # attempt to store PDF
@@ -76,7 +76,9 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
 
         # add annotation
         doc.get_page(0).append_square_annotation(
-            free_rectangle, stroke_color=HexColor("86CD82")
+            free_rectangle,
+            stroke_color=HexColor("0B3954"),
+            fill_color=HexColor("f1cd2e"),
         )
 
         # attempt to store PDF

@@ -9,7 +9,7 @@ from typing import Optional
 from borb.io.read.types import AnyPDFType, Boolean
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 
 
@@ -27,7 +27,7 @@ class WriteBooleanTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Boolean to a byte stream

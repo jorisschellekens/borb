@@ -63,28 +63,28 @@ class TestWriteTableWithSpecialCharacters(unittest.TestCase):
         t.add(
             Paragraph(
                 "lowercase",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "uppercase",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "lowercase acute",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 horizontal_alignment=Alignment.CENTERED,
             )
         )
         t.add(
             Paragraph(
                 "uppercase acute",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 horizontal_alignment=Alignment.CENTERED,
             )
         )

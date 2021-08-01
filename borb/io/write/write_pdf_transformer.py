@@ -20,7 +20,7 @@ from borb.io.read.types import (
 )
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 from borb.pdf.document import Document
 
@@ -41,7 +41,7 @@ class WritePDFTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: Any,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Document object to a byte stream

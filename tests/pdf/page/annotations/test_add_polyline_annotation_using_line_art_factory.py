@@ -141,8 +141,10 @@ class TestAddPolylineAnnotationUsingLineArtFactory(unittest.TestCase):
         ]
 
         colors = [
-            HexColor("86CD82"),
-            HexColor("72A276"),
+            HexColor("f1cd2e"),
+            HexColor("56CBF9"),
+            HexColor("0B3954"),
+            HexColor("f1cd2e"),
         ]
 
         # add annotation

@@ -70,7 +70,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             "Helvetica-Bold" if i % 7 == 6 else "Helvetica" for i in range(0, 7)
         ]
         colors: typing.List[Color] = [
-            HexColor("72A276") if i % 11 == 10 else HexColor("000000")
+            HexColor("f1cd2e") if i % 11 == 10 else HexColor("000000")
             for i in range(0, 11)
         ]
 
@@ -90,7 +90,7 @@ class TestWriteChunksOfText(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=bb,
         )
 
@@ -136,7 +136,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             "Helvetica-Bold" if i % 7 == 6 else "Helvetica" for i in range(0, 7)
         ]
         colors: typing.List[Color] = [
-            HexColor("72A276") if i % 11 == 10 else HexColor("000000")
+            HexColor("f1cd2e") if i % 11 == 10 else HexColor("000000")
             for i in range(0, 11)
         ]
 
@@ -158,7 +158,7 @@ class TestWriteChunksOfText(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=bb,
         )
 
@@ -204,7 +204,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             "Helvetica-Bold" if i % 7 == 6 else "Helvetica" for i in range(0, 7)
         ]
         colors: typing.List[Color] = [
-            HexColor("72A276") if i % 11 == 10 else HexColor("000000")
+            HexColor("f1cd2e") if i % 11 == 10 else HexColor("000000")
             for i in range(0, 11)
         ]
 
@@ -226,7 +226,7 @@ class TestWriteChunksOfText(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=bb,
         )
 
@@ -272,7 +272,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             "Helvetica-Bold" if i % 7 == 6 else "Helvetica" for i in range(0, 7)
         ]
         colors: typing.List[Color] = [
-            HexColor("72A276") if i % 11 == 10 else HexColor("000000")
+            HexColor("f1cd2e") if i % 11 == 10 else HexColor("000000")
             for i in range(0, 11)
         ]
 
@@ -298,7 +298,7 @@ class TestWriteChunksOfText(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=bb,
         )
 
@@ -344,7 +344,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             "Helvetica-Bold" if i % 7 == 6 else "Helvetica" for i in range(0, 7)
         ]
         colors: typing.List[Color] = [
-            HexColor("72A276") if i % 11 == 10 else HexColor("000000")
+            HexColor("f1cd2e") if i % 11 == 10 else HexColor("ffffff")
             for i in range(0, 11)
         ]
 
@@ -366,12 +366,12 @@ class TestWriteChunksOfText(unittest.TestCase):
             padding_right=Decimal(5),
             padding_bottom=Decimal(5),
             padding_left=Decimal(5),
-            background_color=HexColor("FFCC00"),
+            background_color=HexColor("0b3954"),
         ).layout(page, bb)
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=bb,
         )
 

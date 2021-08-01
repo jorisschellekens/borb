@@ -49,7 +49,7 @@ class TestWriteDragonCurve(unittest.TestCase):
                 ),
                 horizontal_alignment=Alignment.CENTERED,
                 vertical_alignment=Alignment.MIDDLE,
-                stroke_color=HexColor("86CD82"),
+                stroke_color=HexColor("f1cd2e"),
                 line_width=Decimal(1),
                 fill_color=None,
             )

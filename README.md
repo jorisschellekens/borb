@@ -1,15 +1,14 @@
 
-# ![borb logo](readme_img/logo/borb_64.png) borb
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/readme_img/logo/borb_64.png) borb
 
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Corpus Coverage : 97.0%](https://img.shields.io/badge/corpus%20coverage-97.0%25-green)]()
-[![Text Extraction : 87.9%](https://img.shields.io/badge/text%20extraction-87.9%25-orange)]()
+[![Corpus Coverage : 99.0%](https://img.shields.io/badge/corpus%20coverage-99.0%25-green)]()
+[![Text Extraction : 88.6%](https://img.shields.io/badge/text%20extraction-88.6%25-orange)]()
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 
 
 `borb` is a library for creating and manipulating PDF files in python.
-This project (previously `pText`) has been renamed to avoid ruffling any feathers.
 
 ## 0. About borb
 
@@ -21,47 +20,51 @@ This is currently a one-man project, so the focus will always be to support thos
 
 Most examples double as tests, you can find them in the 'tests' directory.  
 They include; 
-- reading a PDF and extracting meta-information
-- changing meta-information  
-- extracting text from a PDF
-- extracting images from a PDF
-- changing images in a PDF
-- adding annotations (notes, links, etc) to a PDF
-- adding text to a PDF
-- adding tables to a PDF
-- adding lists to a PDF
-- using a layout
+
+- Reading a PDF and extracting meta-information
+- Changing meta-information  
+- Extracting text from a PDF
+- Extracting images from a PDF
+- Changing images in a PDF
+- Adding annotations (notes, links, etc) to a PDF
+- Adding text to a PDF
+- Adding tables to a PDF
+- Adding lists to a PDF
+- Using a PageLayout manager
+
  and much more
  
 ### 1.1 Hello World
 
 To give you an immediate idea of the way `borb` works, this is the classic `Hello World` example, in `borb`:
 
-    from pathlib import Path
+```python
+from pathlib import Path
 
-    from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-    from borb.pdf.canvas.layout.text.paragraph import Paragraph,
-    from borb.pdf.document import Document
-    from borb.pdf.page.page import Page
-    from borb.pdf.pdf import PDF
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.pdf.pdf import PDF
 
-    # create an empty Document
-    pdf = Document()
+# create an empty Document
+pdf = Document()
 
-    # add an empty Page
-    page = Page()
-    pdf.append_page(page)
+# add an empty Page
+page = Page()
+pdf.append_page(page)
 
-    # use a PageLayout (SingleColumnLayout in this case)
-    layout = SingleColumnLayout(page)
+# use a PageLayout (SingleColumnLayout in this case)
+layout = SingleColumnLayout(page)
 
-    # add a Paragraph object
-    layout.add(Paragraph("Hello World!"))
+# add a Paragraph object
+layout.add(Paragraph("Hello World!"))
     
-    # store the PDF
-    with open(Path("output.pdf"), "wb") as pdf_file_handle:
-        PDF.dumps(pdf_file_handle, pdf)
- 
+# store the PDF
+with open(Path("output.pdf"), "wb") as pdf_file_handle:
+    PDF.dumps(pdf_file_handle, pdf)
+```
+
 ## 2. License
 
 `borb` is dual licensed as AGPL/Commercial software.

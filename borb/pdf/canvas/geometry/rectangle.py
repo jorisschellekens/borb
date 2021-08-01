@@ -75,6 +75,16 @@ class Rectangle:
             self.y + self.height
         )
 
+    def circumference_contains(self, x: Decimal, y: Decimal) -> bool:
+        """
+        This function returns True if the circumference of this Rectangle contains the given point
+        False otherwise
+        """
+        return x in [self.x, self.x + self.width] and y in [
+            self.y,
+            self.y + self.height,
+        ]
+
     def shrink(self, amount: Decimal) -> "Rectangle":
         """
         This function returns a (slightly) smaller Rectangle,

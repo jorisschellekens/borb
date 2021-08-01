@@ -15,6 +15,7 @@ from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [im
 
 from borb.pdf.canvas.color.color import Color, X11Color
 from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.layout_element import Alignment
 
 
 class BarcodeType(Enum):
@@ -88,6 +89,8 @@ class Barcode(Image):
         height: typing.Optional[Decimal] = None,
         stroke_color: Color = X11Color("Black"),
         fill_color: Color = X11Color("White"),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         self._data = data
         self._type = type
@@ -102,7 +105,11 @@ class Barcode(Image):
             image = self._generate_image_except_qr_code(data, type)
 
         # call to super
-        super(Barcode, self).__init__(image, width=width, height=height)
+        super(Barcode, self).__init__(image,
+                                      width=width,
+                                      height=height,
+                                      horizontal_alignment=horizontal_alignment,
+                                      vertical_alignment=vertical_alignment)
 
     def _generate_image_except_qr_code(self, data: str, type: BarcodeType):
         # generate image using barcode library

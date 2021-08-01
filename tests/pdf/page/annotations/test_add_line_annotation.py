@@ -93,7 +93,7 @@ class TestAddLineAnnotation(unittest.TestCase):
                 doc.get_page(0).append_line_annotation(
                     (bb.get_x(), bb.get_y()),
                     (bb.get_x() + bb.get_width(), bb.get_y()),
-                    stroke_color=HexColor("FFCC00"),
+                    stroke_color=HexColor("f1cd2e"),
                 )
 
         # attempt to store PDF

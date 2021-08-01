@@ -13,7 +13,7 @@ from borb.io.read.types import AnyPDFType, Dictionary, Name, Reference
 from borb.io.write.object.write_dictionary_transformer import (
     WriteDictionaryTransformer,
 )
-from borb.io.write.write_base_transformer import WriteTransformerContext
+from borb.io.write.write_base_transformer import WriteTransformerState
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class WritePagesTransformer(WriteDictionaryTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a \Pages Dictionary to a byte stream
@@ -41,7 +41,7 @@ class WritePagesTransformer(WriteDictionaryTransformer):
         assert isinstance(object_to_transform, Dictionary)
         assert (
             context is not None
-        ), "A WriteTransformerContext must be defined in order to write Pages Dictionary objects."
+        ), "A WriteTransformerState must be defined in order to write Pages Dictionary objects."
 
         # \Kids can be written immediately
         object_to_transform[Name("Kids")].set_can_be_referenced(False)

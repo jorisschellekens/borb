@@ -190,15 +190,15 @@ class OCRImageRenderEventListener(EventListener):
 
     def _get_text_size(self, font_size: Decimal, text: str):
         w: Decimal = Decimal(0)
+        ZERO: Decimal = Decimal(0)
         for c in text:
             try:
+                cid: typing.Optional[
+                    int
+                ] = self._helvetica.unicode_to_character_identifier(c)
+                assert cid is not None
                 w += (
-                    (
-                        self._helvetica.get_width(
-                            self._helvetica.unicode_to_character_identifier(c)
-                        )
-                        or Decimal(0)
-                    )
+                    (self._helvetica.get_width(cid) or ZERO)
                     * font_size
                     * Decimal(0.001)
                 )

@@ -83,7 +83,7 @@ class TestWriteLineOfTextJustifiedFull(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=Rectangle(
                 Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
             ),

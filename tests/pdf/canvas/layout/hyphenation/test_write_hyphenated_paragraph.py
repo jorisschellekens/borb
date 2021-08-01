@@ -65,7 +65,7 @@ class TestWriteHyphenatedParagraph(unittest.TestCase):
             Paragraph(
                 "Without hyphenation",
                 font_size=Decimal(20),
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
             )
         )
         page_layout.add(
@@ -83,7 +83,7 @@ class TestWriteHyphenatedParagraph(unittest.TestCase):
 
         page_layout.add(
             Paragraph(
-                "With hyphenation", font_size=Decimal(20), font_color=HexColor("86CD82")
+                "With hyphenation", font_size=Decimal(20), font_color=HexColor("f1cd2e")
             )
         )
         page_layout.add(

@@ -13,7 +13,7 @@ from PIL.Image import Image  # type: ignore [import]
 from borb.io.read.types import AnyPDFType, Dictionary, Element, List, Reference, Stream
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Dictionary to a byte stream
@@ -41,7 +41,7 @@ class WriteDictionaryTransformer(WriteBaseTransformer):
         assert isinstance(object_to_transform, Dictionary)
         assert (
             context is not None
-        ), "A WriteTransformerContext must be defined in order to write Dictionary objects."
+        ), "A WriteTransformerState must be defined in order to write Dictionary objects."
         assert context.destination is not None
         assert context.destination
 

@@ -56,7 +56,7 @@ class TestWriteSimpleBarcode(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with a green-colored BarcodeType.CODE_128 barcode."
+                    "This test creates a PDF with a yellow-colored BarcodeType.CODE_128 barcode."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -69,7 +69,7 @@ class TestWriteSimpleBarcode(unittest.TestCase):
                 type=BarcodeType.CODE_128,
                 width=Decimal(128),
                 height=Decimal(128),
-                stroke_color=HexColor("86CD82"),
+                stroke_color=HexColor("f1cd2e"),
             )
         )
 

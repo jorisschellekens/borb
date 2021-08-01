@@ -7,7 +7,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.image.shape import Shape
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -57,7 +57,12 @@ class TestWriteBlobs(unittest.TestCase):
         )
 
         N = 4
-        colors = [HexColor("72A276"), HexColor("86CD82")]
+        colors = [
+            HexColor("f1cd2e"),
+            HexColor("56CBF9"),
+            HexColor("0B3954"),
+            HexColor("f1cd2e"),
+        ]
         t = Table(number_of_rows=N, number_of_columns=N, padding_top=Decimal(5))
         for i in range(0, N):
             for _ in range(0, N):

@@ -10,7 +10,7 @@ from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.image.shape import Shape
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -67,7 +67,7 @@ class TestExtractColors(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        for c in ["72A276", "14213D", "86CD82"]:
+        for c in ["0B3954", "F1CD2E", "DE6449"]:
             layout.add(
                 Paragraph(
                     """

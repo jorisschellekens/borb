@@ -57,21 +57,20 @@ class TestWriteAccentedLetters(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with a ChunkOfText in it, containing the e aigu character."
+                    "This test was the result of an issue logged by a user. "
+                    "The user noticed several characters were not written correctly. "
+                    "This bug impacted only words with accented characters."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        layout.add(
-            Image(
-                "https://avatars.githubusercontent.com/u/7126425?s=88&v=4",
-                width=Decimal(64),
-                height=Decimal(64),
-            )
-        )
-
-        accented_words: typing.List[str] = ["Nombre", "Dirección", "Código Postal", "Número de Factura"]
+        accented_words: typing.List[str] = [
+            "Nombre",
+            "Dirección",
+            "Código Postal",
+            "Número de Factura",
+        ]
         for w in accented_words:
             layout.add(Paragraph(w, font="Helvetica-bold"))
 

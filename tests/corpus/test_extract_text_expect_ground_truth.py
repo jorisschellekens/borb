@@ -14,7 +14,7 @@ from borb.pdf.canvas.layout.image.chart import Chart
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -150,6 +150,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             autopct="%1.1f%%",
             shadow=True,
             startangle=90,
+            colors=["#a5ffd6", "#56cbf9", "#0b3954", "#f1cd2e", "#de6449"],
         )
         ax1.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
         graph_table.add(Chart(plt.gcf(), width=Decimal(128), height=Decimal(128)))

@@ -5,7 +5,7 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor, X11Color
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -66,18 +66,18 @@ class TestWriteTableWithColSpan(unittest.TestCase):
             )
         )
         t.add(
-            Paragraph("Language", font_color=HexColor("86CD82"), font_size=Decimal(20))
+            Paragraph("Language", font_color=HexColor("f1cd2e"), font_size=Decimal(20))
         )
         t.add(
             Paragraph(
                 "Nof. Questions",
-                font_color=HexColor("86CD82"),
+                font_color=HexColor("f1cd2e"),
                 font_size=Decimal(20),
             )
         )
 
         t.add(
-            TableCell(Paragraph("Front-end", font_color=HexColor("86CD82")), row_span=2)
+            TableCell(Paragraph("Front-end", font_color=HexColor("f1cd2e")), row_span=2)
         )
         t.add(Paragraph("Javascript"))
         t.add(Paragraph("2,167,178"))
@@ -86,7 +86,7 @@ class TestWriteTableWithColSpan(unittest.TestCase):
         t.add(Paragraph("1,391,524"))
 
         t.add(
-            TableCell(Paragraph("Back-end", font_color=HexColor("86CD82")), row_span=2)
+            TableCell(Paragraph("Back-end", font_color=HexColor("f1cd2e")), row_span=2)
         )
         t.add(Paragraph("C++"))
         t.add(Paragraph("711,944"))
@@ -94,7 +94,7 @@ class TestWriteTableWithColSpan(unittest.TestCase):
         t.add(Paragraph("Java"))
         t.add(Paragraph("1,752,877"))
 
-        t.add(Paragraph("Total", font_color=HexColor("86CD82")))
+        t.add(Paragraph("Total", font_color=HexColor("f1cd2e")))
         t.add(TableCell(Paragraph("6,023,523"), col_span=2))
 
         t.set_border_width_on_all_cells(Decimal(0.2))

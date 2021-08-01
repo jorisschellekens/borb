@@ -73,6 +73,8 @@ class UnorderedList(List):
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
+        if isinstance(item, List):
+            return ChunkOfText(" ")
         return ChunkOfText(
             text=self._get_bullet_text(item_index, item),
             font_size=self.get_font_size(),

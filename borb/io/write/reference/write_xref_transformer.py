@@ -10,7 +10,7 @@ from typing import Optional
 from borb.io.read.types import AnyPDFType, Decimal, Dictionary, Name, Reference
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 from borb.pdf.xref.xref import XREF
 
@@ -29,7 +29,7 @@ class WriteXREFTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes an XREF to a byte stream
@@ -39,7 +39,7 @@ class WriteXREFTransformer(WriteBaseTransformer):
         assert isinstance(object_to_transform["Trailer"], Dictionary)
         assert (
             context is not None
-        ), "A WriteTransformerContext must be defined in order to write XREF objects."
+        ), "A WriteTransformerState must be defined in order to write XREF objects."
         assert context.destination is not None
 
         # Transform the Trailer dictionary (replacing objects by references)
@@ -113,10 +113,10 @@ class WriteXREFTransformer(WriteBaseTransformer):
         # write EOF
         context.destination.write(bytes("%%EOF", "latin1"))
 
-    def _section_xref(self, context: Optional[WriteTransformerContext] = None):
+    def _section_xref(self, context: Optional[WriteTransformerState] = None):
         assert (
             context is not None
-        ), "A WriteTransformerContext must be defined in order to write XREF objects."
+        ), "A WriteTransformerState must be defined in order to write XREF objects."
 
         # get all references
         indirect_objects: typing.List[AnyPDFType] = [

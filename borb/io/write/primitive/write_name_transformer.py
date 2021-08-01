@@ -9,7 +9,7 @@ from typing import Optional
 from borb.io.read.types import AnyPDFType, Name
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 
 
@@ -27,7 +27,7 @@ class WriteNameTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Name to a byte stream

@@ -13,12 +13,7 @@ import typing
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from borb.pdf.canvas.layout.text.chunks_of_text import (
-    HeterogeneousParagraph,
-    LineBreakChunk,
-)
-from borb.pdf.document import Document
-from borb.pdf.page.page import Page
+from borb.pdf.canvas.layout.text.chunks_of_text import LineBreakChunk, Span
 
 
 class BaseTagTransformer:
@@ -106,9 +101,7 @@ class BaseTagTransformer:
         # return
         return font_name
 
-    def _correct_spacing_for_chunks_of_text(
-        self, layout_element: HeterogeneousParagraph
-    ) -> None:
+    def _correct_spacing_for_chunks_of_text(self, layout_element: Span) -> None:
         for i, c in enumerate(layout_element._chunks_of_text):
             if isinstance(c, LineBreakChunk):
                 continue

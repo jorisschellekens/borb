@@ -184,7 +184,6 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
-
     def test_write_document_003(self):
 
         # create document

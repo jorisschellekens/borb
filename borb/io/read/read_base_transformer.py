@@ -14,7 +14,7 @@ from borb.io.read.types import AnyPDFType, Reference
 from borb.pdf.canvas.event.event_listener import EventListener
 
 
-class ReadTransformerContext:
+class ReadTransformerState:
     """
     This class represents all the meta-information used in the process of reading a PDF document.
     This includes:
@@ -103,7 +103,7 @@ class ReadBaseTransformer:
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[ReadTransformerContext] = None,
+        context: Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """

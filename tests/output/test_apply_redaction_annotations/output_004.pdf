@@ -1,7 +1,7 @@
 %PDF-1.7
 %‚„œ”
 1 0 obj
-<</Pages 3 0 R>>
+<</Type /Catalog /Pages 3 0 R>>
 endobj
 
 3 0 obj
@@ -14,7 +14,7 @@ endobj
  /Parent 3 0 R /Contents 5 0 R /Resources 6 0 R>>
 endobj
 
-%    borb version 2.0.6
+%    borb version 2.0.7
 %    Joris Schellekens
 
 5 0 obj
@@ -37,23 +37,23 @@ endobj
 endobj
 
 2 0 obj
-<</CreationDate (D:20210724194615Z00) /ModDate (D:20210724194615Z00) /Producer (borb)>>
+<</CreationDate (D:20210801202249Z00) /ModDate (D:20210801202249Z00) /Producer (borb)>>
 endobj
 
 xref
 0 9
 0000000000 00000 f
 0000000015 00000 n
-0000000649 00000 n
-0000000048 00000 n
-0000000105 00000 n
-0000000257 00000 n
-0000000480 00000 n
-0000000512 00000 n
-0000000542 00000 n
+0000000664 00000 n
+0000000063 00000 n
+0000000120 00000 n
+0000000272 00000 n
+0000000495 00000 n
+0000000527 00000 n
+0000000557 00000 n
 trailer
-<</Root 1 0 R /Info 2 0 R /Size 9 /ID [<84276e4831983ccd37b85b383a84777b> <84276e4831983ccd37b85b383a84777b>]
+<</Root 1 0 R /Info 2 0 R /Size 9 /ID [<afc833659bacd83d954fd9940a4d3e10> <afc833659bacd83d954fd9940a4d3e10>]
 >>
 startxref
-753
+768
 %%EOF

@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 from borb.io.read.object.read_dictionary_transformer import ReadDictionaryTransformer
 from borb.io.read.read_base_transformer import (
     ReadBaseTransformer,
-    ReadTransformerContext,
+    ReadTransformerState,
 )
 from borb.io.read.types import AnyPDFType, Decimal, Dictionary
 from borb.io.read.types import List as pList
@@ -41,7 +41,7 @@ class ReadRootDictionaryTransformer(ReadBaseTransformer):
         self,
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
-        context: Optional[ReadTransformerContext] = None,
+        context: Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """

@@ -16,6 +16,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.layout_element import Alignment
 
 
 class Emoji(Image):

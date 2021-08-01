@@ -57,13 +57,14 @@ class TestWriteParagraphJustifiedCenterWithPaddingAndBorder(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. "
-                    "The Paragraph is aligned BOTTOM, CENTERED. The dark green box is the rectangle passed to the layout algorithm. The paragraph is given a (partial) border on its right and top side."
+                    "The Paragraph is aligned BOTTOM, CENTERED. The yellow box is the rectangle passed to the layout algorithm. "
+                    "The paragraph has a blue border to make its bounds clear."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        Paragraph(
+        p = Paragraph(
             """
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
@@ -77,20 +78,29 @@ class TestWriteParagraphJustifiedCenterWithPaddingAndBorder(unittest.TestCase):
             padding_right=Decimal(5),
             padding_bottom=Decimal(5),
             padding_left=Decimal(5),
-            border_right=True,
             border_top=True,
-            border_color=HexColor("86CD82"),
-            border_width=Decimal(2),
-        ).layout(
-            page,
-            Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124)),
+            border_right=True,
+            border_bottom=True,
+            border_left=True,
+            border_color=HexColor("56cbf9"),
+            border_width=Decimal(1),
         )
 
-        # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
-            rectangle=Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124)),
+        # the next line of code uses absolute positioning
+        # fmt: off
+        r: Rectangle = Rectangle(
+            Decimal(59),  # x: 0 + page_margin
+            Decimal(848 - 84 - 200 - 100),  # y: page_height - page_margin - y - height_of_textbox
+            Decimal(595 - 59 * 2),  # width: page_width - 2 * page_margin
+            Decimal(100),  # height
         )
+        # fmt: on
+
+        # this is a quick and dirty way to draw a rectangle on the page
+        page.append_square_annotation(r, stroke_color=HexColor("f1cd2e"))
+
+        # add the paragraph to the page
+        p.layout(page, r)
 
         # determine output location
         out_file = self.output_dir / "output.pdf"

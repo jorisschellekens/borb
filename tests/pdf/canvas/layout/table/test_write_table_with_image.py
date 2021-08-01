@@ -62,8 +62,8 @@ class TestWriteTableWithImage(unittest.TestCase):
 
         # fmt: off
         t.add(Paragraph(" ", respect_spaces_in_text=True))
-        t.add(Paragraph("Close-up", font_color=HexColor("FFCC00"), font_size=Decimal(20)))
-        t.add(Paragraph("Panoramic", font_color=HexColor("FFCC00"), font_size=Decimal(20)))
+        t.add(Paragraph("Close-up", font_color=HexColor("f1cd2e"), font_size=Decimal(20)))
+        t.add(Paragraph("Panoramic", font_color=HexColor("f1cd2e"), font_size=Decimal(20)))
 
         t.add(Paragraph("Nature"))
         t.add(Image("https://images.unsplash.com/photo-1520860560195-0f14c411476e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw", width=Decimal(32), height=Decimal(32)))

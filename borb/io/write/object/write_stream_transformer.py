@@ -14,7 +14,7 @@ from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, List, Name, Reference, Stream
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
-    WriteTransformerContext,
+    WriteTransformerState,
 )
 
 logger = logging.getLogger(__name__)
@@ -34,14 +34,14 @@ class WriteStreamTransformer(WriteBaseTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerContext] = None,
+        context: Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Stream to a byte stream
         """
         assert (
             context is not None
-        ), "A WriteTransformerContext must be defined in order to write Stream objects."
+        ), "A WriteTransformerState must be defined in order to write Stream objects."
         assert context.destination is not None
         assert isinstance(object_to_transform, Stream)
 

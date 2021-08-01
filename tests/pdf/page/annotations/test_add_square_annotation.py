@@ -63,8 +63,8 @@ class TestAddSquareAnnotation(unittest.TestCase):
                 Decimal(64),
                 Decimal(64),
             ),
-            stroke_color=HexColor("86CD82"),
-            fill_color=HexColor("72A276"),
+            stroke_color=HexColor("0B3954"),
+            fill_color=HexColor("f1cd2e"),
         )
 
         # attempt to store PDF

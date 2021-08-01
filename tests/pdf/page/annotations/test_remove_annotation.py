@@ -96,7 +96,6 @@ class TestCountAnnotations(unittest.TestCase):
                 bb = bb.grow(Decimal(2))
                 doc.get_page(0).append_redact_annotation(
                     bb,
-                    stroke_color=HexColor("FF0000"),
                 )
 
         # attempt to store PDF

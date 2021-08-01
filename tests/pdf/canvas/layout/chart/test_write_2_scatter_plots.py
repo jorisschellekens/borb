@@ -6,6 +6,7 @@ import matplotlib.pyplot as MatPlotLibPlot
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.layout.image.chart import Chart
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
@@ -79,7 +80,14 @@ class TestWrite2ScatterPlots(unittest.TestCase):
             edgecolors="grey",
             linewidth=2,
         )
-        layout.add(Chart(MatPlotLibPlot.gcf(), width=Decimal(256), height=Decimal(256)))
+        layout.add(
+            Chart(
+                MatPlotLibPlot.gcf(),
+                width=Decimal(256),
+                height=Decimal(256),
+                horizontal_alignment=Alignment.CENTERED,
+            )
+        )
 
         # scatter plot 2
         MatPlotLibPlot.scatter(
@@ -92,7 +100,14 @@ class TestWrite2ScatterPlots(unittest.TestCase):
             edgecolors="grey",
             linewidth=2,
         )
-        layout.add(Chart(MatPlotLibPlot.gcf(), width=Decimal(256), height=Decimal(256)))
+        layout.add(
+            Chart(
+                MatPlotLibPlot.gcf(),
+                width=Decimal(256),
+                height=Decimal(256),
+                horizontal_alignment=Alignment.CENTERED,
+            )
+        )
 
         # write
         file = self.output_dir / "output.pdf"

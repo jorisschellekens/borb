@@ -70,23 +70,18 @@ class Document(Dictionary):
         # build Root
         if "Root" not in self["XRef"]["Trailer"]:
             self["XRef"]["Trailer"][Name("Root")] = Dictionary()
+            self["XRef"]["Trailer"]["Root"][Name("Type")] = Name("Catalog")
             self["XRef"]["Trailer"]["Root"].set_parent(self["XRef"]["Trailer"])
         # build Pages
         if "Pages" not in self["XRef"]["Trailer"]["Root"]:
+            # fmt: off
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")] = Dictionary()
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][
-                Name("Count")
-            ] = Decimal(0)
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Count")] = Decimal(0)
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Kids")] = List()
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Type")] = Name(
-                "Pages"
-            )
-            self["XRef"]["Trailer"]["Root"]["Pages"].set_parent(
-                self["XRef"]["Trailer"]["Root"]
-            )
-            self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"].set_parent(
-                self["XRef"]["Trailer"]["Root"]["Pages"]
-            )
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Type")] = Name("Pages")
+            self["XRef"]["Trailer"]["Root"]["Pages"].set_parent(self["XRef"]["Trailer"]["Root"])
+            self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"].set_parent(self["XRef"]["Trailer"]["Root"]["Pages"])
+            # fmt: on
         # update /Kids
         kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
         assert kids is not None

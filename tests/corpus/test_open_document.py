@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.layout.image.chart import Chart
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -114,9 +115,17 @@ class TestOpenDocument(unittest.TestCase):
             autopct="%1.1f%%",
             shadow=True,
             startangle=90,
+            colors=["#a5ffd6", "#56cbf9", "#0b3954", "#f1cd2e", "#de6449"],
         )
         ax1.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
-        layout.add(Chart(plt.gcf(), width=Decimal(200), height=Decimal(200)))
+        layout.add(
+            Chart(
+                plt.gcf(),
+                width=Decimal(200),
+                height=Decimal(200),
+                horizontal_alignment=Alignment.CENTERED,
+            )
+        )
 
         # raw data
         ul: UnorderedList = UnorderedList()

@@ -11,7 +11,7 @@ import typing
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.base_table import BaseTable
+from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
@@ -67,7 +67,7 @@ class TableTagTransformer(BaseTagTransformer):
             ]
         )
 
-        table: BaseTable = FlexibleColumnWidthTable(
+        table: Table = FlexibleColumnWidthTable(
             number_of_rows=number_of_rows,
             number_of_columns=number_of_cols,
             padding_top=Decimal(5),

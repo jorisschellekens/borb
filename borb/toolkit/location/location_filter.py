@@ -33,16 +33,17 @@ class LocationFilter(EventListener):
     def _event_occurred(self, event: "Event") -> None:
         # filter ChunkOfTextRenderEvent
         if isinstance(event, ChunkOfTextRenderEvent):
-            bb: typing.Optional[Rectangle] = event.get_bounding_box()
-            assert bb is not None
-            if self._rectangle.x < bb.x < (
-                self._rectangle.x + self._rectangle.width
-            ) and self._rectangle.y < bb.y < (
-                self._rectangle.y + self._rectangle.height
-            ):
-                for l in self._listeners:
-                    l._event_occurred(event)
-            return
+            for glyph_event in event.split_on_glyphs():
+                bb: typing.Optional[Rectangle] = glyph_event.get_bounding_box()
+                assert bb is not None
+                if self._rectangle.x < bb.x < (
+                    self._rectangle.x + self._rectangle.width
+                ) and self._rectangle.y < bb.y < (
+                    self._rectangle.y + self._rectangle.height
+                ):
+                    for l in self._listeners:
+                        l._event_occurred(glyph_event)
+                return
 
         # filter ImageRenderEvent
         if isinstance(event, ImageRenderEvent):

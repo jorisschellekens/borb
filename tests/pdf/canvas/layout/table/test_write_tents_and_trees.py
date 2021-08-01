@@ -11,7 +11,7 @@ from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.base_table import TableCell
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -74,7 +74,7 @@ class TestWriteTentsAndTrees(unittest.TestCase):
         layout.add(
             Paragraph(
                 "Tents and Trees",
-                font_color=HexColor("#86CD82"),
+                font_color=HexColor("#f1cd2e"),
                 font=font,
                 font_size=Decimal(23),
             )

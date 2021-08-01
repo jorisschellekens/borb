@@ -62,8 +62,8 @@ class TestWriteLissajoursLineArt(unittest.TestCase):
 
         # table
         N = 7
-        fill_colors = [HexColor("72A276"), HexColor("86CD82")]
-        stroke_colors = [HexColor("86CD82"), HexColor("72A276")]
+        fill_colors = [HexColor("f1cd2e"), HexColor("0b3954"), HexColor("56cbf9")]
+        stroke_colors = [HexColor("0b3954"), HexColor("f1cd2e"), HexColor("a5ffd6")]
         fixed_bb = Rectangle(Decimal(0), Decimal(0), Decimal(100), Decimal(100))
         t = Table(number_of_rows=N, number_of_columns=N, padding_top=Decimal(5))
         for i in range(0, N):

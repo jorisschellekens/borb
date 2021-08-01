@@ -53,7 +53,9 @@ class MarkdownTransformerContext:
         """
         return self._document
 
-    def get_parent_layout_element(self) -> typing.Union[Document, Page, LayoutElement]:
+    def get_parent_layout_element(
+        self,
+    ) -> typing.Union[Document, Page, LayoutElement, PageLayout]:
         return self._parent_layout_element
 
 

@@ -93,7 +93,7 @@ class TestAddUnderlineAnnotation(unittest.TestCase):
                 doc.get_page(0).append_underline_annotation(
                     bb,
                     line_width=Decimal(2),
-                    stroke_color=HexColor("72A276"),
+                    stroke_color=HexColor("DE6449"),
                 )
 
         # attempt to store PDF

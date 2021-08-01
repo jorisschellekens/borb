@@ -15,12 +15,12 @@ from borb.io.read.types import Name
 from borb.pdf.canvas.color.color import Color, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.canvas.layout.table.base_table import BaseTable, TableCell
+from borb.pdf.canvas.layout.table.table import Table, TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.page.page import Page
 
 
-class FlexibleColumnWidthTable(BaseTable):
+class FlexibleColumnWidthTable(Table):
     """
     This class represents a Table with columns that will assume
     a width based on their contents. It tries to emulate the behaviour

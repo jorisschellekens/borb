@@ -49,7 +49,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with several LineOfText objects in it, horizontal alignment set to RIGHT"
+                    "This test creates a PDF with several LineOfText objects in it, horizontal alignment set to RIGHT."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -79,7 +79,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
 
         # add rectangle annotation
         page.append_square_annotation(
-            stroke_color=HexColor("72A276"),
+            stroke_color=HexColor("f1cd2e"),
             rectangle=Rectangle(
                 Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
             ),

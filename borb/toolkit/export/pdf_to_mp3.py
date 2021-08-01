@@ -36,7 +36,7 @@ class PDFToMP3(SimpleParagraphExtraction):
         temporary_file: Path = Path(
             tempfile.NamedTemporaryFile(prefix="pdf_to_mp3", suffix=".mp3").name
         )
-        l.get_audio_for_page(page_number, temporary_file)
+        l.get_audio_for_page(page_number, str(temporary_file))
         return temporary_file
 
     def __init__(
