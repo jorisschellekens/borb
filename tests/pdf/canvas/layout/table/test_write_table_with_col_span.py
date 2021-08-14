@@ -5,14 +5,15 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor, X11Color
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteTableWithColSpan(unittest.TestCase):
@@ -120,3 +121,6 @@ class TestWriteTableWithColSpan(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")

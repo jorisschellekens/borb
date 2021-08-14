@@ -1,6 +1,6 @@
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.heading.alternate_syntax_heading_transformer import (
     AlternateSyntaxHeadingTransformer,
@@ -50,10 +50,10 @@ class AnyMarkdownTransformer(BaseMarkdownTransformer):
             .add_child_transformer(ParagraphTransformer())
         # fmt: on
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         return True
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
         input_has_transformed: bool = True
         while input_has_transformed and context.tell() < len(
             context.get_markdown_string()

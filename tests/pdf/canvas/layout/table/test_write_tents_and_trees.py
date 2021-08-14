@@ -4,24 +4,25 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.color.color import HexColor, X11Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteTentsAndTrees(unittest.TestCase):
@@ -161,12 +162,7 @@ class TestWriteTentsAndTrees(unittest.TestCase):
                 else:
                     grid.add(
                         TableCell(
-                            random.choice(
-                                [
-                                    Emojis.DECIDUOUS_TREE.value,
-                                    Emojis.EVERGREEN_TREE.value,
-                                ]
-                            ),
+                            Emojis.EVERGREEN_TREE.value,
                             preferred_height=w,
                             preferred_width=w,
                         )
@@ -185,3 +181,6 @@ class TestWriteTentsAndTrees(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")

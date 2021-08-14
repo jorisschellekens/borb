@@ -9,15 +9,16 @@ from borb.pdf.canvas.layout.hyphenation.hyphenation import Hyphenation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.heading import Heading
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteBattleship(unittest.TestCase):
@@ -138,3 +139,6 @@ class TestWriteBattleship(unittest.TestCase):
         out_file = self.output_dir / ("output.pdf")
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")

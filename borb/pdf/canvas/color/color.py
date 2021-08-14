@@ -44,9 +44,9 @@ class RGBColor(Color):
     """
 
     def __init__(self, r: Decimal, g: Decimal, b: Decimal):
-        assert r >= 0
-        assert g >= 0
-        assert b >= 0
+        assert 0 <= r <= 1
+        assert 0 <= g <= 1
+        assert 0 <= b <= 1
         self.red = r
         self.green = g
         self.blue = b
@@ -62,7 +62,7 @@ class RGBColor(Color):
         This method returns a hexadecimal string representing the RGB color
         """
         return "#{:02x}{:02x}{:02x}".format(
-            int(self.red), int(self.green), int(self.blue)
+            int(self.red * 255), int(self.green * 255), int(self.blue * 255)
         )
 
     def __deepcopy__(self, memodict={}):
@@ -148,6 +148,9 @@ class HexColor(RGBColor):
         if hex_string.startswith("#"):
             hex_string = hex_string[1:]
         assert len(hex_string) == 6 or len(hex_string) == 8
+        r: float = 0
+        g: float = 0
+        b: float = 0
         if len(hex_string) == 6:
             a = 255
             r = int(hex_string[0:2], 16)
@@ -158,6 +161,10 @@ class HexColor(RGBColor):
             r = int(hex_string[2:4], 16)
             g = int(hex_string[4:6], 16)
             b = int(hex_string[6:8], 16)
+        a /= 255
+        r /= 255
+        g /= 255
+        b /= 255
         super(HexColor, self).__init__(Decimal(r), Decimal(g), Decimal(b))
 
     def __deepcopy__(self, memodict={}):
@@ -196,27 +203,26 @@ class HSVColor(Color):
         This method returns the RGB representation of this Color
         """
         h, s, v = self.hue, self.saturation, self.value
-        RGB_MAX = Decimal(255)
         ONE = Decimal(1)
         SIX = Decimal(6)
         if s == 0:
-            return RGBColor(v * RGB_MAX, v * RGB_MAX, v * RGB_MAX)
+            return RGBColor(Decimal(v), Decimal(v), Decimal(v))
         i = int(h * SIX)  # XXX assume int() truncates!
         f = (h * SIX) - i
         p, q, t = v * (ONE - s), v * (ONE - s * f), v * (ONE - s * (ONE - f))
         i %= 6
         if i == 0:
-            return RGBColor(v * RGB_MAX, t * RGB_MAX, p * RGB_MAX)
+            return RGBColor(Decimal(v), Decimal(t), Decimal(p))
         if i == 1:
-            return RGBColor(q * RGB_MAX, v * RGB_MAX, p * RGB_MAX)
+            return RGBColor(Decimal(q), Decimal(v), Decimal(p))
         if i == 2:
-            return RGBColor(p * RGB_MAX, v * RGB_MAX, t * RGB_MAX)
+            return RGBColor(Decimal(p), Decimal(v), Decimal(t))
         if i == 3:
-            return RGBColor(p * RGB_MAX, q * RGB_MAX, v * RGB_MAX)
+            return RGBColor(Decimal(p), Decimal(q), Decimal(v))
         if i == 4:
-            return RGBColor(t * RGB_MAX, p * RGB_MAX, v * RGB_MAX)
+            return RGBColor(Decimal(t), Decimal(p), Decimal(v))
         if i == 5:
-            return RGBColor(v * RGB_MAX, p * RGB_MAX, q * RGB_MAX)
+            return RGBColor(Decimal(v), Decimal(p), Decimal(q))
         return RGBColor(Decimal(0), Decimal(0), Decimal(0))
 
     @staticmethod
@@ -225,7 +231,7 @@ class HSVColor(Color):
         This method returns the HSV representation of an RGB color
         """
         RGB_MAX = Decimal(255)
-        r, g, b = c.red / RGB_MAX, c.green / RGB_MAX, c.blue / RGB_MAX
+        r, g, b = c.red, c.green, c.blue
         mx = max(r, g, b)
         mn = min(r, g, b)
         df = mx - mn
@@ -246,20 +252,96 @@ class HSVColor(Color):
         FULL_CIRCLE = Decimal(360)
         return HSVColor(h / FULL_CIRCLE, s / HUNDRED, v / HUNDRED)
 
-    @staticmethod
-    def opposite(color: Color):
-        """
-        This function returns an HSV color whose hue is the opposite of the current HSV color
-        """
-        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
-        new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
-        return HSVColor(Decimal(new_hue / 360), c.saturation, c.value)
-
     def darker(self) -> "HSVColor":
         """
         This function returns a darker shade of the current HSV color
         """
         return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
+
+    @staticmethod
+    def complementary(color: Color):
+        """
+        This function returns an HSV color whose hue is the complement of the current HSV color
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
+        return HSVColor(Decimal(new_hue / 360), c.saturation, c.value)
+
+    @staticmethod
+    def analogous(color: Color) -> typing.List[Color]:
+        """
+        This function returns an analogous color scheme.
+        Analogous color schemes use colors that are next to each other on the color wheel. They usually match well and create serene and comfortable designs.
+        Analogous color schemes are often found in nature and are harmonious and pleasing to the eye.
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        return [
+            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
+            for a in [0, 15, 30]
+        ]
+
+    @staticmethod
+    def split_complementary(color: Color) -> typing.List[Color]:
+        """
+        This function returns a split complementary color scheme.
+        A split complementary color scheme uses two colors plus the color that is opposite to them on the color wheel.
+        For example blue and purple with yellow.
+        :param color:       the complementary color
+        :return:            3 colors (a split complementary color scheme)
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        return [
+            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
+            for a in [0, 165, 195]
+        ]
+
+    @staticmethod
+    def triadic(color: Color) -> typing.List[Color]:
+        """
+        This function returns a triadic color scheme.
+        A triadic color scheme uses colors that are evenly spaced around the color wheel.
+        Triadic color harmonies tend to be quite vibrant, even if you use pale or unsaturated versions of your hues.
+        To use a triadic harmony successfully, the colors should be carefully balanced - let one color dominate and use the two others for accent.
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        return [
+            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
+            for a in [0, 60, 120]
+        ]
+
+    @staticmethod
+    def tetradic_rectangle(c: Color) -> typing.List[Color]:
+        """
+        This function returns a tetradic (rectangular) color scheme.
+        The rectangle or tetradic color scheme uses four colors arranged into two complementary pairs.
+        This rich color scheme offers plenty of possibilities for variation.
+        Tetradic color schemes works best if you let one color be dominant.
+        :param c:   one color of one of the complementary paris
+        :return:    four colors (two complementary pairs)
+        """
+        c0: HSVColor = HSVColor.from_rgb(c.to_rgb())
+        return [
+            HSVColor(
+                Decimal((int(c0.hue * 360 + a) % 360) / 360), c0.saturation, c0.value
+            )
+            for a in [0, 30, 180, 210]
+        ]
+
+    @staticmethod
+    def tetradic_square(color: Color) -> typing.List[Color]:
+        """
+        This function returns a tetradic (square) color scheme.
+        This harmony is comparable to the Tetradic harmony but with the four colors spaced evenly around the color wheel.
+        This harmony works best if one color dominates.
+        Just like the Tetradic harmony, you need to keep track of the relationship between the cool and the warm colors.
+        :param color:
+        :return:        four colors (a tetradic square color scheme)
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        return [
+            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
+            for a in [0, 90, 180, 270]
+        ]
 
     def __deepcopy__(self, memodict={}):
         return HSVColor(self.hue, self.saturation, self.value)
@@ -517,9 +599,7 @@ class Separation(Color):
 
         # DeviceRGB
         if alternative_color_space == "DeviceRGB":
-            self._to_rgb_cache = RGBColor(
-                ys[0] * Decimal(255), ys[1] * Decimal(255), ys[2] * Decimal(255)
-            )
+            self._to_rgb_cache = RGBColor(ys[0], ys[1], ys[2])
             return self._to_rgb_cache
 
         # ICCBased
@@ -527,9 +607,7 @@ class Separation(Color):
             if len(ys) == 1:
                 self._to_rgb_cache = GrayColor(ys[0]).to_rgb()
             if len(ys) == 3:
-                self._to_rgb_cache = RGBColor(
-                    ys[0] * Decimal(255), ys[1] * Decimal(255), ys[2] * Decimal(255)
-                )
+                self._to_rgb_cache = RGBColor(ys[0], ys[1], ys[2])
             if len(ys) == 4:
                 self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
             assert self._to_rgb_cache is not None

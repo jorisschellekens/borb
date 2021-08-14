@@ -11,10 +11,10 @@ import zlib
 from decimal import Decimal
 from pathlib import Path
 
+from borb.datastructure.disjoint_set import disjointset
 from borb.io.read.reference.read_xref_transformer import EndDocumentEvent
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, List, Name, String
-from borb.datastructure.disjoint_set import disjointset
 from borb.pdf.canvas.event.event_listener import Event
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText

@@ -9,9 +9,9 @@ import typing
 from decimal import Decimal
 from math import ceil
 
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
+from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
 from borb.pdf.page.page import Page
 
 
@@ -31,7 +31,7 @@ class TableCell(LayoutElement):
         border_right: bool = True,
         border_bottom: bool = True,
         border_left: bool = True,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
@@ -182,7 +182,7 @@ class Table(LayoutElement):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),

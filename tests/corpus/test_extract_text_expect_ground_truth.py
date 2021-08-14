@@ -8,16 +8,15 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from borb.io.read.types import Name
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.image.chart import Chart
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
@@ -329,7 +328,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         with open(file, "rb") as fh_002:
             l = SimpleTextExtraction()
             doc = PDF.loads(fh_002, [l])
-            txt_002 = l.get_text(0)
+            txt_002 = l.get_text_for_page(0)
 
         differences: typing.Dict[str, int] = {}
         for char in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789":

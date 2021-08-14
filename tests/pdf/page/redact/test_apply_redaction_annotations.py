@@ -19,6 +19,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -96,7 +97,7 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        for m in l.get_all_matches(0):
+        for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
                 doc.get_page(0).append_redact_annotation(
@@ -124,6 +125,9 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         # attempt to store PDF
         with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
 
     #
     #   the following tests use the "TJ" operator (rather than "Tj")
@@ -178,7 +182,7 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         with open(self.output_dir / "output_004.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        for m in l.get_all_matches(0):
+        for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
                 doc.get_page(0).append_redact_annotation(
@@ -206,3 +210,6 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         # attempt to store PDF
         with open(self.output_dir / "output_006.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_006.pdf")

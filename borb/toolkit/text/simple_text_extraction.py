@@ -4,10 +4,9 @@
 """
     This implementation of EventListener extracts all text from a PDF Document
 """
+import typing
 from decimal import Decimal
 from functools import cmp_to_key
-
-import typing
 
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import (
@@ -39,7 +38,7 @@ class SimpleTextExtraction(EventListener):
         if isinstance(event, EndPageEvent):
             self._end_page(event.get_page())
 
-    def get_text(self, page_nr: int) -> str:
+    def get_text_for_page(self, page_nr: int) -> str:
         """
         This function returns all text on a given page
         """

@@ -13,6 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteSimpleTable(unittest.TestCase):
@@ -105,6 +106,9 @@ class TestWriteSimpleTable(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+
     def test_write_document_002(self):
 
         # create document
@@ -187,6 +191,9 @@ class TestWriteSimpleTable(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
 
     def test_write_document_003(self):
 
@@ -271,6 +278,9 @@ class TestWriteSimpleTable(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
+
     def test_write_document_004(self):
 
         # create document
@@ -353,6 +363,9 @@ class TestWriteSimpleTable(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_004.pdf")
 
     def test_write_document_005(self):
 
@@ -437,3 +450,6 @@ class TestWriteSimpleTable(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_005.pdf")

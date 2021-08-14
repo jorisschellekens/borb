@@ -16,7 +16,7 @@ unless they are masked by an object declared with the same name.
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, RGBColor, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
@@ -48,22 +48,20 @@ class CodeBlock(Paragraph):
         text: str,
         font: typing.Union[Font, str] = "Courier",
         font_size: Decimal = Decimal(12),
-        font_color: Color = RGBColor(Decimal(36), Decimal(41), Decimal(46)),
+        font_color: Color = HexColor("24292e"),
         horizontal_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
         border_top: bool = False,
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(5),
         padding_right: Decimal = Decimal(5),
         padding_bottom: Decimal = Decimal(5),
         padding_left: Decimal = Decimal(5),
-        background_color: typing.Optional[Color] = RGBColor(
-            Decimal(246), Decimal(248), Decimal(250)
-        ),
+        background_color: typing.Optional[Color] = HexColor("f6f8fa"),
         parent: typing.Optional[LayoutElement] = None,
     ):
         # format string using black

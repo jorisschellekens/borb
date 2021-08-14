@@ -4,11 +4,10 @@
 """
 This implementation of LayoutElement represents an horizontal line across the page
 """
+import typing
 from decimal import Decimal
 
-import typing
-
-from borb.pdf.canvas.color.color import Color, RGBColor
+from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.text.paragraph import LayoutElement
 from borb.pdf.page.page import Page
@@ -22,7 +21,7 @@ class HorizontalRule(LayoutElement):
     def __init__(
         self,
         line_width: Decimal = Decimal(1),
-        line_color: Color = RGBColor(Decimal(0), Decimal(0), Decimal(0)),
+        line_color: Color = HexColor("000000"),
         margin_top: typing.Optional[Decimal] = None,
         margin_bottom: typing.Optional[Decimal] = None,
     ):
@@ -54,11 +53,10 @@ class HorizontalRule(LayoutElement):
 
         # write l operator
         rgb_color: RGBColor = self._line_color.to_rgb()
-        max_rgb: Decimal = Decimal(255)
         content = " q %f %f %f RG %f %f m %f %f l s Q " % (
-            rgb_color.red / max_rgb,
-            rgb_color.green / max_rgb,
-            rgb_color.blue / max_rgb,
+            rgb_color.red,
+            rgb_color.green,
+            rgb_color.blue,
             bounding_box.get_x(),
             bounding_box.get_y() + bounding_box.get_height() - self._line_width,
             bounding_box.get_x() + bounding_box.get_width(),

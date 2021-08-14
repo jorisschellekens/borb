@@ -7,8 +7,10 @@
 
 import typing
 import zlib
+from decimal import Decimal
 
-from borb.io.read.types import Decimal, Dictionary, List, Name, Stream, String
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.page.page import DestinationType, Page
 from borb.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
@@ -65,7 +67,7 @@ class Document(Dictionary):
         # build Trailer
         if "Trailer" not in self["XRef"]:
             self["XRef"][Name("Trailer")] = Dictionary()
-            self["XRef"][Name("Size")] = Decimal(0)
+            self["XRef"][Name("Size")] = bDecimal(0)
             self["XRef"]["Trailer"].set_parent(self["XRef"])
         # build Root
         if "Root" not in self["XRef"]["Trailer"]:
@@ -76,7 +78,7 @@ class Document(Dictionary):
         if "Pages" not in self["XRef"]["Trailer"]["Root"]:
             # fmt: off
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")] = Dictionary()
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Count")] = Decimal(0)
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Count")] = bDecimal(0)
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Kids")] = List()
             self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Type")] = Name("Pages")
             self["XRef"]["Trailer"]["Root"]["Pages"].set_parent(self["XRef"]["Trailer"]["Root"])
@@ -91,7 +93,7 @@ class Document(Dictionary):
         kids.insert(index, page)
         # update /Count
         prev_count = self["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
-        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = Decimal(
+        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = bDecimal(
             prev_count + 1
         )
         # set /Parent
@@ -115,6 +117,8 @@ class Document(Dictionary):
             return self
         if "Kids" not in self["XRef"]["Trailer"]["Root"]["Pages"]:
             return self
+        if "Count" not in self["XRef"]["Trailer"]["Root"]["Pages"]:
+            return self
 
         # get Kids
         kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
@@ -127,6 +131,7 @@ class Document(Dictionary):
 
         # remove
         kids.pop(index)
+        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = bDecimal(len(kids))
 
         # return
         return self
@@ -184,7 +189,7 @@ class Document(Dictionary):
         This function adds an outline to this Document
         """
         destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        destination.append(Decimal(page_nr))
+        destination.append(bDecimal(page_nr))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:
             assert (
@@ -194,9 +199,9 @@ class Document(Dictionary):
                 and top is not None
                 and zoom is not None
             )
-            destination.append(Decimal(left))
-            destination.append(Decimal(top))
-            destination.append(Decimal(zoom))
+            destination.append(bDecimal(left))
+            destination.append(bDecimal(top))
+            destination.append(bDecimal(zoom))
         if destination_type == DestinationType.FIT:
             assert (
                 left is None
@@ -213,7 +218,7 @@ class Document(Dictionary):
                 and top is not None
                 and zoom is None
             )
-            destination.append(Decimal(top))
+            destination.append(bDecimal(top))
         if destination_type == DestinationType.FIT_V:
             assert (
                 left is not None
@@ -222,7 +227,7 @@ class Document(Dictionary):
                 and top is None
                 and zoom is None
             )
-            destination.append(Decimal(left))
+            destination.append(bDecimal(left))
         if destination_type == DestinationType.FIT_R:
             assert (
                 left is not None
@@ -231,10 +236,10 @@ class Document(Dictionary):
                 and top is not None
                 and zoom is None
             )
-            destination.append(Decimal(left))
-            destination.append(Decimal(bottom))
-            destination.append(Decimal(right))
-            destination.append(Decimal(top))
+            destination.append(bDecimal(left))
+            destination.append(bDecimal(bottom))
+            destination.append(bDecimal(right))
+            destination.append(bDecimal(top))
         if destination_type == DestinationType.FIT_B_H:
             assert (
                 left is None
@@ -243,7 +248,7 @@ class Document(Dictionary):
                 and top is not None
                 and zoom is None
             )
-            destination.append(Decimal(top))
+            destination.append(bDecimal(top))
         if destination_type == DestinationType.FIT_B_V:
             assert (
                 left is not None
@@ -252,7 +257,7 @@ class Document(Dictionary):
                 and top is None
                 and zoom is None
             )
-            destination.append(Decimal(left))
+            destination.append(bDecimal(left))
 
         # add \Outlines entry in \Root
         if "Outlines" not in self["XRef"]["Trailer"]["Root"]:
@@ -262,7 +267,7 @@ class Document(Dictionary):
                 self["XRef"]["Trailer"]["Root"][Name("Outlines")]
             )
             outline_dictionary[Name("Type")] = Name("Outlines")
-            outline_dictionary[Name("Count")] = Decimal(0)
+            outline_dictionary[Name("Count")] = bDecimal(0)
 
         # create entry
         outline = Dictionary()
@@ -277,7 +282,7 @@ class Document(Dictionary):
         if "First" not in outline_dictionary or "Last" not in outline_dictionary:
             outline_dictionary[Name("First")] = outline
             outline_dictionary[Name("Last")] = outline
-            outline_dictionary[Name("Count")] = Decimal(1)
+            outline_dictionary[Name("Count")] = bDecimal(1)
             outline[Name("Parent")] = outline_dictionary
             return self
 
@@ -315,13 +320,13 @@ class Document(Dictionary):
         if "First" not in parent:
             parent[Name("First")] = outline
         if "Count" not in parent:
-            parent[Name("Count")] = Decimal(0)
+            parent[Name("Count")] = bDecimal(0)
         parent[Name("Last")] = outline
 
         # update count
         outline_to_update_count = parent
         while outline_to_update_count:
-            outline_to_update_count[Name("Count")] = Decimal(
+            outline_to_update_count[Name("Count")] = bDecimal(
                 outline_to_update_count["Count"] + Decimal(1)
             )
             if "Parent" in outline_to_update_count:
@@ -397,7 +402,7 @@ class Document(Dictionary):
             stream = Stream()
             stream[Name("Type")] = Name("EmbeddedFile")
             stream[Name("Bytes")] = file_bytes
-            stream[Name("Length")] = Decimal(len(stream[Name("Bytes")]))
+            stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
 
             # build leaf \Filespec dictionary
             file_spec = Dictionary()

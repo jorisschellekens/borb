@@ -16,6 +16,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteLissajoursLineArt(unittest.TestCase):
@@ -91,3 +92,6 @@ class TestWriteLissajoursLineArt(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")

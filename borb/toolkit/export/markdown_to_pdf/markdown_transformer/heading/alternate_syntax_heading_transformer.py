@@ -4,9 +4,8 @@
 """
 This implementation of BaseMarkdownTransformer handles (alternate syntax) headings
 """
-from decimal import Decimal
-
 import typing
+from decimal import Decimal
 
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -15,7 +14,7 @@ from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -24,7 +23,7 @@ class AlternateSyntaxHeadingTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles (alternate syntax) headings
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         # alternate syntax headings should start with an alpha character
         if not context.get_markdown_string()[context.tell()].isalpha():
             return False
@@ -46,7 +45,7 @@ class AlternateSyntaxHeadingTransformer(BaseMarkdownTransformer):
             or all([c == "-" for c in line_of_dashes])
         )
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # determine heading text
         next_newline_pos: int = context.get_markdown_string().find(

@@ -12,7 +12,7 @@ from decimal import Decimal
 from math import ceil, floor
 
 from borb.io.read.types import Name
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.table.table import Table, TableCell
@@ -35,7 +35,7 @@ class FlexibleColumnWidthTable(Table):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
@@ -72,7 +72,10 @@ class FlexibleColumnWidthTable(Table):
         )
 
     def _do_layout_without_padding(
-        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
+        self,
+        page: "Page",
+        bounding_box: Rectangle,  # type: ignore[name-defined]
+        do_layout: bool = False,
     ) -> Rectangle:
         # 1.    Calculate the minimum content width (MCW) of each cell: the formatted content may span any number of lines but may not overflow the cell box.
         #       If the specified 'width' (W) of the cell is greater than MCW, W is the minimum cell width.

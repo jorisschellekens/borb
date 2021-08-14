@@ -6,15 +6,18 @@ from argparse import RawTextHelpFormatter
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import \
+    SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.image.simple_image_extraction import SimpleImageExtraction
-from borb.toolkit.ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
-from borb.toolkit.text.regular_expression_text_extraction import RegularExpressionTextExtraction
+from borb.toolkit.ocr.ocr_as_optional_content_group import \
+    OCRAsOptionalContentGroup
+from borb.toolkit.text.regular_expression_text_extraction import \
+    RegularExpressionTextExtraction
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 

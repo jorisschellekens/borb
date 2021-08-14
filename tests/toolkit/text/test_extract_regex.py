@@ -16,6 +16,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -89,7 +90,7 @@ class TestExtractRegularExpression(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        bb = l.get_all_matches(0)[0].get_bounding_boxes()[0]
+        bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
         assert int(bb.x) == 197
         assert int(bb.y) == 638
         assert int(bb.width) == 75
@@ -104,6 +105,9 @@ class TestExtractRegularExpression(unittest.TestCase):
         # attempt to store PDF
         with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
 
 
 if __name__ == "__main__":

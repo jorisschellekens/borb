@@ -9,12 +9,10 @@ import typing
 import zlib
 from typing import Any, Dict, Optional, Union
 
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
-from borb.io.read.types import AnyPDFType, Dictionary, List, Stream, Name
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
+from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Dictionary, List, Name, Stream
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent

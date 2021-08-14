@@ -10,12 +10,11 @@ from enum import Enum
 
 import barcode  # type: ignore [import]
 import qrcode  # type: ignore [import]
-from PIL import Image as PILImage  # type: ignore [import]
 from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [import]
-
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
+from PIL import Image as PILImage  # type: ignore [import]
 
 
 class BarcodeType(Enum):
@@ -87,8 +86,8 @@ class Barcode(Image):
         type: BarcodeType,
         width: typing.Optional[Decimal] = None,
         height: typing.Optional[Decimal] = None,
-        stroke_color: Color = X11Color("Black"),
-        fill_color: Color = X11Color("White"),
+        stroke_color: Color = HexColor("000000"),
+        fill_color: Color = HexColor("ffffff"),
         horizontal_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
     ):
@@ -105,11 +104,13 @@ class Barcode(Image):
             image = self._generate_image_except_qr_code(data, type)
 
         # call to super
-        super(Barcode, self).__init__(image,
-                                      width=width,
-                                      height=height,
-                                      horizontal_alignment=horizontal_alignment,
-                                      vertical_alignment=vertical_alignment)
+        super(Barcode, self).__init__(
+            image,
+            width=width,
+            height=height,
+            horizontal_alignment=horizontal_alignment,
+            vertical_alignment=vertical_alignment,
+        )
 
     def _generate_image_except_qr_code(self, data: str, type: BarcodeType):
         # generate image using barcode library

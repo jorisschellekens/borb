@@ -43,10 +43,7 @@ from borb.io.read.page.read_root_dictionary_transformer import (
 )
 from borb.io.read.primitive.read_number_transformer import ReadNumberTransformer
 from borb.io.read.primitive.read_string_transformer import ReadStringTransformer
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
 from borb.io.read.reference.read_reference_transformer import ReadReferenceTransformer
 from borb.io.read.reference.read_xref_transformer import ReadXREFTransformer
 from borb.io.read.types import AnyPDFType

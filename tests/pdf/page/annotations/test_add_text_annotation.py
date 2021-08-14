@@ -16,6 +16,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -88,7 +89,7 @@ class TestAddTextAnnotation(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        bb = l.get_all_matches(0)[0].get_bounding_boxes()[0]
+        bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
         doc.get_page(0).append_text_annotation(
             bb,
             contents="""
@@ -107,3 +108,6 @@ class TestAddTextAnnotation(unittest.TestCase):
         # attempt to store PDF
         with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")

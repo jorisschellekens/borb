@@ -14,7 +14,7 @@ from borb.pdf.canvas.layout.text.chunks_of_text import (
 )
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -23,7 +23,7 @@ class IndentedCodeSnippetTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles (indented) code snippets
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         return (
             context.get_markdown_string()[context.tell()] == " "
             and context.tell() + 1 < len(context.get_markdown_string())
@@ -34,7 +34,7 @@ class IndentedCodeSnippetTransformer(BaseMarkdownTransformer):
             and context.get_markdown_string()[context.tell() + 3] == " "
         )
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         end_of_input: int = self._as_long_as_input_lines_match("    .*", context)
         code_snippet_lines: typing.List[str] = context.get_markdown_string()[
@@ -54,7 +54,7 @@ class IndentedCodeSnippetTransformer(BaseMarkdownTransformer):
         )
 
         for line in code_snippet_lines:
-            sub_context: MarkdownTransformerContext = MarkdownTransformerContext(line)
+            sub_context: MarkdownTransformerState = MarkdownTransformerState(line)
             sub_context._document = context._document
             sub_context._parent_layout_element = el
             self.get_root()._transform(sub_context)

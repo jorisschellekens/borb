@@ -10,10 +10,7 @@ import typing
 from decimal import Decimal
 from typing import Any, Optional, Union
 
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.types import AnyPDFType, Dictionary, Name
 from borb.pdf.canvas.event.event_listener import Event, EventListener

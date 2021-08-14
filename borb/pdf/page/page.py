@@ -16,7 +16,7 @@ from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.canvas import Canvas
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.page.page_info import PageInfo
 
@@ -117,6 +117,55 @@ class Page(Dictionary):
         This function returns the Document from which this Page came
         """
         return self.get_root()  # type: ignore [attr-defined]
+
+    #
+    # ROTATE
+    #
+
+    def rotate_right(self) -> "Page":
+        """
+        This function rotates the Page clockwise by 90 degrees.
+        This function returns self.
+        """
+        # get current rotation
+        angle: int = 0
+        if "Rotate" in self:
+            angle = int(self["Rotate"])
+
+        # rotate left
+        angle = (angle + 90) % 360
+
+        # write entry
+        if angle == 0 and "Rotate" in self:
+            self.pop("Rotate")
+        else:
+            self[Name("Rotate")] = pDecimal(angle)
+
+        # return
+        return self
+
+    def rotate_left(self) -> "Page":
+        """
+        This function rotates the Page counterclockwise by 90 degrees.
+        This function returns self.
+        """
+
+        # get current rotation
+        angle: int = 0
+        if "Rotate" in self:
+            angle = int(self["Rotate"])
+
+        # rotate left
+        angle = (angle + 270) % 360
+
+        # write entry
+        if angle == 0 and "Rotate" in self:
+            self.pop("Rotate")
+        else:
+            self[Name("Rotate")] = pDecimal(angle)
+
+        # return
+        return self
 
     #
     # ANNOTATIONS
@@ -227,11 +276,10 @@ class Page(Dictionary):
         # The number of array elements determines the colour space in which the
         # colour shall be defined
         if color is not None:
-            color_max = pDecimal(256)
             annot[Name("C")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["C"].append(pDecimal(color.to_rgb().red / color_max))
-            annot["C"].append(pDecimal(color.to_rgb().green / color_max))
-            annot["C"].append(pDecimal(color.to_rgb().blue / color_max))
+            annot["C"].append(pDecimal(color.to_rgb().red))
+            annot["C"].append(pDecimal(color.to_rgb().green))
+            annot["C"].append(pDecimal(color.to_rgb().blue))
 
         # (Required if the annotation is a structural content item; PDF 1.3) The
         # integer key of the annotation’s entry in the structural parent tree (see
@@ -435,7 +483,7 @@ class Page(Dictionary):
         end_point: Tuple[Decimal, Decimal],
         left_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
         right_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
-        stroke_color: Color = X11Color("Black"),
+        stroke_color: Color = HexColor("000000"),
     ) -> "Page":
         """
         The purpose of a line annotation (PDF 1.3) is to display a single straight line on the page. When opened, it shall
@@ -482,11 +530,10 @@ class Page(Dictionary):
         # rectangle or ellipse. The number of array elements determines the colour
         # space in which the colour shall be defined
         if stroke_color is not None:
-            color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(stroke_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(stroke_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(stroke_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(stroke_color.to_rgb().red))
+            annot["IC"].append(pDecimal(stroke_color.to_rgb().green))
+            annot["IC"].append(pDecimal(stroke_color.to_rgb().blue))
 
         # return
         return self._append_annotation(annot)
@@ -527,11 +574,10 @@ class Page(Dictionary):
         # rectangle or ellipse. The number of array elements determines the colour
         # space in which the colour shall be defined
         if fill_color is not None:
-            color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
 
         # (Optional; PDF 1.5) A border effect dictionary describing an effect applied
         # to the border described by the BS entry (see Table 167).
@@ -595,11 +641,10 @@ class Page(Dictionary):
         # rectangle or ellipse. The number of array elements determines the colour
         # space in which the colour shall be defined
         if fill_color is not None:
-            color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
 
         # (Optional; PDF 1.5) A border effect dictionary describing an effect applied
         # to the border described by the BS entry (see Table 167).
@@ -744,11 +789,10 @@ class Page(Dictionary):
         annot["LE"].append(right_line_end_style)
 
         if fill_color is not None:
-            color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
 
         # return
         return self._append_annotation(annot)
@@ -836,11 +880,10 @@ class Page(Dictionary):
         annot["AP"]["N"][Name("Type")] = Name("XObject")
         annot["AP"]["N"][Name("Subtype")] = Name("Form")
 
-        RGB_MAX = Decimal(255)
         appearance_stream_content = "q %f %f %f RG %f w 0 7 m %f 7 l S Q" % (
-            stroke_color.to_rgb().red / RGB_MAX,
-            stroke_color.to_rgb().green / RGB_MAX,
-            stroke_color.to_rgb().blue / RGB_MAX,
+            stroke_color.to_rgb().red,
+            stroke_color.to_rgb().green,
+            stroke_color.to_rgb().blue,
             line_width,
             rectangle.width,
         )
@@ -896,11 +939,10 @@ class Page(Dictionary):
         annot["AP"]["N"][Name("Type")] = Name("XObject")
         annot["AP"]["N"][Name("Subtype")] = Name("Form")
 
-        RGB_MAX = Decimal(255)
         appearance_stream_content = "q %f %f %f RG %f w 0 0 m " % (
-            stroke_color.to_rgb().red / RGB_MAX,
-            stroke_color.to_rgb().green / RGB_MAX,
-            stroke_color.to_rgb().blue / RGB_MAX,
+            stroke_color.to_rgb().red,
+            stroke_color.to_rgb().green,
+            stroke_color.to_rgb().blue,
             line_width,
         )
         for x in range(0, int(rectangle.width), 5):
@@ -961,11 +1003,10 @@ class Page(Dictionary):
         annot["AP"]["N"][Name("Type")] = Name("XObject")
         annot["AP"]["N"][Name("Subtype")] = Name("Form")
 
-        RGB_MAX = Decimal(255)
         appearance_stream_content = "q %f %f %f RG %f w 0 40 m %f 40 l S Q" % (
-            stroke_color.to_rgb().red / RGB_MAX,
-            stroke_color.to_rgb().green / RGB_MAX,
-            stroke_color.to_rgb().blue / RGB_MAX,
+            stroke_color.to_rgb().red,
+            stroke_color.to_rgb().green,
+            stroke_color.to_rgb().blue,
             line_width,
             rectangle.width,
         )
@@ -1161,7 +1202,7 @@ class Page(Dictionary):
         overlay_text: Optional[str] = None,
         repeat_overlay_text: Optional[bool] = None,
         line_width: Decimal = Decimal(1),
-        stroke_color: Optional[Color] = X11Color("Red"),
+        stroke_color: Optional[Color] = HexColor("ff0000"),
         fill_color: Optional[Color] = None,
     ) -> "Page":
         """
@@ -1196,11 +1237,10 @@ class Page(Dictionary):
         # redaction region is left transparent. This entry is ignored if the RO
         # entry is present.
         if fill_color is not None:
-            color_max = pDecimal(256)
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green / color_max))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue / color_max))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
 
         # (Optional) A text string specifying the overlay text that should be
         # drawn over the redacted region after the affected content has been
@@ -1224,19 +1264,18 @@ class Page(Dictionary):
         annot["AP"][Name("N")] = Stream()
         annot["AP"]["N"][Name("Type")] = Name("XObject")
         annot["AP"]["N"][Name("Subtype")] = Name("Form")
-        RGB_MAX = Decimal(255)
         appearance_stream_content = "q"
         if stroke_color is not None:
             appearance_stream_content += " %f %f %f RG" % (
-                stroke_color.to_rgb().red / RGB_MAX,
-                stroke_color.to_rgb().green / RGB_MAX,
-                stroke_color.to_rgb().blue / RGB_MAX,
+                stroke_color.to_rgb().red,
+                stroke_color.to_rgb().green,
+                stroke_color.to_rgb().blue,
             )
         if fill_color is not None:
             appearance_stream_content += " %f %f %f rg" % (
-                fill_color.to_rgb().red / RGB_MAX,
-                fill_color.to_rgb().green / RGB_MAX,
-                fill_color.to_rgb().blue / RGB_MAX,
+                fill_color.to_rgb().red,
+                fill_color.to_rgb().green,
+                fill_color.to_rgb().blue,
             )
         if stroke_color is not None and fill_color is not None:
             appearance_stream_content += " %f w 0 0 100 100 re b" % line_width

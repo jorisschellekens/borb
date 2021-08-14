@@ -10,13 +10,12 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
-from PIL import Image as PILImage  # type: ignore [import]
-from PIL import ImageDraw, ImageFont
-
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.pdf_to_svg import PDFToSVG
+from PIL import Image as PILImage  # type: ignore [import]
+from PIL import ImageDraw, ImageFont
 
 
 class PDFToJPG(PDFToSVG):

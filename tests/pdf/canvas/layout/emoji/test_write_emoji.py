@@ -1,18 +1,19 @@
-from datetime import datetime
 import unittest
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
 from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.page_layout.browser_layout import BrowserLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteEmoji(unittest.TestCase):
@@ -86,7 +87,8 @@ class TestWriteEmoji(unittest.TestCase):
         with open(file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
 
-        return True
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ import typing
 from borb.pdf.canvas.layout.list.ordered_list import OrderedList
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -18,7 +18,7 @@ class OrderedListTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles ordered lists
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         indent_level: int = 0
         while (
             context.tell() + indent_level < len(context.get_markdown_string())
@@ -33,7 +33,7 @@ class OrderedListTransformer(BaseMarkdownTransformer):
             and context.get_markdown_string()[context.tell() + indent_level + 2] == " "
         )
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # continue processing lines until we hit <newline><newline>
         end_pos: int = self._until_double_newline(context)
@@ -112,7 +112,7 @@ class OrderedListTransformer(BaseMarkdownTransformer):
         # build UnorderedList
         ul: OrderedList = OrderedList()
         for s in list_items_str:
-            sub_context: MarkdownTransformerContext = MarkdownTransformerContext(s)
+            sub_context: MarkdownTransformerState = MarkdownTransformerState(s)
             sub_context._document = context._document
             sub_context._parent_layout_element = ul
             self.get_root()._transform(sub_context)

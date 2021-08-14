@@ -4,9 +4,8 @@
 """
     This implementation of BaseTagTransformer handles <mark> tags
 """
-import xml.etree.ElementTree as ET
-
 import typing
+import xml.etree.ElementTree as ET
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor

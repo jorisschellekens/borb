@@ -11,10 +11,6 @@ import logging
 import typing
 from pathlib import Path
 
-from fontTools.afmLib import AFM  # type: ignore [import]
-from fontTools.agl import toUnicode  # type: ignore [import]
-from fontTools.cffLib import CFFFontSet, TopDict  # type: ignore [import]
-
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, Name
 from borb.pdf.canvas.font.adobe_standard_encoding import (
@@ -24,6 +20,9 @@ from borb.pdf.canvas.font.adobe_standard_encoding import (
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.simple_font import SimpleFont
 from borb.pdf.canvas.font.symbol_encoding import symbol_decode, zapfdingbats_decode
+from fontTools.afmLib import AFM  # type: ignore [import]
+from fontTools.agl import toUnicode  # type: ignore [import]
+from fontTools.cffLib import CFFFontSet, TopDict  # type: ignore [import]
 
 logger = logging.getLogger(__name__)
 

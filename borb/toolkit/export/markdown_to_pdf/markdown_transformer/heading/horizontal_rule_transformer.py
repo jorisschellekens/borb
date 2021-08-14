@@ -13,7 +13,7 @@ from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -22,7 +22,7 @@ class HorizontalRuleTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles horizontal rules
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         """
         To create a horizontal rule, use three or more asterisks (***), dashes (---), or underscores (___) on a line by themselves.
         """
@@ -34,7 +34,7 @@ class HorizontalRuleTransformer(BaseMarkdownTransformer):
         ]
         return any([x in markdown_str for x in ["---", "***", "___"]])
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # add LayoutElement
         parent_layout_element: typing.Union[

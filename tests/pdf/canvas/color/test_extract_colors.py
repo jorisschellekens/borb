@@ -10,16 +10,17 @@ from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.image.shape import Shape
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.color.color_spectrum_extraction import ColorSpectrumExtraction
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -105,7 +106,7 @@ class TestExtractColors(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             l = ColorSpectrumExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
-            for t in l.get_colors_per_page(0, limit=32):
+            for t in l.get_colors_for_page(0, limit=32):
                 colors.append(t)
 
         # create document
@@ -168,6 +169,9 @@ class TestExtractColors(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
 
 
 if __name__ == "__main__":

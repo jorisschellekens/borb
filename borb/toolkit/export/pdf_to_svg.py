@@ -11,8 +11,6 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from pathlib import Path
 
-from PIL import Image as PILImage  # type: ignore [import]
-
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
@@ -21,6 +19,7 @@ from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.page.page import Page
 from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
+from PIL import Image as PILImage  # type: ignore [import]
 
 
 class PDFToSVG(EventListener):

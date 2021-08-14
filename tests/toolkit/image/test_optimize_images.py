@@ -2,11 +2,13 @@ import os
 import unittest
 from pathlib import Path
 
+from borb.io.write.write_base_transformer import WriteTransformerState
 from borb.pdf.pdf import PDF
 from borb.toolkit.image.image_format_optimization import ImageFormatOptimization
 
 
 class TestOptimizeImages(unittest.TestCase):
+
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -28,6 +30,9 @@ class TestOptimizeImages(unittest.TestCase):
         output_file: Path = self.output_dir / "output_001.pdf"
         with open(output_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
+
+        # check WriteTransformerState
+        assert WriteTransformerState().compression_level == 9, "WriteTransformerState.compression_level should be set at 9 for optimal results!"
 
         # check whether output_file is smaller than input_file
         file_size_001: int = os.path.getsize(input_file)

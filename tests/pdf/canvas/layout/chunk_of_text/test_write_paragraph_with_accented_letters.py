@@ -1,17 +1,13 @@
+import typing
 import unittest
 from datetime import datetime
 from pathlib import Path
 
-import typing
-
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
@@ -87,6 +83,6 @@ class TestWriteAccentedLetters(unittest.TestCase):
             PDF.loads(in_file_handle, [l])
 
         # verify that the words are in the extracted text
-        s: str = l.get_text(0)
+        s: str = l.get_text_for_page(0)
         for w in accented_words:
             assert w in s, "Missing word %s in extracted text" % w

@@ -15,6 +15,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestAddAllLineArtAnnotations(unittest.TestCase):
@@ -163,4 +164,5 @@ class TestAddAllLineArtAnnotations(unittest.TestCase):
         with open(self.output_dir / "output.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
-        return True
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")

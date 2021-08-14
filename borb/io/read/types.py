@@ -13,10 +13,9 @@ from decimal import Decimal as oDecimal
 from math import ceil, floor
 from typing import Optional, Union
 
-from PIL.Image import Image  # type: ignore [import]
-
 from borb.io.read.postfix.postfix_eval import PostScriptEval
 from borb.pdf.canvas.event.event_listener import EventListener
+from PIL.Image import Image  # type: ignore [import]
 
 
 def add_base_methods(object: typing.Any) -> typing.Any:

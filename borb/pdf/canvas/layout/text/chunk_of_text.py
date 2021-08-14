@@ -8,7 +8,7 @@ import typing
 from decimal import Decimal
 
 from borb.io.read.types import Dictionary, Name
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
@@ -27,12 +27,12 @@ class ChunkOfText(LayoutElement):
         text: str,
         font: typing.Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
-        font_color: Color = X11Color("Black"),
+        font_color: Color = HexColor("000000"),
         border_top: bool = False,
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
@@ -88,6 +88,12 @@ class ChunkOfText(LayoutElement):
         """
         return self._font
 
+    def get_font_color(self) -> Color:
+        """
+        This function returns the font Color of this LayoutElement
+        """
+        return self._font_color
+
     def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed
         if "Resources" not in page:
@@ -118,6 +124,13 @@ class ChunkOfText(LayoutElement):
             return self._write_text_bytes_in_ascii()
 
     def _write_text_bytes_in_hex(self) -> str:
+        # decide whether we should write 1 byte, or 2 bytes
+        font: Font = self._font
+        use_four_bytes: bool = False
+        if "Encoding" in font and font["Encoding"] in ["Identity-H", "Identity-V"]:
+            use_four_bytes = True
+
+        # write each cid
         sOut: str = ""
         for c in self._text:
             cid: typing.Optional[int] = self._font.unicode_to_character_identifier(c)
@@ -126,10 +139,14 @@ class ChunkOfText(LayoutElement):
                 c,
             )
             hex_rep: str = hex(int(cid))[2:]
-            if len(hex_rep) % 2 == 1:
-                hex_rep = "0" + hex_rep
+            hex_rep = self._pad_string_with_zeroes(hex_rep, 4 if use_four_bytes else 2)
             sOut += "".join(["<", hex_rep, ">"])
         return "".join(["[", sOut, "] TJ"])
+
+    def _pad_string_with_zeroes(self, s: str, n: int = 2) -> str:
+        while len(s) < n:
+            s = "0" + s
+        return s
 
     def _write_text_bytes_in_ascii(self) -> str:
         """
@@ -161,7 +178,6 @@ class ChunkOfText(LayoutElement):
     def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self._font
         rgb_color = self._font_color.to_rgb()
-        COLOR_MAX = Decimal(255.0)
         assert self._font_size is not None
         content = """
             q
@@ -173,9 +189,9 @@ class ChunkOfText(LayoutElement):
             ET            
             Q
         """ % (
-            Decimal(rgb_color.red / COLOR_MAX),  # rg
-            Decimal(rgb_color.green / COLOR_MAX),  # rg
-            Decimal(rgb_color.blue / COLOR_MAX),  # rg
+            Decimal(rgb_color.red),  # rg
+            Decimal(rgb_color.green),  # rg
+            Decimal(rgb_color.blue),  # rg
             self._get_font_resource_name(self._font, page),  # Tf
             Decimal(1),  # Tf
             float(self._font_size),  # Tm

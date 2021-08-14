@@ -13,6 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import DestinationType, Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestAddSuperMarioAnnotation(unittest.TestCase):
@@ -110,4 +111,5 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
         with open(self.output_dir / "output.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
-        return True
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")

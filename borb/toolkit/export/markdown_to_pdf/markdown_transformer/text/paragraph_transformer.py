@@ -12,12 +12,12 @@ from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.emoji.emoji import Emoji, Emojis
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.chunks_of_text import (
-    LineBreakChunk,
     HeterogeneousParagraph,
+    LineBreakChunk,
 )
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -26,7 +26,7 @@ class ParagraphTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles paragraphs
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         """
         This function always returns True, anything can be a Paragraph
         """
@@ -69,7 +69,7 @@ class ParagraphTransformer(BaseMarkdownTransformer):
             )
         return out
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # continue processing lines until we hit <newline><newline>
         end_pos: int = self._until_double_newline(context)

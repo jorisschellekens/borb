@@ -8,10 +8,7 @@ import io
 import typing
 from typing import Any, Optional, Union
 
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
 from borb.io.read.types import AnyPDFType, Decimal
 from borb.pdf.canvas.event.event_listener import EventListener
 

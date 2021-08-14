@@ -75,9 +75,9 @@ This doesn't mean the software is [gratis](https://en.wikipedia.org/wiki/Gratis_
 Buying a license is mandatory as soon as you develop commercial activities distributing the borb software inside your product or deploying it on a network without disclosing the source code of your own applications under the AGPL license. 
 These activities include:
 
-- offering paid services to customers as an ASP
-- serving PDFs on the fly in the cloud or in a web application
-- shipping `borb` with a closed source product
+- Offering paid services to customers as an ASP
+- Serving PDFs on the fly in the cloud or in a web application
+- Shipping `borb` with a closed source product
 
 Contact sales for more info.
 

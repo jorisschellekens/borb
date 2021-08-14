@@ -9,7 +9,7 @@ from borb.toolkit.export.markdown_to_pdf.markdown_transformer.any_markdown_trans
     AnyMarkdownTransformer,
 )
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -23,6 +23,6 @@ class MarkdownToPDF:
         """
         This function converts a Markdown str to a PDF
         """
-        ctx: MarkdownTransformerContext = MarkdownTransformerContext(markdown)
+        ctx: MarkdownTransformerState = MarkdownTransformerState(markdown)
         AnyMarkdownTransformer()._transform(ctx)
         return ctx.get_document()

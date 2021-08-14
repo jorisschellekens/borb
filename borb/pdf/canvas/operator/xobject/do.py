@@ -11,7 +11,6 @@ import io
 import typing
 
 import PIL  # type: ignore [import]
-
 from borb.io.read.types import AnyPDFType, Dictionary, Name, Stream
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator

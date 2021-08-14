@@ -3,7 +3,6 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.layout.list.ordered_list import OrderedList
 from borb.pdf.canvas.layout.list.roman_list import RomanNumeralOrderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -14,6 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteOrderedList(unittest.TestCase):
@@ -73,6 +73,9 @@ class TestWriteOrderedList(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+
     def test_write_document_002(self):
 
         # create document
@@ -113,3 +116,6 @@ class TestWriteOrderedList(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")

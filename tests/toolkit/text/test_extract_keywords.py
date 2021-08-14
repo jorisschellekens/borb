@@ -130,7 +130,7 @@ class TestExtractKeywords(unittest.TestCase):
         # add list
         layout.add(Paragraph("Following keywords were found:"))
         ul: UnorderedList = UnorderedList()
-        for k in l.get_keywords_per_page(0, 32):
+        for k in l.get_keywords_for_page(0, 32):
             ul.add(Paragraph(k.get_text()))
         layout.add(ul)
 

@@ -8,13 +8,12 @@ import logging
 import typing
 from typing import Optional
 
-from PIL.Image import Image  # type: ignore [import]
-
 from borb.io.read.types import AnyPDFType, Dictionary, Element, List, Reference, Stream
 from borb.io.write.write_base_transformer import (
     WriteBaseTransformer,
     WriteTransformerState,
 )
+from PIL.Image import Image  # type: ignore [import]
 
 logger = logging.getLogger(__name__)
 

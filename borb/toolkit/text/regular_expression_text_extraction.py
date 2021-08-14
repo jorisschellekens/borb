@@ -284,7 +284,7 @@ class RegularExpressionTextExtraction(EventListener):
                 )
             )
 
-    def get_all_matches(self, page_number: int) -> List[PDFMatch]:
+    def get_matches_for_page(self, page_number: int) -> List[PDFMatch]:
         """
         This function returns a typing.List[PDFMatch] matching the regular expression, on a given page
         """
@@ -292,7 +292,7 @@ class RegularExpressionTextExtraction(EventListener):
             return []
         return self._matches_per_page[page_number]
 
-    def get_text(self, page_nr: int) -> str:
+    def get_text_for_page(self, page_nr: int) -> str:
         """
         This function returns all text on a given page
         """

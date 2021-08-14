@@ -19,7 +19,7 @@
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
@@ -49,12 +49,12 @@ class LineOfText(ChunkOfText):
         font_size: Decimal = Decimal(12),
         vertical_alignment: Alignment = Alignment.TOP,
         horizontal_alignment: Alignment = Alignment.LEFT,
-        font_color: Color = X11Color("Black"),
+        font_color: Color = HexColor("000000"),
         border_top: bool = False,
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),

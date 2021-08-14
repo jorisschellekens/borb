@@ -4,11 +4,10 @@
 """
     This implementation of BaseTagTransformer handles <title> tags
 """
+import typing
 import xml.etree.ElementTree as ET
 
-import typing
-
-from borb.io.read.types import Name, Dictionary, String
+from borb.io.read.types import Dictionary, Name, String
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.document import Document

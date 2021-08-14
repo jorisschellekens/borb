@@ -15,7 +15,7 @@ from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 
 
-class MarkdownTransformerContext:
+class MarkdownTransformerState:
     def __init__(self, markdown: str):
         self._markdown_string: str = markdown
         self._start_index: int = 0
@@ -33,7 +33,7 @@ class MarkdownTransformerContext:
         """
         return self._start_index
 
-    def seek(self, p: int) -> "MarkdownTransformerContext":
+    def seek(self, p: int) -> "MarkdownTransformerState":
         """
         This function changes the str position to the given byte offset.
         This function returns self.
@@ -97,13 +97,13 @@ class BaseMarkdownTransformer:
             p = p._parent
         return p
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         return False
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
         return None
 
-    def _until_double_newline(self, context: MarkdownTransformerContext) -> int:
+    def _until_double_newline(self, context: MarkdownTransformerState) -> int:
         i: int = context.tell()
         while i < len(context.get_markdown_string()):
             if (
@@ -116,7 +116,7 @@ class BaseMarkdownTransformer:
         return -1
 
     def _as_long_as_input_lines_match(
-        self, line_regex: str, context: MarkdownTransformerContext
+        self, line_regex: str, context: MarkdownTransformerState
     ) -> int:
         prev_newline_pos: int = context.tell() - 1
         while prev_newline_pos < len(context.get_markdown_string()):

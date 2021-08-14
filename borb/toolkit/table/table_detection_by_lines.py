@@ -15,7 +15,7 @@ from borb.datastructure.disjoint_set import disjointset
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
-from borb.pdf.canvas.event.event_listener import EventListener, Event
+from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.canvas.event.line_render_event import LineRenderEvent
 from borb.pdf.canvas.geometry.line_segment import LineSegment
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -38,24 +38,25 @@ class TableDetectionByLines(EventListener):
     def __init__(self):
         self._current_page_number: int = -1
         self._lines_per_page: typing.Dict[int, typing.List[LineSegment]] = {}
-        self._table_bounding_boxes_per_page: typing.Dict[int, typing.List[Rectangle]] = {}
         self._tables_per_page: typing.Dict[int, typing.List[Table]] = {}
-        self._text_render_events_per_page: typing.Dict[int, typing.List[ChunkOfTextRenderEvent]] = {}
+        self._text_render_events_per_page: typing.Dict[
+            int, typing.List[ChunkOfTextRenderEvent]
+        ] = {}
 
     @staticmethod
     def _dist(x0: Decimal, y0: Decimal, x1: Decimal, y1: Decimal) -> Decimal:
         return Decimal(math.sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2))
 
-    def get_table_bounding_boxes_per_page(
+    def get_table_bounding_boxes_for_page(
         self, page_number: int
     ) -> typing.List[Rectangle]:
         """
         This function returns the bounding boxes (as Rectangle objects) of each Table
         that was recognized on the given page.
         """
-        return self._table_bounding_boxes_per_page.get(page_number, [])
+        return [x.bounding_box for x in self._tables_per_page.get(page_number, [])]
 
-    def get_tables_per_page(self, page_number: int) -> typing.List[Table]:
+    def get_tables_for_page(self, page_number: int) -> typing.List[Table]:
         """
         This function returns each Table that was recognized on the given page.
         """
@@ -67,7 +68,6 @@ class TableDetectionByLines(EventListener):
         if isinstance(event, BeginPageEvent):
             self._current_page_number += 1
             self._lines_per_page[self._current_page_number] = []
-            self._table_bounding_boxes_per_page[self._current_page_number] = []
             self._tables_per_page[self._current_page_number] = []
             self._text_render_events_per_page[self._current_page_number] = []
 
@@ -143,12 +143,18 @@ class TableDetectionByLines(EventListener):
             for _, v in clusters_of_lines.items():
                 r, c = self._determine_number_of_rows_and_columns(v)
                 if r * c >= 2:
-                    self._table_bounding_boxes_per_page[
-                        self._current_page_number
-                    ].append(self._determine_table_bounding_box(v))
-                    self._tables_per_page[self._current_page_number].append(
-                        self._determine_table_cell_boundaries(v)
+
+                    # determine bounding box
+                    table_bounding_box: Rectangle = self._determine_table_bounding_box(
+                        v
                     )
+
+                    # determine table
+                    table: Table = self._determine_table_cell_boundaries(v)
+                    table.bounding_box = table_bounding_box
+
+                    # store
+                    self._tables_per_page[self._current_page_number].append(table)
 
     def _determine_number_of_rows_and_columns(
         self, lines_in_table: typing.List[LineSegment]
@@ -273,7 +279,9 @@ class TableDetectionByLines(EventListener):
                         ds.union((r, c), (r + 1, c))
 
         # extract clusters
-        cells: typing.Dict[int, typing.List[typing.Tuple[int, int]]] = {}
+        cells: typing.Dict[
+            typing.Tuple[int, int], typing.List[typing.Tuple[int, int]]
+        ] = {}
         for i in range(0, number_of_rows):
             for j in range(0, number_of_cols):
                 p: typing.Tuple[int, int] = ds.find((i, j))

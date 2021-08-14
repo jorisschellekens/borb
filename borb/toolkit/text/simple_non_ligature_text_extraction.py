@@ -63,7 +63,7 @@ class SimpleNonLigatureTextExtraction(SimpleTextExtraction):
             "ꝡ": "vy",
         }
 
-    def get_text(self, page_nr: int) -> str:
+    def get_text_for_page(self, page_nr: int) -> str:
         """
         This function returns all text on a given page
         """

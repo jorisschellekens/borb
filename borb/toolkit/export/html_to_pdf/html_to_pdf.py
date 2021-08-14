@@ -4,10 +4,8 @@
 """
     This class converts HTML to PDF.
 """
-import xml.etree.ElementTree as ET
-
 import typing
-from lxml.etree import HTMLParser  # type: ignore [import]
+import xml.etree.ElementTree as ET
 
 from borb.pdf.canvas.layout.page_layout.browser_layout import BrowserLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -17,6 +15,7 @@ from borb.pdf.page.page_size import PageSize
 from borb.toolkit.export.html_to_pdf.tag_transformer.any_tag_transformer import (
     AnyTagTransformer,
 )
+from lxml.etree import HTMLParser  # type: ignore [import]
 
 
 class HTMLToPDF:

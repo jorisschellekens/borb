@@ -787,12 +787,12 @@ Next we instantiate the `FreeSpaceFinder` with a given `Page` as argument.
         space_finder = FreeSpaceFinder(doc.get_page(0))
 
 Now we can attempt to add the annotation. 
-We call the method `find_free_space` passing it the ideal `Rectangle` where we would like to place the annotation (or any other object really).
-`find_free_space` returns an `Optional[Rectangle]` (sometimes the `Page` is full).
+We call the method `get_free_space_for_page` passing it the ideal `Rectangle` where we would like to place the annotation (or any other object really).
+`get_free_space_for_page` returns an `Optional[Rectangle]` (sometimes the `Page` is full).
 
         # add annotation
         w, h = doc.get_page(0).get_page_info().get_size()
-        free_rect = space_finder.find_free_space(
+        free_rect = space_finder.get_free_space_for_page(
             Rectangle(
                 Decimal(w / Decimal(2)),
                 Decimal(h * Decimal(0.1)),

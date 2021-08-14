@@ -16,6 +16,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -88,7 +89,7 @@ class TestAddLineAnnotation(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        for m in l.get_all_matches(0):
+        for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 doc.get_page(0).append_line_annotation(
                     (bb.get_x(), bb.get_y()),

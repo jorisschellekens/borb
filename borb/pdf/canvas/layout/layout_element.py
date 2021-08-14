@@ -12,7 +12,7 @@ from enum import Enum
 
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Name, Stream
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 
 
@@ -45,7 +45,7 @@ class LayoutElement:
         self,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_left: bool = False,
         border_right: bool = False,
         border_top: bool = False,
@@ -362,13 +362,12 @@ class LayoutElement:
             return
         assert self._background_color
         rgb_color = self._background_color.to_rgb()
-        COLOR_MAX = Decimal(255.0)
         content = """
             q %f %f %f rg %f %f m %f %f l %f %f l %f %f l f Q
             """ % (
-            Decimal(rgb_color.red / COLOR_MAX),
-            Decimal(rgb_color.green / COLOR_MAX),
-            Decimal(rgb_color.blue / COLOR_MAX),
+            Decimal(rgb_color.red),
+            Decimal(rgb_color.green),
+            Decimal(rgb_color.blue),
             border_box.x,  # lower left corner
             border_box.y,  # lower left corner
             border_box.x + border_box.width,  # lower right corner
@@ -399,11 +398,10 @@ class LayoutElement:
 
         # draw border(s)
         rgb_color = self._border_color.to_rgb()
-        COLOR_MAX = Decimal(255.0)
         content = "q %f %f %f RG %f w" % (
-            Decimal(rgb_color.red / COLOR_MAX),
-            Decimal(rgb_color.green / COLOR_MAX),
-            Decimal(rgb_color.blue / COLOR_MAX),
+            Decimal(rgb_color.red),
+            Decimal(rgb_color.green),
+            Decimal(rgb_color.blue),
             self._border_width,
         )
         if self._border_top:

@@ -9,7 +9,7 @@ import typing
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -18,7 +18,7 @@ class UnorderedListTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles unordered lists
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         """
         To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items.
         Indent one or more items to create a nested list.
@@ -36,7 +36,7 @@ class UnorderedListTransformer(BaseMarkdownTransformer):
             and context.get_markdown_string()[context.tell() + indent_level + 1] == " "
         )
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # continue processing lines until we hit <newline><newline>
         end_pos: int = self._until_double_newline(context)
@@ -109,7 +109,7 @@ class UnorderedListTransformer(BaseMarkdownTransformer):
         # build UnorderedList
         ul: UnorderedList = UnorderedList()
         for s in list_items_str:
-            sub_context: MarkdownTransformerContext = MarkdownTransformerContext(s)
+            sub_context: MarkdownTransformerState = MarkdownTransformerState(s)
             sub_context._document = context._document
             sub_context._parent_layout_element = ul
             self.get_root()._transform(sub_context)

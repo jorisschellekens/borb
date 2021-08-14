@@ -8,7 +8,7 @@ class TestColorConversion(unittest.TestCase):
     @staticmethod
     def assert_is_almost(d0: Decimal, d1: Decimal):
         delta = abs(d0 - d1)
-        assert delta < Decimal(0.0001)
+        assert delta <= Decimal(1)
 
     @staticmethod
     def assert_hsv_is_rgb(c0: HSVColor, c1: RGBColor):
@@ -22,19 +22,19 @@ class TestColorConversion(unittest.TestCase):
         # red
         TestColorConversion.assert_hsv_is_rgb(
             HSVColor(Decimal(0), Decimal(1), Decimal(1)),
-            RGBColor(Decimal(255), Decimal(0), Decimal(0)),
+            RGBColor(Decimal(1), Decimal(0), Decimal(0)),
         )
 
         # green
         TestColorConversion.assert_hsv_is_rgb(
             HSVColor(Decimal(120.0 / 360.0), Decimal(1), Decimal(1)),
-            RGBColor(Decimal(0), Decimal(255), Decimal(0)),
+            RGBColor(Decimal(0), Decimal(1), Decimal(0)),
         )
 
         # blue
         TestColorConversion.assert_hsv_is_rgb(
             HSVColor(Decimal(240.0 / 360.0), Decimal(1), Decimal(1)),
-            RGBColor(Decimal(0), Decimal(0), Decimal(255)),
+            RGBColor(Decimal(0), Decimal(0), Decimal(1)),
         )
 
     def test_hex_to_hsv(self):

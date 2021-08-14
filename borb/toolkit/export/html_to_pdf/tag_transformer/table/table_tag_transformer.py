@@ -4,17 +4,16 @@
 """
     This implementation of BaseTagTransformer handles <table> tags
 """
-import xml.etree.ElementTree as ET
-
 import typing
+import xml.etree.ElementTree as ET
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
+from borb.pdf.canvas.layout.table.table import Table
 from borb.toolkit.export.html_to_pdf.tag_transformer.base_tag_transformer import (
     BaseTagTransformer,
 )

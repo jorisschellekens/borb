@@ -4,9 +4,8 @@
 """
     This implementation of BaseTagTransformer handles <tbody> tags
 """
-import xml.etree.ElementTree as ET
-
 import typing
+import xml.etree.ElementTree as ET
 
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout

@@ -10,9 +10,7 @@ import typing
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Dictionary, Name, Reference
-from borb.io.write.object.write_dictionary_transformer import (
-    WriteDictionaryTransformer,
-)
+from borb.io.write.object.write_dictionary_transformer import WriteDictionaryTransformer
 from borb.io.write.write_base_transformer import WriteTransformerState
 
 logger = logging.getLogger(__name__)

@@ -6,14 +6,17 @@
     A TagTransformer converts a particular HTML tag (e.g. "<h1>") to its corresponding
     LayoutElement object(s).
 """
-import xml.etree.ElementTree as ET
-
 import typing
+import xml.etree.ElementTree as ET
 
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.chunks_of_text import LineBreakChunk, Span
+
+
+class HTMLTranformerState:
+    pass
 
 
 class BaseTagTransformer:

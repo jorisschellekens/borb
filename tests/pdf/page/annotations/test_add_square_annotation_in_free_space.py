@@ -1,11 +1,14 @@
+import os
 import unittest
 from decimal import Decimal
+from math import ceil
 from pathlib import Path
 
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -27,26 +30,22 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         # attempt to read PDF
         doc = None
         input_file: Path = Path(__file__).parent / "input_001.pdf"
+        l: FreeSpaceFinder = FreeSpaceFinder()
         with open(input_file, "rb") as in_file_handle:
-            doc = PDF.loads(in_file_handle)
-
-        # determine free space
-        space_finder = FreeSpaceFinder(doc.get_page(0))
+            doc = PDF.loads(in_file_handle, [l])
 
         # write (debug purposes)
-        for i in range(0, space_finder.get_number_of_rows_in_grid()):
-            print(
-                "adding annotations, row %d / %d"
-                % (i + 1, space_finder.get_number_of_rows_in_grid())
-            )
-            for j in range(0, space_finder.get_number_of_columns_in_grid()):
-                if space_finder._grid[i][j]:
+        N: int = ceil(doc.get_page(0).get_page_info().get_width() / 10)
+        M: int = ceil(doc.get_page(0).get_page_info().get_height() / 10)
+        for i in range(0, M):
+            print("adding annotations, row %d / %d" % (i + 1, M))
+            for j in range(0, N):
+                if l._grid_per_page[0]._availability[i][j]:
                     continue
-                w = Decimal(space_finder.get_grid_resolution())
-                x = Decimal(i) * w
-                y = Decimal(j) * w
+                x = Decimal(i * 10)
+                y = Decimal(j * 10)
                 doc.get_page(0).append_square_annotation(
-                    Rectangle(x, y, w, w),
+                    Rectangle(x, y, Decimal(10), Decimal(10)),
                     stroke_color=HexColor("BF4E30"),
                     fill_color=HexColor("BF4E30"),
                 )
@@ -59,20 +58,19 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
 
         # attempt to read PDF
         doc = None
+        l: FreeSpaceFinder = FreeSpaceFinder()
         input_file: Path = Path(__file__).parent / "input_001.pdf"
         with open(input_file, "rb") as in_file_handle:
-            doc = PDF.loads(in_file_handle)
+            doc = PDF.loads(in_file_handle, [l])
 
-        # determine free space
-        space_finder = FreeSpaceFinder(doc.get_page(0))
-
+        # ideal rectangle is somewhere in the middle of the Page
         w: Decimal = doc.get_page(0).get_page_info().get_width()
         h: Decimal = doc.get_page(0).get_page_info().get_height()
         ideal_rectangle: Rectangle = Rectangle(
             w / Decimal(2) - 50, h / Decimal(2) - 50, Decimal(100), Decimal(100)
         )
 
-        free_rectangle = space_finder.find_free_space(ideal_rectangle)
+        free_rectangle = l.get_free_space_for_page(0, ideal_rectangle)
 
         # add annotation
         doc.get_page(0).append_square_annotation(
@@ -82,5 +80,9 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        output_path: Path = self.output_dir / "output_002.pdf"
+        with open(output_path, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        # compare visually
+        compare_visually_to_ground_truth(output_path)

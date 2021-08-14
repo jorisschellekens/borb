@@ -4,6 +4,7 @@ from pathlib import Path
 from borb.pdf.document import Document
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestExportHTMLToPDF(unittest.TestCase):
@@ -19,49 +20,49 @@ class TestExportHTMLToPDF(unittest.TestCase):
             self.output_dir.mkdir()
 
     def test_example_000(self):
-        self._test_convert_document("example-html-input-000.html")
+        self._test_convert_document("example_html_input_000.html")
 
     def test_example_001(self):
-        self._test_convert_document("example-html-input-001.html")
+        self._test_convert_document("example_html_input_001.html")
 
     def test_example_002(self):
-        self._test_convert_document("example-html-input-002.html")
+        self._test_convert_document("example_html_input_002.html")
 
     def test_example_003(self):
-        self._test_convert_document("example-html-input-003.html")
+        self._test_convert_document("example_html_input_003.html")
 
     def test_example_004(self):
-        self._test_convert_document("example-html-input-004.html")
+        self._test_convert_document("example_html_input_004.html")
 
     def test_example_005(self):
-        self._test_convert_document("example-html-input-005.html")
+        self._test_convert_document("example_html_input_005.html")
 
     def test_example_006(self):
-        self._test_convert_document("example-html-input-006.html")
+        self._test_convert_document("example_html_input_006.html")
 
     def test_example_007(self):
-        self._test_convert_document("example-html-input-007.html")
+        self._test_convert_document("example_html_input_007.html")
 
     def test_example_008(self):
-        self._test_convert_document("example-html-input-008.html")
+        self._test_convert_document("example_html_input_008.html")
 
     def test_example_009(self):
-        self._test_convert_document("example-html-input-009.html")
+        self._test_convert_document("example_html_input_009.html")
 
     def test_example_010(self):
-        self._test_convert_document("example-html-input-010.html")
+        self._test_convert_document("example_html_input_010.html")
 
     def test_example_011(self):
-        self._test_convert_document("example-html-input-011.html")
+        self._test_convert_document("example_html_input_011.html")
 
     def test_example_012(self):
-        self._test_convert_document("example-html-input-012.html")
+        self._test_convert_document("example_html_input_012.html")
 
     def test_example_013(self):
-        self._test_convert_document("example-html-input-013.html")
+        self._test_convert_document("example_html_input_013.html")
 
     def test_example_014(self):
-        self._test_convert_document("example-html-input-014.html")
+        self._test_convert_document("example_html_input_014.html")
 
     def _test_convert_document(self, file_to_convert: str):
 
@@ -78,9 +79,12 @@ class TestExportHTMLToPDF(unittest.TestCase):
         document: Document = HTMLToPDF.convert_html_to_pdf(txt)
 
         # store
-        output_file = self.output_dir / (file_to_convert + ".pdf")
+        output_file = self.output_dir / (file_to_convert.replace(".html", ".pdf"))
         with open(output_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, document)
+
+        # compare visually
+        compare_visually_to_ground_truth(output_file)
 
 
 if __name__ == "__main__":

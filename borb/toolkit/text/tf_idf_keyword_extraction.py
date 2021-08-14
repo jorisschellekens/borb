@@ -131,7 +131,7 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         # get words
         words = [
             x.upper()
-            for x in re.split("[^a-zA-Z]+", self.get_text(self._current_page))
+            for x in re.split("[^a-zA-Z]+", self.get_text_for_page(self._current_page))
             if x.upper() not in self._stopwords
         ]
 
@@ -163,7 +163,7 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         for k in self._keywords:
             k._number_of_pages = self._number_of_pages
 
-    def get_keywords_per_page(
+    def get_keywords_for_page(
         self, page_number: int, limit: Optional[int] = None
     ) -> List[TFIDFKeyword]:
         """

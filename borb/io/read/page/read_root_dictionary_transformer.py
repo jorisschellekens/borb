@@ -9,10 +9,7 @@ import typing
 from typing import Any, Dict, List, Optional, Union
 
 from borb.io.read.object.read_dictionary_transformer import ReadDictionaryTransformer
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
 from borb.io.read.types import AnyPDFType, Decimal, Dictionary
 from borb.io.read.types import List as pList
 from borb.io.read.types import Name

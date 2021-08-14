@@ -9,7 +9,7 @@ import typing
 from decimal import Decimal
 from typing import Union
 
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -38,12 +38,12 @@ class Paragraph(LineOfText):
         text_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
         horizontal_alignment: Alignment = Alignment.LEFT,
-        font_color: Color = X11Color("Black"),
+        font_color: Color = HexColor("000000"),
         border_top: bool = False,
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
-        border_color: Color = X11Color("Black"),
+        border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),

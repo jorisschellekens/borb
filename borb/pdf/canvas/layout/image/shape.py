@@ -9,7 +9,7 @@ import typing
 from decimal import Decimal
 from typing import Tuple
 
-from borb.pdf.canvas.color.color import Color, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
 from borb.pdf.page.page import Page
@@ -117,16 +117,15 @@ class Shape(LayoutElement):
         )
 
         # write content
-        stroke_rgb = (self._stroke_color or X11Color("Black")).to_rgb()
-        fill_rgb = (self._fill_color or X11Color("White")).to_rgb()
-        COLOR_MAX = Decimal(255.0)
+        stroke_rgb = (self._stroke_color or HexColor("000000")).to_rgb()
+        fill_rgb = (self._fill_color or HexColor("ffffff")).to_rgb()
         content = "q %f %f %f RG  %f %f %f rg %f w " % (
-            Decimal(stroke_rgb.red / COLOR_MAX),
-            Decimal(stroke_rgb.green / COLOR_MAX),
-            Decimal(stroke_rgb.blue / COLOR_MAX),
-            Decimal(fill_rgb.red / COLOR_MAX),
-            Decimal(fill_rgb.green / COLOR_MAX),
-            Decimal(fill_rgb.blue / COLOR_MAX),
+            Decimal(stroke_rgb.red),
+            Decimal(stroke_rgb.green),
+            Decimal(stroke_rgb.blue),
+            Decimal(fill_rgb.red),
+            Decimal(fill_rgb.green),
+            Decimal(fill_rgb.blue),
             self._line_width,
         )
         content += "%f %f m " % (self._points[0][0], self._points[0][1])
@@ -168,7 +167,7 @@ class DisjointShape(LayoutElement):
     def __init__(
         self,
         lines: typing.List[Tuple[Tuple[Decimal, Decimal], Tuple[Decimal, Decimal]]],
-        stroke_color: Color = X11Color("Black"),
+        stroke_color: Color = HexColor("000000"),
         line_width: Decimal = Decimal(0),
         horizontal_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
@@ -254,11 +253,10 @@ class DisjointShape(LayoutElement):
 
         # write content
         stroke_rgb = (self._stroke_color or X11Color("Black")).to_rgb()
-        COLOR_MAX = Decimal(255.0)
         content = "q %f %f %f RG %d w " % (
-            Decimal(stroke_rgb.red / COLOR_MAX),
-            Decimal(stroke_rgb.green / COLOR_MAX),
-            Decimal(stroke_rgb.blue / COLOR_MAX),
+            Decimal(stroke_rgb.red),
+            Decimal(stroke_rgb.green),
+            Decimal(stroke_rgb.blue),
             self._line_width,
         )
         for l in self._lines:

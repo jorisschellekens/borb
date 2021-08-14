@@ -13,6 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteWithTrueTypeFont(unittest.TestCase):
@@ -108,6 +109,8 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        compare_visually_to_ground_truth(out_file)
+
     def test_write_document_002(self):
 
         # create document
@@ -184,6 +187,8 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        compare_visually_to_ground_truth(out_file)
+
     def test_write_document_003(self):
 
         # create document
@@ -259,3 +264,5 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        compare_visually_to_ground_truth(out_file)

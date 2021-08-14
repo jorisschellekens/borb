@@ -4,9 +4,8 @@
 """
 This implementation of BaseMarkdownTransformer handles headings
 """
-from decimal import Decimal
-
 import typing
+from decimal import Decimal
 
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -15,7 +14,7 @@ from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -24,10 +23,10 @@ class HeadingTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles headings
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         return context.get_markdown_string()[context.tell()] == "#"
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # determine heading text and level
         heading_text: str = context.get_markdown_string()[

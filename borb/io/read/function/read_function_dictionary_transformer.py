@@ -10,18 +10,8 @@ from decimal import Decimal
 from typing import Any, Optional, Union
 
 from borb.io.filter.stream_decode_util import decode_stream
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
-from borb.io.read.types import (
-    AnyPDFType,
-    Dictionary,
-    Function,
-    Name,
-    Reference,
-    Stream,
-)
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
+from borb.io.read.types import AnyPDFType, Dictionary, Function, Name, Reference, Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 
 

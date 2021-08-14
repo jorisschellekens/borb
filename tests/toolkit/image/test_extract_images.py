@@ -24,7 +24,7 @@ class TestExtractImages(unittest.TestCase):
             l = SimpleImageExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
 
-            for i, img in enumerate(l.get_images_per_page(0)):
+            for i, img in enumerate(l.get_images_for_page(0)):
                 with open(
                     self.output_dir / ("image_%d.jpg" % i), "wb"
                 ) as image_file_handle:

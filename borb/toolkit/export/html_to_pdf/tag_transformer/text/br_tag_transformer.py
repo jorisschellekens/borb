@@ -4,9 +4,8 @@
 """
     This implementation of BaseTagTransformer handles <br> tags
 """
-import xml.etree.ElementTree as ET
-
 import typing
+import xml.etree.ElementTree as ET
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.layout.layout_element import LayoutElement

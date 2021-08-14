@@ -9,14 +9,10 @@ import io
 from typing import Optional, Union
 
 from borb.io.read.types import AnyPDFType
-from borb.io.write.ascii_art.write_ascii_art_transformer import (
-    WriteASCIIArtTransformer,
-)
+from borb.io.write.ascii_art.write_ascii_art_transformer import WriteASCIIArtTransformer
 from borb.io.write.image.write_image_transformer import WriteImageTransformer
 from borb.io.write.object.write_array_transformer import WriteArrayTransformer
-from borb.io.write.object.write_dictionary_transformer import (
-    WriteDictionaryTransformer,
-)
+from borb.io.write.object.write_dictionary_transformer import WriteDictionaryTransformer
 from borb.io.write.object.write_stream_transformer import WriteStreamTransformer
 from borb.io.write.page.write_page_transformer import WritePageTransformer
 from borb.io.write.page.write_pages_transformer import WritePagesTransformer

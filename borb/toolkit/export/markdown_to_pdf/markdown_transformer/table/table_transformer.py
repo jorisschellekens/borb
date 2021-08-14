@@ -11,13 +11,13 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
-from borb.pdf.canvas.layout.table.table import Table, TableCell
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
+from borb.pdf.canvas.layout.table.table import Table, TableCell
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.base_markdown_transformer import (
     BaseMarkdownTransformer,
-    MarkdownTransformerContext,
+    MarkdownTransformerState,
 )
 
 
@@ -26,7 +26,7 @@ class TableTransformer(BaseMarkdownTransformer):
     This implementation of BaseMarkdownTransformer handles tables
     """
 
-    def _can_transform(self, context: MarkdownTransformerContext) -> bool:
+    def _can_transform(self, context: MarkdownTransformerState) -> bool:
         i: int = context.tell()
         while (
             i < len(context.get_markdown_string())
@@ -61,7 +61,7 @@ class TableTransformer(BaseMarkdownTransformer):
             return True
         return False
 
-    def _transform(self, context: MarkdownTransformerContext) -> None:
+    def _transform(self, context: MarkdownTransformerState) -> None:
 
         # continue processing lines until we hit <newline><newline>
         end_pos: int = self._until_double_newline(context)
@@ -101,7 +101,7 @@ class TableTransformer(BaseMarkdownTransformer):
         )
         for tr in table_items_str:
             for td in tr:
-                sub_context: MarkdownTransformerContext = MarkdownTransformerContext(td)
+                sub_context: MarkdownTransformerState = MarkdownTransformerState(td)
                 sub_context._document = context._document
                 sub_context._parent_layout_element = ul
                 self.get_root()._transform(sub_context)

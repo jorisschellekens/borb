@@ -37,7 +37,7 @@ class TestExtractTextUsingOCR(unittest.TestCase):
         l = SimpleTextExtraction()
         with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
             PDF.loads(pdf_file_handle, [l])
-        txt: str = l.get_text(0)
+        txt: str = l.get_text_for_page(0)
 
         # define ground truth
         ground_truth: str = """

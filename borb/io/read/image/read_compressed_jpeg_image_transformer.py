@@ -9,15 +9,11 @@ import logging
 import typing
 from typing import Any, Optional, Union
 
-from PIL import Image  # type: ignore [import]
-
 from borb.io.filter.stream_decode_util import decode_stream
-from borb.io.read.read_base_transformer import (
-    ReadBaseTransformer,
-    ReadTransformerState,
-)
+from borb.io.read.read_base_transformer import ReadBaseTransformer, ReadTransformerState
 from borb.io.read.types import AnyPDFType, Name, Stream, add_base_methods
 from borb.pdf.canvas.event.event_listener import EventListener
+from PIL import Image  # type: ignore [import]
 
 logger = logging.getLogger(__name__)
 

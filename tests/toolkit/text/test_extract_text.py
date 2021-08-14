@@ -90,7 +90,7 @@ class TestExtractText(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as file_handle:
             doc = PDF.loads(file_handle, [l])
 
-        page_content: str = l.get_text(0)
+        page_content: str = l.get_text_for_page(0)
 
         ground_truth: str = """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
