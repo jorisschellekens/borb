@@ -16,6 +16,15 @@ from borb.pdf.canvas.layout.text.chunks_of_text import LineBreakChunk, Span
 
 
 class HTMLTranformerState:
+    """
+    This class represents all the meta-information used in the process of converting an HTML document to a  PDF document.
+    This includes:
+    - the root object (the Document itself)
+    - the default compression level
+    - etc
+    """
+
+    # TODO
     pass
 
 

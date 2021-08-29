@@ -54,7 +54,9 @@ class ReadJPEGImageTransformer(ReadBaseTransformer):
         """
 
         # use PIL to read image bytes
-        assert isinstance(object_to_transform, Stream)
+        assert isinstance(
+            object_to_transform, Stream
+        ), "Image must be represented by Stream data"
         raw_byte_array = object_to_transform["Bytes"]
         try:
             tmp = Image.open(io.BytesIO(object_to_transform["Bytes"]))

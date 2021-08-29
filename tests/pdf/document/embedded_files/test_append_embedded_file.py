@@ -20,7 +20,6 @@ unittest.TestLoader.sortTestMethodsUsing = None
 class TestAppendEmbeddedFile(unittest.TestCase):
     """
     This test creates a PDF with a Paragraph object in it.
-    The Paragraph is aligned TOP, LEFT.
     An embedded file will later be added to this PDF.
     """
 
@@ -55,7 +54,7 @@ class TestAppendEmbeddedFile(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with a Paragraph object in it. The Paragraph is aligned TOP, LEFT. An embedded file will later be added to this PDF."
+                    "This test creates a PDF with a Paragraph object in it. An embedded file will later be added to this PDF."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))

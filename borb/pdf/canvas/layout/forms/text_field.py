@@ -37,17 +37,40 @@ class TextField(FormField):
         value: str = "",
         default_value: str = "",
         field_name: typing.Optional[str] = None,
+        padding_top: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        margin_top: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
     ):
-        super(TextField, self).__init__()
+        super(TextField, self).__init__(
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            margin_top=margin_top,
+            margin_right=margin_right,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+        )
         assert font_size >= 0
         self._font_size = font_size
         self._font_color = font_color
         self._value: str = value
         self._default_value: str = default_value
         self._field_name: typing.Optional[str] = field_name
+        self._widget_dictionary: typing.Optional[Dictionary] = None
 
-    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:
+    def _init_widget_dictionary(self, page: Page, layout_box: Rectangle) -> None:
 
+        if self._widget_dictionary is not None:
+            return
+
+        # init page and font resources
+        assert self._font_size is not None
         font_resource_name: Name = self._get_font_resource_name(
             StandardType1Font("Helvetica"), page
         )
@@ -60,7 +83,7 @@ class TextField(FormField):
         widget_normal_appearance: Stream = Stream()
         widget_normal_appearance[Name("Type")] = Name("XObject")
         widget_normal_appearance[Name("Subtype")] = Name("Form")
-        widget_normal_appearance[Name("BBox")] = List().set_can_be_referenced(False)
+        widget_normal_appearance[Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         widget_normal_appearance["BBox"].append(bDecimal(0))
         widget_normal_appearance["BBox"].append(bDecimal(0))
         widget_normal_appearance["BBox"].append(bDecimal(layout_box.width))
@@ -77,31 +100,30 @@ class TextField(FormField):
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]
+        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
-        widget_dictionary: Dictionary = Dictionary()
-        widget_dictionary[Name("Type")] = Name("Annot")
-        widget_dictionary[Name("Subtype")] = Name("Widget")
-        widget_dictionary[Name("F")] = bDecimal(4)
-        widget_dictionary[Name("Rect")] = List().set_can_be_referenced(False)
-        widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
-        )
-        widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
-        widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
-        widget_dictionary[Name("FT")] = Name("Tx")
-        widget_dictionary[Name("P")] = catalog
-        widget_dictionary[
-            Name("T")
-        ] = self._field_name or self._get_auto_generated_field_name(page)
-        widget_dictionary[Name("V")] = String(self._value)
-        widget_dictionary[Name("DV")] = String(self._default_value)
-        widget_dictionary[Name("DR")] = widget_resources
+        # fmt: off
+        self._widget_dictionary = Dictionary()
+        self._widget_dictionary[Name("Type")] = Name("Annot")
+        self._widget_dictionary[Name("Subtype")] = Name("Widget")
+        self._widget_dictionary[Name("F")] = bDecimal(4)
+        self._widget_dictionary[Name("Rect")] = List().set_can_be_referenced(False) # type: ignore [attr-defined]
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
+        self._widget_dictionary[Name("FT")] = Name("Tx")
+        self._widget_dictionary[Name("P")] = catalog
+        self._widget_dictionary[Name("T")] = String(self._field_name or self._get_auto_generated_field_name(page))
+        self._widget_dictionary[Name("V")] = String(self._value)
+        self._widget_dictionary[Name("DV")] = String(self._default_value)
+        self._widget_dictionary[Name("DR")] = widget_resources
+        # fmt: on
 
+        # rendering instructions
         font_color_rgb: RGBColor = self._font_color.to_rgb()
-        widget_dictionary[Name("DA")] = String(
+        self._widget_dictionary[Name("DA")] = String(
             "%f %f %f rg /%s %f Tf"
             % (
                 font_color_rgb.red,
@@ -111,12 +133,12 @@ class TextField(FormField):
                 self._font_size,
             )
         )
-        widget_dictionary[Name("AP")] = widget_appearance_dictionary
+        self._widget_dictionary[Name("AP")] = widget_appearance_dictionary
 
         # append field to page /Annots
         if "Annots" not in page:
             page[Name("Annots")] = List()
-        page["Annots"].append(widget_dictionary)
+        page["Annots"].append(self._widget_dictionary)
 
         # append field to catalog
         if "AcroForm" not in catalog:
@@ -124,15 +146,35 @@ class TextField(FormField):
             catalog["AcroForm"][Name("Fields")] = List()
             catalog["AcroForm"][Name("DR")] = widget_resources
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
-        catalog["AcroForm"]["Fields"].append(widget_dictionary)
+        catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
+
+    def _do_layout_without_padding(
+        self, page: "Page", layout_box: Rectangle
+    ) -> Rectangle:
 
         # determine layout rectangle
+        assert self._font_size is not None
+        assert layout_box.height > self._font_size
         layout_rect = Rectangle(
             layout_box.x,
             layout_box.y + layout_box.height - self._font_size,
             max(layout_box.width, Decimal(64)),
-            self._font_size + Decimal(10),
+            self._font_size,
         )
+
+        # init self._widget_dictionary
+        self._init_widget_dictionary(page, layout_rect)
+
+        # set location
+        assert self._widget_dictionary is not None
+        self._widget_dictionary["AP"]["N"]["BBox"][2] = bDecimal(layout_box.width)
+        self._widget_dictionary["AP"]["N"]["BBox"][3] = bDecimal(self._font_size)
+        self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
+        self._widget_dictionary["Rect"][1] = bDecimal(
+            layout_box.y + layout_box.height - self._font_size
+        )
+        self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
+        self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
 
         # return Rectangle
         return layout_rect

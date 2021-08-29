@@ -8,7 +8,6 @@ from borb.toolkit.image.image_format_optimization import ImageFormatOptimization
 
 
 class TestOptimizeImages(unittest.TestCase):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -32,7 +31,9 @@ class TestOptimizeImages(unittest.TestCase):
             PDF.dumps(pdf_file_handle, doc)
 
         # check WriteTransformerState
-        assert WriteTransformerState().compression_level == 9, "WriteTransformerState.compression_level should be set at 9 for optimal results!"
+        assert (
+            WriteTransformerState().compression_level == 9
+        ), "WriteTransformerState.compression_level should be set at 9 for optimal results!"
 
         # check whether output_file is smaller than input_file
         file_size_001: int = os.path.getsize(input_file)

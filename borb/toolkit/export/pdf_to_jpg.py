@@ -30,7 +30,7 @@ class PDFToJPG(PDFToSVG):
         """
         l: "PDFToJPG" = PDFToJPG()
         with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])
+            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
         return l.get_image_for_page(page_number)
 
     def __init__(

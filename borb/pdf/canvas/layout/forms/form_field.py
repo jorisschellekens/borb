@@ -19,7 +19,7 @@ class FormField(LayoutElement):
 
     def _get_auto_generated_field_name(self, page: Page) -> str:
         number_of_fields: int = 0
-        acroform_dict: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"].get(
+        acroform_dict: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"].get(  # type: ignore [attr-defined]
             "AcroForm", Dictionary()
         )
         stk: typing.List[typing.Union[Dictionary, List]] = [acroform_dict]

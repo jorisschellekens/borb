@@ -16,6 +16,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteDragonCurve(unittest.TestCase):
@@ -36,7 +37,7 @@ class TestWriteDragonCurve(unittest.TestCase):
 
     def _write_curve(self, page: Page, layout: SingleColumnLayout):
         w = page.get_page_info().get_width()
-        h = page.get_page_info().get_height()
+        h = page.get_page_info().get_height() - Decimal(200)
         assert w is not None
         assert h is not None
         layout.add(
@@ -88,3 +89,5 @@ class TestWriteDragonCurve(unittest.TestCase):
 
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        compare_visually_to_ground_truth(out_file)

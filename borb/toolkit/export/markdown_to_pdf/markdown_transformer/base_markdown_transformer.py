@@ -16,6 +16,13 @@ from borb.pdf.page.page import Page
 
 
 class MarkdownTransformerState:
+    """
+    This class represents all the meta-information used in the process of converting markdown to PDF
+    This includes:
+    - the root object (the Document itself)
+    - the current position in the markdown str
+    - etc
+    """
     def __init__(self, markdown: str):
         self._markdown_string: str = markdown
         self._start_index: int = 0
@@ -72,6 +79,13 @@ class BaseMarkdownTransformer:
     def add_child_transformer(
         self, transformer: "BaseMarkdownTransformer"
     ) -> "BaseMarkdownTransformer":
+        """
+        Add a child BaseMarkdownTransformer to this BaseMarkdownTransformer.
+        Child transformers can be used to encapsulate specific object-creation/transformation logic.
+        e.g. converting bold text, lists, tables, etc
+        :param transformer: the BaseMarkdownTransformer implementation to be added
+        :type transformer:  BaseMarkdownTransformer
+        """
         self._children.append(transformer)
         transformer._parent = self
         return self

@@ -58,7 +58,13 @@ class TestRemovePage(unittest.TestCase):
 
         N: int = 5
         for i in range(0, 5):
-            layout.add(Paragraph("Page %d / %d" % (i+1, N), font_size=Decimal(20), font_color=HexColor("f1cd2e")))
+            layout.add(
+                Paragraph(
+                    "Page %d / %d" % (i + 1, N),
+                    font_size=Decimal(20),
+                    font_color=HexColor("f1cd2e"),
+                )
+            )
             for _ in range(0, 3):
                 layout.add(
                     Paragraph(
@@ -68,7 +74,7 @@ class TestRemovePage(unittest.TestCase):
                         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
                         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                         """,
-                        font_size=Decimal(10)
+                        font_size=Decimal(10),
                     )
                 )
             if i != N - 1:

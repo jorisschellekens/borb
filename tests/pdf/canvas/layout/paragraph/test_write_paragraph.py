@@ -7,6 +7,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -42,7 +43,7 @@ class TestWriteParagraph(unittest.TestCase):
         pdf.append_page(page)
 
         # add test information
-        layout = SingleColumnLayout(page)
+        layout: PageLayout = SingleColumnLayout(page)
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
@@ -53,7 +54,7 @@ class TestWriteParagraph(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. "
-                    "The Paragraph is aligned TOP, LEFT. The green box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, LEFT. The yellow box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))

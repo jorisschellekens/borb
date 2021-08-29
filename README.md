@@ -12,13 +12,18 @@
 
 ## 0. About borb
 
-`borb` is a pure python library to read, write and manipulate PDF documents. It represents a PDF document as a JSON-like datastructure of nested lists, dictionaries and primitives (numbers, string, booleans, etc)
+`borb` is a pure python library to read, write and manipulate PDF documents. 
+It represents a PDF document as a JSON-like datastructure of nested lists, dictionaries and primitives (numbers, string, booleans, etc)
 
 This is currently a one-man project, so the focus will always be to support those use-cases that are more common in favor of those that are rare.
 
 ## 1. About the Examples
 
-Most examples double as tests, you can find them in the 'tests' directory.  
+The examples can be found in a separate repository.
+This ensures the `borb` repository stays relatively small, whilst still providing a thorough knowledgebase of code-samples, screenshots and explanatory text.
+
+[Check out the examples repository here!](https://github.com/jorisschellekens/borb-examples)
+
 They include; 
 
 - Reading a PDF and extracting meta-information
@@ -36,7 +41,8 @@ They include;
  
 ### 1.1 Hello World
 
-To give you an immediate idea of the way `borb` works, this is the classic `Hello World` example, in `borb`:
+To give you an immediate idea of the way `borb` works, 
+this is the classic `Hello World` example, in `borb`:
 
 ```python
 from pathlib import Path
@@ -79,7 +85,7 @@ These activities include:
 - Serving PDFs on the fly in the cloud or in a web application
 - Shipping `borb` with a closed source product
 
-Contact sales for more info.
+[Contact sales](https://borbpdf.com/) for more information.
 
 ## 3. Acknowledgements
 

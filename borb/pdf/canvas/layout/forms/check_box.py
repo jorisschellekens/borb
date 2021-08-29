@@ -4,6 +4,7 @@
 """
 This implementation of FormField represents a text field.
 """
+import copy
 import zlib
 
 import typing
@@ -41,11 +42,17 @@ class CheckBox(FormField):
         self._font_size = font_size
         self._font_color = font_color
         self._field_name: typing.Optional[str] = field_name
+        self._widget_dictionary: typing.Optional[Dictionary] = None
 
-    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:
+    def _init_widget_dictionary(self, page: Page, layout_box: Rectangle) -> None:
 
+        if self._widget_dictionary is not None:
+            return
+
+        # init page and font resources
+        assert self._font_size is not None
         font_resource_name: Name = self._get_font_resource_name(
-            StandardType1Font("Helvetica"), page
+            StandardType1Font("Zapfdingbats"), page
         )
 
         # widget resource dictionary
@@ -56,31 +63,23 @@ class CheckBox(FormField):
         widget_off_appearance: Stream = Stream()
         widget_off_appearance[Name("Type")] = Name("XObject")
         widget_off_appearance[Name("Subtype")] = Name("Form")
-        widget_off_appearance[Name("BBox")] = List().set_can_be_referenced(False)
+        widget_off_appearance[Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         widget_off_appearance["BBox"].append(bDecimal(0))
         widget_off_appearance["BBox"].append(bDecimal(0))
         widget_off_appearance["BBox"].append(bDecimal(layout_box.width))
         widget_off_appearance["BBox"].append(bDecimal(self._font_size))
-        bts = b"/Tx BMC EMC"
+        bts = bytes(
+            "/Tx BMC q 0 0 0 rg BT /%s 12 Tf 0 0 Td (8) Tj ET Q EMC"
+            % font_resource_name,
+            "latin1",
+        )
         widget_off_appearance[Name("DecodedBytes")] = bts
         widget_off_appearance[Name("Bytes")] = zlib.compress(bts, 9)
         widget_off_appearance[Name("Filter")] = Name("FlateDecode")
         widget_off_appearance[Name("Length")] = bDecimal(len(bts))
 
         # widget "Yes" appearance
-        widget_yes_appearance: Stream = Stream()
-        widget_yes_appearance[Name("Type")] = Name("XObject")
-        widget_yes_appearance[Name("Subtype")] = Name("Form")
-        widget_yes_appearance[Name("BBox")] = List().set_can_be_referenced(False)
-        widget_yes_appearance["BBox"].append(bDecimal(0))
-        widget_yes_appearance["BBox"].append(bDecimal(0))
-        widget_yes_appearance["BBox"].append(bDecimal(layout_box.width))
-        widget_yes_appearance["BBox"].append(bDecimal(self._font_size))
-        bts = b"/Tx BMC EMC"
-        widget_yes_appearance[Name("DecodedBytes")] = bts
-        widget_yes_appearance[Name("Bytes")] = zlib.compress(bts, 9)
-        widget_yes_appearance[Name("Filter")] = Name("FlateDecode")
-        widget_yes_appearance[Name("Length")] = bDecimal(len(bts))
+        widget_yes_appearance: Stream = copy.deepcopy(widget_off_appearance)
 
         # widget normal appearance
         widget_normal_appearance: Dictionary = Dictionary()
@@ -92,38 +91,34 @@ class CheckBox(FormField):
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]
-
-        widget_appearance_characteristics_dictionary: Dictionary = Dictionary()
-        widget_appearance_characteristics_dictionary[Name("CA")] = String(
-            "8"
-        )  # clever little hack
+        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
-        widget_dictionary: Dictionary = Dictionary()
-        widget_dictionary[Name("Type")] = Name("Annot")
-        widget_dictionary[Name("Subtype")] = Name("Widget")
-        widget_dictionary[Name("F")] = bDecimal(4)
-        widget_dictionary[Name("Rect")] = List().set_can_be_referenced(False)
-        widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        widget_dictionary["Rect"].append(
+        self._widget_dictionary = Dictionary()
+        self._widget_dictionary[Name("Type")] = Name("Annot")
+        self._widget_dictionary[Name("Subtype")] = Name("Widget")
+        self._widget_dictionary[Name("F")] = bDecimal(4)
+        self._widget_dictionary[Name("Rect")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
+        self._widget_dictionary["Rect"].append(
             bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
         )
-        widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
-        widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
-        widget_dictionary[Name("FT")] = Name("Btn")
-        widget_dictionary[Name("P")] = catalog
-        widget_dictionary[
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.x + layout_box.width)
+        )
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.y + layout_box.height)
+        )
+        self._widget_dictionary[Name("FT")] = Name("Btn")
+        self._widget_dictionary[Name("P")] = catalog
+        self._widget_dictionary[
             Name("T")
         ] = self._field_name or self._get_auto_generated_field_name(page)
-        widget_dictionary[Name("V")] = Name("Off")
-        widget_dictionary[Name("DV")] = Name("Off")
-        widget_dictionary[Name("AS")] = Name("Off")
-        widget_dictionary[Name("DR")] = widget_resources
-        widget_dictionary[Name("MK")] = widget_appearance_characteristics_dictionary
+        self._widget_dictionary[Name("V")] = Name("Yes")
+        self._widget_dictionary[Name("DR")] = widget_resources
 
         font_color_rgb: RGBColor = self._font_color.to_rgb()
-        widget_dictionary[Name("DA")] = String(
+        self._widget_dictionary[Name("DA")] = String(
             "%f %f %f rg /%s %f Tf"
             % (
                 font_color_rgb.red,
@@ -133,12 +128,12 @@ class CheckBox(FormField):
                 self._font_size,
             )
         )
-        widget_dictionary[Name("AP")] = widget_appearance_dictionary
+        self._widget_dictionary[Name("AP")] = widget_appearance_dictionary
 
         # append field to page /Annots
         if "Annots" not in page:
             page[Name("Annots")] = List()
-        page["Annots"].append(widget_dictionary)
+        page["Annots"].append(self._widget_dictionary)
 
         # append field to catalog
         if "AcroForm" not in catalog:
@@ -146,15 +141,30 @@ class CheckBox(FormField):
             catalog["AcroForm"][Name("Fields")] = List()
             catalog["AcroForm"][Name("DR")] = widget_resources
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
-        catalog["AcroForm"]["Fields"].append(widget_dictionary)
+        catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
+
+    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:
 
         # determine layout rectangle
+        assert self._font_size is not None
         layout_rect = Rectangle(
             layout_box.x,
             layout_box.y + layout_box.height - self._font_size,
             max(layout_box.width, Decimal(64)),
             self._font_size + Decimal(10),
         )
+
+        # init self._widget_dictionary
+        self._init_widget_dictionary(page, layout_rect)
+
+        # set location
+        assert self._widget_dictionary is not None
+        self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
+        self._widget_dictionary["Rect"][1] = bDecimal(
+            layout_box.y + layout_box.height - self._font_size
+        )
+        self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
+        self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
 
         # return Rectangle
         return layout_rect

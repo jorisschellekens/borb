@@ -80,10 +80,14 @@ class FixedColumnWidthTable(Table):
         column_bounds: typing.List[Decimal] = [bounding_box.get_x()]
         total_column_width: Decimal = Decimal(sum(self._column_widths))
         for i in range(0, len(self._column_widths)):
-            w: Decimal = (
-                bounding_box.get_width() * self._column_widths[i] / total_column_width
+            column_bounds.append(
+                column_bounds[-1]
+                + (
+                    bounding_box.get_width()
+                    * self._column_widths[i]
+                    / total_column_width
+                )
             )
-            column_bounds.append(column_bounds[-1] + w)
 
         # auto fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns

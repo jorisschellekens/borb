@@ -4,6 +4,8 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream
 from borb.pdf.canvas.color.color import X11Color
@@ -148,7 +150,7 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
             q
             BT
             /F1 10 Tf            
-            59 742 Td            
+            59 640 Td            
             [(Lorem ipsum dolor sit amet,), 2, ( consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et)] TJ
             ET
             Q
@@ -169,6 +171,23 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         page["Resources"]["Font"]["F1"][Name("Name")] = Name("F1")
         page["Resources"]["Font"]["F1"][Name("BaseFont")] = Name("Helvetica")
         page["Resources"]["Font"]["F1"][Name("Encoding")] = Name("MacRomanEncoding")
+
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and a Paragraph of text. "
+                    "A subsequent test will add a redact annotation. The test after that applies the redaction annotations."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
 
         # attempt to store PDF
         with open(self.output_dir / "output_004.pdf", "wb") as in_file_handle:

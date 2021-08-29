@@ -13,6 +13,7 @@ from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
+from borb.toolkit.text.text_rank_keyword_extraction import TextRankKeywordExtraction
 from borb.toolkit.text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
 
 unittest.TestLoader.sortTestMethodsUsing = None
@@ -92,11 +93,7 @@ class TestExtractKeywords(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
-    def test_extract_keywords_from_document(self):
-
-        # create output directory if it does not exist yet
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
+    def test_extract_keywords_using_tf_idf_from_document(self):
 
         with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
             l = TFIDFKeywordExtraction(ENGLISH_STOP_WORDS)
@@ -130,12 +127,54 @@ class TestExtractKeywords(unittest.TestCase):
         # add list
         layout.add(Paragraph("Following keywords were found:"))
         ul: UnorderedList = UnorderedList()
-        for k in l.get_keywords_for_page(0, 32):
-            ul.add(Paragraph(k.get_text()))
+        for k in l.get_keywords_for_page(0)[:5]:
+            ul.add(Paragraph(k[0]))
         layout.add(ul)
 
         # attempt to store PDF
         with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
+
+    def test_extract_keywords_using_textrank_from_document(self):
+
+        l = TextRankKeywordExtraction()
+        with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle, [l])
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with an empty Page, and adds the keywords it found"
+                    "in the previously made PDF."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        # add list
+        layout.add(Paragraph("Following keywords were found:"))
+        ul: UnorderedList = UnorderedList()
+        for k in l.get_keywords_for_page(0)[:5]:
+            ul.add(Paragraph(k[0]))
+        layout.add(ul)
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
 

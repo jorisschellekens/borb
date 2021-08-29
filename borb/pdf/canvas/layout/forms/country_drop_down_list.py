@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This implementation of FormField represents a drop down list that is pre-filled with countries.
+"""
 import typing
 
 from borb.io.read.types import Decimal
@@ -6,6 +12,9 @@ from borb.pdf.canvas.layout.forms.drop_down_list import DropDownList
 
 
 class CountryDropDownList(DropDownList):
+    """
+    This implementation of FormField represents a drop down list that is pre-filled with countries.
+    """
 
     COUNTRIES: typing.List[str] = [
         "Afghanistan",

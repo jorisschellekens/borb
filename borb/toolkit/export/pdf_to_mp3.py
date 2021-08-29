@@ -29,7 +29,7 @@ class PDFToMP3(SimpleParagraphExtraction):
         """
         l: "PDFToMP3" = PDFToMP3()
         with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])
+            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
         temporary_file: Path = Path(
             tempfile.NamedTemporaryFile(prefix="pdf_to_mp3", suffix=".mp3").name
         )

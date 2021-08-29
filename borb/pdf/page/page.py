@@ -13,7 +13,7 @@ from decimal import Decimal
 from typing import Optional, Tuple
 
 from borb.io.read.types import Boolean
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.color.color import Color, HexColor, X11Color
@@ -101,10 +101,10 @@ class Page(Dictionary):
 
         # size: A4 portrait
         self[Name("MediaBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        self["MediaBox"].append(pDecimal(0))
-        self["MediaBox"].append(pDecimal(0))
-        self["MediaBox"].append(pDecimal(width))
-        self["MediaBox"].append(pDecimal(height))
+        self["MediaBox"].append(bDecimal(0))
+        self["MediaBox"].append(bDecimal(0))
+        self["MediaBox"].append(bDecimal(width))
+        self["MediaBox"].append(bDecimal(height))
 
     def get_page_info(self) -> PageInfo:
         """
@@ -117,6 +117,105 @@ class Page(Dictionary):
         This function returns the Document from which this Page came
         """
         return self.get_root()  # type: ignore [attr-defined]
+
+    #
+    # FORMS
+    #
+
+    def has_acroforms(self) -> bool:
+        """
+        This function returns True if this Page contains fields from an AcroForm
+        :return:    True if this Page contains fields from an AcroForm, False otherwise
+        """
+        return (
+            len(
+                [
+                    x
+                    for x in self.get("Annots", [])
+                    if "Type" in x
+                    and x["Type"] == "Annot"
+                    and "Subtype" in x
+                    and x["Subtype"] == "Widget"
+                    and "FT" in x
+                    and x["FT"] in ["Btn", "Ch", "Tx"]
+                ]
+            )
+            != 0
+        )
+
+    def has_form_field(self, field_name: str) -> bool:
+        """
+        This function returns True if this Page contains a form field with the given name
+        :param field_name:  the field_name to be queried
+        :return:            True if this Page contains a form field with the given field_name
+        """
+        assert len(field_name) != 0
+        return (
+            len(
+                [
+                    x
+                    for x in self.get("Annots", [])
+                    if "Type" in x
+                    and x["Type"] == "Annot"
+                    and "Subtype" in x
+                    and x["Subtype"] == "Widget"
+                    and "FT" in x
+                    and x["FT"] in ["Btn", "Ch", "Tx"]
+                    and "T" in x
+                    and x["T"] == field_name
+                ]
+            )
+            != 0
+        )
+
+    def get_form_field_value(
+        self, field_name: str
+    ) -> typing.Optional[typing.Union[str, bool]]:
+        """
+        This function returns the value of the form field with the given field_name
+        :param field_name:  the field_name of the field to be queried
+        :return:            the value of the form field being queried
+        """
+        field_dictionaries: typing.List[Dictionary] = [
+            x
+            for x in self.get("Annots", [])
+            if "Type" in x
+            and x["Type"] == "Annot"
+            and "Subtype" in x
+            and x["Subtype"] == "Widget"
+            and "FT" in x
+            and x["FT"] in ["Btn", "Ch", "Tx"]
+            and "T" in x
+            and x["T"] == field_name
+        ]
+        assert len(field_dictionaries) == 1
+        assert "V" in field_dictionaries[0]
+        return field_dictionaries[0]["V"]
+
+    def set_form_field_value(self, field_name: str, value: str) -> "Page":
+        """
+        This function sets the value of the form field with the given field_name
+        This function returns self
+        :param field_name:  the field_name of the field being queried
+        :param value:       the new value of the field
+        :return:            self
+        """
+        field_dictionaries: typing.List[Dictionary] = [
+            x
+            for x in self.get("Annots", [])
+            if "Type" in x
+            and x["Type"] == "Annot"
+            and "Subtype" in x
+            and x["Subtype"] == "Widget"
+            and "FT" in x
+            and x["FT"] in ["Btn", "Ch", "Tx"]
+            and "T" in x
+            and x["T"] == field_name
+        ]
+        assert len(field_dictionaries) == 1
+        assert "V" in field_dictionaries[0]
+        field_dictionaries[0][Name("V")] = String(value)
+        return self
 
     #
     # ROTATE
@@ -139,7 +238,7 @@ class Page(Dictionary):
         if angle == 0 and "Rotate" in self:
             self.pop("Rotate")
         else:
-            self[Name("Rotate")] = pDecimal(angle)
+            self[Name("Rotate")] = bDecimal(angle)
 
         # return
         return self
@@ -162,7 +261,7 @@ class Page(Dictionary):
         if angle == 0 and "Rotate" in self:
             self.pop("Rotate")
         else:
-            self[Name("Rotate")] = pDecimal(angle)
+            self[Name("Rotate")] = bDecimal(angle)
 
         # return
         return self
@@ -197,10 +296,10 @@ class Page(Dictionary):
         # (Required) The annotation rectangle, defining the location of the
         # annotation on the page in default user space units.
         annot[Name("Rect")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["Rect"].append(pDecimal(rectangle.get_x()))
-        annot["Rect"].append(pDecimal(rectangle.get_y()))
-        annot["Rect"].append(pDecimal(rectangle.get_x() + rectangle.get_width()))
-        annot["Rect"].append(pDecimal(rectangle.get_y() + rectangle.get_height()))
+        annot["Rect"].append(bDecimal(rectangle.get_x()))
+        annot["Rect"].append(bDecimal(rectangle.get_y()))
+        annot["Rect"].append(bDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["Rect"].append(bDecimal(rectangle.get_y() + rectangle.get_height()))
 
         # (Optional) Text that shall be displayed for the annotation or, if this type of
         # annotation does not display text, an alternate description of the
@@ -233,7 +332,7 @@ class Page(Dictionary):
 
         # (Optional; PDF 1.1) A set of flags specifying various characteristics of
         # the annotation (see 12.5.3, “Annotation Flags”). Default value: 0.
-        annot[Name("F")] = pDecimal(4)
+        annot[Name("F")] = bDecimal(4)
 
         # (Optional; PDF 1.2) An appearance dictionary specifying how the
         # annotation shall be presented visually on the page (see 12.5.5,
@@ -264,9 +363,9 @@ class Page(Dictionary):
             and border_width is not None
         ):
             annot[Name("Border")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["Border"].append(pDecimal(border_horizontal_corner_radius))
-            annot["Border"].append(pDecimal(border_vertical_corner_radius))
-            annot["Border"].append(pDecimal(border_width))
+            annot["Border"].append(bDecimal(border_horizontal_corner_radius))
+            annot["Border"].append(bDecimal(border_vertical_corner_radius))
+            annot["Border"].append(bDecimal(border_width))
 
         # (Optional; PDF 1.1) An array of numbers in the range 0.0 to 1.0,
         # representing a colour used for the following purposes:
@@ -277,9 +376,9 @@ class Page(Dictionary):
         # colour shall be defined
         if color is not None:
             annot[Name("C")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["C"].append(pDecimal(color.to_rgb().red))
-            annot["C"].append(pDecimal(color.to_rgb().green))
-            annot["C"].append(pDecimal(color.to_rgb().blue))
+            annot["C"].append(bDecimal(color.to_rgb().red))
+            annot["C"].append(bDecimal(color.to_rgb().green))
+            annot["C"].append(bDecimal(color.to_rgb().blue))
 
         # (Required if the annotation is a structural content item; PDF 1.3) The
         # integer key of the annotation’s entry in the structural parent tree (see
@@ -339,9 +438,18 @@ class Page(Dictionary):
         # specific for text annotations
         annot[Name("Subtype")] = Name("Text")
 
+        # (Optional) A flag specifying whether the annotation shall initially be
+        # displayed open. Default value: false (closed).
         if open is not None:
             annot[Name("Open")] = Boolean(open)
 
+        # (Optional) The name of an icon that shall be used in displaying the
+        # annotation. Conforming readers shall provide predefined icon
+        # appearances for at least the following standard names:
+        # Comment, Key, Note, Help, NewParagraph, Paragraph, Insert
+        # Additional names may be supported as well. Default value: Note.
+        # The annotation dictionary’s AP entry, if present, shall take precedence
+        # over the Name entry; see Table 168 and 12.5.5, “Appearance Streams.”
         annot[Name("Name")] = text_annotation_icon.value
 
         # return
@@ -380,7 +488,7 @@ class Page(Dictionary):
         # be displayed when the annotation is activated (see 12.3.2,
         # “Destinations”).
         destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        destination.append(pDecimal(page))
+        destination.append(bDecimal(page))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:
             assert (
@@ -390,9 +498,9 @@ class Page(Dictionary):
                 and top is not None
                 and zoom is not None
             )
-            destination.append(pDecimal(left))
-            destination.append(pDecimal(top))
-            destination.append(pDecimal(zoom))
+            destination.append(bDecimal(left))
+            destination.append(bDecimal(top))
+            destination.append(bDecimal(zoom))
         if destination_type == DestinationType.FIT:
             assert (
                 left is None
@@ -409,7 +517,7 @@ class Page(Dictionary):
                 and top is not None
                 and zoom is None
             )
-            destination.append(pDecimal(top))
+            destination.append(bDecimal(top))
         if destination_type == DestinationType.FIT_V:
             assert (
                 left is not None
@@ -418,7 +526,7 @@ class Page(Dictionary):
                 and top is None
                 and zoom is None
             )
-            destination.append(pDecimal(left))
+            destination.append(bDecimal(left))
         if destination_type == DestinationType.FIT_R:
             assert (
                 left is not None
@@ -427,10 +535,10 @@ class Page(Dictionary):
                 and top is not None
                 and zoom is None
             )
-            destination.append(pDecimal(left))
-            destination.append(pDecimal(bottom))
-            destination.append(pDecimal(right))
-            destination.append(pDecimal(top))
+            destination.append(bDecimal(left))
+            destination.append(bDecimal(bottom))
+            destination.append(bDecimal(right))
+            destination.append(bDecimal(top))
         if destination_type == DestinationType.FIT_B_H:
             assert (
                 left is None
@@ -439,7 +547,7 @@ class Page(Dictionary):
                 and top is not None
                 and zoom is None
             )
-            destination.append(pDecimal(top))
+            destination.append(bDecimal(top))
         if destination_type == DestinationType.FIT_B_V:
             assert (
                 left is not None
@@ -448,7 +556,7 @@ class Page(Dictionary):
                 and top is None
                 and zoom is None
             )
-            destination.append(pDecimal(left))
+            destination.append(bDecimal(left))
         annot[Name("Dest")] = destination
 
         # (Optional; PDF 1.2) The annotation’s highlighting mode, the visual effect
@@ -465,7 +573,53 @@ class Page(Dictionary):
         # return
         return self._append_annotation(annot)
 
-    def append_free_text_annotation(self) -> "Page":
+    def append_remote_go_to_annotation(
+        self,
+        rectangle: Rectangle,
+        uri: str,
+        border_horizontal_corner_radius: Decimal = Decimal(0),
+        border_vertical_corner_radius: Decimal = Decimal(0),
+        border_width: Decimal = Decimal(0),
+    ):
+        """
+        A link annotation represents either a hypertext link to a destination elsewhere in the document (see 12.3.2,
+        “Destinations”) or an action to be performed (12.6, “Actions”). Table 173 shows the annotation dictionary
+        entries specific to this type of annotation.
+        This method adds a link annotation with an action that opens a remote URI.
+        """
+        annot: Dictionary = self._create_annotation(
+            rectangle=rectangle,
+            border_horizontal_corner_radius=bDecimal(border_horizontal_corner_radius),
+            border_vertical_corner_radius=bDecimal(border_vertical_corner_radius),
+            border_width=bDecimal(border_width),
+        )
+
+        # (Required) The type of annotation that this dictionary describes; shall be
+        # Link for a link annotation.
+        annot[Name("Subtype")] = Name("Link")
+
+        # (Optional; PDF 1.1) An action that shall be performed when the link
+        # annotation is activated (see 12.6, “Actions”).
+        annot[Name("A")] = Dictionary()
+        annot["A"][Name("Type")] = Name("Action")
+        annot["A"][Name("S")] = Name("URI")
+        annot["A"][Name("URI")] = String(uri)
+
+        # return
+        return self._append_annotation(annot)
+
+    def append_free_text_annotation(
+        self,
+        rectangle: Rectangle,
+        font: "Font",  # type: ignore [name-defined]
+        font_size: Decimal,
+        font_color: "Color",  # type: ignore [name-defined]
+        text: str,
+        background_color: "Color" = HexColor("ffffff"),
+        border_horizontal_corner_radius: Decimal = Decimal(0),
+        border_vertical_corner_radius: Decimal = Decimal(0),
+        border_width: Decimal = Decimal(0),
+    ) -> "Page":
         """
         A free text annotation (PDF 1.3) displays text directly on the page. Unlike an ordinary text annotation (see
         12.5.6.4, “Text Annotations”), a free text annotation has no open or closed state; instead of being displayed in a
@@ -473,9 +627,79 @@ class Page(Dictionary):
         this type of annotation. 12.7.3.3, “Variable Text” describes the process of using these entries to generate the
         appearance of the text in these annotations.
         """
+        # create generic annotation
+        annot = self._create_annotation(
+            rectangle=rectangle,
+            contents=text,
+            color=background_color,
+            border_horizontal_corner_radius=bDecimal(border_horizontal_corner_radius),
+            border_vertical_corner_radius=bDecimal(border_vertical_corner_radius),
+            border_width=bDecimal(border_width),
+        )
 
-        # TODO
-        return self
+        # specific for text annotations
+        annot[Name("Subtype")] = Name("FreeText")
+
+        # (Optional; PDF 1.1) A set of flags specifying various characteristics of
+        # the annotation (see 12.5.3, “Annotation Flags”). Default value: 0.
+        annot[Name("F")] = bDecimal(20)
+
+        # embed Font in /Page /Resources /Font
+        if "Resources" not in self:
+            self[Name("Resources")] = Dictionary()
+        if "Font" not in self["Resources"]:
+            self["Resources"][Name("Font")] = Dictionary()
+        font_number: int = len(self["Resources"]["Font"])
+        font_name: str = "F%d" % font_number
+        while font_name in self["Resources"]["Font"]:
+            font_number += 1
+            font_name = "F%d" % font_number
+        self["Resources"]["Font"][Name(font_name)] = font
+
+        # (Required) The default appearance string that shall be used in formatting
+        # the text (see 12.7.3.3, “Variable Text”).
+        # The annotation dictionary’s AP entry, if present, shall take precedence
+        # over the DA entry; see Table 168 and 12.5.5, “Appearance Streams.”
+        font_color_rgb: "RGBColor" = font_color.to_rgb()  # type: ignore [name-defined]
+        annot[Name("DA")] = String(
+            "/%s %f Tf %f %f %f rg"
+            % (
+                font_name,
+                font_size,
+                font_color_rgb.red,
+                font_color_rgb.green,
+                font_color_rgb.blue,
+            )
+        )
+
+        # (Optional; PDF 1.4) A code specifying the form of quadding (justification)
+        # that shall be used in displaying the annotation’s text:
+        # 0 Left-justified
+        # 1 Centered
+        # 2 Right-justified
+        # Default value: 0 (left-justified).
+        annot[Name("Q")] = bDecimal(0)
+
+        # (Optional; PDF 1.6) A name describing the intent of the free text
+        # annotation (see also the IT entry in Table 170). The following values shall
+        # be valid:
+        # FreeText
+        # The annotation is intended to function as a plain
+        # free-text annotation. A plain free-text annotation
+        # is also known as a text box comment.
+        # FreeTextCallout
+        # The annotation is intended to function as a
+        # callout. The callout is associated with an area on
+        # the page through the callout line specified in CL.
+        # FreeTextTypeWriter
+        # The annotation is intended to function as a click-
+        # to-type or typewriter object and no callout line is
+        # drawn.
+        # Default value: FreeText
+        annot[Name("IT")] = Name("FreeTextTypeWriter")
+
+        # return
+        return self._append_annotation(annot)
 
     def append_line_annotation(
         self,
@@ -531,9 +755,9 @@ class Page(Dictionary):
         # space in which the colour shall be defined
         if stroke_color is not None:
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(stroke_color.to_rgb().red))
-            annot["IC"].append(pDecimal(stroke_color.to_rgb().green))
-            annot["IC"].append(pDecimal(stroke_color.to_rgb().blue))
+            annot["IC"].append(bDecimal(stroke_color.to_rgb().red))
+            annot["IC"].append(bDecimal(stroke_color.to_rgb().green))
+            annot["IC"].append(bDecimal(stroke_color.to_rgb().blue))
 
         # return
         return self._append_annotation(annot)
@@ -575,9 +799,9 @@ class Page(Dictionary):
         # space in which the colour shall be defined
         if fill_color is not None:
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().blue))
 
         # (Optional; PDF 1.5) A border effect dictionary describing an effect applied
         # to the border described by the BS entry (see Table 167).
@@ -597,10 +821,10 @@ class Page(Dictionary):
         # shall be less than the width of Rect.
         if rectangle_difference is not None:
             annot[Name("RD")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["RD"].append(pDecimal(rectangle_difference[0]))
-            annot["RD"].append(pDecimal(rectangle_difference[1]))
-            annot["RD"].append(pDecimal(rectangle_difference[2]))
-            annot["RD"].append(pDecimal(rectangle_difference[3]))
+            annot["RD"].append(bDecimal(rectangle_difference[0]))
+            annot["RD"].append(bDecimal(rectangle_difference[1]))
+            annot["RD"].append(bDecimal(rectangle_difference[2]))
+            annot["RD"].append(bDecimal(rectangle_difference[3]))
 
         # return
         return self._append_annotation(annot)
@@ -642,9 +866,9 @@ class Page(Dictionary):
         # space in which the colour shall be defined
         if fill_color is not None:
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().blue))
 
         # (Optional; PDF 1.5) A border effect dictionary describing an effect applied
         # to the border described by the BS entry (see Table 167).
@@ -664,10 +888,10 @@ class Page(Dictionary):
         # shall be less than the width of Rect.
         if rectangle_difference is not None:
             annot[Name("RD")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["RD"].append(pDecimal(rectangle_difference[0]))
-            annot["RD"].append(pDecimal(rectangle_difference[1]))
-            annot["RD"].append(pDecimal(rectangle_difference[2]))
-            annot["RD"].append(pDecimal(rectangle_difference[3]))
+            annot["RD"].append(bDecimal(rectangle_difference[0]))
+            annot["RD"].append(bDecimal(rectangle_difference[1]))
+            annot["RD"].append(bDecimal(rectangle_difference[2]))
+            annot["RD"].append(bDecimal(rectangle_difference[3]))
 
         # return
         return self._append_annotation(annot)
@@ -705,14 +929,17 @@ class Page(Dictionary):
             contents=contents,
         )
 
+        # (Required) The type of annotation that this dictionary describes; shall be
+        # Polygon or PolyLine for a polygon or polyline annotation, respectively.
         annot[Name("Subtype")] = Name("Polygon")
 
-        annot[Name("CA")] = pDecimal(1)
-
+        # (Required) An array of numbers (see Table 174) specifying the width and
+        # dash pattern that shall represent the alternating horizontal and vertical
+        # coordinates, respectively, of each vertex, in default user space.
         annot[Name("Vertices")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         for p in points:
-            annot["Vertices"].append(pDecimal(p[0]))
-            annot["Vertices"].append(pDecimal(p[1]))
+            annot["Vertices"].append(bDecimal(p[0]))
+            annot["Vertices"].append(bDecimal(p[1]))
 
         # (Optional; PDF 1.4) An array of two names specifying the line ending
         # styles that shall be used in drawing the line. The first and second
@@ -724,14 +951,8 @@ class Page(Dictionary):
         annot["LE"].append(Name("None"))
         annot["LE"].append(Name("None"))
 
-        # append to /Annots
-        if "Annots" not in self:
-            self[Name("Annots")] = List()
-        assert isinstance(self["Annots"], List)
-        self["Annots"].append(annot)
-
         # return
-        return self
+        return self._append_annotation(annot)
 
     def append_polyline_annotation(
         self,
@@ -769,14 +990,17 @@ class Page(Dictionary):
             contents=contents,
         )
 
+        # (Required) The type of annotation that this dictionary describes; shall be
+        # Polygon or PolyLine for a polygon or polyline annotation, respectively.
         annot[Name("Subtype")] = Name("PolyLine")
 
-        annot[Name("CA")] = pDecimal(1)
-
+        # (Required) An array of numbers (see Table 174) specifying the width and
+        # dash pattern that shall represent the alternating horizontal and vertical
+        # coordinates, respectively, of each vertex, in default user space.
         annot[Name("Vertices")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         for p in points:
-            annot["Vertices"].append(pDecimal(p[0]))
-            annot["Vertices"].append(pDecimal(p[1]))
+            annot["Vertices"].append(bDecimal(p[0]))
+            annot["Vertices"].append(bDecimal(p[1]))
 
         # (Optional; PDF 1.4) An array of two names specifying the line ending
         # styles that shall be used in drawing the line. The first and second
@@ -790,9 +1014,9 @@ class Page(Dictionary):
 
         if fill_color is not None:
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().blue))
 
         # return
         return self._append_annotation(annot)
@@ -827,26 +1051,23 @@ class Page(Dictionary):
         # x1 y1 x2 y2 x3 y3 x4 y4
         annot[Name("QuadPoints")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
         # x1, y1
-        annot["QuadPoints"].append(pDecimal(rectangle.get_x()))
-        annot["QuadPoints"].append(pDecimal(rectangle.get_y()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y()))
         # x4, y4
-        annot["QuadPoints"].append(pDecimal(rectangle.get_x()))
-        annot["QuadPoints"].append(pDecimal(rectangle.get_y() + rectangle.get_height()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y() + rectangle.get_height()))
         # x2, y2
-        annot["QuadPoints"].append(pDecimal(rectangle.get_x() + rectangle.get_width()))
-        annot["QuadPoints"].append(pDecimal(rectangle.get_y()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y()))
         # x3, y3
-        annot["QuadPoints"].append(pDecimal(rectangle.get_x() + rectangle.get_width()))
-        annot["QuadPoints"].append(pDecimal(rectangle.get_y() + rectangle.get_height()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y() + rectangle.get_height()))
 
         # border
         annot[Name("Border")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["Border"].append(pDecimal(0))
-        annot["Border"].append(pDecimal(0))
-        annot["Border"].append(pDecimal(1))
-
-        # CA
-        annot[Name("CA")] = pDecimal(1)
+        annot["Border"].append(bDecimal(0))
+        annot["Border"].append(bDecimal(0))
+        annot["Border"].append(bDecimal(1))
 
         # return
         return self._append_annotation(annot)
@@ -855,7 +1076,6 @@ class Page(Dictionary):
         self,
         rectangle: Rectangle,
         stroke_color: Color = X11Color("Yellow"),
-        line_width: Decimal = Decimal(1),
         contents: Optional[str] = None,
     ) -> "Page":
         """
@@ -865,47 +1085,37 @@ class Page(Dictionary):
         annotations.
         """
         # create generic annotation
-        annot = self._create_annotation(rectangle=rectangle)
+        annot = self._create_annotation(
+            rectangle=rectangle, color=stroke_color, contents=contents
+        )
 
         # (Required) The type of annotation that this dictionary describes; shall
         # be Redact for a redaction annotation.
-        annot[Name("Subtype")] = Name("StrikeOut")
+        annot[Name("Subtype")] = Name("Underline")
 
-        # (Optional; PDF 1.2) An appearance dictionary specifying how the
-        # annotation shall be presented visually on the page (see 12.5.5,
-        # “Appearance Streams”). Individual annotation handlers may ignore this
-        # entry and provide their own appearances.
-        annot[Name("AP")] = Dictionary()
-        annot["AP"][Name("N")] = Stream()
-        annot["AP"]["N"][Name("Type")] = Name("XObject")
-        annot["AP"]["N"][Name("Subtype")] = Name("Form")
+        # (Required) An array of 8 × n numbers specifying the coordinates of n
+        # quadrilaterals in default user space. Each quadrilateral shall
+        # encompasses a word or group of contiguous words in the text
+        # underlying the annotation. The coordinates for each quadrilateral shall
+        # be given in the order
+        annot[Name("QuadPoints")] = List()
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y() + rectangle.get_height()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y() + rectangle.get_height()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_x() + rectangle.get_width()))
+        annot["QuadPoints"].append(bDecimal(rectangle.get_y()))
 
-        appearance_stream_content = "q %f %f %f RG %f w 0 7 m %f 7 l S Q" % (
-            stroke_color.to_rgb().red,
-            stroke_color.to_rgb().green,
-            stroke_color.to_rgb().blue,
-            line_width,
-            rectangle.width,
-        )
-        annot["AP"]["N"][Name("DecodedBytes")] = bytes(
-            appearance_stream_content, "latin1"
-        )
-        annot["AP"]["N"][Name("Bytes")] = zlib.compress(
-            annot["AP"]["N"][Name("DecodedBytes")]
-        )
-        annot["AP"]["N"][Name("Length")] = pDecimal(
-            len(annot["AP"]["N"][Name("Bytes")])
-        )
-        annot["AP"]["N"][Name("Filter")] = Name("FlateDecode")
-
-        # The lower-left corner of the bounding box (BBox) is set to coordinates (0, 0) in the form coordinate system.
-        # The box’s top and right coordinates are taken from the dimensions of the annotation rectangle (the Rect
-        # entry in the widget annotation dictionary).
-        annot["AP"]["N"][Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(rectangle.width))
-        annot["AP"]["N"]["BBox"].append(pDecimal(100))
+        # (PDF 1.0) The array consists of three numbers defining the horizontal
+        # corner radius, vertical corner radius, and border width, all in default user
+        # space units. If the corner radii are 0, the border has square (not rounded)
+        # corners; if the border width is 0, no border is drawn.
+        annot[Name("Border")] = List()
+        annot["Border"].append(bDecimal(0))
+        annot["Border"].append(bDecimal(0))
+        annot["Border"].append(bDecimal(1))
 
         # return
         return self._append_annotation(annot)
@@ -958,7 +1168,7 @@ class Page(Dictionary):
         annot["AP"]["N"][Name("Bytes")] = zlib.compress(
             annot["AP"]["N"][Name("DecodedBytes")]
         )
-        annot["AP"]["N"][Name("Length")] = pDecimal(
+        annot["AP"]["N"][Name("Length")] = bDecimal(
             len(annot["AP"]["N"][Name("Bytes")])
         )
         annot["AP"]["N"][Name("Filter")] = Name("FlateDecode")
@@ -967,10 +1177,10 @@ class Page(Dictionary):
         # The box’s top and right coordinates are taken from the dimensions of the annotation rectangle (the Rect
         # entry in the widget annotation dictionary).
         annot["AP"]["N"][Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(rectangle.width))
-        annot["AP"]["N"]["BBox"].append(pDecimal(100))
+        annot["AP"]["N"]["BBox"].append(bDecimal(0))
+        annot["AP"]["N"]["BBox"].append(bDecimal(0))
+        annot["AP"]["N"]["BBox"].append(bDecimal(rectangle.width))
+        annot["AP"]["N"]["BBox"].append(bDecimal(100))
 
         # return
         return self._append_annotation(annot)
@@ -1016,7 +1226,7 @@ class Page(Dictionary):
         annot["AP"]["N"][Name("Bytes")] = zlib.compress(
             annot["AP"]["N"][Name("DecodedBytes")]
         )
-        annot["AP"]["N"][Name("Length")] = pDecimal(
+        annot["AP"]["N"][Name("Length")] = bDecimal(
             len(annot["AP"]["N"][Name("Bytes")])
         )
         annot["AP"]["N"][Name("Filter")] = Name("FlateDecode")
@@ -1025,10 +1235,10 @@ class Page(Dictionary):
         # The box’s top and right coordinates are taken from the dimensions of the annotation rectangle (the Rect
         # entry in the widget annotation dictionary).
         annot["AP"]["N"][Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(rectangle.width))
-        annot["AP"]["N"]["BBox"].append(pDecimal(100))
+        annot["AP"]["N"]["BBox"].append(bDecimal(0))
+        annot["AP"]["N"]["BBox"].append(bDecimal(0))
+        annot["AP"]["N"]["BBox"].append(bDecimal(rectangle.width))
+        annot["AP"]["N"]["BBox"].append(bDecimal(100))
 
         # return
         return self._append_annotation(annot)
@@ -1070,7 +1280,7 @@ class Page(Dictionary):
         # all visible elements of the annotation in its closed state (including its
         # background and border) but not to the pop-up window that appears when
         # the annotation is opened.
-        annot[Name("CA")] = pDecimal(1)
+        annot[Name("CA")] = bDecimal(1)
 
         # return
         return self._append_annotation(annot)
@@ -1238,9 +1448,9 @@ class Page(Dictionary):
         # entry is present.
         if fill_color is not None:
             annot[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-            annot["IC"].append(pDecimal(fill_color.to_rgb().red))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().green))
-            annot["IC"].append(pDecimal(fill_color.to_rgb().blue))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().red))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().green))
+            annot["IC"].append(bDecimal(fill_color.to_rgb().blue))
 
         # (Optional) A text string specifying the overlay text that should be
         # drawn over the redacted region after the affected content has been
@@ -1290,7 +1500,7 @@ class Page(Dictionary):
         annot["AP"]["N"][Name("Bytes")] = zlib.compress(
             annot["AP"]["N"][Name("DecodedBytes")]
         )
-        annot["AP"]["N"][Name("Length")] = pDecimal(
+        annot["AP"]["N"][Name("Length")] = bDecimal(
             len(annot["AP"]["N"][Name("Bytes")])
         )
         annot["AP"]["N"][Name("Filter")] = Name("FlateDecode")
@@ -1299,10 +1509,10 @@ class Page(Dictionary):
         # The box’s top and right coordinates are taken from the dimensions of the annotation rectangle (the Rect
         # entry in the widget annotation dictionary).
         annot["AP"]["N"][Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(0))
-        annot["AP"]["N"]["BBox"].append(pDecimal(100))
-        annot["AP"]["N"]["BBox"].append(pDecimal(100))
+        annot["AP"]["N"]["BBox"].append(bDecimal(0))
+        annot["AP"]["N"]["BBox"].append(bDecimal(0))
+        annot["AP"]["N"]["BBox"].append(bDecimal(100))
+        annot["AP"]["N"]["BBox"].append(bDecimal(100))
 
         # return
         return self._append_annotation(annot)
@@ -1340,4 +1550,4 @@ class Page(Dictionary):
         self["Contents"][Name("Bytes")] = zlib.compress(
             self["Contents"]["DecodedBytes"], 9
         )
-        self["Contents"][Name("Length")] = pDecimal(len(self["Contents"]["Bytes"]))
+        self["Contents"][Name("Length")] = bDecimal(len(self["Contents"]["Bytes"]))

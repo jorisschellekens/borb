@@ -236,7 +236,7 @@ class CanvasStreamProcessor:
         canvas_tokenizer = HighLevelTokenizer(io_source)
 
         # process content
-        operand_stk = []
+        operand_stk: typing.List[AnyPDFType] = []
         instruction_number: int = 0
         time_per_operator: typing.Dict[str, float] = {}
         calls_per_operator: typing.Dict[str, int] = {}

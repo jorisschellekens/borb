@@ -16,7 +16,7 @@ from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth
 
 
-class TestWriteSimpleTable(unittest.TestCase):
+class TestWriteFixedColumnWidthTable(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir

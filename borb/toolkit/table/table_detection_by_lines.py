@@ -54,7 +54,11 @@ class TableDetectionByLines(EventListener):
         This function returns the bounding boxes (as Rectangle objects) of each Table
         that was recognized on the given page.
         """
-        return [x.bounding_box for x in self._tables_per_page.get(page_number, [])]
+        return [
+            x.bounding_box
+            for x in self._tables_per_page.get(page_number, [])
+            if x.bounding_box is not None
+        ]
 
     def get_tables_for_page(self, page_number: int) -> typing.List[Table]:
         """

@@ -51,7 +51,7 @@ class WritePageTransformer(WriteDictionaryTransformer):
         # mark some keys as non-referencable
         for k in ["ArtBox", "BleedBox", "CropBox", "MediaBox", "TrimBox"]:
             if k in object_to_transform:
-                object_to_transform[k].set_can_be_referenced(False)
+                object_to_transform[k].set_can_be_referenced(False)  # type: ignore [attr-defined]
 
         # delegate to super
         super(WritePageTransformer, self).transform(object_to_transform, context)

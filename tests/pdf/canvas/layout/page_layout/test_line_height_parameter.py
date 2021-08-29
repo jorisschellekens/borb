@@ -44,26 +44,38 @@ class TestLineHeightParameter(unittest.TestCase):
 
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
-                    .add(Paragraph("Date", font="Helvetica-Bold"))
-                    .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-                    .add(Paragraph("Test", font="Helvetica-Bold"))
-                    .add(Paragraph(Path(__file__).stem))
-                    .add(Paragraph("Description", font="Helvetica-Bold"))
-                    .add(Paragraph("This test creates a PDF with paragraphs with varying line_height."))
-                    .set_padding_on_all_cells(
-                        Decimal(2), Decimal(2), Decimal(2), Decimal(2)
-                    )
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with paragraphs with varying line_height."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         #
-        layout.add(Paragraph("varying padding_top", font_size=Decimal(20), font_color=HexColor("f1cd2e")))
+        layout.add(
+            Paragraph(
+                "varying padding_top",
+                font_size=Decimal(20),
+                font_color=HexColor("f1cd2e"),
+            )
+        )
         for i in range(1, 5):
-            layout.add(Paragraph("Lorem Ipsum",
-                                 padding_top=Decimal(i * 5),
-                                 border_top=True,
-                                 border_right=True,
-                                 border_left=True,
-                                 border_bottom=True))
+            layout.add(
+                Paragraph(
+                    "Lorem Ipsum",
+                    padding_top=Decimal(i * 5),
+                    border_top=True,
+                    border_right=True,
+                    border_left=True,
+                    border_bottom=True,
+                )
+            )
 
         # determine output location
         out_file = self.output_dir / "output_001.pdf"
@@ -86,26 +98,38 @@ class TestLineHeightParameter(unittest.TestCase):
 
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
-                    .add(Paragraph("Date", font="Helvetica-Bold"))
-                    .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-                    .add(Paragraph("Test", font="Helvetica-Bold"))
-                    .add(Paragraph(Path(__file__).stem))
-                    .add(Paragraph("Description", font="Helvetica-Bold"))
-                    .add(Paragraph("This test creates a PDF with paragraphs with varying line_height."))
-                    .set_padding_on_all_cells(
-                        Decimal(2), Decimal(2), Decimal(2), Decimal(2)
-                    )
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with paragraphs with varying line_height."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         #
-        layout.add(Paragraph("varying margin_top", font_size=Decimal(20), font_color=HexColor("f1cd2e")))
+        layout.add(
+            Paragraph(
+                "varying margin_top",
+                font_size=Decimal(20),
+                font_color=HexColor("f1cd2e"),
+            )
+        )
         for i in range(1, 5):
-            layout.add(Paragraph("Lorem Ipsum",
-                                 margin_top=Decimal(i * 5),
-                                 border_top=True,
-                                 border_right=True,
-                                 border_left=True,
-                                 border_bottom=True))
+            layout.add(
+                Paragraph(
+                    "Lorem Ipsum",
+                    margin_top=Decimal(i * 5),
+                    border_top=True,
+                    border_right=True,
+                    border_left=True,
+                    border_bottom=True,
+                )
+            )
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"

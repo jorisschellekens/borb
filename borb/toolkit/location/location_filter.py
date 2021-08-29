@@ -43,7 +43,7 @@ class LocationFilter(EventListener):
                 ):
                     for l in self._listeners:
                         l._event_occurred(glyph_event)
-                return
+            return
 
         # filter ImageRenderEvent
         if isinstance(event, ImageRenderEvent):

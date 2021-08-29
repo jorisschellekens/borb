@@ -20,7 +20,7 @@ required = [
     "qrcode[pil]>=6.1",                         # generating QR codes
     "requests>=2.24.0",                         # generating images from a URL
     "setuptools~=51.1.1",                       # standard
-] + (["windows-curses>=2.2.0"] if sys.platform.startswith("win") else [])
+]
 
 dependency_links = [
     "http://github.com/ojii/pymaging/tarball/master",
@@ -29,7 +29,7 @@ dependency_links = [
 
 setuptools.setup(
     name="borb",
-    version="2.0.8",
+    version="2.0.9",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="borb is a library for reading, creating and manipulating PDF files in python.",

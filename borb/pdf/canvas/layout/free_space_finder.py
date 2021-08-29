@@ -113,14 +113,26 @@ class FreeSpaceFinder(EventListener):
     def find_free_space_for_page(
         file: Path, page_number: int, desired_rectangle: Rectangle
     ) -> typing.Optional[Rectangle]:
+        """
+        This function returns the nearest (euclidean distance)
+        empty Rectangle that is at least as wide and tall as the
+        desired Rectangle.
+        If no such Rectangle exists, this method returns None.
+        """
         l: FreeSpaceFinder = FreeSpaceFinder()
         with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])
+            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
         return l.get_free_space_for_page(page_number, desired_rectangle)
 
     def get_free_space_for_page(
         self, page_number: int, desired_rectangle: Rectangle
     ) -> typing.Optional[Rectangle]:
+        """
+        This function returns the nearest (euclidean distance)
+        empty Rectangle that is at least as wide and tall as the
+        desired Rectangle.
+        If no such Rectangle exists, this method returns None.
+        """
         if page_number in self._grid_per_page:
             return self._grid_per_page[page_number]._get_free_space(desired_rectangle)
         return None

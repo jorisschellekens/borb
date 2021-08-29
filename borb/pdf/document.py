@@ -4,9 +4,7 @@
 """
     This class represents a PDF document
 """
-
 import typing
-import zlib
 from decimal import Decimal
 
 from borb.io.read.types import Decimal as bDecimal

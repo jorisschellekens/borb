@@ -5,7 +5,6 @@
 This implementation of LayoutElement represents a heterogeneous Paragraph.
 e.g. a Paragraph where one or more words are in bold (but not all of them)
 """
-import copy
 import typing
 from decimal import Decimal
 
@@ -125,7 +124,7 @@ class Span(Paragraph):
             # process LineBreakChunk
             if isinstance(c, LineBreakChunk):
                 if len(previous_line) > 0:
-                    lines.append((copy.deepcopy(previous_line), previous_line_width))
+                    lines.append(([x for x in previous_line], previous_line_width))
                 previous_line.clear()
                 previous_line_width = Decimal(0)
                 continue
@@ -134,7 +133,7 @@ class Span(Paragraph):
                 page, bounding_box
             ).get_width()
             if round(previous_line_width + w, 2) > round(bounding_box.get_width(), 2):
-                lines.append((copy.deepcopy(previous_line), previous_line_width))
+                lines.append(([x for x in previous_line], previous_line_width))
                 previous_line.clear()
                 previous_line.append(c)
                 previous_line_width = w
@@ -142,7 +141,7 @@ class Span(Paragraph):
                 previous_line.append(c)
                 previous_line_width += w
         if len(previous_line) > 0:
-            lines.append((copy.deepcopy(previous_line), previous_line_width))
+            lines.append(([x for x in previous_line], previous_line_width))
         return lines
 
     def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):

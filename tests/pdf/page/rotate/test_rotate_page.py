@@ -49,7 +49,7 @@ class TestRotatePage(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with an empty Page, and a Paragraph of text. "
-                    "A subsequent test will add a redact annotation. The test after that applies the redaction annotations."
+                    "A subsequent test will rotate a Page from this Document."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))

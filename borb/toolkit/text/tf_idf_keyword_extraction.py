@@ -30,67 +30,6 @@ from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
-class TFIDFKeyword:
-    """
-    This class represents a TF-IDF keyword and its associated meta-data
-    """
-
-    def __init__(
-        self,
-        text: str,
-        page_number: int,
-        term_frequency: int,
-        number_of_pages: int,
-        words_on_page: int,
-    ):
-        self._text: str = text
-        self._page_number: int = page_number
-        self._words_on_page: int = words_on_page
-        self._term_frequency: int = term_frequency
-        self._occurs_on_pages = [self._page_number]
-        self._number_of_pages: int = number_of_pages
-
-    def get_text(self) -> str:
-        """
-        This function returns the text of this TFIDFKeyword
-        """
-        return self._text
-
-    def get_term_frequency(self) -> int:
-        """
-        This function returns the term frequency of this TFIDFKeyword
-        """
-        return self._term_frequency
-
-    def get_page_number(self) -> int:
-        """
-        This function returns the page number of this TFIDFKeyword
-        """
-        return self._page_number
-
-    def get_number_of_words_on_page(self) -> int:
-        """
-        This function returns the number of words on the page
-        associated with this TFIDFKeyword
-        """
-        return self._words_on_page
-
-    def get_number_of_pages(self) -> int:
-        """
-        This function returns the number of pages in the
-        document associated with this TFIDFKeyword
-        """
-        return self._number_of_pages
-
-    def get_tf_idf_score(self) -> float:
-        """
-        This function returns the TF-IDF score for this keyword
-        """
-        tf = self._term_frequency / self._words_on_page
-        idf = log(self._number_of_pages / (1 + len(self._occurs_on_pages)))
-        return (tf + 0.001) * (idf + 0.001)
-
-
 class TFIDFKeywordExtraction(SimpleTextExtraction):
     """
     In information retrieval, tf–idf, TF*IDF, or TFIDF, short for term frequency–inverse document frequency,
@@ -117,10 +56,12 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         self, stopwords: typing.List[str] = [], minimum_term_frequency: int = 3
     ):
         super().__init__()
-        self._keywords: typing.List[TFIDFKeyword] = []
-        self._stopwords = [x.upper() for x in stopwords]
-        self._number_of_pages = 0
-        self._minimum_term_frequency = minimum_term_frequency
+        self._term_frequency_per_page: typing.Dict[int, typing.Dict[str, float]] = {}
+        self._number_of_words_per_page: typing.Dict[int, float] = {}
+        self._inverse_page_frequency: typing.Dict[str, float] = {}
+        self._stopwords: typing.List[str] = [x.upper() for x in stopwords]
+        self._number_of_pages: float = 0
+        self._minimum_term_frequency: float = minimum_term_frequency
 
     def _end_page(self, page: Page):
         super()._end_page(page)
@@ -129,55 +70,50 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         self._number_of_pages += 1
 
         # get words
-        words = [
+        words_on_page: typing.List[str] = [
             x.upper()
             for x in re.split("[^a-zA-Z]+", self.get_text_for_page(self._current_page))
             if x.upper() not in self._stopwords
         ]
 
-        # update dictionary
-        for w in words:
-            keywords_on_same_page = [
-                x
-                for x in self._keywords
-                if x._page_number == self._current_page and x._text == w
-            ]
-            if len(keywords_on_same_page) == 0:
-                self._keywords.append(
-                    TFIDFKeyword(
-                        text=w,
-                        page_number=self._current_page,
-                        term_frequency=0,
-                        number_of_pages=self._number_of_pages,
-                        words_on_page=len(words),
-                    )
-                )
-            for keyword in [x for x in self._keywords if x._text == w]:
-                assert isinstance(keyword, TFIDFKeyword)
-                if keyword._page_number == self._current_page:
-                    keyword._term_frequency += 1
-                if self._current_page not in keyword._occurs_on_pages:
-                    keyword._occurs_on_pages.append(self._current_page)
+        # update _term_frequency_per_page
+        self._term_frequency_per_page[self._current_page] = {}
+        self._number_of_words_per_page[self._current_page] = len(words_on_page)
+        for w in words_on_page:
+            self._term_frequency_per_page[self._current_page][w] = (
+                self._term_frequency_per_page[self._current_page].get(w, 0) + 1
+            )
 
-        # update number of pages
-        for k in self._keywords:
-            k._number_of_pages = self._number_of_pages
+        # update _inverse_page_frequency
+        for w in set(words_on_page):
+            self._inverse_page_frequency[w] = self._inverse_page_frequency.get(w, 0) + 1
 
     def get_keywords_for_page(
-        self, page_number: int, limit: Optional[int] = None
-    ) -> List[TFIDFKeyword]:
+        self, page_number: int
+    ) -> typing.List[typing.Tuple[str, float]]:
         """
-        This function returns a typing.List[TFIDFKeyword] for a given page
+        This function returns a typing.List[typing.Tuple[str, float]] for a given page
         """
-        out = sorted(
-            [
-                x
-                for x in self._keywords
-                if x._page_number == page_number
-                and (x._term_frequency > self._minimum_term_frequency)
-            ],
-            key=TFIDFKeyword.get_tf_idf_score,
-        )
-        if limit is not None:
-            out = out[-limit:]
+        out: typing.List[typing.Tuple[str, float]] = []
+        for w, tf in self._term_frequency_per_page[page_number].items():
+
+            # check minimum_term_frequency
+            if tf < self._minimum_term_frequency:
+                continue
+
+            # normalize tf, idf
+            tf /= self._number_of_words_per_page[page_number]
+            idf = log(self._number_of_pages / self._inverse_page_frequency[w])
+
+            # avoid multiply by zero
+            tf += 0.0001
+            idf += 0.0001
+
+            # calculate tf-idf score
+            out.append((w, tf * idf))
+
+        # sort
+        out.sort(key=lambda x: x[1], reverse=True)
+
+        # return
         return out

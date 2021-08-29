@@ -17,6 +17,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestWriteChunksOfText(unittest.TestCase):
@@ -56,7 +57,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. The Paragraph is composed of smaller heterogenous ChunkOfText objects."
-                    "The Paragraph is aligned TOP, LEFT. The green box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, LEFT. The yellow box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -101,6 +102,8 @@ class TestWriteChunksOfText(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        compare_visually_to_ground_truth(out_file)
+
     def test_write_document_002(self):
 
         # create document
@@ -122,7 +125,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. The Paragraph is composed of smaller heterogenous ChunkOfText objects."
-                    "The Paragraph is aligned TOP, RIGHT. The green box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, RIGHT. The yellow box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -169,6 +172,8 @@ class TestWriteChunksOfText(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        compare_visually_to_ground_truth(out_file)
+
     def test_write_document_003(self):
 
         # create document
@@ -190,7 +195,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. The Paragraph is composed of smaller heterogenous ChunkOfText objects."
-                    "The Paragraph is aligned TOP, CENTERED. The green box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, CENTERED. The yellow box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -237,6 +242,8 @@ class TestWriteChunksOfText(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        compare_visually_to_ground_truth(out_file)
+
     def test_write_document_004(self):
 
         # create document
@@ -258,7 +265,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. The Paragraph is composed of smaller heterogenous ChunkOfText objects."
-                    "The Paragraph is aligned TOP, LEFT, with padding 10. The green box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, LEFT, with padding 10. The yellow box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -309,6 +316,8 @@ class TestWriteChunksOfText(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        compare_visually_to_ground_truth(out_file)
+
     def test_write_document_005(self):
 
         # create document
@@ -330,7 +339,7 @@ class TestWriteChunksOfText(unittest.TestCase):
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. The Paragraph is composed of smaller heterogenous ChunkOfText objects."
-                    "The Paragraph is aligned TOP, LEFT. The green box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, LEFT. The yellow box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -381,3 +390,5 @@ class TestWriteChunksOfText(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
+
+        compare_visually_to_ground_truth(out_file)

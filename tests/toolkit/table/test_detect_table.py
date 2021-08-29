@@ -1,8 +1,11 @@
+import datetime
 import random
 import typing
 import unittest
 from decimal import Decimal
 from pathlib import Path
+
+from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 
 from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.layout.layout_element import Alignment
@@ -94,38 +97,53 @@ class TestDetectTable(unittest.TestCase):
             # set LayoutManager
             l: PageLayout = SingleColumnLayout(p)
 
-            # add random amount of text
-            for _ in range(0, random.randint(1, 4)):
-                l.add(
+            # add test information
+            l.add(
+                FixedColumnWidthTable(number_of_columns=2, number_of_rows=3)
+                .add(Paragraph("Date", font="Helvetica-Bold"))
+                .add(Paragraph(datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+                .add(Paragraph("Test", font="Helvetica-Bold"))
+                .add(Paragraph(Path(__file__).stem))
+                .add(Paragraph("Description", font="Helvetica-Bold"))
+                .add(
                     Paragraph(
-                        """
+                        "This test creates a PDF with two Paragraph objects and a Table."
+                        "A subsequent test will attempt to find the Table."
+                    )
+                )
+                .set_padding_on_all_cells(
+                    Decimal(2), Decimal(2), Decimal(2), Decimal(2)
+                )
+            )
+
+            # add some amount of text
+            l.add(
+                Paragraph(
+                    """
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
                 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
                 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
                 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 """
-                    )
                 )
+            )
 
             # add Table
             table: Table = self._generate_table(td)
-            table._horizontal_alignment = random.choice(
-                [Alignment.LEFT, Alignment.CENTERED, Alignment.RIGHT]
-            )
+            table._horizontal_alignment = Alignment.CENTERED
             l.add(table)
 
             # add random amount of text
-            for _ in range(0, random.randint(1, 4)):
-                l.add(
-                    Paragraph(
-                        """
+            l.add(
+                Paragraph(
+                    """
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
                 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
                 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
                 Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                 """
-                    )
                 )
+            )
 
             # derive name
             number_with_zero_prefixed: str = str(i)
@@ -169,9 +187,7 @@ class TestDetectTable(unittest.TestCase):
                     r, stroke_color=X11Color("Red")
                 )
 
-            # add annotation around each cell
-            if len(tables) > 0:
-                for tc in tables[0]._content:
+                for tc in t._content:
                     r = tc.get_bounding_box()
                     r = r.shrink(Decimal(2))
                     doc.get_page(0).append_square_annotation(
@@ -186,3 +202,6 @@ class TestDetectTable(unittest.TestCase):
             # store
             with open(output_file, "wb") as output_file_handle:
                 PDF.dumps(output_file_handle, doc)
+
+            # compare visually
+            compare_visually_to_ground_truth(output_file)

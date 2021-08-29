@@ -16,6 +16,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -91,11 +92,12 @@ class TestAddUnderlineAnnotation(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 doc.get_page(0).append_underline_annotation(
-                    bb,
-                    line_width=Decimal(2),
+                    bb.grow(Decimal(2)),
                     stroke_color=HexColor("DE6449"),
                 )
 
         # attempt to store PDF
         with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")

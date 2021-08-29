@@ -151,6 +151,7 @@ class HexColor(RGBColor):
         r: float = 0
         g: float = 0
         b: float = 0
+        a: float = 0
         if len(hex_string) == 6:
             a = 255
             r = int(hex_string[0:2], 16)

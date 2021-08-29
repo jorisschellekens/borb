@@ -54,7 +54,9 @@ class ReadJBIG2ImageTransformer(ReadBaseTransformer):
         """
 
         # use PIL to read image bytes
-        assert isinstance(object_to_transform, Stream)
+        assert isinstance(
+            object_to_transform, Stream
+        ), "Image must be represented by Stream data"
         try:
             tmp = Image.open(io.BytesIO(object_to_transform["Bytes"]))
             tmp.getpixel(
