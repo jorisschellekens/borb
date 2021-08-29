@@ -1,5 +1,5 @@
 
-# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/readme_img/logo/borb_64.png) borb
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) borb
 
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
