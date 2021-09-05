@@ -2,7 +2,7 @@ import os
 import unittest
 from pathlib import Path
 
-from borb.io.write.write_base_transformer import WriteTransformerState
+from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.pdf import PDF
 from borb.toolkit.image.image_format_optimization import ImageFormatOptimization
 

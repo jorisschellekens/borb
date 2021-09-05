@@ -7,7 +7,6 @@
     or contribute to a specific meaning of what is written, with that meaning dependent on cultural and social usage.
 """
 import typing
-from curses.ascii import isspace
 from decimal import Decimal
 
 from borb.io.read.types import Decimal as pDecimal
@@ -146,6 +145,10 @@ class GlyphLine:
         """
         return any([(x in ["y", "p", "q", "f", "g", "j"]) for x in self.get_text()])
 
+    @staticmethod
+    def _isspace(c: str) -> bool:
+        return ord(c) in [9, 10, 11, 12, 13, 32]
+
     def get_width_in_text_space(self) -> Decimal:
         """
         This function calculates the width (in text space) of this GlyphLine
@@ -155,7 +158,7 @@ class GlyphLine:
             glyph_width_in_text_space = g.get_width() * self._font_size * Decimal(0.001)
 
             # add word spacing where applicable
-            if len(g.get_unicode_str()) == 1 and isspace(g.get_unicode_str()):
+            if len(g.get_unicode_str()) == 1 and GlyphLine._isspace(g.get_unicode_str()):
                 glyph_width_in_text_space += self._word_spacing
 
             # horizontal scaling

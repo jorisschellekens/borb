@@ -252,7 +252,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         # add corporate logo
         page_layout.add(
             Image(
-                "https://github.com/jorisschellekens/borb/blob/master/readme_img/logo/borb_64.png?raw=true",
+                "https://github.com/jorisschellekens/borb/blob/master/logo/borb_64.png?raw=true",
                 width=Decimal(64),
                 height=Decimal(64),
             )
