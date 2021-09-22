@@ -8,6 +8,8 @@ the sequence.
 """
 from typing import List
 
+import typing
+
 from borb.io.read.types import AnyPDFType, Name
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -22,7 +24,12 @@ class BeginMarkedContent(CanvasOperator):
     def __init__(self):
         super().__init__("BMC", 1)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the BMC operator
         """

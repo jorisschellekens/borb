@@ -32,7 +32,12 @@ class Do(CanvasOperator):
     def __init__(self):
         super().__init__("Do", 1)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: typing.List[AnyPDFType] = []):  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the Do operator
         """
@@ -47,9 +52,12 @@ class Do(CanvasOperator):
 
         # render Image objects
         if isinstance(xobject, PIL.Image.Image):
-            canvas._event_occurred(
-                ImageRenderEvent(graphics_state=canvas.graphics_state, image=xobject)
-            )
+            for l in event_listeners:
+                l._event_occurred(
+                    ImageRenderEvent(
+                        graphics_state=canvas.graphics_state, image=xobject
+                    )
+                )
             return
 
         # Form XObject
@@ -68,7 +76,9 @@ class Do(CanvasOperator):
                     [xobject_resources]
                 )
             )
-            child_canvas_stream_processor.read(io.BytesIO(xobject["DecodedBytes"]))
+            child_canvas_stream_processor.read(
+                io.BytesIO(xobject["DecodedBytes"]), event_listeners
+            )
 
             # return
             return

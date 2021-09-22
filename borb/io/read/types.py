@@ -123,35 +123,6 @@ def add_base_methods(object: typing.Any) -> typing.Any:
             e = e.get_parent()
         return e
 
-    # add_event_listener
-    def add_event_listener(self, event_listener: "EventListener"):
-        """
-        This function adds an EventListener to this Object
-        """
-        if "_event_listeners" not in vars(self):
-            setattr(self, "_event_listeners", [])
-        self._event_listeners.append(event_listener)
-        return self
-
-    # get_event_listener
-    def get_event_listeners(self) -> typing.List["EventListener"]:
-        """
-        This function returns a typing.List[EventListener] for this Object
-        """
-        if "_event_listeners" not in vars(self):
-            setattr(self, "_event_listeners", [])
-        return self._event_listeners
-
-    # _event_occurred
-    def _event_occurred(self, event: "Event"):  # type: ignore [name-defined]
-        if "_event_listeners" not in vars(self):
-            setattr(self, "_event_listeners", [])
-        for l in self._event_listeners:
-            l._event_occurred(event)
-        if self.get_parent() is not None:
-            self.get_parent()._event_occurred(event)
-        return self
-
     # set_reference
     def set_reference(self, reference: "Reference"):
         """
@@ -206,9 +177,6 @@ def add_base_methods(object: typing.Any) -> typing.Any:
     object.set_parent = types.MethodType(set_parent, object)
     object.get_parent = types.MethodType(get_parent, object)
     object.get_root = types.MethodType(get_root, object)
-    object.add_event_listener = types.MethodType(add_event_listener, object)
-    object.get_event_listeners = types.MethodType(get_event_listeners, object)
-    object._event_occurred = types.MethodType(_event_occurred, object)
     object.set_reference = types.MethodType(set_reference, object)
     object.get_reference = types.MethodType(get_reference, object)
     object.set_can_be_referenced = types.MethodType(set_can_be_referenced, object)

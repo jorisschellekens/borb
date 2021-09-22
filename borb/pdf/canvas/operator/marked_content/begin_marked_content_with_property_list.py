@@ -12,6 +12,8 @@ dictionary (see 14.6.2, “Property Lists”).
 
 from typing import List
 
+import typing
+
 from borb.io.read.types import AnyPDFType, Name
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -29,7 +31,12 @@ class BeginMarkedContentWithPropertyList(CanvasOperator):
     def __init__(self):
         super().__init__("BDC", 2)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the BDC operator
         """

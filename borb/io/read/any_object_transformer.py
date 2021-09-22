@@ -10,9 +10,13 @@ import typing
 from typing import Any, Optional, Union
 
 from borb.io.read.font.font_dictionary_transformer import FontDictionaryTransformer
-from borb.io.read.function.function_dictionary_transformer import FunctionDictionaryTransformer
+from borb.io.read.function.function_dictionary_transformer import (
+    FunctionDictionaryTransformer,
+)
 from borb.io.read.image.ccitt_fax_image_transformer import CCITTFaxImageTransformer
-from borb.io.read.image.compressed_jpeg_image_transformer import CompressedJPEGImageTransformer
+from borb.io.read.image.compressed_jpeg_image_transformer import (
+    CompressedJPEGImageTransformer,
+)
 from borb.io.read.image.grayscale_image_transformer import GrayscaleImageTransformer
 from borb.io.read.image.jbig2_image_transformer import JBIG2ImageTransformer
 from borb.io.read.image.jpeg_2000_image_transformer import JPEG2000ImageTransformer

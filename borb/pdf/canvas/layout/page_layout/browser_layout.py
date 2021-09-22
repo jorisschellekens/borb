@@ -288,13 +288,12 @@ class BrowserLayout(PageLayout):
         layout_element._margin_bottom = Decimal(0)
 
         # append INLINE row (if needed)
+        # fmt: off
         if len(self._rows) == 0:
             self._rows.append(BrowserLayoutRow(DisplayValue.INLINE))
-        if (
-            len(self._rows) > 0
-            and self._rows[-1].get_display_value() == DisplayValue.BLOCK
-        ):
+        if len(self._rows) > 0 and self._rows[-1].get_display_value() == DisplayValue.BLOCK:
             self._rows.append(BrowserLayoutRow(DisplayValue.INLINE))
+        # fmt: on
 
         assert self._page_height is not None
         prev_row_bottom: Decimal = self._page_height - self._vertical_margin
@@ -303,13 +302,17 @@ class BrowserLayout(PageLayout):
             prev_row_bottom = self._rows[-2].get_bottom()
             prev_row_margin_bottom = self._rows[-2].get_margin_bottom()
 
+        # calculate leading
+        # TODO
+        leading: Decimal = Decimal(0)
+
         # fmt: off
         x: Decimal = self._horizontal_margin + layout_element.get_margin_left()
         if len(self._rows[-1]) > 0:
             x = self._rows[-1].get_right() + max(layout_element.get_margin_left(), self._rows[-1].get_margin_right())
         y: Decimal = self._vertical_margin + layout_element.get_margin_bottom()
         w: Decimal = self._page_width - self._horizontal_margin - layout_element.get_margin_right() - x
-        h: Decimal = prev_row_bottom - max(layout_element.get_margin_top(), prev_row_margin_bottom) - y
+        h: Decimal = prev_row_bottom - max(layout_element.get_margin_top(), prev_row_margin_bottom) - y - leading
         # fmt: on
 
         # catch potential layout problems as early as possible
@@ -333,14 +336,12 @@ class BrowserLayout(PageLayout):
         ):
 
             # ensure page content is correct
-            self._page["Contents"][
-                Name("DecodedBytes")
-            ] = self._page_content_stream_restore
+            # fmt: off
+            self._page["Contents"][Name("DecodedBytes")] = self._page_content_stream_restore
             for e in self._rows[-1]._layout_elements:
                 e.layout(self._page, e.get_bounding_box())  # type: ignore [arg-type]
-            self._page_content_stream_restore = self._page["Contents"][
-                Name("DecodedBytes")
-            ]
+            self._page_content_stream_restore = self._page["Contents"][Name("DecodedBytes")]
+            # fmt: on
 
             # append new row
             self._rows.append(BrowserLayoutRow(DisplayValue.INLINE))

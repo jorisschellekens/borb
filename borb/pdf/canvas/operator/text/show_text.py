@@ -20,7 +20,12 @@ class ShowText(CanvasOperator):
     def __init__(self):
         super().__init__("Tj", 1)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the Tj operator
         """
@@ -39,7 +44,8 @@ class ShowText(CanvasOperator):
         tri = ChunkOfTextRenderEvent(canvas.graphics_state, operands[0])
 
         # render
-        canvas._event_occurred(tri)
+        for l in event_listeners:
+            l._event_occurred(tri)
 
         # update text rendering location
         canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width

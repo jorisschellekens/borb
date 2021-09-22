@@ -29,7 +29,12 @@ class MoveTextPositionSetLeading(CanvasOperator):
     def __init__(self):
         super().__init__("TD", 2)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the TD operator
         """
@@ -42,7 +47,9 @@ class MoveTextPositionSetLeading(CanvasOperator):
         assert (
             set_text_leading_op
         ), "Operand TL must be defined for operator TD to function"
-        set_text_leading_op.invoke(canvas_stream_processor, [pDecimal(-operands[1])])
+        set_text_leading_op.invoke(
+            canvas_stream_processor, [pDecimal(-operands[1])], event_listeners
+        )
 
         move_text_position_op: typing.Optional[
             CanvasOperator
@@ -50,4 +57,4 @@ class MoveTextPositionSetLeading(CanvasOperator):
         assert (
             move_text_position_op
         ), "Operand Td must be defined for operator TD to function"
-        move_text_position_op.invoke(canvas_stream_processor, operands)
+        move_text_position_op.invoke(canvas_stream_processor, operands, event_listeners)

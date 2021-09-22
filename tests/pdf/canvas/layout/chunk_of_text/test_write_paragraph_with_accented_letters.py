@@ -15,7 +15,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
-class TestWriteAccentedLetters(unittest.TestCase):
+class TestWriteParagraphWithAccentedLetters(unittest.TestCase):
     """
     This test creates a PDF with a Paragraph in it, containing various accented characters.
     """

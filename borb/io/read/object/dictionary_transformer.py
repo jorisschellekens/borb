@@ -41,14 +41,10 @@ class DictionaryTransformer(Transformer):
         assert isinstance(object_to_transform, Dictionary)
         object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
-        # add listener(s)
-        for l in event_listeners:
-            object_to_transform.add_event_listener(l)  # type: ignore [attr-defined]
-
         # transform key/value pair(s)
         for k, v in object_to_transform.items():
             v = self.get_root_transformer().transform(
-                v, object_to_transform, context, []
+                v, object_to_transform, context, event_listeners
             )
             if v is not None:
                 object_to_transform[k] = v

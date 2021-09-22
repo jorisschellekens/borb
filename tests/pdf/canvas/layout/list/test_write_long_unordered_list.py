@@ -56,7 +56,7 @@ class TestWriteLongUnorderedList(unittest.TestCase):
         # we should get an assert from the MultiColumnLayout object
         with self.assertRaises(AssertionError):
             ul = UnorderedList()
-            for _ in range(0, 6):
+            for _ in range(0, 20):
                 ul.add(Paragraph(text="Lorem"))
                 ul.add(Paragraph(text="Ipsum"))
                 ul.add(Paragraph(text="Dolor"))

@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    This implementation of BaseTagTransformer handles <hr> tags
+"""
+import typing
+import xml.etree.ElementTree as ET
+
+from borb.io.read.types import Decimal
+from borb.pdf.canvas.layout.horizontal_rule import HorizontalRule
+from borb.pdf.canvas.layout.layout_element import LayoutElement
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.text.heading import Heading
+from borb.pdf.document import Document
+from borb.pdf.page.page import Page
+from borb.toolkit.export.html_to_pdf.read.transformer import (
+    Transformer,
+)
+
+
+class HrTagTransformer(Transformer):
+    """
+    This implementation of BaseTagTransformer handles <hr> tags
+    """
+
+    def can_transform(self, html_element: ET.Element):
+        """
+        This function returns True if the html_element is a <hr> element,
+        False otherwise
+        """
+        return html_element.tag == "hr"
+
+    def transform(
+        self,
+        html_element: ET.Element,
+        parent_elements: typing.List[ET.Element],
+        layout_element: typing.Union[PageLayout, LayoutElement],
+    ):
+        """
+        This method transforms a <hr> tag to its corresponding LayoutElement
+        """
+        assert html_element.text is None, "<hr> should not have text"
+        assert (
+            len(html_element.getchildren()) == 0
+        ), "<hr> children are currently not supported"
+        layout_element.add(HorizontalRule())  # type: ignore [union-attr]

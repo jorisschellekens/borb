@@ -8,6 +8,8 @@ state from the stack and making it the current state (see 8.4.2,
 """
 from typing import List
 
+import typing
+
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -22,7 +24,12 @@ class PopGraphicsState(CanvasOperator):
     def __init__(self):
         super().__init__("Q", 0)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the Q operator
         """

@@ -39,6 +39,17 @@ They include;
 
  and much more
  
+### 1.0 Installing `borb`
+
+`borb` can be installed using `pip`
+
+    pip install borb
+
+If you have installed `borb` before, and you want to ensure `pip` downloads the latest version (rather than using its internal cache) you can use the following commands:
+
+    pip uninstall borb
+    pip install --no-cache borb
+
 ### 1.1 Hello World
 
 To give you an immediate idea of the way `borb` works, 

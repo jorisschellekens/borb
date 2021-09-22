@@ -53,7 +53,8 @@ class Paragraph(LineOfText):
         margin_right: typing.Optional[Decimal] = None,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
-        line_height: Decimal = Decimal(1),
+        fixed_leading: typing.Optional[Decimal] = None,
+        multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         hyphenation: typing.Optional[Hyphenation] = None,
         parent: typing.Optional["LayoutElement"] = None,
@@ -75,25 +76,27 @@ class Paragraph(LineOfText):
             padding_right=padding_right,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
-            margin_top=margin_top or font_size,
+            margin_top=margin_top,
             margin_right=margin_right,
-            margin_bottom=margin_bottom or font_size,
+            margin_bottom=margin_bottom,
             margin_left=margin_left,
+            multiplied_leading=multiplied_leading,
+            fixed_leading=fixed_leading,
             background_color=background_color,
             parent=parent,
         )
         self._respect_newlines_in_text = respect_newlines_in_text
         self._respect_spaces_in_text = respect_spaces_in_text
+        self._hyphenation = hyphenation
+
+        # alignment
         assert text_alignment in [
             Alignment.LEFT,
             Alignment.CENTERED,
             Alignment.RIGHT,
             Alignment.JUSTIFIED,
         ]
-        self._hyphenation = hyphenation
         self._text_alignment = text_alignment
-        assert line_height >= Decimal(1)
-        self._line_height = line_height
 
     def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
         # asserts
@@ -236,13 +239,18 @@ class Paragraph(LineOfText):
 
         # delegate
         assert self._font_size is not None
-        assert self._line_height is not None
         min_x: Decimal = Decimal(2048)
         min_y: Decimal = Decimal(2048)
         max_x: Decimal = Decimal(0)
         max_y: Decimal = Decimal(0)
-        line_height: Decimal = self._font_size * self._line_height
+
         assert self._font_size is not None
+        line_height: Decimal = self._font_size
+        if self._multiplied_leading is not None:
+            line_height *= self._multiplied_leading
+        if self._fixed_leading is not None:
+            line_height += self._fixed_leading
+
         for i, l in enumerate(lines_of_text):
             r = LineOfText(
                 l,
@@ -250,6 +258,8 @@ class Paragraph(LineOfText):
                 font_size=self._font_size,
                 font_color=self._font_color,
                 horizontal_alignment=self._text_alignment,
+                multiplied_leading=self._multiplied_leading,
+                fixed_leading=self._fixed_leading,
                 parent=self,
             ).layout(
                 page,
@@ -282,9 +292,13 @@ class Paragraph(LineOfText):
         min_y: Decimal = Decimal(2048)
         max_x: Decimal = Decimal(0)
         max_y: Decimal = Decimal(0)
+
         assert self._font_size is not None
-        assert self._line_height is not None
-        leading: Decimal = self._font_size * self._line_height
+        line_height: Decimal = self._font_size
+        if self._multiplied_leading is not None:
+            line_height *= self._multiplied_leading
+        if self._fixed_leading is not None:
+            line_height += self._fixed_leading
 
         for i, line_of_text in enumerate(lines_of_text):
 
@@ -297,15 +311,14 @@ class Paragraph(LineOfText):
                     font=self._font,
                     font_size=self._font_size,
                     font_color=self._font_color,
+                    multiplied_leading=self._multiplied_leading,
+                    fixed_leading=self._fixed_leading,
                     parent=self,
                 ).layout(
                     page,
                     bounding_box=Rectangle(
                         bounding_box.x,
-                        bounding_box.y
-                        + bounding_box.height
-                        - leading * i
-                        - self._font_size,
+                        bounding_box.y + bounding_box.height - line_height * (i + 1),
                         bounding_box.width,
                         self._font_size,
                     ),
@@ -339,22 +352,21 @@ class Paragraph(LineOfText):
 
             # perform layout
             x: Decimal = bounding_box.x
-            for w in words:
-                s = w + " "
+            for j, w in enumerate(words):
+                s = w + ("" if j == len(words) - 1 else " ")
                 r: Rectangle = ChunkOfText(
                     s,
                     font=self._font,
                     font_size=self._font_size,
                     font_color=self._font_color,
+                    multiplied_leading=self._multiplied_leading,
+                    fixed_leading=self._fixed_leading,
                     parent=self,
                 ).layout(
                     page,
                     bounding_box=Rectangle(
                         x,
-                        bounding_box.y
-                        + bounding_box.height
-                        - leading * i
-                        - self._font_size,
+                        bounding_box.y + bounding_box.height - line_height * (i + 1),
                         bounding_box.width,
                         self._font_size,
                     ),

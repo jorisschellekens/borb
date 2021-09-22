@@ -7,6 +7,7 @@ relational or logical operation and produce final result.
 CanvasOperator defines an interface to work on Canvas objects. Typically these operators involve drawing graphics, text,
 setting the active color and so on
 """
+import typing
 from typing import List
 
 from borb.io.read.types import AnyPDFType
@@ -36,7 +37,12 @@ class CanvasOperator:
         """
         return self._number_of_operands
 
-    def invoke(self, canvas: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invokes this CanvasOperator
         """

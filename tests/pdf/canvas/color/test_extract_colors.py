@@ -132,6 +132,7 @@ class TestExtractColors(unittest.TestCase):
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
+        layout.add(Paragraph(" "))
 
         t: Table = Table(number_of_rows=11, number_of_columns=3)
         t.add(Paragraph("Color Swatch", font="Helvetica-Bold"))

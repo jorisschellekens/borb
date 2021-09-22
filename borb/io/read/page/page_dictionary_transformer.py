@@ -53,10 +53,6 @@ class PageDictionaryTransformer(Transformer):
         # convert dictionary like structure
         page_out = Page().set_parent(parent_object)  # type: ignore [attr-defined]
 
-        # add listener(s)
-        for l in event_listeners:
-            page_out.add_event_listener(l)  # type: ignore [attr-defined]
-
         # convert key/value pairs
         assert isinstance(object_to_transform, Dictionary)
         for k, v in object_to_transform.items():
@@ -68,7 +64,8 @@ class PageDictionaryTransformer(Transformer):
                 page_out[k] = v
 
         # send out BeginPageEvent
-        page_out._event_occurred(BeginPageEvent(page_out))
+        for l in event_listeners:
+            l._event_occurred(BeginPageEvent(page_out))
 
         # check whether `Contents` exists
         if "Contents" not in page_out:
@@ -96,11 +93,12 @@ class PageDictionaryTransformer(Transformer):
 
         # create CanvasStreamProcessor
         CanvasStreamProcessor(page_out, canvas, []).read(
-            io.BytesIO(contents["DecodedBytes"])
+            io.BytesIO(contents["DecodedBytes"]), event_listeners
         )
 
         # send out EndPageEvent
-        page_out._event_occurred(EndPageEvent(page_out))
+        for l in event_listeners:
+            l._event_occurred(EndPageEvent(page_out))
 
         # return
         return page_out

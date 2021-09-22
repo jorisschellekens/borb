@@ -15,6 +15,7 @@ from borb.io.read.types import Name
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 
@@ -32,29 +33,50 @@ class MultiColumnLayout(PageLayout):
         number_of_columns: int = 2,
         horizontal_margin: typing.Optional[Decimal] = None,
         vertical_margin: typing.Optional[Decimal] = None,
+        fixed_paragraph_spacing: typing.Optional[Decimal] = None,
+        multiplied_paragraph_spacing: typing.Optional[Decimal] = None,
     ):
         super().__init__(page)
 
-        self._page_width: typing.Optional[
-            Decimal
-        ] = self._page.get_page_info().get_width()
-        self._page_height: typing.Optional[
-            Decimal
-        ] = self._page.get_page_info().get_height()
-
+        # page width/height
+        # fmt: off
+        self._page_width: typing.Optional[Decimal] = self._page.get_page_info().get_width()
+        self._page_height: typing.Optional[Decimal] = self._page.get_page_info().get_height()
         assert self._page_width
         assert self._page_height
+        # fmt: on
 
+        # paragraph spacing
+        if fixed_paragraph_spacing is None and multiplied_paragraph_spacing is None:
+            multiplied_paragraph_spacing = Decimal(1.2)
+        assert (
+            fixed_paragraph_spacing is not None
+            or multiplied_paragraph_spacing is not None
+        )
+        assert fixed_paragraph_spacing is None or fixed_paragraph_spacing >= 0
+        assert multiplied_paragraph_spacing is None or multiplied_paragraph_spacing >= 0
+        self._fixed_paragraph_spacing: typing.Optional[
+            Decimal
+        ] = fixed_paragraph_spacing
+        self._multiplied_paragraph_spacing: typing.Optional[
+            Decimal
+        ] = multiplied_paragraph_spacing
+
+        # horizontal margin
         if horizontal_margin is None:
             self._horizontal_margin = self._page_width * Decimal(0.1)
         else:
             assert horizontal_margin >= 0
             self._horizontal_margin = horizontal_margin
+
+        # vertical margin
         if vertical_margin is None:
             self._vertical_margin = self._page_height * Decimal(0.1)
         else:
             assert vertical_margin >= 0
             self._vertical_margin = vertical_margin
+
+        # inter-column margin
         self._inter_column_margin = self._page_width * Decimal(0.05)
         self._number_of_columns = Decimal(number_of_columns)
         self._column_width = (
@@ -63,8 +85,8 @@ class MultiColumnLayout(PageLayout):
             - Decimal(number_of_columns - 1) * self._inter_column_margin
         ) / Decimal(number_of_columns)
 
-        self._previous_element_y = self._page_height - self._vertical_margin
-        self._previous_element_margin_bottom = Decimal(0)
+        # previous element information
+        self._previous_element: typing.Optional[LayoutElement] = None
         self._current_column_index = Decimal(0)
 
     def switch_to_next_column(self) -> "PageLayout":
@@ -75,8 +97,7 @@ class MultiColumnLayout(PageLayout):
         if self._current_column_index == self._number_of_columns:
             return self.switch_to_next_page()
         assert self._page_height
-        self._previous_element_y = self._page_height - self._vertical_margin
-        self._previous_element_margin_bottom = Decimal(0)
+        self._previous_element = None
         return self
 
     def switch_to_next_page(self) -> "PageLayout":
@@ -85,8 +106,7 @@ class MultiColumnLayout(PageLayout):
         """
         self._current_column_index = Decimal(0)
         assert self._page_height
-        self._previous_element_y = self._page_height - self._vertical_margin
-        self._previous_element_margin_bottom = Decimal(0)
+        self._previous_element = None
 
         # find Document
         doc = self.get_page().get_root()  # type: ignore[attr-defined]
@@ -109,11 +129,44 @@ class MultiColumnLayout(PageLayout):
         if self._current_column_index >= self._number_of_columns:
             return self
 
+        # previous element is used to determine the paragraph spacing
+        previous_element_margin_bottom: Decimal = Decimal(0)
+        previous_element_y = self._page_height - self._vertical_margin
+        inter_paragraph_space: Decimal = Decimal(0)
+        if self._previous_element is not None:
+            previous_element_margin_bottom = self._previous_element.get_margin_bottom()
+            previous_element_y = self._previous_element.get_bounding_box().get_y()
+
+            # generate space
+            if isinstance(self._previous_element, Paragraph) or isinstance(
+                layout_element, Paragraph
+            ):
+                assert (
+                    self._multiplied_paragraph_spacing is not None
+                    or self._fixed_paragraph_spacing is not None
+                )
+                assert (
+                    self._multiplied_paragraph_spacing is None
+                    or self._multiplied_paragraph_spacing > 0
+                )
+                assert (
+                    self._fixed_paragraph_spacing is None
+                    or self._fixed_paragraph_spacing > 0
+                )
+                if self._multiplied_paragraph_spacing is not None:
+                    inter_paragraph_space = (
+                        layout_element.get_font_size()
+                        * self._multiplied_paragraph_spacing
+                    )
+                if self._fixed_paragraph_spacing is not None:
+                    inter_paragraph_space = self._fixed_paragraph_spacing
+
         # calculate next available rectangle
         available_height: Decimal = (
-            self._previous_element_y
+            previous_element_y
             - self._vertical_margin
-            - max(self._previous_element_margin_bottom, layout_element.get_margin_top())
+            - inter_paragraph_space
+            - max(previous_element_margin_bottom, layout_element.get_margin_top())
             - layout_element.get_margin_bottom()
         )
         assert self._page_height
@@ -166,8 +219,7 @@ class MultiColumnLayout(PageLayout):
             return self.add(layout_element)
 
         # calculate previous_y
-        self._previous_element_y = layout_rect.get_y()
-        self._previous_element_margin_bottom = layout_element.get_margin_bottom()
+        self._previous_element = layout_element
 
         # return
         return self

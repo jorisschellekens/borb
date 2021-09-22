@@ -32,7 +32,12 @@ class MoveToNextLine(CanvasOperator):
     def __init__(self):
         super().__init__("T*", 0)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the T* operator
         """
@@ -44,5 +49,7 @@ class MoveToNextLine(CanvasOperator):
         ), "Operator Td must be defined for operator T* to function."
         canvas = canvas_stream_processor.get_canvas()
         move_text_position_op.invoke(
-            canvas_stream_processor, [pDecimal(0), -canvas.graphics_state.leading]
+            canvas_stream_processor,
+            [pDecimal(0), -canvas.graphics_state.leading],
+            event_listeners,
         )

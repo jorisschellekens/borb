@@ -71,10 +71,7 @@ class XREFTransformer(Transformer):
 
         # add listener(s)
         for l in event_listeners:
-            context.root_object.add_event_listener(l)  # type: ignore [attr-defined]
-
-        # notify
-        context.root_object._event_occurred(BeginDocumentEvent())  # type: ignore [attr-defined]
+            l._event_occurred(BeginDocumentEvent())  # type: ignore [attr-defined]
 
         # remove prefix
         XREFTransformer._remove_prefix(context)
@@ -108,7 +105,7 @@ class XREFTransformer(Transformer):
             context.root_object["XRef"]["Trailer"],
             context.root_object,
             context,
-            [],
+            event_listeners,
         )
 
         assert trailer is not None
@@ -119,7 +116,8 @@ class XREFTransformer(Transformer):
                 xref["Trailer"].pop(k)
 
         # notify
-        context.root_object._event_occurred(EndDocumentEvent())  # type: ignore [attr-defined]
+        for l in event_listeners:
+            l._event_occurred(EndDocumentEvent())  # type: ignore [attr-defined]
 
         # return
         return context.root_object

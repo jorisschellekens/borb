@@ -8,6 +8,8 @@ and ICCBased colour spaces.
 from decimal import Decimal
 from typing import List
 
+import typing
+
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor, Separation
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
@@ -54,7 +56,12 @@ class SetColorStroking(CanvasOperator):
             return 1
         return self._number_of_operands
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the SCN operator
         """

@@ -287,7 +287,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
 
     def test_extract_text(self):
 
-        r: Rectangle = Rectangle(Decimal(280), Decimal(510), Decimal(200), Decimal(130))
+        r: Rectangle = Rectangle(Decimal(280), Decimal(500), Decimal(200), Decimal(130))
         l0: LocationFilter = LocationFilter(r)
         l1: SimpleTextExtraction = SimpleTextExtraction()
         l0.add_listener(l1)
@@ -321,7 +321,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         r: Rectangle = matches[0].get_bounding_boxes()[0]
 
         assert 298 <= r.get_x() <= 301
-        assert 620 <= r.get_y() <= 622
+        assert 594 <= r.get_y() <= 596
 
     def test_match_regular_expression_use_location(self):
 

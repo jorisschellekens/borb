@@ -91,10 +91,10 @@ class TestExtractRegularExpression(unittest.TestCase):
             doc = PDF.loads(in_file_handle, [l])
 
         bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
-        assert int(bb.x) == 197
-        assert int(bb.y) == 638
-        assert int(bb.width) == 75
-        assert int(bb.height) == 7
+        assert 196 <= int(bb.x) <= 198
+        assert 615 <= int(bb.y) <= 617
+        assert 74 <= int(bb.width) <= 76
+        assert 6 <= int(bb.height) <= 8
 
         bb = bb.grow(Decimal(2))
         doc.get_page(0).append_square_annotation(

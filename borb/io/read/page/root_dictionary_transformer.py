@@ -46,16 +46,12 @@ class RootDictionaryTransformer(Transformer):
         """
         assert isinstance(object_to_transform, Dictionary)
 
-        # add listener(s)
-        for l in event_listeners:
-            object_to_transform.add_event_listener(l)  # type: ignore [attr-defined]
-
         # convert using Dictionary transformer
         transformed_root_dictionary: Optional[Dictionary] = None
         for t in self.get_root_transformer().get_children():
             if isinstance(t, DictionaryTransformer):
                 transformed_root_dictionary = t.transform(
-                    object_to_transform, parent_object, context, []
+                    object_to_transform, parent_object, context, event_listeners
                 )
                 break
 

@@ -35,7 +35,12 @@ class CopyCommandOperator(CanvasOperator):
         """
         return self._operator_to_copy.get_number_of_operands()
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: typing.List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invokes this CanvasOperator
         """
@@ -99,7 +104,12 @@ class ShowTextMod(CanvasOperator):
             s, f
         )._write_text_bytes()
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: typing.List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invokes this CanvasOperator
         """
@@ -190,7 +200,12 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
             s, f
         )._write_text_bytes()
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: typing.List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the TJ operator
         """

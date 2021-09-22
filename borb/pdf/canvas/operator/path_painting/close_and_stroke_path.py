@@ -21,7 +21,12 @@ class CloseAndStrokePath(CanvasOperator):
     def __init__(self):
         super().__init__("s", 0)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the s operator
         """
@@ -29,10 +34,10 @@ class CloseAndStrokePath(CanvasOperator):
             CanvasOperator
         ] = canvas_stream_processor.get_operator("h")
         assert close_subpath_op
-        close_subpath_op.invoke(canvas_stream_processor, [])
+        close_subpath_op.invoke(canvas_stream_processor, [], event_listeners)
 
         stroke_path_op: typing.Optional[
             CanvasOperator
         ] = canvas_stream_processor.get_operator("S")
         assert stroke_path_op
-        stroke_path_op.invoke(canvas_stream_processor, [])
+        stroke_path_op.invoke(canvas_stream_processor, [], event_listeners)

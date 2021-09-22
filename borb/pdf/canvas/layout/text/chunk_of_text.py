@@ -44,6 +44,8 @@ class ChunkOfText(LayoutElement):
         margin_left: typing.Optional[Decimal] = None,
         vertical_alignment: Alignment = Alignment.TOP,
         horizontal_alignment: Alignment = Alignment.LEFT,
+        fixed_leading: typing.Optional[Decimal] = None,
+        multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,
     ):
@@ -69,12 +71,23 @@ class ChunkOfText(LayoutElement):
             parent=parent,
         )
         self._text = text
+
+        # font information
         if isinstance(font, str):
             self._font: Font = StandardType1Font(font)
             assert self._font
         else:
             self._font = font
         self._font_color = font_color
+
+        # leading
+        if fixed_leading is None and multiplied_leading is None:
+            multiplied_leading = Decimal(1.2)
+        assert fixed_leading is not None or multiplied_leading is not None
+        assert fixed_leading is None or fixed_leading > 0
+        assert multiplied_leading is None or multiplied_leading > 0
+        self._multiplied_leading: typing.Optional[Decimal] = multiplied_leading
+        self._fixed_leading: typing.Optional[Decimal] = fixed_leading
 
     def get_text(self) -> str:
         """
@@ -178,7 +191,15 @@ class ChunkOfText(LayoutElement):
     def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
         assert self._font
         rgb_color = self._font_color.to_rgb()
+
+        # line height
         assert self._font_size is not None
+        line_height: Decimal = self._font_size
+        if self._multiplied_leading is not None:
+            line_height *= self._multiplied_leading
+        if self._fixed_leading is not None:
+            line_height += self._fixed_leading
+
         content = """
             q
             BT
@@ -197,21 +218,22 @@ class ChunkOfText(LayoutElement):
             float(self._font_size),  # Tm
             float(self._font_size),  # Tm
             float(bounding_box.x),  # Tm
-            float(bounding_box.y + bounding_box.height - self._font_size),  # Tm
+            float(bounding_box.y + bounding_box.height - line_height),  # Tm
             self._write_text_bytes(),  # Tj
         )
         self._append_to_content_stream(page, content)
         encoded_bytes: bytes = [
             self._font.unicode_to_character_identifier(c) or 0 for c in self._text
         ]
+
+        # fmt: off
         layout_rect = Rectangle(
             bounding_box.x,
-            bounding_box.y + bounding_box.height - self._font_size,
-            GlyphLine(
-                encoded_bytes, self._font, self._font_size
-            ).get_width_in_text_space(),
-            self._font_size,
+            bounding_box.y + bounding_box.height - line_height,
+            GlyphLine(encoded_bytes, self._font, self._font_size).get_width_in_text_space(),
+            line_height,
         )
+        # fmt: on
 
         # set bounding box
         self.set_bounding_box(layout_rect)

@@ -11,8 +11,12 @@
 import io
 from typing import List, Union
 
-from borb.io.read.any_object_transformer import AnyObjectTransformer as ReadAnyObjectTransformer
-from borb.io.write.any_object_transformer import AnyObjectTransformer as WriteAnyObjectTransformer
+from borb.io.read.any_object_transformer import (
+    AnyObjectTransformer as ReadAnyObjectTransformer,
+)
+from borb.io.write.any_object_transformer import (
+    AnyObjectTransformer as WriteAnyObjectTransformer,
+)
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.document import Document
 

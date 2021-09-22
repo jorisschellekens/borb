@@ -224,7 +224,9 @@ class CanvasStreamProcessor:
         return None
 
     def read(
-        self, io_source: typing.Union[io.BytesIO, io.IOBase]
+        self,
+        io_source: typing.Union[io.BytesIO, io.IOBase],
+        event_listeners: typing.List["EventListener"] = [],
     ) -> "CanvasStreamProcessor":
         """
         This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
@@ -279,7 +281,7 @@ class CanvasStreamProcessor:
                 else:
                     calls_per_operator[on] += 1
                 delta: float = time.time()
-                operator.invoke(self, operands)
+                operator.invoke(self, operands, event_listeners)
                 delta = time.time() - delta
                 time_per_operator[on] += delta
 

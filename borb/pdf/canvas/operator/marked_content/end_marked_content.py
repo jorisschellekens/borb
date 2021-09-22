@@ -6,6 +6,8 @@ End a marked-content sequence begun by a BMC or BDC operator.
 """
 from typing import List
 
+import typing
+
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -18,7 +20,12 @@ class EndMarkedContent(CanvasOperator):
     def __init__(self):
         super().__init__("EMC", 0)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the EMC operator
         """

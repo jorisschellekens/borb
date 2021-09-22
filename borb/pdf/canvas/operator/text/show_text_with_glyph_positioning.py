@@ -32,7 +32,12 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
     def __init__(self):
         super().__init__("TJ", 1)
 
-    def invoke(self, canvas_stream_processor: "CanvasStreamProcessor", operands: List[AnyPDFType] = []) -> None:  # type: ignore [name-defined]
+    def invoke(
+        self,
+        canvas_stream_processor: "CanvasStreamProcessor",
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],
+    ) -> None:  # type: ignore [name-defined]
         """
         Invoke the TJ operator
         """
@@ -57,7 +62,8 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
                 assert isinstance(obj, String)
                 tri = ChunkOfTextRenderEvent(canvas.graphics_state, obj)
                 # render
-                canvas._event_occurred(tri)
+                for l in event_listeners:
+                    l._event_occurred(tri)
                 # update text rendering location
                 canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width
                 continue

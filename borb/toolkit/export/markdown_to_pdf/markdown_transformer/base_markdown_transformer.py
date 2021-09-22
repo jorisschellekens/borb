@@ -23,6 +23,7 @@ class MarkdownTransformerState:
     - the current position in the markdown str
     - etc
     """
+
     def __init__(self, markdown: str):
         self._markdown_string: str = markdown
         self._start_index: int = 0

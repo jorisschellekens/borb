@@ -65,6 +65,8 @@ class LineOfText(ChunkOfText):
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
+        fixed_leading: typing.Optional[Decimal] = None,
+        multiplied_leading: typing.Optional[Decimal] = None,
         parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
         super().__init__(
@@ -89,5 +91,7 @@ class LineOfText(ChunkOfText):
             background_color=background_color,
             vertical_alignment=vertical_alignment,
             horizontal_alignment=horizontal_alignment,
+            multiplied_leading=multiplied_leading,
+            fixed_leading=fixed_leading,
             parent=parent,
         )

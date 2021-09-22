@@ -15,8 +15,10 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.page.page import Page
 
 
 class Emoji(Image):
@@ -35,6 +37,28 @@ class Emoji(Image):
         self.set_font_size(Decimal(12))
         self._margin_top = Decimal(0)
         self._margin_bottom = Decimal(0)
+        self._fixed_leading: typing.Optional[Decimal] = None
+        self._multiplied_leading: typing.Optional[Decimal] = Decimal(1.2)
+
+    def set_fixed_leading(self, fixed_leading: Decimal) -> "Emoji":
+        """
+        This function sets the fixed_leading of this Emoji
+        :param fixed_leading:       the fixed_leading that will be used
+        :return:                    self
+        """
+        self._multiplied_leading = None
+        self._fixed_leading = fixed_leading
+        return self
+
+    def set_multiplied_leading(self, multiplied_leading: Decimal) -> "Emoji":
+        """
+        This function sets the multiplied_leading of this Emoji
+        :param multiplied_leading:  the multiplied_leading that will be used
+        :return:                    self
+        """
+        self._fixed_leading = None
+        self._multiplied_leading = multiplied_leading
+        return self
 
     def set_font_size(self, font_size: Decimal) -> "Emoji":
         """
@@ -46,6 +70,40 @@ class Emoji(Image):
         self._width = self._font_size
         self._height = self._font_size
         return self
+
+    def _do_layout_without_padding(
+        self, page: Page, bounding_box: Rectangle
+    ) -> Rectangle:
+
+        # determine leading
+        leading: Decimal = Decimal(0)
+        assert self._multiplied_leading is not None or self._fixed_leading is not None
+        if self._multiplied_leading is not None:
+            leading = self._font_size * (self._multiplied_leading - Decimal(1))
+        if self._fixed_leading is not None:
+            leading = self._fixed_leading
+
+        # delegate to Image
+        # modify bounding box (remove leading, since the default for Image is to add itself to the top of the bouding_box)
+        layout_rectangle: Rectangle = super(Emoji, self)._do_layout_without_padding(
+            page,
+            Rectangle(
+                bounding_box.get_x(),
+                bounding_box.get_y(),
+                bounding_box.get_width(),
+                bounding_box.get_height() - leading,
+            ),
+        )
+
+        # update bounding box (re-add leading)
+        layout_rectangle = Rectangle(
+            layout_rectangle.get_x(),
+            layout_rectangle.get_y(),
+            layout_rectangle.get_width(),
+            layout_rectangle.get_height() + leading,
+        )
+        # return
+        return layout_rectangle
 
 
 class Emojis(enum.Enum):

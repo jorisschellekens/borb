@@ -15,7 +15,7 @@ from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth
 
 
-class TestWriteNestedList(unittest.TestCase):
+class TestWriteNestedOrderedList(unittest.TestCase):
     """
     This test creates a PDF with a nested ordered list in it.
     """

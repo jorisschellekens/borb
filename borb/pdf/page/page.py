@@ -1541,7 +1541,7 @@ class Page(Dictionary):
         # apply redaction
         redacted_canvas_content: bytes = (
             RedactedCanvasStreamProcessor(self, Canvas(), rectangles_to_redact)
-            .read(io.BytesIO(self["Contents"]["DecodedBytes"]))
+            .read(io.BytesIO(self["Contents"]["DecodedBytes"]), [])
             .get_redacted_content()  # type: ignore [attr-defined]
         )
 
