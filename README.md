@@ -39,6 +39,10 @@ They include;
 
  and much more
  
+ There are also some great examples that use Google Colab, so that you can check out the functionality of `borb` without having to install anything on your system.
+
+[Check out the Google Colab examples repository here!](https://github.com/jorisschellekens/borb-google-colab-examples)
+ 
 ### 1.0 Installing `borb`
 
 `borb` can be installed using `pip`
