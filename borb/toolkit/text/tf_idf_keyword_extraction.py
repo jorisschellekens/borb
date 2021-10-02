@@ -24,7 +24,6 @@
 import re
 import typing
 from math import log
-from typing import List, Optional
 
 from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction

@@ -34,10 +34,9 @@ In a Pattern colour space, the initial colour shall be a pattern object that
 causes nothing to be painted.
 """
 import logging
+import typing
 from decimal import Decimal
 from typing import List
-
-import typing
 
 from borb.io.read.types import AnyPDFType, Name
 from borb.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor, Separation
@@ -84,10 +83,10 @@ class SetColorSpaceStroking(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the CS operator
         """

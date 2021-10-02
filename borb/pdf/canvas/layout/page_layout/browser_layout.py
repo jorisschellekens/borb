@@ -19,7 +19,6 @@ from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from borb.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.heading import Heading
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document

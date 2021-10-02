@@ -13,7 +13,7 @@ x ( y + height ) l
 h
 """
 import typing
-from typing import List
+from decimal import Decimal
 
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
@@ -38,21 +38,33 @@ class AppendRectangle(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the s operator
         """
+        x: Decimal = operands[0]
+        y: Decimal = operands[1]
+        width: Decimal = operands[2]
+        height: Decimal = operands[3]
+
         moveto_op: typing.Optional[
             CanvasOperator
         ] = canvas_stream_processor.get_operator("m")
+        moveto_op.invoke(canvas_stream_processor, [x, y], event_listeners)
+
         line_to_op: typing.Optional[
             CanvasOperator
         ] = canvas_stream_processor.get_operator("l")
+        line_to_op.invoke(canvas_stream_processor, [x + width, y], event_listeners)
+        line_to_op.invoke(
+            canvas_stream_processor, [x + width, y + height], event_listeners
+        )
+        line_to_op.invoke(canvas_stream_processor, [x, y + height], event_listeners)
+
         close_subpath_op: typing.Optional[
             CanvasOperator
         ] = canvas_stream_processor.get_operator("h")
-
-        # TODO
+        close_subpath_op.invoke(canvas_stream_processor, [], event_listeners)

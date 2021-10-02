@@ -11,8 +11,6 @@ from decimal import Decimal
 from borb.pdf.canvas.color.color import Color, RGBColor
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.event.event_listener import Event, EventListener
-from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
-from borb.pdf.canvas.geometry.rectangle import Rectangle
 
 
 class FontColorFilter(EventListener):

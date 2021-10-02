@@ -62,10 +62,6 @@ class FunctionDictionaryTransformer(Transformer):
                 "DecodedBytes"
             ]
 
-        # add listener(s)
-        for l in event_listeners:
-            transformed_object.add_event_listener(l)  # type: ignore [attr-defined]
-
         # resolve references in stream dictionary
         assert context is not None
         assert context.tokenizer is not None

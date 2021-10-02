@@ -8,7 +8,6 @@ also called grammatical tagging is the process of marking up a word in a text (c
 based on both its definition and its context. A simplified form of this is commonly taught to school-age children,
 in the identification of words as nouns, verbs, adjectives, adverbs, etc.
 """
-import json
 import re
 import typing
 from decimal import Decimal

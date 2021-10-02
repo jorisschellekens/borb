@@ -9,7 +9,7 @@ import typing
 from decimal import Decimal
 from math import ceil
 
-from borb.pdf.canvas.color.color import Color, HexColor, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
 from borb.pdf.page.page import Page

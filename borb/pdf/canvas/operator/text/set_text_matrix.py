@@ -6,10 +6,8 @@ Set the text matrix, Tm , and the text line matrix, Tlm :
 Tm = Tlm = [[a,b,0], [c,d,0],[e,f,1]]
 """
 import copy
-from decimal import Decimal
-from typing import List
-
 import typing
+from decimal import Decimal
 
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.geometry.matrix import Matrix
@@ -35,10 +33,10 @@ class SetTextMatrix(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the Tm operator
         """

@@ -19,7 +19,7 @@
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText

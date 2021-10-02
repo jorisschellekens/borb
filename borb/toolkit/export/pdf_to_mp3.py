@@ -9,12 +9,13 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
+from gtts import gTTS  # type: ignore [import]
+
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_paragraph_extraction import SimpleParagraphExtraction
-from gtts import gTTS  # type: ignore [import]
 
 
 class PDFToMP3(SimpleParagraphExtraction):

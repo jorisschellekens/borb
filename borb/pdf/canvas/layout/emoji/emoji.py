@@ -17,7 +17,6 @@ from pathlib import Path
 
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.image.image import Image
-from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.page.page import Page
 
 
@@ -77,6 +76,7 @@ class Emoji(Image):
 
         # determine leading
         leading: Decimal = Decimal(0)
+        assert self._font_size is not None
         assert self._multiplied_leading is not None or self._fixed_leading is not None
         if self._multiplied_leading is not None:
             leading = self._font_size * (self._multiplied_leading - Decimal(1))

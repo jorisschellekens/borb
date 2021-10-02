@@ -29,11 +29,14 @@ class ReadTransformerState:
         source: Optional[Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO]] = None,
         tokenizer: Optional[HighLevelTokenizer] = None,
         root_object: Optional[Any] = None,
+        password: typing.Optional[str] = None,
     ):
         self.source = source
         self.tokenizer = tokenizer
         self.root_object = root_object
         self.indirect_reference_chain: typing.Set[Reference] = set()
+        self.password: typing.Optional[str] = password
+        self.security_handler: typing.Optional[typing.Any] = None
 
 
 class Transformer:

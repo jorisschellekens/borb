@@ -23,10 +23,10 @@ class CloseAndStrokePath(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
-        operands: List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
+        operands: typing.List[AnyPDFType] = [],
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the s operator
         """

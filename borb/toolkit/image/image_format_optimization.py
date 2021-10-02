@@ -6,14 +6,14 @@ This implementation of EventListener resizes all Image objects on a Page
 to fit their actual dimensions (ensuring they are not bigger than they need to be)
 """
 import typing
-from typing import List
+
+from PIL import Image as PILImage  # type: ignore [import]
 
 from borb.io.read.types import Name, add_base_methods
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.page.page import Page
-from PIL import Image as PILImage  # type: ignore [import]
 
 
 class ImageFormatOptimization(EventListener):

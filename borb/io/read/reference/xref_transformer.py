@@ -10,8 +10,9 @@ import typing
 from decimal import Decimal
 from typing import Any, Optional, Union
 
-from borb.io.read.transformer import Transformer, ReadTransformerState
+from borb.io.read.encryption.standard_security_handler import StandardSecurityHandler
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
+from borb.io.read.transformer import Transformer, ReadTransformerState
 from borb.io.read.types import AnyPDFType, Dictionary, Name
 from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.document import Document
@@ -95,7 +96,36 @@ class XREFTransformer(Transformer):
 
         # check for password protected PDF
         if "Trailer" in xref and "Encrypt" in xref["Trailer"]:
-            # TODO
+
+            # transform \Encrypt dictionary
+            # fmt: off
+            xref["Trailer"][Name("Encrypt")] = self.get_root_transformer().transform(xref["Trailer"]["Encrypt"], xref["Trailer"], context, event_listeners)
+            # fmt: on
+
+            # build encryption handler
+            v: int = int(xref["Trailer"]["Encrypt"].get("V", Decimal(0)))
+            if v == 0:
+                assert False, (
+                    "V is 0. An algorithm that is undocumented. "
+                    "This value shall not be used."
+                )
+            if v == 1:
+                context.security_handler = StandardSecurityHandler(
+                    xref["Trailer"]["Encrypt"], context.password
+                )
+            if v == 2:
+                context.security_handler = StandardSecurityHandler(
+                    xref["Trailer"]["Encrypt"], context.password
+                )
+            if v == 3:
+                assert False, (
+                    "V is 3. (PDF 1.4) An unpublished algorithm that permits encryption key lengths ranging from 40 to 128 bits. "
+                    "This value shall not appear in a conforming PDF file."
+                )
+            if v == 4:
+                assert False, "V is 4. Currently unsupported encryption dictionary."
+
+            # raise error
             raise NotImplementedError(
                 "password-protected PDFs are currently not supported"
             )

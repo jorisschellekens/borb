@@ -8,7 +8,6 @@ CanvasOperator defines an interface to work on Canvas objects. Typically these o
 setting the active color and so on
 """
 import typing
-from typing import List
 
 from borb.io.read.types import AnyPDFType
 
@@ -39,10 +38,10 @@ class CanvasOperator:
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invokes this CanvasOperator
         """

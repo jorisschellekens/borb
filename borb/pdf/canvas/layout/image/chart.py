@@ -10,9 +10,10 @@ from decimal import Decimal
 from typing import Optional
 
 import matplotlib.pyplot as MatPlotLibPlot  # type: ignore [import]
+from PIL import Image as PILImage  # type: ignore [import]
+
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
-from PIL import Image as PILImage  # type: ignore [import]
 
 
 class Chart(Image):

@@ -9,10 +9,10 @@ of <table> elements in HTML
 import typing
 import zlib
 from decimal import Decimal
-from math import ceil, floor
+from math import floor
 
 from borb.io.read.types import Name
-from borb.pdf.canvas.color.color import Color, HexColor, X11Color
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.table.table import Table, TableCell

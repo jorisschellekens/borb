@@ -4,7 +4,6 @@
 """
 End a marked-content sequence begun by a BMC or BDC operator.
 """
-from typing import List
 
 import typing
 
@@ -22,10 +21,10 @@ class EndMarkedContent(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the EMC operator
         """

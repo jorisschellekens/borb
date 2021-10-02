@@ -6,9 +6,10 @@
 """
 from decimal import Decimal
 
+from PIL import Image as PILImage  # type: ignore [import]
+
 from borb.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from borb.pdf.canvas.event.event_listener import Event
-from PIL import Image as PILImage  # type: ignore [import]
 
 
 class ImageRenderEvent(Event):

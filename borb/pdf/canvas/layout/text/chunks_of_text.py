@@ -50,7 +50,8 @@ class Span(Paragraph):
         margin_right: typing.Optional[Decimal] = None,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
-        line_height: Decimal = Decimal(1),
+        fixed_leading: typing.Optional[Decimal] = None,
+        multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
@@ -84,8 +85,10 @@ class Span(Paragraph):
 
         # leading
         self._font_size: typing.Optional[Decimal] = None
-        assert line_height >= Decimal(1)
-        self._line_height: Decimal = line_height
+        if fixed_leading is None and multiplied_leading is None:
+            multiplied_leading = Decimal(1.2)
+        self._fixed_leading: typing.Optional[Decimal] = fixed_leading
+        self._multiplied_leading: typing.Optional[Decimal] = multiplied_leading
 
         # store chunks
         self._chunks_of_text: typing.List[ChunkOfText] = []
@@ -208,11 +211,18 @@ class Span(Paragraph):
                 max_x = max(r.x + r.width, max_x)
                 max_y = max(r.y + r.height, max_y)
 
-            # update line_y
-            line_y -= (
-                max([x.get_bounding_box().get_height() for x in line_of_chunks])  # type: ignore [union-attr]
-                * self._line_height
+            # line height
+            max_height: Decimal = max(
+                [x.get_bounding_box().get_height() for x in line_of_chunks]
             )
+            line_height: Decimal = max_height
+            if self._fixed_leading is not None:
+                line_height += self._fixed_leading
+            if self._multiplied_leading is not None:
+                line_height *= self._multiplied_leading
+
+            # update line_y
+            line_y -= line_height
 
         layout_rect = Rectangle(min_x, min_y, max_x - min_x, max_y - min_y)
 
@@ -249,7 +259,8 @@ class HeterogeneousParagraph(Span):
         margin_right: typing.Optional[Decimal] = None,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
-        line_height: Decimal = Decimal(1),
+        fixed_leading: typing.Optional[Decimal] = None,
+        multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
@@ -271,7 +282,8 @@ class HeterogeneousParagraph(Span):
             margin_right=margin_right,
             margin_bottom=margin_bottom,
             margin_left=margin_left,
-            line_height=line_height,
+            fixed_leading=fixed_leading,
+            multiplied_leading=multiplied_leading,
             background_color=background_color,
             parent=parent,
         )

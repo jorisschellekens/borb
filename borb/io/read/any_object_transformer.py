@@ -29,9 +29,9 @@ from borb.io.read.page.page_dictionary_transformer import PageDictionaryTransfor
 from borb.io.read.page.root_dictionary_transformer import RootDictionaryTransformer
 from borb.io.read.primitive.number_transformer import NumberTransformer
 from borb.io.read.primitive.string_transformer import StringTransformer
-from borb.io.read.transformer import Transformer, ReadTransformerState
 from borb.io.read.reference.reference_transformer import ReferenceTransformer
 from borb.io.read.reference.xref_transformer import XREFTransformer
+from borb.io.read.transformer import Transformer, ReadTransformerState
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.event.event_listener import EventListener
 

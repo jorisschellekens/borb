@@ -1,7 +1,3 @@
-from borb.toolkit.export.markdown_to_pdf.read.transformer import (
-    Transformer,
-    TransformerState,
-)
 from borb.toolkit.export.markdown_to_pdf.read.heading.alternate_syntax_heading_transformer import (
     AlternateSyntaxHeadingTransformer,
 )
@@ -31,6 +27,10 @@ from borb.toolkit.export.markdown_to_pdf.read.text.indented_code_snippet_transfo
 )
 from borb.toolkit.export.markdown_to_pdf.read.text.paragraph_transformer import (
     ParagraphTransformer,
+)
+from borb.toolkit.export.markdown_to_pdf.read.transformer import (
+    Transformer,
+    TransformerState,
 )
 
 

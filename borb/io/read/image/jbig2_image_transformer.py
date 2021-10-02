@@ -9,10 +9,11 @@ import logging
 import typing
 from typing import Any, Optional, Union
 
+from PIL import Image  # type: ignore [import]
+
 from borb.io.read.transformer import Transformer, ReadTransformerState
 from borb.io.read.types import AnyPDFType, Stream, add_base_methods
 from borb.pdf.canvas.event.event_listener import EventListener
-from PIL import Image  # type: ignore [import]
 
 logger = logging.getLogger(__name__)
 
@@ -75,10 +76,6 @@ class JBIG2ImageTransformer(Transformer):
 
         # set parent
         tmp.set_parent(parent_object)
-
-        # add event listeners
-        for l in event_listeners:
-            tmp.add_event_listener(l)
 
         # return
         return tmp

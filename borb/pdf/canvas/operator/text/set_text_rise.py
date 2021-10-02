@@ -5,10 +5,8 @@
 Set the text rise, T rise , to rise, which shall be a number expressed in
 unscaled text space units. Initial value: 0.
 """
-from decimal import Decimal
-from typing import List
-
 import typing
+from decimal import Decimal
 
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
@@ -25,10 +23,10 @@ class SetTextRise(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the Ts operator
         """

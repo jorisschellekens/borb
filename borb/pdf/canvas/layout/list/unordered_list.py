@@ -8,11 +8,9 @@ import typing
 from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color, HexColor, X11Color
-from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.list.list import List
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from borb.pdf.page.page import Page
 
 
 class UnorderedList(List):

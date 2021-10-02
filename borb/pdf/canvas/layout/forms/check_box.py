@@ -5,10 +5,10 @@
 This implementation of FormField represents a text field.
 """
 import copy
+import typing
 import zlib
 
-import typing
-
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import (
     Dictionary,
     Name,
@@ -18,7 +18,6 @@ from borb.io.read.types import (
     Stream,
     Boolean,
 )
-from borb.io.read.types import Decimal as bDecimal
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle

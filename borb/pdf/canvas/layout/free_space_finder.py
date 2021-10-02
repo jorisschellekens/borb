@@ -9,7 +9,6 @@ from decimal import Decimal
 from math import ceil
 from pathlib import Path
 
-
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.event.event_listener import Event, EventListener

@@ -10,11 +10,12 @@ from pathlib import Path
 from typing import Optional
 
 import requests
+from PIL import Image as PILImage  # type: ignore [import]
+
 from borb.io.read.types import Dictionary, Name, add_base_methods
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
 from borb.pdf.page.page import Page
-from PIL import Image as PILImage  # type: ignore [import]
 
 
 class Image(LayoutElement):

@@ -118,7 +118,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             Paragraph(
                 "Timing Information",
                 font_color=HexColor("72A276"),
-                font_size=Decimal(18.2),
+                font_size=Decimal(14),
                 font="Helvetica-Bold",
             )
         )
@@ -126,7 +126,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
             Paragraph(
                 "Failure Information",
                 font_color=HexColor("72A276"),
-                font_size=Decimal(18.2),
+                font_size=Decimal(14),
                 font="Helvetica-Bold",
             )
         )
@@ -239,7 +239,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
                         "Most Error-prone Documents",
                         font_color=HexColor("72A276"),
                         font="Helvetica-Bold",
-                        font_size=Decimal(18.2),
+                        font_size=Decimal(14.2),
                     ),
                     col_span=2,
                 )
@@ -267,7 +267,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
                     Paragraph(
                         "Slowest Documents",
                         font_color=HexColor("72A276"),
-                        font_size=Decimal(18.2),
+                        font_size=Decimal(14.2),
                         font="Helvetica-Bold",
                     ),
                     col_span=2,
@@ -296,7 +296,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
                     Paragraph(
                         "Fastest Documents",
                         font_color=HexColor("72A276"),
-                        font_size=Decimal(18.2),
+                        font_size=Decimal(14),
                         font="Helvetica-Bold",
                     ),
                     col_span=2,

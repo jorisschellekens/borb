@@ -8,6 +8,9 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
+from PIL import Image as PILImage  # type: ignore [import]
+from PIL import ImageDraw
+
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
@@ -17,8 +20,6 @@ from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.page.page import Page
-from PIL import Image as PILImage  # type: ignore [import]
-from PIL import ImageDraw
 
 try:
     import pytesseract  # type: ignore [import]

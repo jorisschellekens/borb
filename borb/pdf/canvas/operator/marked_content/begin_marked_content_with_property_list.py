@@ -10,8 +10,6 @@ associated with it in the Properties subdictionary of the current resource
 dictionary (see 14.6.2, “Property Lists”).
 """
 
-from typing import List
-
 import typing
 
 from borb.io.read.types import AnyPDFType, Name
@@ -33,10 +31,10 @@ class BeginMarkedContentWithPropertyList(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the BDC operator
         """

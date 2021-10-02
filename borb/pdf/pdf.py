@@ -11,9 +11,12 @@
 import io
 from typing import List, Union
 
+import typing
+
 from borb.io.read.any_object_transformer import (
     AnyObjectTransformer as ReadAnyObjectTransformer,
 )
+from borb.io.read.transformer import ReadTransformerState
 from borb.io.write.any_object_transformer import (
     AnyObjectTransformer as WriteAnyObjectTransformer,
 )
@@ -41,13 +44,17 @@ class PDF:
     def loads(
         file: Union[io.BufferedIOBase, io.RawIOBase],
         event_listeners: List[EventListener] = [],
+        password: typing.Optional[str] = None,
     ) -> Document:
         """
         This function reads a byte-stream input (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         and returns a Document.
         """
         return ReadAnyObjectTransformer().transform(
-            file, parent_object=None, context=None, event_listeners=event_listeners
+            file,
+            parent_object=None,
+            context=ReadTransformerState(password=password),
+            event_listeners=event_listeners,
         )
 
     @staticmethod

@@ -7,10 +7,8 @@
     operands specify a matrix, they shall be written as six separate
     numbers, not as an array.
 """
-from decimal import Decimal
-from typing import List
-
 import typing
+from decimal import Decimal
 
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.geometry.matrix import Matrix
@@ -30,10 +28,10 @@ class ModifyTransformationMatrix(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the cm operator
         """

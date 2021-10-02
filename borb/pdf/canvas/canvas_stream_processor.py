@@ -226,8 +226,8 @@ class CanvasStreamProcessor:
     def read(
         self,
         io_source: typing.Union[io.BytesIO, io.IOBase],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> "CanvasStreamProcessor":
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> "CanvasStreamProcessor":  # type: ignore [name-defined]
         """
         This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
         """

@@ -7,7 +7,6 @@ segment from the current point to the starting point of the
 subpath. If the current subpath is already closed, h shall do
 nothing.
 """
-from typing import List
 
 import typing
 
@@ -34,10 +33,10 @@ class CloseSubpath(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the h operator
         """

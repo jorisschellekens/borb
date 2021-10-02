@@ -8,6 +8,8 @@ import typing
 from decimal import Decimal
 from typing import Optional
 
+from PIL.Image import Image  # type: ignore [import]
+
 from borb.pdf.canvas.color.color import RGBColor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
@@ -15,7 +17,6 @@ from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.page.page import Page
-from PIL.Image import Image  # type: ignore [import]
 
 
 class ColorSpectrumExtraction(EventListener):

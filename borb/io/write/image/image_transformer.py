@@ -8,6 +8,8 @@ import io
 import typing
 from typing import Optional
 
+from PIL import Image as PILImage  # type: ignore [import]
+
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Name, Reference, Stream, add_base_methods
@@ -15,7 +17,6 @@ from borb.io.write.transformer import (
     Transformer,
     WriteTransformerState,
 )
-from PIL import Image as PILImage  # type: ignore [import]
 
 
 class ImageTransformer(Transformer):

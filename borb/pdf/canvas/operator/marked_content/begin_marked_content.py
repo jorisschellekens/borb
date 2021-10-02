@@ -6,7 +6,6 @@ Begin a marked-content sequence terminated by a balancing EMC
 operator. tag shall be a name object indicating the role or significance of
 the sequence.
 """
-from typing import List
 
 import typing
 
@@ -26,10 +25,10 @@ class BeginMarkedContent(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the BMC operator
         """

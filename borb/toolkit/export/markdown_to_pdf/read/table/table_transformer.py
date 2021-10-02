@@ -7,14 +7,12 @@ This implementation of BaseMarkdownTransformer handles tables
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
-from borb.pdf.canvas.layout.table.table import Table, TableCell
+from borb.pdf.canvas.layout.table.table import Table
 from borb.toolkit.export.markdown_to_pdf.read.transformer import (
     Transformer,
     TransformerState,

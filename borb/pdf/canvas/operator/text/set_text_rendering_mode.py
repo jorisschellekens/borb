@@ -5,7 +5,6 @@
 Set the text rendering mode, T mode , to render, which shall be an integer.
 Initial value: 0.
 """
-from typing import List
 
 import typing
 
@@ -24,10 +23,10 @@ class SetTextRenderingMode(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the Tr operator
         """

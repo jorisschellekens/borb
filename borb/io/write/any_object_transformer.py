@@ -10,6 +10,7 @@ from typing import Optional, Union
 
 from borb.io.read.types import AnyPDFType
 from borb.io.write.ascii_art.ascii_art_transformer import ASCIIArtTransformer
+from borb.io.write.document.document_transformer import DocumentTransformer
 from borb.io.write.image.image_transformer import ImageTransformer
 from borb.io.write.object.array_transformer import ArrayTransformer
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
@@ -26,7 +27,6 @@ from borb.io.write.transformer import (
     Transformer,
     WriteTransformerState,
 )
-from borb.io.write.document.document_transformer import DocumentTransformer
 from borb.io.write.xmp.xmp_transformer import XMPTransformer
 
 

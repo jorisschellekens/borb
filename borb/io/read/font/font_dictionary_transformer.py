@@ -106,10 +106,6 @@ class FontDictionaryTransformer(Transformer):
         assert font_obj is not None
         font_obj.set_parent(parent_object)  # type: ignore [union-attr]
 
-        # add listener(s)
-        for l in event_listeners:
-            font_obj.add_event_listener(l)  # type: ignore [union-attr]
-
         # convert key/value pair(s)
         assert isinstance(object_to_transform, Dictionary)
         for k, v in object_to_transform.items():

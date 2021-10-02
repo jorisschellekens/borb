@@ -6,7 +6,6 @@ Restore the graphics state by removing the most recently saved
 state from the stack and making it the current state (see 8.4.2,
 "Graphics State Stack").
 """
-from typing import List
 
 import typing
 
@@ -26,10 +25,10 @@ class PopGraphicsState(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],
-    ) -> None:  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+    ) -> None:
         """
         Invoke the Q operator
         """

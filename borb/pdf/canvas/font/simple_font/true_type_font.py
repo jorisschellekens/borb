@@ -11,14 +11,15 @@ import zlib
 from decimal import Decimal
 from pathlib import Path
 
+from fontTools.agl import toUnicode  # type: ignore [import]
+from fontTools.pens.boundsPen import BoundsPen  # type: ignore [import]
+from fontTools.ttLib import TTFont  # type: ignore [import]
+
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.font.composite_font.cid_font_type_2 import CIDType2Font
 from borb.pdf.canvas.font.composite_font.font_type_0 import Type0Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import Type1Font
-from fontTools.agl import toUnicode  # type: ignore [import]
-from fontTools.pens.boundsPen import BoundsPen  # type: ignore [import]
-from fontTools.ttLib import TTFont  # type: ignore [import]
 
 
 class TrueTypeFont(Type1Font):
