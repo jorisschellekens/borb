@@ -7,6 +7,7 @@ It has convenience methods to calculate width and height, perform scaling, etc
 """
 import typing
 from decimal import Decimal
+from math import sqrt
 from typing import Tuple
 
 from borb.pdf.canvas.color.color import Color, HexColor, X11Color
@@ -29,6 +30,7 @@ class Shape(LayoutElement):
         line_width: Decimal = Decimal(0),
         horizontal_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
+        auto_close_shape: bool = False,
     ):
         super(Shape, self).__init__(
             horizontal_alignment=horizontal_alignment,
@@ -40,6 +42,17 @@ class Shape(LayoutElement):
         self._fill_color = fill_color
         assert line_width >= Decimal(0)
         self._line_width = line_width
+
+        # close shape if desired (and needed)
+        if (
+            auto_close_shape
+            and sqrt(
+                (points[0][0] - points[-1][0]) ** 2
+                + (points[0][1] - points[-1][1]) ** 2
+            )
+            > 0.00000001
+        ):
+            points.append(points[0])
 
     def get_width(self) -> Decimal:
         """
@@ -129,7 +142,7 @@ class Shape(LayoutElement):
             self._line_width,
         )
         content += "%f %f m " % (self._points[0][0], self._points[0][1])
-        for p in self._points:
+        for p in self._points[1:]:
             content += " %f %f l " % (p[0], p[1])
 
         operator: str = "B"

@@ -6,7 +6,6 @@ Close and stroke the path. This operator shall have the same effect as the
 sequence h S.
 """
 import typing
-from typing import List
 
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator

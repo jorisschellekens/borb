@@ -1,9 +1,8 @@
 import datetime
+import typing
 import unittest
 from decimal import Decimal
 from pathlib import Path
-
-import typing
 
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle

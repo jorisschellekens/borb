@@ -9,9 +9,8 @@
     PDF was standardized as ISO 32000 in 2008, and no longer requires any royalties for its implementation.
 """
 import io
-from typing import List, Union
-
 import typing
+from typing import List, Union
 
 from borb.io.read.any_object_transformer import (
     AnyObjectTransformer as ReadAnyObjectTransformer,

@@ -94,18 +94,16 @@ class DocumentTransformer(Transformer):
         )
 
         # set OutputIntents
-        object_to_transform["XRef"]["Trailer"]["Root"][Name("OutputIntents")] = List()
+        # fmt: off
         rgb_output_intent: Dictionary = Dictionary()
         rgb_output_intent[Name("Type")] = Name("OutputIntent")
         rgb_output_intent[Name("S")] = Name("GTS_PDFA1")
         rgb_output_intent[Name("OutputConditionIdentifier")] = String("sRGB")
         rgb_output_intent[Name("RegistryName")] = String("http://www.color.org")
-        rgb_output_intent[Name("Info")] = String(
-            "Creator:HP Manufacturer:IEC Model:sRGB"
-        )
-        object_to_transform["XRef"]["Trailer"]["Root"][Name("OutputIntents")].append(
-            rgb_output_intent
-        )
+        rgb_output_intent[Name("Info")] = String("Creator:HP Manufacturer:IEC Model:sRGB")
+        # object_to_transform["XRef"]["Trailer"]["Root"][Name("OutputIntents")] = List()
+        # object_to_transform["XRef"]["Trailer"]["Root"][Name("OutputIntents")].append(rgb_output_intent)
+        # fmt: on
 
         # transform XREF
         self.get_root_transformer().transform(object_to_transform["XRef"], context)

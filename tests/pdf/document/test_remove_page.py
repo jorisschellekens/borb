@@ -4,7 +4,6 @@ from decimal import Decimal
 from pathlib import Path
 
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,

@@ -16,7 +16,6 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 

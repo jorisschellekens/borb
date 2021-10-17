@@ -124,7 +124,7 @@ class TestWriteRadarPlot(unittest.TestCase):
             PDF.dumps(pdf_file_handle, pdf)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output.pdf", 0.0004)
+        compare_visually_to_ground_truth(self.output_dir / "output.pdf")
 
 
 if __name__ == "__main__":

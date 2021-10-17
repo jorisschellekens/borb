@@ -1,9 +1,8 @@
 import datetime
 import random
+import typing
 import unittest
 from decimal import Decimal
-
-import typing
 from pathlib import Path
 
 from borb.pdf.canvas.color.color import HexColor, X11Color

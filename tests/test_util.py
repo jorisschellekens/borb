@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-import typing
 from PIL import Image as PILImage
 
 

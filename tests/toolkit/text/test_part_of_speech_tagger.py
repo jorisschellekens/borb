@@ -1,7 +1,6 @@
 import json
-import unittest
-
 import typing
+import unittest
 from pathlib import Path
 
 from borb.toolkit.text.bigram_part_of_speech_tagger import BigramPartOfSpeechTagger

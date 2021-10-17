@@ -11,6 +11,9 @@ from borb.toolkit.export.markdown_to_pdf.markdown_transformer.heading.heading_tr
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.heading.horizontal_rule_transformer import (
     HorizontalRuleTransformer,
 )
+from borb.toolkit.export.markdown_to_pdf.markdown_transformer.image.image_transformer import (
+    ImageTransformer,
+)
 from borb.toolkit.export.markdown_to_pdf.markdown_transformer.list.ordered_list_transformer import (
     OrderedListTransformer,
 )
@@ -47,7 +50,8 @@ class AnyMarkdownTransformer(BaseMarkdownTransformer):
             .add_child_transformer(UnorderedListTransformer())          \
             .add_child_transformer(OrderedListTransformer())            \
             .add_child_transformer(TableTransformer())                  \
-            .add_child_transformer(ParagraphTransformer())
+            .add_child_transformer(ParagraphTransformer()) \
+            .add_child_transformer(ImageTransformer())
         # fmt: on
 
     def _can_transform(self, context: MarkdownTransformerState) -> bool:

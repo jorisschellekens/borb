@@ -1,7 +1,6 @@
+import typing
 import unittest
 from hashlib import md5
-
-import typing
 
 
 class TestMD5(unittest.TestCase):

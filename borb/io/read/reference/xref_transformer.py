@@ -104,6 +104,11 @@ class XREFTransformer(Transformer):
 
             # build encryption handler
             v: int = int(xref["Trailer"]["Encrypt"].get("V", Decimal(0)))
+            r: int = int(xref["Trailer"]["Encrypt"]["R"])
+            if r != 2 and r != 3:
+                assert (
+                    False
+                ), "R is not 2 or 3. A number specifying which revision of the standard security handler shall be used to interpret this dictionary."
             if v == 0:
                 assert False, (
                     "V is 0. An algorithm that is undocumented. "

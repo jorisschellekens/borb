@@ -1,30 +1,21 @@
 import unittest
-from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf.canvas.color.color import X11Color, HexColor
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.forms.country_drop_down_list import CountryDropDownList
 from borb.pdf.canvas.layout.forms.drop_down_list import DropDownList
 from borb.pdf.canvas.layout.forms.text_field import TextField
-from borb.pdf.canvas.layout.page_layout.browser_layout import BrowserLayout
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
     FixedColumnWidthTable,
 )
-from borb.pdf.canvas.layout.table.flexible_column_width_table import (
-    FlexibleColumnWidthTable,
-)
-from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from borb.toolkit.diff.pdf_diff import PDFDiff
 from tests.test_util import compare_visually_to_ground_truth
 
 

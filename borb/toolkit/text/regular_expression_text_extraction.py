@@ -39,7 +39,7 @@ class PDFMatch:
         self._page_nr: int = page_nr
         self._glyph_bounding_boxes: typing.List["Rectangle"] = glyph_bounding_boxes
         self._re_match: re.Match = re_match
-        # these fields are kept public to align with the existing python re.match object
+        # these fields are kept public to align with the existing python re.Match object
         self.pos = self._re_match.pos
         self.endpos = self._re_match.endpos
         self.lastindex = self._re_match.lastindex

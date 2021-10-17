@@ -45,6 +45,9 @@ class TestExportMarkdownToPDF(unittest.TestCase):
     def test_document_009(self):
         self._test_document("example-markdown-input-009.md")
 
+    def test_document_010(self):
+        self._test_document("example-markdown-input-010.md")
+
     def _test_document(self, file_to_convert: str):
 
         # create output directory if it does not exist yet

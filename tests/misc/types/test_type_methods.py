@@ -2,7 +2,6 @@ import unittest
 
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
-from borb.toolkit.export.pdf_to_svg import PDFToSVG
 
 
 class TestTypeMethods(unittest.TestCase):

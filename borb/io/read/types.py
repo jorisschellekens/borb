@@ -529,9 +529,8 @@ class String:
     described in this sub-clause. Balanced pairs of parentheses within a string require no special treatment.
     """
 
-    def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
+    def __init__(self, text: str):  # type: ignore [name-defined]
         self._text = text
-        self._encoding = encoding
         add_base_methods(self)
 
     def __eq__(self, other):
@@ -640,10 +639,7 @@ class String:
         This function returns the bytes that represent the content (as it was present in the PDF)
         of this String
         """
-        if self._encoding is None:
-            return [b for b in self.get_content_bytes()]
-        # TODO: password protected ??
-        return None
+        return [b for b in self.get_content_bytes()]
 
 
 class HexadecimalString(String):

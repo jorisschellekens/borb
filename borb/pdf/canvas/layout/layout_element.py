@@ -10,7 +10,7 @@ import zlib
 from decimal import Decimal
 from enum import Enum
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as pDecimal, Dictionary
 from borb.io.read.types import Name, Stream
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -159,22 +159,38 @@ class LayoutElement:
         return self.bounding_box
 
     def _initialize_page_content_stream(self, page: "Page"):  # type: ignore[name-defined]
-        if "Contents" in page:
-            return
 
         # build content stream object
-        content_stream = Stream()
-        content_stream[Name("DecodedBytes")] = b""
-        content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Filter")] = Name("FlateDecode")
-        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
+        if "Contents" not in page:
+            content_stream = Stream()
+            content_stream[Name("DecodedBytes")] = b""
+            content_stream[Name("Bytes")] = zlib.compress(
+                content_stream["DecodedBytes"], 9
+            )
+            content_stream[Name("Filter")] = Name("FlateDecode")
+            content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
 
-        # set content of page
-        page[Name("Contents")] = content_stream
+            # set content of page
+            page[Name("Contents")] = content_stream
+
+        # set Resources
+        if "Resources" not in page:
+            page[Name("Resources")] = Dictionary()
 
     def _append_to_content_stream(self, page: "Page", instructions: str):  # type: ignore[name-defined]
         self._initialize_page_content_stream(page)
         content_stream = page["Contents"]
+
+        # prepend whitespace if needed
+        if len(content_stream[Name("DecodedBytes")]) != 0:
+            decoded_bytes_last_char: str = str(
+                content_stream["DecodedBytes"][-1:], encoding="latin1"
+            )
+            if decoded_bytes_last_char not in [" ", "\t", "\n"] and instructions[
+                0
+            ] not in [" ", "\t", "\n"]:
+                instructions = " " + instructions
+
         content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
         content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))

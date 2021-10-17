@@ -1,4 +1,3 @@
-import os
 import unittest
 from decimal import Decimal
 from math import ceil

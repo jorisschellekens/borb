@@ -3,8 +3,6 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-import typing
-
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -12,7 +10,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
-from borb.pdf.page.page import DestinationType, Page
+from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 
 unittest.TestLoader.sortTestMethodsUsing = None

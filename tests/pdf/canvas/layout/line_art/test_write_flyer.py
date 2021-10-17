@@ -1,7 +1,6 @@
+import typing
 import unittest
 from pathlib import Path
-
-import typing
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor
@@ -22,7 +21,6 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
-
 from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth
@@ -114,6 +112,7 @@ class TestWriteFlyer(unittest.TestCase):
                 points=[(x + M, y), (x + M, y + M), (x, y + M)],
                 stroke_color=rg,
                 fill_color=rg,
+                auto_close_shape=True,
             ).layout(page, Rectangle(x, y, M, M))
         for i in range(0, N - 1):
             for j in range(0, N - 1):
@@ -126,6 +125,7 @@ class TestWriteFlyer(unittest.TestCase):
                     points=[(x, y), (x + M, y), (x + M, y + M), (x, y + M)],
                     stroke_color=rg,
                     fill_color=rg,
+                    auto_close_shape=True,
                 ).layout(page, Rectangle(x, y, M, M))
 
     def test_create_flyer(self):

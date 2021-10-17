@@ -1,9 +1,6 @@
-# :mega: borb release 2.0.11
+# :mega: borb release 2.0.12
 
 This release features:
 
-- minor bugfix to previous `add_event_listener` - refactor
-- First effort to implement PDF encryption
-  - Currently support for `StandardSecurityHandler`
-    - RC4
-    - MD5
+- Minor bugfix to `LayoutElement` to ensure `\Resources` dictionary gets initialized.
+- Added asserts to ensure password-protected documents are handled properly.
