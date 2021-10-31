@@ -176,11 +176,9 @@ class XMPDocumentInfo(DocumentInfo):
         readable form (see 7.9.4, “Dates”).
         """
         try:
-            return (
-                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
-                .findall(".//{*}CreateDate")[0]
-                .text
-            )
+            return next(iter([v for k, v in
+                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
+                   k.endswith('CreateDate')]), None)
         except:
             return None
 
@@ -191,25 +189,31 @@ class XMPDocumentInfo(DocumentInfo):
         most recently modified, in human-readable form (see 7.9.4, “Dates”).
         """
         try:
-            return (
-                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
-                .findall(".//{*}ModifyDate")[0]
-                .text
-            )
+            return next(iter([v for k, v in
+                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
+                   k.endswith('ModifyDate')]), None)
         except:
             return None
 
-    def get_metadata_date(self) -> Optional[str]:
-        """
-        (Optional) The date and time the metadata for this document was created, in human-
-        readable form (see 7.9.4, “Dates”).
-        """
+    def get_author(self) -> Optional[str]:
         try:
-            return (
-                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
-                .findall(".//{*}MetadataDate")[0]
-                .text
-            )
+            return self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}creator')[0][0][0].text
+        except:
+            return None
+
+    def get_producer(self) -> Optional[str]:
+        try:
+            return next(iter([v for k, v in
+                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
+                   k.endswith('Producer')]), None)
+        except:
+            return None
+
+    def get_keywords(self) -> Optional[str]:
+        try:
+            return next(iter([v for k, v in
+                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
+                   k.endswith('Keywords')]), None)
         except:
             return None
 
@@ -218,11 +222,7 @@ class XMPDocumentInfo(DocumentInfo):
         (Optional; PDF 1.1) The document’s title.
         """
         try:
-            return (
-                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
-                .findall(".//{*}title")[0]
-                .text
-            )
+            return self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall(".//{*}title")[0][0][0].text
         except:
             return None
 
@@ -233,9 +233,32 @@ class XMPDocumentInfo(DocumentInfo):
         from which it was converted.
         """
         try:
+            return next(iter([v for k, v in
+                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
+                   k.endswith('CreatorTool')]), None)
+        except:
+            return None
+
+    def get_subject(self) -> Optional[str]:
+        # TODO
+        try:
+            return self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall(".//{*}description")[0][0][0].text
+        except:
+            return None
+
+    #
+    # extra properties
+    #
+
+    def get_metadata_date(self) -> Optional[str]:
+        """
+        (Optional) The date and time the metadata for this document was created, in human-
+        readable form (see 7.9.4, “Dates”).
+        """
+        try:
             return (
                 self._document["XRef"]["Trailer"]["Root"]["Metadata"]
-                .findall(".//{*}creator")[0]
+                .findall(".//{*}MetadataDate")[0]
                 .text
             )
         except:

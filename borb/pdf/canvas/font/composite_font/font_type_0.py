@@ -39,9 +39,10 @@ class Type0Font(Font):
         assert "DecodedBytes" in self["ToUnicode"]
         cmap_bytes: bytes = self["ToUnicode"]["DecodedBytes"]
         self._character_identifier_to_unicode_lookup = self._read_cmap(cmap_bytes)
-        self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {
-            v: k for k, v in self._character_identifier_to_unicode_lookup.items()
-        }
+        self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {}
+        for k, v in self._character_identifier_to_unicode_lookup.items():
+            if v not in self._unicode_lookup_to_character_identifier:
+                self._unicode_lookup_to_character_identifier[v] = k
 
     def _read_encoding_cmap(self):
         if len(self._byte_to_char_identifier) > 0:

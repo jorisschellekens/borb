@@ -46,15 +46,18 @@ class XREFTransformer(Transformer):
         # we do this upfront because the normal write_dictionary_transformer will write the dictionary first,
         # and the references afterwards. This would cause the \Trailer dictionary to not be the last.
         trailer_out = Dictionary()
+
         # /Root
         trailer_out[Name("Root")] = self.get_reference(
             object_to_transform["Trailer"]["Root"], context
         )
+
         # /Info
         if "Info" in object_to_transform["Trailer"]:
             trailer_out[Name("Info")] = self.get_reference(
                 object_to_transform["Trailer"]["Info"], context
             )
+
         # /Size
         if (
             "Trailer" in object_to_transform
@@ -65,20 +68,21 @@ class XREFTransformer(Transformer):
             trailer_out[Name("Size")] = Decimal(
                 0
             )  # we'll recalculate this later anyway
+
         # /ID
         if "ID" in object_to_transform["Trailer"]:
             trailer_out[Name("ID")] = object_to_transform["Trailer"]["ID"]
-
-        # write /Root object
-        self.get_root_transformer().transform(
-            object_to_transform["Trailer"]["Root"], context
-        )
 
         # write /Info object
         if "Info" in object_to_transform["Trailer"]:
             self.get_root_transformer().transform(
                 object_to_transform["Trailer"]["Info"], context
             )
+
+        # write /Root object
+        self.get_root_transformer().transform(
+            object_to_transform["Trailer"]["Root"], context
+        )
 
         # write /XREF
         start_of_xref = context.destination.tell()

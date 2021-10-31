@@ -183,13 +183,11 @@ class LayoutElement:
 
         # prepend whitespace if needed
         if len(content_stream[Name("DecodedBytes")]) != 0:
-            decoded_bytes_last_char: str = str(
-                content_stream["DecodedBytes"][-1:], encoding="latin1"
-            )
-            if decoded_bytes_last_char not in [" ", "\t", "\n"] and instructions[
-                0
-            ] not in [" ", "\t", "\n"]:
+            # fmt: off
+            decoded_bytes_last_char: str = str(content_stream["DecodedBytes"][-1:], encoding="latin1")
+            if decoded_bytes_last_char not in [" ", "\t", "\n"] and instructions[0] not in [" ", "\t", "\n"]:
                 instructions = " " + instructions
+            # fmt: on
 
         content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)

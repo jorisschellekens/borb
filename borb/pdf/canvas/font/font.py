@@ -104,10 +104,10 @@ class Font(Dictionary):
                 return width
         # 2. MissingWidth
         if "FontDescriptor" in self and "MissingWidth" in self["FontDescriptor"]:
-            return self["FontDescriptor"]["MissingWidth"]
+            return self["FontDescriptor"]["MissingWidth"] / Decimal(2)
         # 3. AvgWidth
         if "FontDescriptor" in self and "AvgWidth" in self["FontDescriptor"]:
-            return self["FontDescriptor"]["AvgWidth"]
+            return self["FontDescriptor"]["AvgWidth"] / Decimal(2)
         # 3. default width
         if (
             "DescendantFonts" in self
@@ -115,7 +115,7 @@ class Font(Dictionary):
             and len(self["DescendantFonts"]) == 1
             and "DW" in self["DescendantFonts"][0]
         ):
-            return self["DescendantFonts"][0]["DW"]
+            return self["DescendantFonts"][0]["DW"] / Decimal(2)
         # 4. other characters may be defined, which give us a clue
         # fmt: off
         char_to_space_width_ratio: typing.Dict[str, Decimal] = {

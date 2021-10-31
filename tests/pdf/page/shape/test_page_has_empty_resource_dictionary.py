@@ -14,7 +14,6 @@ from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestPageHasEmptyResourceDictionary(unittest.TestCase):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -40,10 +39,14 @@ class TestPageHasEmptyResourceDictionary(unittest.TestCase):
         H: Decimal = page.get_page_info().get_height()
         bottom_y: Decimal = H / Decimal(2) - Decimal(100)
         left_x: Decimal = W / Decimal(2) - Decimal(100)
-        bounding_box: Rectangle = Rectangle(left_x, bottom_y, Decimal(200), Decimal(200))
-        Shape(LineArtFactory.regular_n_gon(bounding_box, 5),
-              stroke_color=HexColor("56cbf9"),
-              fill_color=HexColor("56cbf9")).layout(page, bounding_box)
+        bounding_box: Rectangle = Rectangle(
+            left_x, bottom_y, Decimal(200), Decimal(200)
+        )
+        Shape(
+            LineArtFactory.regular_n_gon(bounding_box, 5),
+            stroke_color=HexColor("56cbf9"),
+            fill_color=HexColor("56cbf9"),
+        ).layout(page, bounding_box)
 
         # attempt to store PDF
         with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:

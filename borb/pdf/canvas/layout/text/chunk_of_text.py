@@ -12,6 +12,7 @@ from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
+from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
 from borb.pdf.page.page import Page
@@ -127,11 +128,13 @@ class ChunkOfText(LayoutElement):
 
     def _write_text_bytes(self) -> str:
         hex_mode: bool = False
+        # check glyphs
         for c in self._text:
             if ord(c) != self._font.unicode_to_character_identifier(c):
                 hex_mode = True
                 break
-        if hex_mode:
+        # delegate
+        if hex_mode or isinstance(self._font, TrueTypeFont):
             return self._write_text_bytes_in_hex()
         else:
             return self._write_text_bytes_in_ascii()

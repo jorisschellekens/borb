@@ -19,6 +19,7 @@ from borb.io.read.transformer import ReadTransformerState
 from borb.io.write.any_object_transformer import (
     AnyObjectTransformer as WriteAnyObjectTransformer,
 )
+from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.document import Document
 
@@ -57,10 +58,20 @@ class PDF:
         )
 
     @staticmethod
-    def dumps(file: Union[io.BufferedIOBase, io.RawIOBase], document: Document) -> None:
+    def dumps(
+        file: Union[io.BufferedIOBase, io.RawIOBase],
+        document: Document,
+        conformance_level: typing.Optional[str] = None,
+    ) -> None:
         """
         This function writes a Document to a byte-stream output (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         """
         WriteAnyObjectTransformer().transform(
-            object_to_transform=document, context=None, destination=file
+            object_to_transform=document,
+            context=WriteTransformerState(
+                root_object=document,
+                destination=file,
+                conformance_level=conformance_level or "",
+            ),
+            destination=file,
         )

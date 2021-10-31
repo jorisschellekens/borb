@@ -200,11 +200,7 @@ class TrueTypeFont(Type1Font):
         /CIDInit /ProcSet findresource begin
         12 dict begin
         begincmap
-        /CIDSystemInfo
-        <<  /Registry (Adobe)
-        /Ordering (UCS)
-        /Supplement 0
-        >> def
+        /CIDSystemInfo <</Registry (Adobe) /Ordering (UCS) /Supplement 0>> def
         /CMapName /Adobe-Identity-UCS def
         /CMapType 2 def
         1 begincodespacerange
@@ -215,9 +211,8 @@ class TrueTypeFont(Type1Font):
         # 1 beginbfchar
         # <0000> <0000>
         # endbfchar
-
         pairs: typing.List[typing.Tuple[str, str]] = []
-        for i, g in enumerate(ttf_font_file.glyphOrder):
+        for cid, g in enumerate(ttf_font_file.glyphOrder):
             g_unicode: str = toUnicode(g)
             if len(g_unicode) == 0:
                 continue
@@ -228,11 +223,12 @@ class TrueTypeFont(Type1Font):
                 g_hex = hex(ord(g_unicode[0]))[2:] + hex(ord(g_unicode[1]))[2:]
             while len(g_hex) < 4:
                 g_hex = "0" + g_hex
-            i_hex: str = hex(i)[2:]
+            i_hex: str = hex(cid)[2:]
             while len(i_hex) < 4:
                 i_hex = "0" + i_hex
             pairs.append((i_hex, g_hex))
 
+        # split in lots of 100
         cmap_content: str = ""
         for i in range(0, len(pairs), 100):
             start_index: int = i
@@ -243,12 +239,9 @@ class TrueTypeFont(Type1Font):
                 cmap_content += "<%s> <%s>\n" % (pairs[j][0], pairs[j][1])
             cmap_content += "endbfchar\n"
 
-        cmap_suffix: str = """        
-        endcmap
-        CMapName currentdict /CMap defineresource pop
-        end
-        end
-        """
+        cmap_suffix: str = (
+            "endcmap\nCMapName currentdict /CMap defineresource pop\nend\nend\n"
+        )
 
         bts: bytes = (cmap_prefix + cmap_content + cmap_suffix).encode("latin1")
         to_unicode_stream = Stream()
@@ -257,6 +250,22 @@ class TrueTypeFont(Type1Font):
         to_unicode_stream[Name("Filter")] = Name("FlateDecode")
         to_unicode_stream[Name("Length")] = pDecimal(len(bts))
         return to_unicode_stream
+
+    @staticmethod
+    def _build_custom_widths_array(ttf_font_file: TTFont) -> List:
+        cmap = ttf_font_file.getBestCmap()
+        glyph_set = ttf_font_file.getGlyphSet()
+        widths_array: List = List()
+        for cid, g in enumerate(ttf_font_file.glyphOrder):
+            glyph_width: pDecimal = pDecimal(0)
+            try:
+                glyph_width = pDecimal(glyph_set[cmap[ord(toUnicode(g))]].width)
+            except:
+                pass
+            widths_array.append(pDecimal(cid))
+            widths_array.append(List())
+            widths_array[-1].append(pDecimal(glyph_width))
+        return widths_array
 
     @staticmethod
     def _type_0_font_from_file(ttf_font_file: TTFont) -> "Type0Font":
@@ -283,22 +292,9 @@ class TrueTypeFont(Type1Font):
         descendant_font[Name("DW")] = pDecimal(250)
 
         # build W array
-        cmap = ttf_font_file["cmap"].getcmap(3, 1).cmap
-        glyph_set = ttf_font_file.getGlyphSet()
-        widths_array: List = List()
-        for cid, g in enumerate(ttf_font_file.glyphOrder):
-            glyph_width: float = 0
-            try:
-                glyph_width = glyph_set[cmap[ord(toUnicode(g))]].width
-            except:
-                glyph_width = pDecimal(0)
-            # set DW based on the width of a space character
-            if toUnicode(g) == " ":
-                descendant_font[Name("DW")] = pDecimal(glyph_width)
-            widths_array.append(pDecimal(cid))
-            widths_array.append(List())
-            widths_array[-1].append(pDecimal(glyph_width))
-        descendant_font[Name("W")] = widths_array
+        descendant_font[Name("W")] = TrueTypeFont._build_custom_widths_array(
+            ttf_font_file
+        )
         descendant_font[Name("CIDToGIDMap")] = Name("Identity")
 
         # build CIDSystemInfo

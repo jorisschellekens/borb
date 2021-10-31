@@ -321,8 +321,11 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
     def _test_single_document(self, file) -> typing.Dict[str, int]:
 
         txt_001 = ""
-        with open(self.corpus_dir / (file.stem + ".txt"), "r") as fh_001:
-            txt_001 = fh_001.read()
+        try:
+            with open(self.corpus_dir / (file.stem + ".txt"), "r") as fh_001:
+                txt_001 = fh_001.read()
+        except:
+            pass
 
         txt_002: str = ""
         with open(file, "rb") as fh_002:
