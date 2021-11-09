@@ -8,10 +8,7 @@ import typing
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Decimal, Dictionary, Name, Reference
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 from borb.pdf.xref.xref import XREF
 
 

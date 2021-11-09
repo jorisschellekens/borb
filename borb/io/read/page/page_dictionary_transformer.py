@@ -9,7 +9,7 @@ import typing
 import zlib
 from typing import Any, Dict, Optional, Union
 
-from borb.io.read.transformer import Transformer, ReadTransformerState
+from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream
@@ -59,7 +59,9 @@ class PageDictionaryTransformer(Transformer):
             # avoid circular reference
             if k == "Parent":
                 continue
-            v = self.get_root_transformer().transform(v, page_out, context, [])
+            v = self.get_root_transformer().transform(
+                v, page_out, context, event_listeners
+            )
             if v is not None:
                 page_out[k] = v
 
@@ -91,10 +93,13 @@ class PageDictionaryTransformer(Transformer):
         # create Canvas
         canvas = Canvas().set_parent(page_out)  # type: ignore [attr-defined]
 
-        # create CanvasStreamProcessor
-        CanvasStreamProcessor(page_out, canvas, []).read(
-            io.BytesIO(contents["DecodedBytes"]), event_listeners
-        )
+        # If there are no event listeners, processing the page has no effect
+        # we may as well skip it (cause it is very labour-intensive).
+        if len(event_listeners) > 0:
+            # create CanvasStreamProcessor
+            CanvasStreamProcessor(page_out, canvas, []).read(
+                io.BytesIO(contents["DecodedBytes"]), event_listeners
+            )
 
         # send out EndPageEvent
         for l in event_listeners:

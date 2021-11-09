@@ -26,10 +26,7 @@ from borb.io.write.primitive.number_transformer import NumberTransformer
 from borb.io.write.primitive.string_transformer import StringTransformer
 from borb.io.write.reference.reference_transformer import ReferenceTransform
 from borb.io.write.reference.xref_transformer import XREFTransformer
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 from borb.io.write.xmp.xmp_transformer import XMPTransformer
 
 

@@ -10,8 +10,8 @@ from enum import Enum
 
 import barcode  # type: ignore [import]
 import qrcode  # type: ignore [import]
-from PIL import Image as PILImage  # type: ignore [import]
 from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [import]
+from PIL import Image as PILImage  # type: ignore [import]
 
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.layout.image.image import Image

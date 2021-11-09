@@ -7,10 +7,7 @@ This implementation of WriteBaseTransformer is responsible for writing Name obje
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Name
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 
 
 class NameTransformer(Transformer):

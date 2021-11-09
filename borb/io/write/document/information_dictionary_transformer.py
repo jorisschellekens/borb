@@ -4,27 +4,19 @@
 """
 This implementation of WriteBaseTransformer is responsible for writing \Info Dictionary objects
 """
-import xml.etree.ElementTree as ET
 import datetime
 import logging
 import random
 import typing
+import xml.etree.ElementTree as ET
 from typing import Any, Optional
 
-from borb.io.read.types import (
-    AnyPDFType,
-    Dictionary,
-    Name,
-    String,
-    Stream,
-    Decimal as bDecimal,
-)
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Dictionary, Name, Stream, String
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.object.stream_transformer import StreamTransformer
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 from borb.pdf.document import Document
 from borb.pdf.trailer.document_info import XMPDocumentInfo
 
@@ -37,9 +29,12 @@ class InformationDictionaryTransformer(Transformer):
     """
 
     def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be transformed is an \Info Dictionary
+        """
         if not isinstance(any, Dictionary):
             return False
-        parent: AnyPDFType = any.get_parent()
+        parent: AnyPDFType = any.get_parent()  # type: ignore [attr-defined]
         return (
             isinstance(parent, Dictionary)
             and "Info" in parent
@@ -69,25 +64,29 @@ class InformationDictionaryTransformer(Transformer):
             and isinstance(document["XRef"]["Trailer"]["Root"]["Metadata"], ET.Element)
         ):
             xmp_document_info: XMPDocumentInfo = document.get_xmp_document_info()
-            for k,v in {Name("Title"):xmp_document_info.get_title(),
-                        Name("Author"):xmp_document_info.get_author(),
-                        Name("Subject"):xmp_document_info.get_subject(),
-                        Name("Keywords"):xmp_document_info.get_keywords(),
-                        Name("Creator"):xmp_document_info.get_creator(),
-                        Name("Producer"):xmp_document_info.get_producer(),
-                        Name("CreationDate"):xmp_document_info.get_creation_date(),
-                        Name("ModDate"):xmp_document_info.get_modification_date()}.items():
+            for k, v in {
+                Name("Title"): xmp_document_info.get_title(),
+                Name("Author"): xmp_document_info.get_author(),
+                Name("Subject"): xmp_document_info.get_subject(),
+                Name("Keywords"): xmp_document_info.get_keywords(),
+                Name("Creator"): xmp_document_info.get_creator(),
+                Name("Producer"): xmp_document_info.get_producer(),
+                Name("CreationDate"): xmp_document_info.get_creation_date(),
+                Name("ModDate"): xmp_document_info.get_modification_date(),
+            }.items():
                 if v is None:
                     continue
                 if k in ["CreationDate", "ModDate"]:
-                    v = InformationDictionaryTransformer._convert_xmp_date_format_to_iso_8824_date_format(v)
+                    v = InformationDictionaryTransformer._convert_xmp_date_format_to_iso_8824_date_format(
+                        v
+                    )
                 new_info_dictionary[k] = String(v)
 
         # return
         return new_info_dictionary
 
     @staticmethod
-    def now_as_iso_8824_date_format() -> str:
+    def _now_as_iso_8824_date_format() -> str:
         timestamp_str = "D:"
         now = datetime.datetime.now()
         for n in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
@@ -100,12 +99,12 @@ class InformationDictionaryTransformer(Transformer):
         # set CreationDate
         if "CreationDate" not in info_dictionary:
             info_dictionary[Name("CreationDate")] = String(
-                InformationDictionaryTransformer.now_as_iso_8824_date_format()
+                InformationDictionaryTransformer._now_as_iso_8824_date_format()
             )
 
         # set ModDate
         info_dictionary[Name("ModDate")] = String(
-            InformationDictionaryTransformer.now_as_iso_8824_date_format()
+            InformationDictionaryTransformer._now_as_iso_8824_date_format()
         )
 
         # set Producer
@@ -223,6 +222,10 @@ class InformationDictionaryTransformer(Transformer):
         object_to_transform: Any,
         context: Optional[WriteTransformerState] = None,
     ):
+        """
+        This method writes an \Info Dictionary to a byte stream
+        """
+
         # get Document
         document: Document = object_to_transform.get_root()
         assert document is not None
@@ -242,7 +245,7 @@ class InformationDictionaryTransformer(Transformer):
                                    and "Trailer" in document["XRef"]                        \
                                    and "Root" in document["XRef"]["Trailer"]                \
                                    and "Metadata" in document["XRef"]["Trailer"]["Root"]
-        needs_xmp_metadata = has_xmp_metadata or context.conformance_level in ["PDF/A-1a", "PDF/A-1b"]
+        needs_xmp_metadata = has_xmp_metadata or (context is not None and context.conformance_level in ["PDF/A-1a", "PDF/A-1b"])
         # fmt: on
 
         if needs_xmp_metadata:
@@ -251,10 +254,11 @@ class InformationDictionaryTransformer(Transformer):
             xmp_metadata_stream: Stream = self._write_xmp_metadata_stream(
                 new_info_dictionary
             )
+            assert context is not None
             document["XRef"]["Trailer"]["Root"][Name("Metadata")] = self.get_reference(
                 xmp_metadata_stream, context
             )
-            xmp_metadata_stream.set_parent(document["XRef"]["Trailer"]["Root"])
+            xmp_metadata_stream.set_parent(document["XRef"]["Trailer"]["Root"])  # type: ignore [attr-defined]
 
             # delegate XMP \Metadata
             for h in self.get_root_transformer()._handlers:

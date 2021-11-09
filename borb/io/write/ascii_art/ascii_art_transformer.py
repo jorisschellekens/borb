@@ -8,10 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Stream
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 
 
 class ASCIIArtTransformer(Transformer):

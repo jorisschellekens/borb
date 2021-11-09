@@ -14,9 +14,7 @@ from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
 from borb.pdf.canvas.layout.table.table import Table
-from borb.toolkit.export.html_to_pdf.read.transformer import (
-    Transformer,
-)
+from borb.toolkit.export.html_to_pdf.read.transformer import Transformer
 
 
 class TableTagTransformer(Transformer):

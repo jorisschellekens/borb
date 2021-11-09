@@ -9,7 +9,7 @@ import typing
 from typing import Any, Dict, List, Optional, Union
 
 from borb.io.read.object.dictionary_transformer import DictionaryTransformer
-from borb.io.read.transformer import Transformer, ReadTransformerState
+from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType, Decimal, Dictionary
 from borb.io.read.types import List as pList
 from borb.io.read.types import Name
@@ -33,6 +33,9 @@ class RootDictionaryTransformer(Transformer):
             and "Type" in object
             and object["Type"] == "Catalog"
         )
+
+    def _re_order_pages(self):
+        pass
 
     def transform(
         self,

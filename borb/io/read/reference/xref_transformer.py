@@ -12,7 +12,7 @@ from typing import Any, Optional, Union
 
 from borb.io.read.encryption.standard_security_handler import StandardSecurityHandler
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.transformer import Transformer, ReadTransformerState
+from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType, Dictionary, Name
 from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.document import Document

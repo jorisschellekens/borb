@@ -3,22 +3,22 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from tests.test_util import compare_visually_to_ground_truth
+
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import \
+    SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import \
+    FixedColumnWidthTable as Table
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from borb.toolkit.text.regular_expression_text_extraction import (
-    RegularExpressionTextExtraction,
-)
-from tests.test_util import compare_visually_to_ground_truth
+from borb.toolkit.text.regular_expression_text_extraction import \
+    RegularExpressionTextExtraction
 
 unittest.TestLoader.sortTestMethodsUsing = None
 

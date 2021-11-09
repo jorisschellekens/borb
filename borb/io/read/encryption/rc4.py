@@ -32,7 +32,7 @@ class RC4:
         self._p: int = 0
         self._q: int = 0
 
-    def set_key(self, key: bytes):
+    def _set_key(self, key: bytes):
         self._state = [n for n in range(256)]
         self._p = 0
         self._q = 0
@@ -54,5 +54,12 @@ class RC4:
         return self._state[(self._state[self._p] + self._state[self._q]) % 256]
 
     def encrypt(self, key: bytes, input: bytes):
-        self.set_key(key)
+        """
+        This function encrypts a given byte array with a given key,
+        returning the encrypted bytes.
+        :param key:     the key to be used for encrypting
+        :param input:   the input byte array to be encrypted
+        :return:        the encrypted bytes
+        """
+        self._set_key(key)
         return bytes([p ^ self._byte_generator() for p in input])

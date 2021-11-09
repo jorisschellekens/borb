@@ -8,6 +8,7 @@ import typing
 from decimal import Decimal
 
 from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.text.chunks_of_text import (
     HeterogeneousParagraph,
     LineBreakChunk,
@@ -44,13 +45,11 @@ class IndentedCodeSnippetTransformer(Transformer):
 
         # transform the markdown syntax per line
         el: HeterogeneousParagraph = HeterogeneousParagraph(
-            background_color=HexColor("c3c3c3"),
+            background_color=HexColor("f5f7f9"),
             padding_top=Decimal(5),
             padding_right=Decimal(5),
             padding_bottom=Decimal(5),
             padding_left=Decimal(5),
-            border_left=True,
-            border_width=Decimal(3),
         )
 
         for line in code_snippet_lines:
@@ -61,7 +60,8 @@ class IndentedCodeSnippetTransformer(Transformer):
             el.add(LineBreakChunk())
 
         for c in el._chunks_of_text:
-            c._background_color = HexColor("c3c3c3")
+            c._background_color = HexColor("f5f7f9")
+            c._font = StandardType1Font("Courier")
 
         # add
         context.get_parent_layout_element().add(el)  # type: ignore [union-attr]

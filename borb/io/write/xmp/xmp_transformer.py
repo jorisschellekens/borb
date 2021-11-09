@@ -12,10 +12,7 @@ from typing import Optional
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as pDecimal
 from borb.io.read.types import Name, Reference, Stream
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 
 logger = logging.getLogger(__name__)
 

@@ -10,8 +10,8 @@ import zlib
 from decimal import Decimal
 from enum import Enum
 
-from borb.io.read.types import Decimal as pDecimal, Dictionary
-from borb.io.read.types import Name, Stream
+from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Dictionary, Name, Stream
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 

@@ -105,9 +105,7 @@ from borb.toolkit.export.html_to_pdf.read.text.mark_tag_transformer import (
 from borb.toolkit.export.html_to_pdf.read.text.p_tag_transformer import PTagTransformer
 
 # fmt: off
-from borb.toolkit.export.html_to_pdf.read.transformer import \
-    Transformer
-
+from borb.toolkit.export.html_to_pdf.read.transformer import Transformer
 
 # fmt: on
 

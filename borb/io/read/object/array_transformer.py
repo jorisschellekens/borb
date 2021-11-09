@@ -8,7 +8,7 @@ import io
 import typing
 from typing import Any, Optional, Union
 
-from borb.io.read.transformer import Transformer, ReadTransformerState
+from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType, List
 from borb.pdf.canvas.event.event_listener import EventListener
 

@@ -7,10 +7,7 @@ This implementation of WriteBaseTransformer is responsible for writing Decimal o
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Decimal
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 
 
 class NumberTransformer(Transformer):

@@ -11,10 +11,7 @@ from typing import Optional
 from PIL.Image import Image  # type: ignore [import]
 
 from borb.io.read.types import AnyPDFType, Dictionary, Element, List, Reference, Stream
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 
 logger = logging.getLogger(__name__)
 

@@ -130,6 +130,8 @@ class MultiColumnLayout(PageLayout):
             return self
 
         # previous element is used to determine the paragraph spacing
+        assert self._page_height is not None
+        assert self._page_width is not None
         previous_element_margin_bottom: Decimal = Decimal(0)
         previous_element_y = self._page_height - self._vertical_margin
         inter_paragraph_space: Decimal = Decimal(0)

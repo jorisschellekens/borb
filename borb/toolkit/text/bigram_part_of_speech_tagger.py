@@ -173,7 +173,7 @@ class BigramPartOfSpeechTagger:
         if first_unknown_tag_index is None:
             if self._odds_best_tagging is None or p > self._odds_best_tagging:
                 self._odds_best_tagging = p
-                self._best_tagging = [x for x in tags]
+                self._best_tagging = [x or "" for x in tags]
             return
 
         # determine possible tags

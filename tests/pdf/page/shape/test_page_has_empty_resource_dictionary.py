@@ -2,6 +2,8 @@ import unittest
 from decimal import Decimal
 from pathlib import Path
 
+from tests.test_util import compare_visually_to_ground_truth
+
 from borb.io.read.types import Dictionary
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -10,7 +12,6 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestPageHasEmptyResourceDictionary(unittest.TestCase):

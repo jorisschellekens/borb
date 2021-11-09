@@ -45,11 +45,11 @@ class TestWritePDFA1B(unittest.TestCase):
         layout.add(Paragraph("Hello World!"))
 
         info_dictionary: Dictionary = Dictionary()
-        info_dictionary[Name("Title")] = String("Lorem Ipsum (T)")
-        info_dictionary[Name("Subject")] = String("Lorem Ipsum (S)")
-        info_dictionary[Name("Creator")] = String("Joris Schellekens (C)")
-        info_dictionary[Name("Author")] = String("Joris Schellekens (A)")
-        info_dictionary[Name("Keywords")] = String("Lorem Ipsum Dolor Sit Amet")
+        info_dictionary[Name("Title")] = String("Title Value")
+        info_dictionary[Name("Subject")] = String("Subject Value")
+        info_dictionary[Name("Creator")] = String("Creator Value")
+        info_dictionary[Name("Author")] = String("Author Value")
+        info_dictionary[Name("Keywords")] = String("Keyword1 Keyword2 Keyword3")
         pdf["XRef"]["Trailer"][Name("Info")] = info_dictionary
 
         # attempt to store PDF
@@ -66,11 +66,11 @@ class TestWritePDFA1B(unittest.TestCase):
 
         # assert XMP meta data
         xmp = pdf.get_xmp_document_info()
-        assert xmp.get_title() == "Lorem Ipsum (T)"
-        assert xmp.get_creator() == "Joris Schellekens (C)"
-        assert xmp.get_author() == "Joris Schellekens (A)"
-        assert xmp.get_subject() == "Lorem Ipsum (S)"
-        assert xmp.get_keywords() == "Lorem Ipsum Dolor Sit Amet"
+        assert xmp.get_title() == "Title Value"
+        assert xmp.get_creator() == "Creator Value"
+        assert xmp.get_author() == "Author Value"
+        assert xmp.get_subject() == "Subject Value"
+        assert xmp.get_keywords() == "Keyword1 Keyword2 Keyword3"
 
     def test_re_save_pdf_a_1_b(self):
 
@@ -90,10 +90,10 @@ class TestWritePDFA1B(unittest.TestCase):
 
         # assert XMP meta data
         xmp = pdf.get_xmp_document_info()
-        assert xmp.get_title() == "Lorem Ipsum (T)"
-        assert xmp.get_creator() == "Joris Schellekens (C)"
-        assert xmp.get_author() == "Joris Schellekens (A)"
-        assert xmp.get_subject() == "Lorem Ipsum (S)"
-        assert xmp.get_keywords() == "Lorem Ipsum Dolor Sit Amet"
+        assert xmp.get_title() == "Title Value"
+        assert xmp.get_creator() == "Creator Value"
+        assert xmp.get_author() == "Author Value"
+        assert xmp.get_subject() == "Subject Value"
+        assert xmp.get_keywords() == "Keyword1 Keyword2 Keyword3"
 
         compare_visually_to_ground_truth(out_file)

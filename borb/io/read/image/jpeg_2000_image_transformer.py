@@ -11,7 +11,7 @@ from typing import Any, Optional, Union
 
 from PIL import Image  # type: ignore [import]
 
-from borb.io.read.transformer import Transformer, ReadTransformerState
+from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType, Stream, add_base_methods
 from borb.pdf.canvas.event.event_listener import EventListener
 

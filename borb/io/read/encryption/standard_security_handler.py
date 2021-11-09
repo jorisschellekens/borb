@@ -12,14 +12,14 @@ import zlib
 
 from borb.io.read.encryption.rc4 import RC4
 from borb.io.read.types import (
-    String,
+    AnyPDFType,
+    Boolean,
     Decimal,
     HexadecimalString,
-    Boolean,
-    AnyPDFType,
+    Name,
     Reference,
     Stream,
-    Name,
+    String,
 )
 
 
@@ -59,27 +59,40 @@ class StandardSecurityHandler:
         # used in determining whether to prompt the user for a password and, if so,
         # whether a valid user or owner password was entered. For more
         # information, see 7.6.3.4, "Password Algorithms."
-        self._u: bytes = StandardSecurityHandler._str_to_bytes(
-            StandardSecurityHandler._unescape_pdf_syntax(encryption_dictionary.get("U"))
+        self._u: bytes = (
+            StandardSecurityHandler._str_to_bytes(
+                StandardSecurityHandler._unescape_pdf_syntax(
+                    encryption_dictionary.get("U")
+                )
+            )
+            or b""
         )
+        assert self._u is not None
         assert len(self._u) == 32
 
         # (Required) A 32-byte string, based on both the owner and user passwords,
         # that shall be used in computing the encryption key and in determining
         # whether a valid owner password was entered. For more information, see
         # 7.6.3.3, "Encryption Key Algorithm," and 7.6.3.4, "Password Algorithms."
-        self._o: bytes = StandardSecurityHandler._str_to_bytes(
-            StandardSecurityHandler._unescape_pdf_syntax(encryption_dictionary.get("O"))
+        self._o: bytes = (
+            StandardSecurityHandler._str_to_bytes(
+                StandardSecurityHandler._unescape_pdf_syntax(
+                    encryption_dictionary.get("O")
+                )
+            )
+            or b""
         )
+        assert self._o is not None
         assert len(self._o) == 32
 
         # /ID
-        trailer: dict = encryption_dictionary.get_parent()
+        trailer: dict = encryption_dictionary.get_parent()  # type: ignore [attr-defined]
         if "ID" in trailer:
             self._document_id: bytes = trailer["ID"][0].get_content_bytes()
 
         # (Required) A set of flags specifying which operations shall be permitted
         # when the document is opened with user access (see Table 22).
+        assert "P" in encryption_dictionary
         self._permissions: int = int(encryption_dictionary.get("P"))
 
         # (Optional; PDF 1.4; only if V is 2 or 3) The length of the encryption key, in bits.
@@ -112,15 +125,19 @@ class StandardSecurityHandler:
             password = bytes(owner_password, encoding="charmap")
 
         # calculate encryption_key
+        assert password is not None
         self._encryption_key: bytes = self._compute_encryption_key(password)
 
-    def _encrypt_data(self, object: AnyPDFType) -> None:
+    def _encrypt_data(self, object: AnyPDFType) -> AnyPDFType:
         # a) Obtain the object number and generation number from the object identifier of the string or stream to be
         # encrypted (see 7.3.10, "Indirect Objects"). If the string is a direct object, use the identifier of the indirect
         # object containing it.
-        reference: typing.Optional[Reference] = object.get_reference()
+        reference: typing.Optional[Reference] = object.get_reference()  # type: ignore [union-attr]
         if reference is None:
-            reference = object.get_parent().get_reference()
+            reference = object.get_parent().get_reference()  # type: ignore [union-attr]
+        assert reference is not None
+        assert reference.object_number is not None
+        assert reference.generation_number is not None
         object_number: int = reference.object_number
         generation_number: int = reference.generation_number
 
@@ -153,24 +170,27 @@ class StandardSecurityHandler:
         # The output is the encrypted data to be stored in the PDF file.
         n_plus_5: int = min(16, n + 5)
         if isinstance(object, String):
-            new_content_bytes: bytes = RC4().encrypt(
+            str_new_content_bytes: bytes = RC4().encrypt(
                 h.digest()[0:n_plus_5], object.get_content_bytes()
             )
             # TODO
         if isinstance(object, HexadecimalString):
-            new_content_bytes: bytes = RC4().encrypt(
+            hex_str_new_content_bytes: bytes = RC4().encrypt(
                 h.digest()[0:n_plus_5], object.get_content_bytes()
             )
             # TODO
         if isinstance(object, Stream):
-            new_content_bytes: bytes = RC4().encrypt(
+            stream_new_content_bytes: bytes = RC4().encrypt(
                 h.digest()[0:n_plus_5], object["DecodedBytes"]
             )
-            object[Name("DecodedBytes")] = new_content_bytes
+            object[Name("DecodedBytes")] = stream_new_content_bytes
             object[Name("Bytes")] = zlib.compress(object["DecodedBytes"], 9)
             return object
 
-    def _decrypt_data(self, object: AnyPDFType) -> None:
+        # default
+        return object
+
+    def _decrypt_data(self, object: AnyPDFType) -> AnyPDFType:
         return self._encrypt_data(object)
 
     def _compute_encryption_key(self, password: bytes) -> bytes:
@@ -211,7 +231,6 @@ class StandardSecurityHandler:
         # MD5 hash and pass the first n bytes of the output as input into a new MD5 hash, where n is the number of
         # bytes of the encryption key as defined by the value of the encryption dictionary’s Length entry.
         if self._revision >= 3:
-            # THIS IS WHERE THE ALGORITHM GOES WRONG
             n: int = int(self._key_length / 8)
             for _ in range(0, 50):
                 h2 = hashlib.md5()
@@ -296,19 +315,22 @@ class StandardSecurityHandler:
         if self._revision == 2:
             # a) Create an encryption key based on the user password string, as described in "Algorithm 2: Computing an
             # encryption key".
-            key: bytes = self._compute_encryption_key(user_password_string)
+            key_rev_2: bytes = self._compute_encryption_key(user_password_string)
 
             # b) Encrypt the 32-byte padding string shown in step (a) of "Algorithm 2: Computing an encryption key", using
             # an RC4 encryption function with the encryption key from the preceding step.
 
             # c) Store the result of step (b) as the value of the U entry in the encryption dictionary.
-            self._u = RC4().encrypt(key, StandardSecurityHandler._pad_or_truncate(None))
+            self._u = RC4().encrypt(
+                key_rev_2, StandardSecurityHandler._pad_or_truncate(None)
+            )
 
             return self._u
+
         if self._revision >= 3:
             # a) Create an encryption key based on the user password string, as described in "Algorithm 2: Computing an
             # encryption key".
-            key: bytes = self._compute_encryption_key(user_password_string)
+            key_rev_3: bytes = self._compute_encryption_key(user_password_string)
 
             # b) Initialize the MD5 hash function and pass the 32-byte padding string shown in step (a) of "Algorithm 2:
             # Computing an encryption key" as input to this function.
@@ -322,7 +344,7 @@ class StandardSecurityHandler:
 
             # d) Encrypt the 16-byte result of the hash, using an RC4 encryption function with the encryption key from step
             # (a).
-            digest = RC4().encrypt(key, digest)
+            digest = RC4().encrypt(key_rev_3, digest)
 
             # e) Do the following 19 times: Take the output from the previous invocation of the RC4 function and pass it as
             # input to a new invocation of the function; use an encryption key generated by taking each byte of the
@@ -330,7 +352,7 @@ class StandardSecurityHandler:
             # byte and the single-byte value of the iteration counter (from 1 to 19).
             if self._revision >= 3:
                 for i in range(1, 20):
-                    key2: bytes = bytes([b ^ i for b in key])
+                    key2: bytes = bytes([b ^ i for b in key_rev_3])
                     digest = RC4().encrypt(key2, digest)
 
             # f) Append 16 bytes of arbitrary padding to the output from the final invocation of the RC4 function and store

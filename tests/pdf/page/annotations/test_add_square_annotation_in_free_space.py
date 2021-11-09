@@ -3,11 +3,12 @@ from decimal import Decimal
 from math import ceil
 from pathlib import Path
 
+from tests.test_util import compare_visually_to_ground_truth
+
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 

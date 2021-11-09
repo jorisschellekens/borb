@@ -7,10 +7,7 @@ This implementation of WriteBaseTransformer is responsible for writing String ob
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, HexadecimalString, String
-from borb.io.write.transformer import (
-    Transformer,
-    WriteTransformerState,
-)
+from borb.io.write.transformer import Transformer, WriteTransformerState
 
 
 class StringTransformer(Transformer):

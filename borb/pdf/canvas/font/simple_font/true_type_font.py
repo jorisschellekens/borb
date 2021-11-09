@@ -195,7 +195,7 @@ class TrueTypeFont(Type1Font):
         return font_name
 
     @staticmethod
-    def _build_custom_cmap(ttf_font_file: TTFont) -> Stream:
+    def _build_custom_cmap_for_type_0_font(ttf_font_file: TTFont) -> Stream:
         cmap_prefix: str = """
         /CIDInit /ProcSet findresource begin
         12 dict begin
@@ -252,14 +252,17 @@ class TrueTypeFont(Type1Font):
         return to_unicode_stream
 
     @staticmethod
-    def _build_custom_widths_array(ttf_font_file: TTFont) -> List:
+    def _build_custom_widths_array_for_type_0_font(ttf_font_file: TTFont) -> List:
+        units_per_em: pDecimal = pDecimal(ttf_font_file["head"].unitsPerEm)
         cmap = ttf_font_file.getBestCmap()
         glyph_set = ttf_font_file.getGlyphSet()
         widths_array: List = List()
         for cid, g in enumerate(ttf_font_file.glyphOrder):
             glyph_width: pDecimal = pDecimal(0)
             try:
-                glyph_width = pDecimal(glyph_set[cmap[ord(toUnicode(g))]].width)
+                glyph_width = pDecimal(
+                    glyph_set[cmap[ord(toUnicode(g))]].width / units_per_em * 1000
+                )
             except:
                 pass
             widths_array.append(pDecimal(cid))
@@ -279,7 +282,9 @@ class TrueTypeFont(Type1Font):
         type_0_font[Name("Encoding")] = Name("Identity-H")
 
         # set ToUnicode
-        type_0_font[Name("ToUnicode")] = TrueTypeFont._build_custom_cmap(ttf_font_file)
+        type_0_font[
+            Name("ToUnicode")
+        ] = TrueTypeFont._build_custom_cmap_for_type_0_font(ttf_font_file)
 
         # build DescendantFont
         descendant_font: CIDType2Font = CIDType2Font()
@@ -292,9 +297,9 @@ class TrueTypeFont(Type1Font):
         descendant_font[Name("DW")] = pDecimal(250)
 
         # build W array
-        descendant_font[Name("W")] = TrueTypeFont._build_custom_widths_array(
-            ttf_font_file
-        )
+        descendant_font[
+            Name("W")
+        ] = TrueTypeFont._build_custom_widths_array_for_type_0_font(ttf_font_file)
         descendant_font[Name("CIDToGIDMap")] = Name("Identity")
 
         # build CIDSystemInfo

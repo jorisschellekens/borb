@@ -10,9 +10,7 @@ import xml.etree.ElementTree as ET
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.toolkit.export.html_to_pdf.read.transformer import (
-    Transformer,
-)
+from borb.toolkit.export.html_to_pdf.read.transformer import Transformer
 
 
 class SectionTagTransformer(Transformer):

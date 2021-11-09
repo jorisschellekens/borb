@@ -98,7 +98,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_keywords(self) -> Optional[List[str]]:
+    def get_keywords(self) -> Optional[str]:
         """
         (Optional; PDF 1.1) Keywords associated with the document.
         """
@@ -176,9 +176,20 @@ class XMPDocumentInfo(DocumentInfo):
         readable form (see 7.9.4, “Dates”).
         """
         try:
-            return next(iter([v for k, v in
-                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
-                   k.endswith('CreateDate')]), None)
+            return next(
+                iter(
+                    [
+                        v
+                        for k, v in self._document["XRef"]["Trailer"]["Root"][
+                            "Metadata"
+                        ]
+                        .findall(".//{*}Description")[0]
+                        .attrib.items()
+                        if k.endswith("CreateDate")
+                    ]
+                ),
+                None,
+            )
         except:
             return None
 
@@ -189,31 +200,78 @@ class XMPDocumentInfo(DocumentInfo):
         most recently modified, in human-readable form (see 7.9.4, “Dates”).
         """
         try:
-            return next(iter([v for k, v in
-                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
-                   k.endswith('ModifyDate')]), None)
+            return next(
+                iter(
+                    [
+                        v
+                        for k, v in self._document["XRef"]["Trailer"]["Root"][
+                            "Metadata"
+                        ]
+                        .findall(".//{*}Description")[0]
+                        .attrib.items()
+                        if k.endswith("ModifyDate")
+                    ]
+                ),
+                None,
+            )
         except:
             return None
 
     def get_author(self) -> Optional[str]:
+        """
+        (Optional; PDF 1.1) The name of the person who created the document.
+        """
         try:
-            return self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}creator')[0][0][0].text
+            return (
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}creator")[0][0][0]
+                .text
+            )
         except:
             return None
 
     def get_producer(self) -> Optional[str]:
+        """
+        (Optional) If the document was converted to PDF from another format,
+        the name of the conforming product that converted it to PDF.
+        """
         try:
-            return next(iter([v for k, v in
-                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
-                   k.endswith('Producer')]), None)
+            return next(
+                iter(
+                    [
+                        v
+                        for k, v in self._document["XRef"]["Trailer"]["Root"][
+                            "Metadata"
+                        ]
+                        .findall(".//{*}Description")[0]
+                        .attrib.items()
+                        if k.endswith("Producer")
+                    ]
+                ),
+                None,
+            )
         except:
             return None
 
     def get_keywords(self) -> Optional[str]:
+        """
+        (Optional; PDF 1.1) Keywords associated with the document.
+        """
         try:
-            return next(iter([v for k, v in
-                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
-                   k.endswith('Keywords')]), None)
+            return next(
+                iter(
+                    [
+                        v
+                        for k, v in self._document["XRef"]["Trailer"]["Root"][
+                            "Metadata"
+                        ]
+                        .findall(".//{*}Description")[0]
+                        .attrib.items()
+                        if k.endswith("Keywords")
+                    ]
+                ),
+                None,
+            )
         except:
             return None
 
@@ -222,7 +280,11 @@ class XMPDocumentInfo(DocumentInfo):
         (Optional; PDF 1.1) The document’s title.
         """
         try:
-            return self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall(".//{*}title")[0][0][0].text
+            return (
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}title")[0][0][0]
+                .text
+            )
         except:
             return None
 
@@ -233,16 +295,33 @@ class XMPDocumentInfo(DocumentInfo):
         from which it was converted.
         """
         try:
-            return next(iter([v for k, v in
-                   self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall('.//{*}Description')[0].attrib.items() if
-                   k.endswith('CreatorTool')]), None)
+            return next(
+                iter(
+                    [
+                        v
+                        for k, v in self._document["XRef"]["Trailer"]["Root"][
+                            "Metadata"
+                        ]
+                        .findall(".//{*}Description")[0]
+                        .attrib.items()
+                        if k.endswith("CreatorTool")
+                    ]
+                ),
+                None,
+            )
         except:
             return None
 
     def get_subject(self) -> Optional[str]:
-        # TODO
+        """
+        (Optional; PDF 1.1) The subject of the document.
+        """
         try:
-            return self._document["XRef"]["Trailer"]["Root"]["Metadata"].findall(".//{*}description")[0][0][0].text
+            return (
+                self._document["XRef"]["Trailer"]["Root"]["Metadata"]
+                .findall(".//{*}description")[0][0][0]
+                .text
+            )
         except:
             return None
 

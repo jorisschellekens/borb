@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This implementation of BaseMarkdownTransformer is responsible for converting a markdown str to PDF
+"""
 from borb.toolkit.export.markdown_to_pdf.read.heading.alternate_syntax_heading_transformer import (
     AlternateSyntaxHeadingTransformer,
 )
@@ -6,6 +12,9 @@ from borb.toolkit.export.markdown_to_pdf.read.heading.heading_transformer import
 )
 from borb.toolkit.export.markdown_to_pdf.read.heading.horizontal_rule_transformer import (
     HorizontalRuleTransformer,
+)
+from borb.toolkit.export.markdown_to_pdf.read.image.image_transformer import (
+    ImageTransformer,
 )
 from borb.toolkit.export.markdown_to_pdf.read.list.ordered_list_transformer import (
     OrderedListTransformer,
@@ -35,6 +44,10 @@ from borb.toolkit.export.markdown_to_pdf.read.transformer import (
 
 
 class AnyMarkdownTransformer(Transformer):
+    """
+    This implementation of BaseMarkdownTransformer is responsible for converting a markdown str to PDF
+    """
+
     def __init__(self):
         super(AnyMarkdownTransformer, self).__init__()
         # fmt: off
@@ -47,7 +60,9 @@ class AnyMarkdownTransformer(Transformer):
             .add_child_transformer(UnorderedListTransformer())          \
             .add_child_transformer(OrderedListTransformer())            \
             .add_child_transformer(TableTransformer())                  \
+            .add_child_transformer(ImageTransformer())                  \
             .add_child_transformer(ParagraphTransformer())
+
         # fmt: on
 
     def _can_transform(self, context: TransformerState) -> bool:

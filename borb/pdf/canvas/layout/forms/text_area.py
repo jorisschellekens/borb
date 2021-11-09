@@ -7,16 +7,9 @@ This implementation of FormField represents a text area.
 import typing
 import zlib
 
+from borb.io.read.types import Boolean, Decimal
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import (
-    Dictionary,
-    Name,
-    Decimal,
-    List,
-    String,
-    Stream,
-    Boolean,
-)
+from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle

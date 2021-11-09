@@ -38,6 +38,8 @@ class ParagraphTransformer(Transformer):
             ":",
             "\\",
             "`",
+            "<",
+            ">",
         ]
 
     def _get_font(self, is_bold: bool, is_italic: bool, is_monospaced: bool) -> Font:
@@ -59,7 +61,7 @@ class ParagraphTransformer(Transformer):
         for w in text.split(" "):
             background_color: Color = HexColor("ffffff")
             if is_monospaced:
-                background_color = HexColor("c3c3c3")
+                background_color = HexColor("f5f7f9")
             out.append(
                 ChunkOfText(
                     w + " ",

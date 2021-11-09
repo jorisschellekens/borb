@@ -34,7 +34,7 @@ class TestExtractText(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_write_document(self):
+    def test_write_document_001(self):
 
         # create document
         pdf = Document()
@@ -83,7 +83,7 @@ class TestExtractText(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
-    def test_extract_text_from_document(self):
+    def test_extract_text_from_document_001(self):
 
         doc = None
         l = SimpleTextExtraction()
@@ -102,6 +102,34 @@ class TestExtractText(unittest.TestCase):
 
         for w in re.split("[^a-zA-Z]+", ground_truth):
             assert w in page_content, "Word '%s' not found in extracted text" % w
+
+    def test_write_document_002(self):
+        # create document
+        pdf = Document()
+
+        # add page(s)
+        for s in ["Lorem Ipsum", "Dolor Sit Amet"]:
+            page = Page()
+            pdf.append_page(page)
+            layout = SingleColumnLayout(page)
+            layout.add(Paragraph(s))
+
+        # attempt to store PDF
+        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+            PDF.dumps(out_file_handle, pdf)
+
+    def test_extract_text_from_document_002(self):
+
+        doc = None
+        l = SimpleTextExtraction()
+        with open(self.output_dir / "output_002.pdf", "rb") as file_handle:
+            doc = PDF.loads(file_handle, [l])
+
+        page_content_0: str = l.get_text_for_page(0)
+        assert page_content_0 == "Lorem Ipsum"
+
+        page_content_1: str = l.get_text_for_page(1)
+        assert page_content_1 == "Dolor Sit Amet"
 
 
 if __name__ == "__main__":
