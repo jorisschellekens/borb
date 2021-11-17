@@ -24,7 +24,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
     def __init__(self, graphics_state: CanvasGraphicsState, raw_bytes: String):
         assert graphics_state.font is not None
         assert isinstance(graphics_state.font, Font)
-        self._glyph_line: GlyphLine = GlyphLine(
+        self._glyph_line: GlyphLine = GlyphLine.from_bytes(
             raw_bytes.get_value_bytes(),
             graphics_state.font,
             graphics_state.font_size,

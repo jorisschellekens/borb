@@ -8,10 +8,8 @@ from tests.test_util import compare_visually_to_ground_truth
 
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import \
-    SingleColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import \
-    FixedColumnWidthTable
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph

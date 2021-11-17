@@ -1,5 +1,6 @@
 import os
 import time
+import traceback
 import typing
 import unittest
 from datetime import datetime
@@ -46,7 +47,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         self.time_per_document: typing.Dict[str, float] = {}
         self.fails_per_document: typing.Dict[str, int] = []
 
-    #@unittest.skip
+    @unittest.skip
     def test_against_entire_corpus(self):
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [

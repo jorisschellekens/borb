@@ -225,15 +225,12 @@ class ChunkOfText(LayoutElement):
             self._write_text_bytes(),  # Tj
         )
         self._append_to_content_stream(page, content)
-        encoded_bytes: bytes = [
-            self._font.unicode_to_character_identifier(c) or 0 for c in self._text
-        ]
 
         # fmt: off
         layout_rect = Rectangle(
             bounding_box.x,
             bounding_box.y + bounding_box.height - line_height,
-            GlyphLine(encoded_bytes, self._font, self._font_size).get_width_in_text_space(),
+            GlyphLine.from_str(self._text, self._font, self._font_size).get_width_in_text_space(),
             line_height,
         )
         # fmt: on

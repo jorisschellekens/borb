@@ -43,7 +43,7 @@ class TestCopyDocumentResizeImagesCompareSize(unittest.TestCase):
         self.number_of_fails: int = 0
         self.memory_stats_per_document: typing.Dict[str, typing.Tuple[int, int]] = {}
 
-    #@unittest.skip
+    @unittest.skip
     def test_against_entire_corpus(self):
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [

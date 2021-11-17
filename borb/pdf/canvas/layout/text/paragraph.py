@@ -149,8 +149,7 @@ class Paragraph(LineOfText):
             # checking with 0 is not a great idea due to rounding errors
             # so, as a pre-emptive measure, we round the number to 2 digits
             # fmt: off
-            encoded_bytes: bytes = [self._font.unicode_to_character_identifier(c) or 0 for c in potential_text]
-            potential_width = GlyphLine(encoded_bytes, self._font, self._font_size).get_width_in_text_space()
+            potential_width = GlyphLine.from_str(potential_text, self._font, self._font_size).get_width_in_text_space()
             remaining_space_in_box: Decimal = round(bounding_box.width - potential_width, 2)
             # fmt: on
 
@@ -192,8 +191,7 @@ class Paragraph(LineOfText):
                 for i in range(1, len(hyphenated_word_parts)):
                     # fmt: off
                     potential_text_after_hyphenation = potential_text + "".join([x for x in hyphenated_word_parts[0:i]]) + "-"
-                    encoded_bytes = bytes([self._font.unicode_to_character_identifier(c) or 0 for c in potential_text_after_hyphenation])
-                    potential_width = GlyphLine(encoded_bytes, self._font, self._font_size).get_width_in_text_space()
+                    potential_width = GlyphLine.from_str(potential_text_after_hyphenation, self._font, self._font_size).get_width_in_text_space()
                     remaining_space_in_box = round(bounding_box.width - potential_width, 2)
                     # fmt: on
                     if remaining_space_in_box > Decimal(0):
@@ -329,14 +327,8 @@ class Paragraph(LineOfText):
                 max_y = max(last_line_rectangle.y + last_line_rectangle.height, max_y)
                 continue
 
-            encoded_bytes: bytes = bytes(
-                [
-                    self._font.unicode_to_character_identifier(c) or 0
-                    for c in line_of_text
-                ]
-            )
-            estimated_width: Decimal = GlyphLine(
-                encoded_bytes, self._font, self._font_size
+            estimated_width: Decimal = GlyphLine.from_str(
+                line_of_text, self._font, self._font_size
             ).get_width_in_text_space()
             remaining_space: Decimal = bounding_box.width - estimated_width
 
@@ -377,11 +369,8 @@ class Paragraph(LineOfText):
                 max_y = max(r.y + r.height, max_y)
 
                 # line up our next x
-                encoded_bytes = bytes(
-                    [self._font.unicode_to_character_identifier(c) or 0 for c in s]
-                )
-                word_size = GlyphLine(
-                    encoded_bytes, self._font, self._font_size
+                word_size = GlyphLine.from_str(
+                    s, self._font, self._font_size
                 ).get_width_in_text_space()
                 x += word_size
                 x += space_per_space

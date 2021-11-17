@@ -51,28 +51,37 @@ class GlyphLine:
     This class contains utility methods to work with collections of Glyph objects.
     """
 
-    def __init__(
-        self,
-        text_bytes: bytes,
+    @staticmethod
+    def from_bytes(
+        text: bytes,
         font: Font,
         font_size: Decimal,
         character_spacing: Decimal = Decimal(0),
         word_spacing: Decimal = Decimal(0),
         horizontal_scaling: Decimal = Decimal(100),
-    ):
-        assert isinstance(font, Font)
-        self._glyphs: typing.List[Glyph] = []
+    ) -> "GlyphLine":
+        """
+        This method constructs a new GlyphLine from text (represented as character ids)
+        :param text:                a byte-array containing the character ids
+        :param font:                the font
+        :param font_size:           the font-size
+        :param character_spacing:   the (additional) space between characters
+        :param word_spacing:        the (additional) space between words
+        :param horizontal_scaling:  the horizontal scaling factor (100 represents no zoom)
+        :return:                    a GlyphLine
+        """
+        glyphs: typing.List[Glyph] = []
         i: int = 0
-        while i < len(text_bytes):
+        while i < len(text):
             # sometimes, 2 bytes make up 1 unicode char
             unicode_chars: typing.Optional[str] = None
-            if i + 1 < len(text_bytes):
-                multi_byte_char_code: int = text_bytes[i] * 256 + text_bytes[i + 1]
+            if i + 1 < len(text):
+                multi_byte_char_code: int = text[i] * 256 + text[i + 1]
                 unicode_chars = font.character_identifier_to_unicode(
                     multi_byte_char_code
                 )
                 if unicode_chars is not None:
-                    self._glyphs.append(
+                    glyphs.append(
                         Glyph(
                             multi_byte_char_code,
                             unicode_chars,
@@ -82,23 +91,71 @@ class GlyphLine:
                     i += 2
                     continue
             # usually it's 1 byte though
-            if i < len(text_bytes):
-                unicode_chars = font.character_identifier_to_unicode(text_bytes[i])
+            if i < len(text):
+                unicode_chars = font.character_identifier_to_unicode(text[i])
                 if unicode_chars is not None:
-                    self._glyphs.append(
+                    glyphs.append(
                         Glyph(
-                            text_bytes[i],
+                            text[i],
                             unicode_chars,
-                            font.get_width(text_bytes[i]) or Decimal(0),
+                            font.get_width(text[i]) or Decimal(0),
                         )
                     )
                     i += 1
                     continue
             # no mapping found
-            if i < len(text_bytes):
-                self._glyphs.append(Glyph(text_bytes[i], "�", Decimal(250)))
+            if i < len(text):
+                glyphs.append(Glyph(text[i], "�", Decimal(250)))
                 i += 1
+        return GlyphLine(
+            glyphs, font, font_size, character_spacing, word_spacing, horizontal_scaling
+        )
 
+    @staticmethod
+    def from_str(
+        text: str,
+        font: Font,
+        font_size: Decimal,
+        character_spacing: Decimal = Decimal(0),
+        word_spacing: Decimal = Decimal(0),
+        horizontal_scaling: Decimal = Decimal(100),
+    ) -> "GlyphLine":
+        """
+        This method constructs a new GlyphLine from text
+        :param text:                a string which will be decoded into character-ids
+        :param font:                the font
+        :param font_size:           the font-size
+        :param character_spacing:   the (additional) space between characters
+        :param word_spacing:        the (additional) space between words
+        :param horizontal_scaling:  the horizontal scaling factor (100 represents no zoom)
+        :return:                    a GlyphLine
+        """
+        character_ids: typing.List[int] = [
+            font.unicode_to_character_identifier(c) or 0 for c in text
+        ]
+        glyphs: typing.List[Glyph] = [
+            Glyph(
+                cid,
+                text[i],
+                font.get_width(cid) or Decimal(0),
+            )
+            for i, cid in enumerate(character_ids)
+        ]
+        return GlyphLine(
+            glyphs, font, font_size, character_spacing, word_spacing, horizontal_scaling
+        )
+
+    def __init__(
+        self,
+        glyphs: typing.List[Glyph],
+        font: Font,
+        font_size: Decimal,
+        character_spacing: Decimal = Decimal(0),
+        word_spacing: Decimal = Decimal(0),
+        horizontal_scaling: Decimal = Decimal(100),
+    ):
+        assert isinstance(font, Font)
+        self._glyphs: typing.List[Glyph] = glyphs
         self._font = font
         self._font_size = font_size
         self._character_spacing = character_spacing

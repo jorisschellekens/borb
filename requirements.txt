@@ -5,4 +5,4 @@ git+git://github.com/ojii/pymaging.git
 python-barcode>=0.13.1
 qrcode[pil]>=6.1
 requests>=2.24.0
-setuptools~=51.1.1
+setuptools>=51.1.1

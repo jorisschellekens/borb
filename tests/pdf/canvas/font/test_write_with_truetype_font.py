@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -10,6 +11,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
@@ -32,6 +34,59 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
         if not self.output_dir.exists():
             self.output_dir.mkdir()
+
+    def test_write_document_004(self):
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # layout
+        layout: PageLayout = SingleColumnLayout(page)
+
+        # add test information
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test loads a truetype _font from a .ttf file and attempts to use it to write the text A <space> B. The bounding box of the text is then drawn."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        # path to _font
+        font_path: Path = Path(__file__).parent / "Pacifico-Regular.ttf"
+        assert font_path.exists()
+
+        # add paragraph
+        p: Paragraph = Paragraph(
+            "A B", font=TrueTypeFont.true_type_font_from_file(font_path)
+        )
+        layout.add(p)
+
+        # add box
+        page.append_polygon_annotation(
+            LineArtFactory.rectangle(p.get_bounding_box()),
+            stroke_color=HexColor("ff0000"),
+        )
+
+        # determine output location
+        out_file = self.output_dir / "output_004.pdf"
+
+        # attempt to store PDF
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+        compare_visually_to_ground_truth(out_file)
 
     def test_write_document_001(self):
 
