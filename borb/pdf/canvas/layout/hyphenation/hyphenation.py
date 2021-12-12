@@ -77,7 +77,7 @@ class Hyphenation:
         """
         # don't spend effort on stupid input
         assert len(hyphenation_character) == 1
-        if len(s) <= 1:
+        if len(s) <= 4:
             return s
 
         # check exceptions

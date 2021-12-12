@@ -303,7 +303,7 @@ class Paragraph(LineOfText):
             #  When using justification,
             #  it is customary to treat the last line of a paragraph separately by simply left or right aligning it,
             #  depending on the language direction.
-            if i == len(lines_of_text) - 1 and len(lines_of_text) > 1:
+            if i == len(lines_of_text) - 1 and len(lines_of_text) >= 1:
                 last_line_rectangle: Rectangle = LineOfText(
                     line_of_text,
                     font=self._font,

@@ -1,2 +1,2 @@
-borb version 2.0.15
+borb version 2.0.16
 Joris Schellekens

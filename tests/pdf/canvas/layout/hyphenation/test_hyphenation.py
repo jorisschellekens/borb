@@ -1,6 +1,8 @@
 import unittest
 
-from borb.pdf.canvas.layout.hyphenation.hyphenation import Hyphenation
+from borb.pdf.canvas.layout.hyphenation.hyphenation import (
+    Hyphenation,
+)
 
 
 class TestHyphenation(unittest.TestCase):
