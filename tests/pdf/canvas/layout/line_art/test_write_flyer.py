@@ -7,7 +7,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.image.barcode import Barcode, BarcodeType
 from borb.pdf.canvas.layout.image.image import Image
-from borb.pdf.canvas.layout.image.shape import Shape
+from borb.pdf.canvas.layout.shape.shape import Shape
 from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout

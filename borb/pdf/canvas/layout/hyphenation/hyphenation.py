@@ -30,6 +30,9 @@ class Hyphenation:
     There are also a large number of exceptions, which further complicates matters.
     """
 
+    DO_NOT_HYPHENATE_BEFORE: int = 2
+    DO_NOT_HYPHENATE_AFTER: int = -2
+
     def __init__(self, iso_language_code: str):
         self._patterns: Trie = Trie()
         self._min_prefix_length: int = 128
@@ -97,7 +100,7 @@ class Hyphenation:
                 for k in range(self._min_suffix_length, self._max_suffix_length + 1):
                     if j == 0 and k == 0:
                         continue
-                    if i + k > len(s):
+                    if i + k >= len(s2):
                         continue
                     suffix: str = s2[i : (i + k)]
                     value: typing.Optional[int] = self._patterns[prefix + "0" + suffix]
@@ -105,8 +108,18 @@ class Hyphenation:
                         hyphenation_info[i] = max(hyphenation_info[i], value)
         s3: str = ""
         for i in range(1, len(hyphenation_info) - 1):
+            # obey DO_NOT_HYPHENATE_BEFORE
+            if (i - 1) <= Hyphenation.DO_NOT_HYPHENATE_BEFORE:
+                s3 += s2[i]
+                continue
+            # obey DO_NOT_HYPHENATE_AFTER
+            if (i - 1) >= len(s) + Hyphenation.DO_NOT_HYPHENATE_AFTER:
+                s3 += s2[i]
+                continue
+            # do not allow split on last 2, or first 2 characters
             if hyphenation_info[i] % 2 == 1:
                 s3 += hyphenation_character + s2[i]
             else:
                 s3 += s2[i]
+        # return
         return s3

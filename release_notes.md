@@ -1,14 +1,15 @@
-# :mega: borb release 2.0.16
+# :mega: borb release 2.0.17
 
 This is a bugfix release.
 
-- Fixes how `Alignment.JUSTIFIED` is handled when there is only 1 line of text.
-- Fixed how hyphenation handles words shorter than 4 characters.
-- Everything formatted by `black`.
-- Added hyphenation for:
-  - `be` : Belarusian
-  - `bn` : Bengali
-  - `fi` : Finnish
-  - `lt` : Lithouanian
-  - `ro` : Romanian
-  - `ru` : Russian
+- Fixes for `Hyphenation`
+- Add extra features to line-art
+  - Add `GradientColoredDisjointShape` to enable users to draw a gradient
+  - Add `RectangularMazeFactory` to enable users to draw mazes
+  - Add `RectangularHitomezashi` to enable users to draw space-filling shapes
+
+Some minor administrative work has also been done.
+
+- A EULA is being drafted by lawyers to ensure `borb` can be licensed to customers.
+- The license in the `borb` repository have been modified to ensure no copyright violation.
+- 
