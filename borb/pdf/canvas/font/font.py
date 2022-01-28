@@ -20,7 +20,7 @@ from decimal import Decimal
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.tokenize.low_level_tokenizer import Token, TokenType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name
 
 
@@ -47,7 +47,7 @@ class Font(Dictionary):
         """
         return None
 
-    def get_width(self, character_identifier: int) -> typing.Optional[pDecimal]:
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
         """
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
@@ -55,19 +55,19 @@ class Font(Dictionary):
         """
         return None
 
-    def get_ascent(self) -> pDecimal:
+    def get_ascent(self) -> bDecimal:
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
         """
-        return pDecimal(0)
+        return bDecimal(0)
 
-    def get_descent(self) -> pDecimal:
+    def get_descent(self) -> bDecimal:
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
         """
-        return pDecimal(0)
+        return bDecimal(0)
 
     def get_font_name(self) -> typing.Optional[str]:
         """
@@ -147,7 +147,7 @@ class Font(Dictionary):
             if character_identifier is not None:
                 width = self.get_width(character_identifier)
                 if width is not None:
-                    return pDecimal(width * v)
+                    return bDecimal(width * v)
         # 5. helvetica
         return Decimal(278)
 
@@ -331,7 +331,7 @@ class Font(Dictionary):
         if "W" in self:
             out[Name("W")] = List()
             for x in self["W"]:
-                if isinstance(x, pDecimal):
+                if isinstance(x, bDecimal):
                     out["W"].append(x)
                 if isinstance(x, List):
                     l = List()

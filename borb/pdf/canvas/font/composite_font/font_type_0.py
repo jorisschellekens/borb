@@ -10,7 +10,7 @@ import logging
 import typing
 from pathlib import Path
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import List, Name, Stream
 from borb.pdf.canvas.font.font import Font
 
@@ -191,7 +191,7 @@ class Type0Font(Font):
         # default
         return None
 
-    def get_width(self, character_identifier: int) -> typing.Optional[pDecimal]:
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
         """
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
@@ -203,7 +203,7 @@ class Type0Font(Font):
         descendant_font: Font = self["DescendantFonts"][0]
         return descendant_font.get_width(character_identifier)
 
-    def get_ascent(self) -> pDecimal:
+    def get_ascent(self) -> bDecimal:
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
@@ -214,7 +214,7 @@ class Type0Font(Font):
         descendant_font: Font = self["DescendantFonts"][0]
         return descendant_font.get_ascent()
 
-    def get_descent(self) -> pDecimal:
+    def get_descent(self) -> bDecimal:
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.

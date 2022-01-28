@@ -27,7 +27,7 @@ class FunctionDictionaryTransformer(Transformer):
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a Dictionary with \FunctionType key
+        This function returns True if the object to be transformed is a Dictionary with /FunctionType key
         """
         return (
             isinstance(object, dict)
@@ -44,7 +44,7 @@ class FunctionDictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function reads a Dictionary with \FunctionType key from a byte stream.
+        This function reads a Dictionary with /FunctionType key from a byte stream.
         """
         assert isinstance(object_to_transform, Dictionary)
         assert "FunctionType" in object_to_transform

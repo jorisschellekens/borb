@@ -10,7 +10,7 @@ import typing
 import zlib
 from decimal import Decimal
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Name
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
@@ -216,7 +216,7 @@ class MultiColumnLayout(PageLayout):
             content_stream[Name("Bytes")] = zlib.compress(
                 content_stream["DecodedBytes"], 9
             )
-            content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
+            content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
             self.switch_to_next_column()
             return self.add(layout_element)
 

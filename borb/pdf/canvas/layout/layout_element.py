@@ -10,7 +10,7 @@ import zlib
 from decimal import Decimal
 from enum import Enum
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, Name, Stream
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -168,7 +168,7 @@ class LayoutElement:
                 content_stream["DecodedBytes"], 9
             )
             content_stream[Name("Filter")] = Name("FlateDecode")
-            content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
+            content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
 
             # set content of page
             page[Name("Contents")] = content_stream
@@ -191,7 +191,7 @@ class LayoutElement:
 
         content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
+        content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
 
     def _calculate_layout_box(self, page: "Page", bounding_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
 
@@ -245,7 +245,7 @@ class LayoutElement:
         content_stream = page["Contents"]
         content_stream[Name("DecodedBytes")] = previous_decoded_bytes
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
+        content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
 
         # return
         return layout_rect

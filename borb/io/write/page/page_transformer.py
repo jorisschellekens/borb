@@ -3,7 +3,7 @@
 
 """
 This implementation of WriteBaseTransformer is responsible
-for writing Dictionary objects of \Type \Page
+for writing Dictionary objects of /Type /Page
 """
 import logging
 from typing import Optional
@@ -19,12 +19,12 @@ logger = logging.getLogger(__name__)
 class PageTransformer(DictionaryTransformer):
     """
     This implementation of WriteBaseTransformer is responsible
-    for writing Dictionary objects of \Type \Page
+    for writing Dictionary objects of /Type /Page
     """
 
     def can_be_transformed(self, any: AnyPDFType):
         """
-        This function returns True if the object to be converted represents an \Page Dictionary
+        This function returns True if the object to be converted represents an /Page Dictionary
         """
         return isinstance(any, Dictionary) and "Type" in any and any["Type"] == "Page"
 
@@ -34,7 +34,7 @@ class PageTransformer(DictionaryTransformer):
         context: Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a \Page Dictionary to a byte stream
+        This method writes a /Page Dictionary to a byte stream
         """
         assert isinstance(object_to_transform, Dictionary)
         assert (
@@ -45,7 +45,7 @@ class PageTransformer(DictionaryTransformer):
         assert isinstance(context.root_object, Document)
         pages_dict = context.root_object["XRef"]["Trailer"]["Root"]["Pages"]
 
-        # add \Parent reference to \Pages
+        # add /Parent reference to /Pages
         object_to_transform[Name("Parent")] = self.get_reference(pages_dict, context)
 
         # mark some keys as non-referencable

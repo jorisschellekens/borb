@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Union
 
 from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -30,7 +30,7 @@ class PageDictionaryTransformer(Transformer):
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a \Page Dictionary
+        This function returns True if the object to be converted represents a /Page Dictionary
         """
         return (
             isinstance(object, Dict) and "Type" in object and object["Type"] == "Page"
@@ -44,7 +44,7 @@ class PageDictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function reads a \Page Dictionary from a byte stream
+        This function reads a /Page Dictionary from a byte stream
         """
 
         if isinstance(object_to_transform, Page):
@@ -86,7 +86,7 @@ class PageDictionaryTransformer(Transformer):
             page_out["Contents"][Name("DecodedBytes")] = bts
             page_out["Contents"][Name("Bytes")] = zlib.compress(bts, 9)
             page_out["Contents"][Name("Filter")] = Name("FlateDecode")
-            page_out["Contents"][Name("Length")] = pDecimal(len(bts))
+            page_out["Contents"][Name("Length")] = bDecimal(len(bts))
             contents = page_out["Contents"]
             contents.set_parent(page_out)  # type: ignore [attr-defined]
 

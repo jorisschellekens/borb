@@ -6,7 +6,7 @@ from pathlib import Path
 
 from tests.test_util import compare_visually_to_ground_truth
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream
 from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.layout.layout_element import Alignment
@@ -157,7 +157,7 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         """
         content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
         content_stream[Name("Filter")] = Name("FlateDecode")
-        content_stream[Name("Length")] = pDecimal(len(content_stream["Bytes"]))
+        content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
 
         # set content of page
         page[Name("Contents")] = content_stream

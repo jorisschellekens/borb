@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Name, Reference, Stream
 from borb.io.write.transformer import Transformer, WriteTransformerState
 
@@ -51,7 +51,7 @@ class XMPTransformer(Transformer):
         bts = ET.tostring(object_to_transform)
         out_value[Name("DecodedBytes")] = bts
         out_value[Name("Bytes")] = bts
-        out_value[Name("Length")] = pDecimal(len(bts))
+        out_value[Name("Length")] = bDecimal(len(bts))
 
         # copy reference
         out_value.set_reference(object_to_transform.get_reference())  # type: ignore [attr-defined]

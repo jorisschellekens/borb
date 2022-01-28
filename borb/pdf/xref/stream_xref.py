@@ -96,7 +96,7 @@ class StreamXREF(XREF):
         # apply filters
         xref_stream = decode_stream(xref_stream)
 
-        # read every range specified in \Index
+        # read every range specified in /Index
         xref_stream_decoded_bytes = xref_stream["DecodedBytes"]
         for idx in range(0, len(index), 2):
             start = int(index[idx])

@@ -1,15 +1,7 @@
-# :mega: borb release 2.0.17
+# :mega: borb release 2.0.18
 
-This is a bugfix release.
+This release is a cleanup release.
 
-- Fixes for `Hyphenation`
-- Add extra features to line-art
-  - Add `GradientColoredDisjointShape` to enable users to draw a gradient
-  - Add `RectangularMazeFactory` to enable users to draw mazes
-  - Add `RectangularHitomezashi` to enable users to draw space-filling shapes
-
-Some minor administrative work has also been done.
-
-- A EULA is being drafted by lawyers to ensure `borb` can be licensed to customers.
-- The license in the `borb` repository have been modified to ensure no copyright violation.
-- 
+- The library (previously called `ptext`) still had some imports being renamed as `pDecimal` or `pString` or `pList`.
+  These occurences have been completely removed from the code.
+- `borb` can now create PDF documents that are almost PDF/A-1b valid. Some effort for fonts remains.

@@ -12,7 +12,7 @@ appropriate glyph names for the glyphs.
 import logging
 import typing
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Name
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import Type1Font
@@ -33,7 +33,7 @@ class Type3Font(Type1Font):
         super(Type3Font, self).__init__()
         self[Name("Subtype")] = Name("Type3")
 
-    def get_ascent(self) -> pDecimal:
+    def get_ascent(self) -> bDecimal:
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
@@ -43,9 +43,9 @@ class Type3Font(Type1Font):
         logger.debug(
             "Type3Font does not have an `Ascent` entry in its `FontDescriptor` dictionary."
         )
-        return pDecimal(0)  # TODO
+        return bDecimal(0)  # TODO
 
-    def get_descent(self) -> pDecimal:
+    def get_descent(self) -> bDecimal:
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
@@ -55,7 +55,7 @@ class Type3Font(Type1Font):
         logger.debug(
             "Type3Font does not have an `Descent` entry in its `FontDescriptor` dictionary."
         )
-        return pDecimal(0)  # TODO
+        return bDecimal(0)  # TODO
 
     def _empty_copy(self) -> "Font":
         return Type3Font()

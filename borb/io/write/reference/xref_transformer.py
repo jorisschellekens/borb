@@ -41,7 +41,7 @@ class XREFTransformer(Transformer):
 
         # Transform the Trailer dictionary (replacing objects by references)
         # we do this upfront because the normal write_dictionary_transformer will write the dictionary first,
-        # and the references afterwards. This would cause the \Trailer dictionary to not be the last.
+        # and the references afterwards. This would cause the /Trailer dictionary to not be the last.
         trailer_out = Dictionary()
 
         # /Root

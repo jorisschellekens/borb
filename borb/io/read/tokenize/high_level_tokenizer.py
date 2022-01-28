@@ -281,13 +281,13 @@ class HighLevelTokenizer(LowLevelTokenizer):
             self.seek(byte_offset)
             return None
 
-        # process \Length
+        # process /Length
         assert "Length" in stream_dictionary
         length_of_stream = stream_dictionary["Length"]
         if isinstance(length_of_stream, Reference):
             if xref is None:
                 raise RuntimeError(
-                    "unable to process reference \Length when no XREF is given"
+                    "unable to process reference /Length when no XREF is given"
                 )
             pos_before = self.tell()
             length_of_stream = int(

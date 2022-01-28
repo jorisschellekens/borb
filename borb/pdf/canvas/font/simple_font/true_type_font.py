@@ -15,7 +15,7 @@ from fontTools.agl import toUnicode  # type: ignore [import]
 from fontTools.pens.boundsPen import BoundsPen  # type: ignore [import]
 from fontTools.ttLib import TTFont  # type: ignore [import]
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.font.composite_font.cid_font_type_2 import CIDType2Font
 from borb.pdf.canvas.font.composite_font.font_type_0 import Type0Font
@@ -82,17 +82,17 @@ class TrueTypeFont(Type1Font):
         font[Name("BaseFont")] = Name(font_name)
 
         # build widths
-        units_per_em: pDecimal = pDecimal(ttf_font_file["head"].unitsPerEm)
+        units_per_em: bDecimal = bDecimal(ttf_font_file["head"].unitsPerEm)
         if cmap is not None:
-            font[Name("FirstChar")] = pDecimal(0)
-            font[Name("LastChar")] = pDecimal(len(glyph_order))
+            font[Name("FirstChar")] = bDecimal(0)
+            font[Name("LastChar")] = bDecimal(len(glyph_order))
             font[Name("Widths")] = List()
             for glyph_name in glyph_order:
-                w: typing.Union[pDecimal, Decimal] = (
-                    pDecimal(ttf_font_file.getGlyphSet()[glyph_name].width)
+                w: typing.Union[bDecimal, Decimal] = (
+                    bDecimal(ttf_font_file.getGlyphSet()[glyph_name].width)
                     / units_per_em
                 ) * Decimal(1000)
-                w = pDecimal(round(w, 2))
+                w = bDecimal(round(w, 2))
                 font["Widths"].append(w)
 
         assert font[Name("FirstChar")] >= 0
@@ -105,7 +105,7 @@ class TrueTypeFont(Type1Font):
         font["Encoding"][Name("BaseEncoding")] = Name("WinAnsiEncoding")
         font["Encoding"][Name("Differences")] = List()
         for i in range(0, len(glyph_order)):
-            font["Encoding"]["Differences"].append(pDecimal(i))
+            font["Encoding"]["Differences"].append(bDecimal(i))
             font["Encoding"]["Differences"].append(Name(glyph_order[i]))
 
         # embed font file
@@ -121,8 +121,8 @@ class TrueTypeFont(Type1Font):
         font_stream: Stream = Stream()
         font_stream[Name("Type")] = Name("Font")
         font_stream[Name("Subtype")] = Name("TrueType")
-        font_stream[Name("Length")] = pDecimal(len(font_file_bytes))
-        font_stream[Name("Length1")] = pDecimal(len(font_file_bytes))
+        font_stream[Name("Length")] = bDecimal(len(font_file_bytes))
+        font_stream[Name("Length1")] = bDecimal(len(font_file_bytes))
         font_stream[Name("Filter")] = Name("FlateDecode")
         font_stream[Name("DecodedBytes")] = font_file_bytes
         font_stream[Name("Bytes")] = zlib.compress(font_file_bytes, 9)
@@ -136,8 +136,8 @@ class TrueTypeFont(Type1Font):
         font_descriptor[Name("Type")] = Name("FontDescriptor")
         font_descriptor[Name("FontName")] = String(TrueTypeFont._get_base_font(ttf_font_file))
         font_descriptor[Name("FontStretch")] = Name("Normal")  # TODO
-        font_descriptor[Name("FontWeight")] = pDecimal(400)  # TODO
-        font_descriptor[Name("Flags")] = pDecimal(4)  # TODO
+        font_descriptor[Name("FontWeight")] = bDecimal(400)  # TODO
+        font_descriptor[Name("Flags")] = bDecimal(4)  # TODO
         # fmt: on
 
         # determine FontBBox, CapHeight
@@ -146,7 +146,7 @@ class TrueTypeFont(Type1Font):
         min_y: float = 1000
         max_x: float = 0
         max_y: float = 0
-        cap_height: typing.Optional[pDecimal] = None
+        cap_height: typing.Optional[bDecimal] = None
         glyph_set = ttf_font_file.getGlyphSet()
         for glyph_name in ttf_font_file.glyphOrder:
             pen = BoundsPen(glyph_set)
@@ -155,26 +155,26 @@ class TrueTypeFont(Type1Font):
                 continue
             # determine CapHeight
             if glyph_name in "EFHIJLMNTZ" and cap_height is None:
-                cap_height = pDecimal(pen.bounds[3])
+                cap_height = bDecimal(pen.bounds[3])
             min_x = min(min_x, pen.bounds[0] / units_per_em * 1000)
             min_y = min(min_y, pen.bounds[1] / units_per_em * 1000)
             max_x = max(max_x, pen.bounds[2] / units_per_em * 1000)
             max_y = max(max_y, pen.bounds[3] / units_per_em * 1000)
         if cap_height is None:
-            cap_height = pDecimal(840)
+            cap_height = bDecimal(840)
 
         font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)  # type: ignore[attr-defined]
-        font_descriptor["FontBBox"].append(pDecimal(min_x))
-        font_descriptor["FontBBox"].append(pDecimal(min_y))
-        font_descriptor["FontBBox"].append(pDecimal(max_x))
-        font_descriptor["FontBBox"].append(pDecimal(max_y))
+        font_descriptor["FontBBox"].append(bDecimal(min_x))
+        font_descriptor["FontBBox"].append(bDecimal(min_y))
+        font_descriptor["FontBBox"].append(bDecimal(max_x))
+        font_descriptor["FontBBox"].append(bDecimal(max_y))
 
         # fmt: off
-        font_descriptor[Name("ItalicAngle")] = pDecimal(ttf_font_file["post"].italicAngle)
-        font_descriptor[Name("Ascent")] = pDecimal(ttf_font_file["hhea"].ascent / units_per_em * 1000)
-        font_descriptor[Name("Descent")] = pDecimal(ttf_font_file["hhea"].descent / units_per_em * 1000)
+        font_descriptor[Name("ItalicAngle")] = bDecimal(ttf_font_file["post"].italicAngle)
+        font_descriptor[Name("Ascent")] = bDecimal(ttf_font_file["hhea"].ascent / units_per_em * 1000)
+        font_descriptor[Name("Descent")] = bDecimal(ttf_font_file["hhea"].descent / units_per_em * 1000)
         font_descriptor[Name("CapHeight")] = cap_height
-        font_descriptor[Name("StemV")] = pDecimal(297)             # TODO
+        font_descriptor[Name("StemV")] = bDecimal(297)             # TODO
         # fmt: on
 
         return font_descriptor
@@ -248,26 +248,26 @@ class TrueTypeFont(Type1Font):
         to_unicode_stream[Name("DecodedBytes")] = bts
         to_unicode_stream[Name("Bytes")] = zlib.compress(bts, 9)
         to_unicode_stream[Name("Filter")] = Name("FlateDecode")
-        to_unicode_stream[Name("Length")] = pDecimal(len(bts))
+        to_unicode_stream[Name("Length")] = bDecimal(len(bts))
         return to_unicode_stream
 
     @staticmethod
     def _build_custom_widths_array_for_type_0_font(ttf_font_file: TTFont) -> List:
-        units_per_em: pDecimal = pDecimal(ttf_font_file["head"].unitsPerEm)
+        units_per_em: bDecimal = bDecimal(ttf_font_file["head"].unitsPerEm)
         cmap = ttf_font_file.getBestCmap()
         glyph_set = ttf_font_file.getGlyphSet()
         widths_array: List = List()
         for cid, g in enumerate(ttf_font_file.glyphOrder):
-            glyph_width: pDecimal = pDecimal(0)
+            glyph_width: bDecimal = bDecimal(0)
             try:
-                glyph_width = pDecimal(
+                glyph_width = bDecimal(
                     glyph_set[cmap[ord(toUnicode(g))]].width / units_per_em * 1000
                 )
             except:
                 pass
-            widths_array.append(pDecimal(cid))
+            widths_array.append(bDecimal(cid))
             widths_array.append(List())
-            widths_array[-1].append(pDecimal(glyph_width))
+            widths_array[-1].append(bDecimal(glyph_width))
         return widths_array
 
     @staticmethod
@@ -294,7 +294,7 @@ class TrueTypeFont(Type1Font):
         descendant_font[Name("FontDescriptor")] = TrueTypeFont._get_font_descriptor(
             ttf_font_file
         )
-        descendant_font[Name("DW")] = pDecimal(250)
+        descendant_font[Name("DW")] = bDecimal(250)
 
         # build W array
         descendant_font[
@@ -307,7 +307,7 @@ class TrueTypeFont(Type1Font):
         descendant_font[Name("CIDSystemInfo")] = Dictionary()
         descendant_font[Name("CIDSystemInfo")][Name("Registry")] = String("Adobe")
         descendant_font[Name("CIDSystemInfo")][Name("Ordering")] = String("Identity")
-        descendant_font[Name("CIDSystemInfo")][Name("Supplement")] = pDecimal(0)
+        descendant_font[Name("CIDSystemInfo")][Name("Supplement")] = bDecimal(0)
         # fmt: on
 
         # add to DescendantFonts

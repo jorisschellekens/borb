@@ -10,6 +10,7 @@ from typing import Optional, Union
 
 from borb.io.read.types import AnyPDFType
 from borb.io.write.ascii_art.ascii_art_transformer import ASCIIArtTransformer
+from borb.io.write.document.catalog_transformer import CatalogTransformer
 from borb.io.write.document.document_transformer import DocumentTransformer
 from borb.io.write.document.information_dictionary_transformer import (
     InformationDictionaryTransformer,
@@ -42,6 +43,7 @@ class AnyObjectTransformer(Transformer):
         self.add_child_transformer(ASCIIArtTransformer())
         # special object types
         self.add_child_transformer(DocumentTransformer())
+        self.add_child_transformer(CatalogTransformer())
         self.add_child_transformer(XREFTransformer())
         self.add_child_transformer(PagesTransformer())
         self.add_child_transformer(PageTransformer())

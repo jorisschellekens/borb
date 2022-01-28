@@ -9,6 +9,7 @@ import typing
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Reference
+from borb.io.write.conformance_level import ConformanceLevel
 
 
 class WriteTransformerState:
@@ -26,16 +27,16 @@ class WriteTransformerState:
         self,
         destination: Optional[typing.Union[io.BufferedIOBase, io.RawIOBase]] = None,
         root_object: Optional[AnyPDFType] = None,
-        conformance_level: str = "",
+        conformance_level: typing.Optional[ConformanceLevel] = None,
     ):
         # fmt: off
-        self.destination = destination                                                  # this is the destination to write to (file, byte-buffer, etc)
-        self.root_object: Optional[AnyPDFType] = root_object                            # this is the root object (PDF)
-        self.indirect_objects_by_id: typing.Dict[int, AnyPDFType] = {}                  # these are the indirect objects (by id)
-        self.indirect_objects_by_hash: typing.Dict[int, typing.List[AnyPDFType]] = {}   # these are the indirect objects (by hash)
-        self.resolved_references: typing.List[Reference] = []                           # these references have already been written
-        self.compression_level: int = 9                                                 # default compression level
-        self.conformance_level: str = conformance_level
+        self.destination = destination                                                      # this is the destination to write to (file, byte-buffer, etc)
+        self.root_object: Optional[AnyPDFType] = root_object                                # this is the root object (PDF)
+        self.indirect_objects_by_id: typing.Dict[int, AnyPDFType] = {}                      # these are the indirect objects (by id)
+        self.indirect_objects_by_hash: typing.Dict[int, typing.List[AnyPDFType]] = {}       # these are the indirect objects (by hash)
+        self.resolved_references: typing.List[Reference] = []                               # these references have already been written
+        self.compression_level: int = 9                                                     # default compression level
+        self.conformance_level: typing.Optional[ConformanceLevel] = conformance_level       # default conformance level
         # fmt: on
 
 

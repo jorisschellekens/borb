@@ -15,7 +15,7 @@ from fontTools.afmLib import AFM  # type: ignore [import]
 from fontTools.agl import toUnicode  # type: ignore [import]
 from fontTools.cffLib import CFFFontSet, TopDict  # type: ignore [import]
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, Name
 from borb.pdf.canvas.font.adobe_standard_encoding import (
     adobe_standard_decode,
@@ -46,9 +46,9 @@ class Type1Font(SimpleFont):
 
         # figure out how many characters we'll need to calculate
         assert "FirstChar" in self
-        assert isinstance(self["FirstChar"], pDecimal)
+        assert isinstance(self["FirstChar"], bDecimal)
         assert "LastChar" in self
-        assert isinstance(self["LastChar"], pDecimal)
+        assert isinstance(self["LastChar"], bDecimal)
         first_char: int = int(self["FirstChar"])
         last_char: int = int(self["LastChar"])
         self._character_identifier_to_unicode_lookup = {}
@@ -82,11 +82,11 @@ class Type1Font(SimpleFont):
             self._character_identifier_to_unicode_lookup
         )
         while i < len(self["Encoding"]["Differences"]):
-            assert isinstance(self["Encoding"]["Differences"][i], pDecimal)
+            assert isinstance(self["Encoding"]["Differences"][i], bDecimal)
             character_code: int = self["Encoding"]["Differences"][i]
             j = i + 1
             while j < len(self["Encoding"]["Differences"]) and not isinstance(
-                self["Encoding"]["Differences"][j], pDecimal
+                self["Encoding"]["Differences"][j], bDecimal
             ):
                 glyph_name: str = str(self["Encoding"]["Differences"][j])
                 cid: int = int(glyph_name[1:])
@@ -123,9 +123,9 @@ class Type1Font(SimpleFont):
 
         # figure out how many characters we'll need to calculate
         assert "FirstChar" in self
-        assert isinstance(self["FirstChar"], pDecimal)
+        assert isinstance(self["FirstChar"], bDecimal)
         assert "LastChar" in self
-        assert isinstance(self["LastChar"], pDecimal)
+        assert isinstance(self["LastChar"], bDecimal)
         first_char: int = int(self["FirstChar"])
         last_char: int = int(self["LastChar"])
         self._character_identifier_to_unicode_lookup = {}
@@ -171,11 +171,11 @@ class Type1Font(SimpleFont):
         j: int = 0
         i = 0
         while i < len(self["Encoding"]["Differences"]):
-            assert isinstance(self["Encoding"]["Differences"][i], pDecimal)
+            assert isinstance(self["Encoding"]["Differences"][i], bDecimal)
             character_code: int = self["Encoding"]["Differences"][i]
             j = i + 1
             while j < len(self["Encoding"]["Differences"]) and not isinstance(
-                self["Encoding"]["Differences"][j], pDecimal
+                self["Encoding"]["Differences"][j], bDecimal
             ):
                 glyph_name: str = str(self["Encoding"]["Differences"][j])
                 self._character_identifier_to_unicode_lookup[
@@ -336,7 +336,7 @@ class Type1Font(SimpleFont):
         # default
         return None
 
-    def get_width(self, character_identifier: int) -> typing.Optional[pDecimal]:
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
         """
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
@@ -348,14 +348,14 @@ class Type1Font(SimpleFont):
             return self["Widths"][character_identifier - first_char]
         return None
 
-    def get_ascent(self) -> pDecimal:
+    def get_ascent(self) -> bDecimal:
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
         """
         return self["FontDescriptor"]["Ascent"]
 
-    def get_descent(self) -> pDecimal:
+    def get_descent(self) -> bDecimal:
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
@@ -480,38 +480,38 @@ class StandardType1Font(Type1Font):
         """
         return self._unicode_lookup_to_character_identifier.get(unicode)
 
-    def get_width(self, character_identifier: int) -> typing.Optional[pDecimal]:
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
         """
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
         this function returns None
         """
-        widths: typing.List[pDecimal] = [
-            pDecimal(v[1])
+        widths: typing.List[bDecimal] = [
+            bDecimal(v[1])
             for k, v in self._afm._chars.items()
             if v[0] == character_identifier
         ]
         if len(widths) == 1:
             return widths[0]
-        return pDecimal(0)
+        return bDecimal(0)
 
-    def get_ascent(self) -> pDecimal:
+    def get_ascent(self) -> bDecimal:
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
         """
         if "Ascender" in self._afm._attrs:
-            return pDecimal(self._afm._attrs["Ascender"])
-        return pDecimal(0)
+            return bDecimal(self._afm._attrs["Ascender"])
+        return bDecimal(0)
 
-    def get_descent(self) -> pDecimal:
+    def get_descent(self) -> bDecimal:
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
         """
         if "Descender" in self._afm._attrs:
-            return pDecimal(self._afm._attrs["Descender"])
-        return pDecimal(0)
+            return bDecimal(self._afm._attrs["Descender"])
+        return bDecimal(0)
 
     def _empty_copy(self) -> "Font":
         return StandardType1Font()

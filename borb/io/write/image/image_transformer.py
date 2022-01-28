@@ -11,7 +11,7 @@ from typing import Optional
 from PIL import Image as PILImage  # type: ignore [import]
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Name, Reference, Stream, add_base_methods
 from borb.io.write.transformer import Transformer, WriteTransformerState
 
@@ -88,11 +88,11 @@ class ImageTransformer(Transformer):
         out_value = Stream()
         out_value[Name("Type")] = Name("XObject")
         out_value[Name("Subtype")] = Name("Image")
-        out_value[Name("Width")] = pDecimal(object_to_transform.width)
-        out_value[Name("Height")] = pDecimal(object_to_transform.height)
-        out_value[Name("Length")] = pDecimal(len(contents))
+        out_value[Name("Width")] = bDecimal(object_to_transform.width)
+        out_value[Name("Height")] = bDecimal(object_to_transform.height)
+        out_value[Name("Length")] = bDecimal(len(contents))
         out_value[Name("Filter")] = filter_name
-        out_value[Name("BitsPerComponent")] = pDecimal(8)
+        out_value[Name("BitsPerComponent")] = bDecimal(8)
         out_value[Name("ColorSpace")] = Name("DeviceRGB")
         out_value[Name("Bytes")] = contents
 

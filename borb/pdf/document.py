@@ -257,7 +257,7 @@ class Document(Dictionary):
             )
             destination.append(bDecimal(left))
 
-        # add \Outlines entry in \Root
+        # add /Outlines entry in /Root
         if "Outlines" not in self["XRef"]["Trailer"]["Root"]:
             outline_dictionary: Dictionary = Dictionary()
             self["XRef"]["Trailer"]["Root"][Name("Outlines")] = outline_dictionary
@@ -273,7 +273,7 @@ class Document(Dictionary):
         outline[Name("Parent")] = None
         outline[Name("Title")] = String(text)
 
-        # get \Outlines
+        # get /Outlines
         outline_dictionary = self["XRef"]["Trailer"]["Root"]["Outlines"]
 
         # if everything is empty, add the new entry as the only entry
@@ -391,7 +391,7 @@ class Document(Dictionary):
             for _ in range(0, 2):
                 kid["Limits"].append(String(file_name))
 
-            # build leaf \Names dictionary
+            # build leaf /Names dictionary
             names = List()
             names.append(String(file_name))
             kid[Name("Names")] = names
@@ -402,7 +402,7 @@ class Document(Dictionary):
             stream[Name("Bytes")] = file_bytes
             stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
 
-            # build leaf \Filespec dictionary
+            # build leaf /Filespec dictionary
             file_spec = Dictionary()
             file_spec[Name("EF")] = Dictionary()
             file_spec["EF"][Name("F")] = stream

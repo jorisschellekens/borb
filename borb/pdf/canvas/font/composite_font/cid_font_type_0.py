@@ -15,7 +15,7 @@
 """
 import typing
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import List, Name
 from borb.pdf.canvas.font.font import Font
 
@@ -27,9 +27,9 @@ class CIDType0Font(Font):
 
     def __init__(self):
         super(CIDType0Font, self).__init__()
-        self._width_cache: typing.Dict[int, pDecimal] = {}
+        self._width_cache: typing.Dict[int, bDecimal] = {}
 
-    def get_width(self, character_identifier: int) -> typing.Optional[pDecimal]:
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
         """
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
@@ -41,7 +41,7 @@ class CIDType0Font(Font):
             return self._width_cache[character_identifier]
 
         # Default value: none (the DW value shall be used for all glyphs).
-        dw: pDecimal = self["DW"] if "DW" in self else pDecimal(1000)
+        dw: bDecimal = self["DW"] if "DW" in self else bDecimal(1000)
         if "W" not in self:
             return dw
 
@@ -53,27 +53,27 @@ class CIDType0Font(Font):
         while i < len(self["W"]):
             # <char_start_code> [<width>+]
             if (
-                isinstance(self["W"][i], pDecimal)
+                isinstance(self["W"][i], bDecimal)
                 and i + 1 < len(self["W"])
                 and isinstance(self["W"][i + 1], List)
             ):
                 for j in range(0, len(self["W"][i + 1])):
                     cid = int(self["W"][i]) + j
                     cid_width = int(self["W"][i + 1][j])
-                    self._width_cache[cid] = pDecimal(cid_width)
+                    self._width_cache[cid] = bDecimal(cid_width)
                 i += 2
                 continue
             # <char_start_code> <char_end_code> <width>
             if (
-                isinstance(self["W"][i], pDecimal)
+                isinstance(self["W"][i], bDecimal)
                 and i + 2 < len(self["W"])
-                and isinstance(self["W"][i + 1], pDecimal)
-                and isinstance(self["W"][i + 2], pDecimal)
+                and isinstance(self["W"][i + 1], bDecimal)
+                and isinstance(self["W"][i + 2], bDecimal)
             ):
                 for j in range(int(self["W"][i]), int(self["W"][i + 1]) + 1):
                     cid = j
                     cid_width = int(self["W"][i + 2])
-                    self._width_cache[cid] = pDecimal(cid_width)
+                    self._width_cache[cid] = bDecimal(cid_width)
                 i += 3
                 continue
 
@@ -84,7 +84,7 @@ class CIDType0Font(Font):
         # default
         return dw
 
-    def get_ascent(self) -> pDecimal:
+    def get_ascent(self) -> bDecimal:
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
@@ -93,7 +93,7 @@ class CIDType0Font(Font):
         assert "Ascent" in self["FontDescriptor"]
         return self["FontDescriptor"]["Ascent"]
 
-    def get_descent(self) -> pDecimal:
+    def get_descent(self) -> bDecimal:
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
@@ -109,6 +109,6 @@ class CIDType0Font(Font):
         # fmt: off
         f_out: CIDType0Font = super(CIDType0Font, self).__deepcopy__(memodict)
         f_out[Name("Subtype")] = Name("CIDFontType0")
-        f_out._width_cache: typing.Dict[int, pDecimal] = {k: v for k, v in self._width_cache.items()}
+        f_out._width_cache: typing.Dict[int, bDecimal] = {k: v for k, v in self._width_cache.items()}
         return f_out
         # fmt: on

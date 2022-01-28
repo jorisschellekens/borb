@@ -15,7 +15,7 @@
 """
 import typing
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Name
 from borb.pdf.canvas.font.composite_font.cid_font_type_0 import CIDType0Font
 from borb.pdf.canvas.font.font import Font
@@ -37,6 +37,6 @@ class CIDType2Font(CIDType0Font):
         # fmt: off
         f_out: CIDType2Font = super(CIDType2Font, self).__deepcopy__(memodict)
         f_out[Name("Subtype")] = Name("CIDFontType2")
-        f_out._width_cache: typing.Dict[int, pDecimal] = {k: v for k, v in self._width_cache.items()}
+        f_out._width_cache: typing.Dict[int, bDecimal] = {k: v for k, v in self._width_cache.items()}
         return f_out
         # fmt: on

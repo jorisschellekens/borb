@@ -12,7 +12,7 @@ import typing
 from decimal import Decimal
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -47,7 +47,7 @@ class MoveTextPositionSetLeading(CanvasOperator):
             set_text_leading_op
         ), "Operand TL must be defined for operator TD to function"
         set_text_leading_op.invoke(
-            canvas_stream_processor, [pDecimal(-operands[1])], event_listeners
+            canvas_stream_processor, [bDecimal(-operands[1])], event_listeners
         )
 
         move_text_position_op: typing.Optional[

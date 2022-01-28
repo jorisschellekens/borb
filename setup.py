@@ -19,7 +19,7 @@ required = [
     "python-barcode>=0.13.1",                   # generating barcodes
     "qrcode[pil]>=6.1",                         # generating QR codes
     "requests>=2.24.0",                         # generating images from a URL
-    "setuptools~=51.1.1",                       # standard
+    "setuptools>=51.1.1",                       # standard
 ]
 
 dependency_links = [
@@ -29,7 +29,7 @@ dependency_links = [
 
 setuptools.setup(
     name="borb",
-    version="2.0.17",
+    version="2.0.18",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="borb is a library for reading, creating and manipulating PDF files in python.",

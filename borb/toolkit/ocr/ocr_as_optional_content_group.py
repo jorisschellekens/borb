@@ -13,7 +13,7 @@ from pathlib import Path
 
 from borb.datastructure.disjoint_set import disjointset
 from borb.io.read.reference.xref_transformer import EndDocumentEvent
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, String
 from borb.pdf.canvas.event.event_listener import Event
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -77,7 +77,7 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
             ocg_dict
         )
 
-        # add to \Resources Dictionary of the Page
+        # add to /Resources Dictionary of the Page
         now = datetime.datetime.now()
         ocr_layer_internal_name: str = "ocr%d%d%d" % (now.year, now.month, now.day)
         number_of_pages: typing.Optional[
@@ -126,7 +126,7 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
                             e.get_font_color()).layout(page, e.get_bounding_box())
             page["Contents"][Name("DecodedBytes")] += "\nEMC".encode("latin1")
             page["Contents"][Name("Bytes")] = zlib.compress(page["Contents"]["DecodedBytes"], 9)
-            page["Contents"][Name("Length")] = pDecimal(len(page["Contents"][Name("Bytes")]))
+            page["Contents"][Name("Length")] = bDecimal(len(page["Contents"][Name("Bytes")]))
             # fmt: on
 
     def _event_occurred(self, event: Event) -> None:

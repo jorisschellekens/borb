@@ -13,7 +13,7 @@ y coordinate.
 import typing
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -49,6 +49,6 @@ class MoveToNextLine(CanvasOperator):
         canvas = canvas_stream_processor.get_canvas()
         move_text_position_op.invoke(
             canvas_stream_processor,
-            [pDecimal(0), -canvas.graphics_state.leading],
+            [bDecimal(0), -canvas.graphics_state.leading],
             event_listeners,
         )

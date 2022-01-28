@@ -9,7 +9,7 @@
 import typing
 from decimal import Decimal
 
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.pdf.canvas.font.font import Font
 
 
@@ -85,7 +85,7 @@ class GlyphLine:
                         Glyph(
                             multi_byte_char_code,
                             unicode_chars,
-                            font.get_width(multi_byte_char_code) or pDecimal(0),
+                            font.get_width(multi_byte_char_code) or bDecimal(0),
                         )
                     )
                     i += 2

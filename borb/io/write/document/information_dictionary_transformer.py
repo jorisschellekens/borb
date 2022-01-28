@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This implementation of WriteBaseTransformer is responsible for writing \Info Dictionary objects
+This implementation of WriteBaseTransformer is responsible for writing /Info Dictionary objects
 """
 import datetime
 import logging
@@ -14,6 +14,7 @@ from typing import Any, Optional
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, Name, Stream, String
+from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.object.stream_transformer import StreamTransformer
 from borb.io.write.transformer import Transformer, WriteTransformerState
@@ -25,12 +26,12 @@ logger = logging.getLogger(__name__)
 
 class InformationDictionaryTransformer(Transformer):
     """
-    This implementation of WriteBaseTransformer is responsible for writing \Info Dictionary objects
+    This implementation of WriteBaseTransformer is responsible for writing /Info Dictionary objects
     """
 
     def can_be_transformed(self, any: AnyPDFType):
         """
-        This function returns True if the object to be transformed is an \Info Dictionary
+        This function returns True if the object to be transformed is an /Info Dictionary
         """
         if not isinstance(any, Dictionary):
             return False
@@ -41,10 +42,14 @@ class InformationDictionaryTransformer(Transformer):
             and parent["Info"] == any
         )
 
+    #
+    # XMP
+    #
+
     def _consolidate_xmp_and_info_dictionary(self, document: Document) -> Dictionary:
         new_info_dictionary: Dictionary = Dictionary()
 
-        # get \Info Dictionary
+        # get /Info Dictionary
         if (
             "XRef" in document
             and "Trailer" in document["XRef"]
@@ -55,7 +60,7 @@ class InformationDictionaryTransformer(Transformer):
             for k, v in info_dictionary.items():
                 new_info_dictionary[k] = v
 
-        # get XMP \Metadata
+        # get XMP /Metadata
         if (
             "XRef" in document
             and "Trailer" in document["XRef"]
@@ -131,7 +136,11 @@ class InformationDictionaryTransformer(Transformer):
     def _convert_xmp_date_format_to_iso_8824_date_format(s: str) -> str:
         return s
 
-    def _write_xmp_metadata_stream(self, info_dictionary: Dictionary) -> Stream:
+    def _write_xmp_metadata_stream(
+        self,
+        info_dictionary: Dictionary,
+        conformance_level: typing.Optional[ConformanceLevel] = None,
+    ) -> Stream:
         random_id: str = "".join(
             [
                 random.choice("0123456789abcdefghijklmnopqrstuvwxyz")
@@ -203,6 +212,21 @@ class InformationDictionaryTransformer(Transformer):
 
         # close
         s += "\n\t\t</rdf:Description>"
+
+        # version
+        if conformance_level is not None:
+            s += '\n\t\t<rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/">'
+            s += (
+                "\n\t\t\t<pdfaid:part>%d</pdfaid:part>"
+                % conformance_level.get_standard()
+            )
+            s += (
+                "\n\t\t\t<pdfaid:conformance>%s</pdfaid:conformance>"
+                % conformance_level.get_conformance_level()
+            )
+            s += "\n\t\t</rdf:Description>"
+
+        # close package
         s += "\n\t</rdf:RDF>"
         s += "\n</x:xmpmeta>"
         s += '\n<?xpacket end="w"?>'
@@ -223,7 +247,7 @@ class InformationDictionaryTransformer(Transformer):
         context: Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes an \Info Dictionary to a byte stream
+        This method writes an /Info Dictionary to a byte stream
         """
 
         # get Document
@@ -231,7 +255,7 @@ class InformationDictionaryTransformer(Transformer):
         assert document is not None
         assert isinstance(document, Document)
 
-        # consolidate XMP \Metadata and \Info Dictionary
+        # consolidate XMP /Metadata and /Info Dictionary
         new_info_dictionary: Dictionary = self._consolidate_xmp_and_info_dictionary(
             document
         )
@@ -239,20 +263,20 @@ class InformationDictionaryTransformer(Transformer):
         # update
         self._update_info_dictionary(new_info_dictionary)
 
-        # determine whether XMP \Metadata is needed
+        # determine whether XMP /Metadata is needed
         # fmt: off
         has_xmp_metadata: bool = "XRef" in document                                         \
                                    and "Trailer" in document["XRef"]                        \
                                    and "Root" in document["XRef"]["Trailer"]                \
                                    and "Metadata" in document["XRef"]["Trailer"]["Root"]
-        needs_xmp_metadata = has_xmp_metadata or (context is not None and context.conformance_level in ["PDF/A-1a", "PDF/A-1b"])
+        needs_xmp_metadata = has_xmp_metadata or (context is not None and context.conformance_level is not None)
         # fmt: on
 
         if needs_xmp_metadata:
 
-            # write XMP \Metadata
+            # write XMP /Metadata
             xmp_metadata_stream: Stream = self._write_xmp_metadata_stream(
-                new_info_dictionary
+                new_info_dictionary, context.conformance_level
             )
             assert context is not None
             document["XRef"]["Trailer"]["Root"][Name("Metadata")] = self.get_reference(
@@ -260,7 +284,7 @@ class InformationDictionaryTransformer(Transformer):
             )
             xmp_metadata_stream.set_parent(document["XRef"]["Trailer"]["Root"])  # type: ignore [attr-defined]
 
-            # delegate XMP \Metadata
+            # delegate XMP /Metadata
             for h in self.get_root_transformer()._handlers:
                 if isinstance(h, StreamTransformer) and h.can_be_transformed(
                     xmp_metadata_stream
@@ -268,11 +292,11 @@ class InformationDictionaryTransformer(Transformer):
                     h.transform(xmp_metadata_stream, context)
                     break
 
-        # write \Info
+        # write /Info
         for k, v in new_info_dictionary.items():
             document["XRef"]["Trailer"][Name("Info")][k] = v
 
-        # delegate \Info
+        # delegate /Info
         for h in self.get_root_transformer()._handlers:
             if isinstance(h, DictionaryTransformer) and h.can_be_transformed(
                 document["XRef"]["Trailer"][Name("Info")]

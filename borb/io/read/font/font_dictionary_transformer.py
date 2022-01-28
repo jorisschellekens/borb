@@ -33,7 +33,7 @@ class FontDictionaryTransformer(Transformer):
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a \Font Dictionary
+        This function returns True if the object to be transformed is a /Font Dictionary
         """
         return (
             isinstance(object, dict)
@@ -50,7 +50,7 @@ class FontDictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> Any:
         """
-        This function reads a \Font Dictionary from a byte stream
+        This function reads a /Font Dictionary from a byte stream
         """
 
         # convert dictionary like structure

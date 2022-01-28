@@ -10,7 +10,7 @@ import zlib
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal as pDecimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Reference, Stream
 from borb.io.write.transformer import Transformer, WriteTransformerState
 
@@ -80,7 +80,7 @@ class StreamTransformer(Transformer):
             else:
                 stream_dictionary[k] = v
 
-        # if self.compression_level == 0, remove \Filter
+        # if self.compression_level == 0, remove /Filter
         if context.compression_level == 0 and Name("Filter") in stream_dictionary:
             stream_dictionary.pop(Name("Filter"))
 
@@ -92,7 +92,7 @@ class StreamTransformer(Transformer):
                 bts = zlib.compress(
                     object_to_transform["DecodedBytes"], context.compression_level
                 )
-            stream_dictionary[Name("Length")] = pDecimal(len(bts))
+            stream_dictionary[Name("Length")] = bDecimal(len(bts))
         else:
             assert "Bytes" in object_to_transform
             bts = object_to_transform["Bytes"]

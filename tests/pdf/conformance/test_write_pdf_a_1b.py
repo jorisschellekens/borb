@@ -2,6 +2,7 @@ import unittest
 from pathlib import Path
 
 from borb.io.read.types import Dictionary, Name, String
+from borb.io.write.conformance_level import ConformanceLevel
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
@@ -55,7 +56,7 @@ class TestWritePDFA1B(unittest.TestCase):
         # attempt to store PDF
         out_file = self.output_dir / "output_001.pdf"
         with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf, "PDF/A-1b")
+            PDF.dumps(in_file_handle, pdf, ConformanceLevel.PDFA_1B)
 
     def test_re_open_pdfa_1_b(self):
 
@@ -82,7 +83,7 @@ class TestWritePDFA1B(unittest.TestCase):
         # attempt to store PDF
         out_file = self.output_dir / "output_002.pdf"
         with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf, "PDF/A-1b")
+            PDF.dumps(in_file_handle, pdf, ConformanceLevel.PDFA_1B)
 
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:

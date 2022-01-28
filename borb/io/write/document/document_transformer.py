@@ -69,7 +69,7 @@ class DocumentTransformer(Transformer):
             object_to_transform["XRef"]["Trailer"]["ID"][1] = random_id
         object_to_transform["XRef"]["Trailer"]["ID"].set_can_be_referenced(False)
 
-        # \Info
+        # /Info
         self._build_empty_document_info_dictionary(object_to_transform)
 
         # transform XREF

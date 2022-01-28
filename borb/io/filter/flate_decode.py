@@ -34,7 +34,7 @@ class FlateDecode:
         if len(bytes_in) == 0:
             return bytes_in
 
-        # check \Predictor
+        # check /Predictor
         assert predictor in [
             1,
             2,
@@ -46,7 +46,7 @@ class FlateDecode:
             15,
         ], "Illegal argument exception. predictor must be in [1, 2, 10, 11, 12, 13, 14, 15]."
 
-        # check \BitsPerComponent
+        # check /BitsPerComponent
         assert bits_per_component in [
             1,
             2,

@@ -97,7 +97,7 @@ class XREFTransformer(Transformer):
         # check for password protected PDF
         if "Trailer" in xref and "Encrypt" in xref["Trailer"]:
 
-            # transform \Encrypt dictionary
+            # transform /Encrypt dictionary
             # fmt: off
             xref["Trailer"][Name("Encrypt")] = self.get_root_transformer().transform(xref["Trailer"]["Encrypt"], xref["Trailer"], context, event_listeners)
             # fmt: on
@@ -135,7 +135,7 @@ class XREFTransformer(Transformer):
                 "password-protected PDFs are currently not supported"
             )
 
-        # transform \Trailer
+        # transform /Trailer
         trailer = self.get_root_transformer().transform(
             context.root_object["XRef"]["Trailer"],
             context.root_object,
