@@ -5,13 +5,14 @@ from pathlib import Path
 
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.polyline_annotation import PolylineAnnotation
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 
@@ -149,10 +150,12 @@ class TestAddPolylineAnnotationUsingLineArtFactory(unittest.TestCase):
 
         # add annotation
         for i, s in enumerate(shapes):
-            pdf.get_page(0).append_polyline_annotation(
-                points=s,
-                fill_color=colors[(i + 1) % len(colors)],
-                stroke_color=colors[i % len(colors)],
+            pdf.get_page(0).append_annotation(
+                PolylineAnnotation(
+                    points=s,
+                    fill_color=colors[(i + 1) % len(colors)],
+                    stroke_color=colors[i % len(colors)],
+                )
             )
 
         # attempt to store PDF

@@ -5,13 +5,14 @@ from pathlib import Path
 
 from borb.io.read.types import List
 from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.layout.annotation.redact_annotation import RedactAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
@@ -93,9 +94,11 @@ class TestCountAnnotations(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_redact_annotation(
-                    bb,
-                    stroke_color=HexColor("FF0000"),
+                doc.get_page(0).append_annotation(
+                    RedactAnnotation(
+                        bb,
+                        stroke_color=HexColor("FF0000"),
+                    )
                 )
 
         # attempt to store PDF

@@ -24,12 +24,20 @@ class DropDownList(FormField):
 
     def __init__(
         self,
-        possible_values: typing.List[str],
-        font_size: Decimal = Decimal(12),
-        font_color: Color = HexColor("000000"),
-        value: str = "",
         default_value: str = "",
         field_name: typing.Optional[str] = None,
+        font_color: Color = HexColor("000000"),
+        font_size: Decimal = Decimal(12),
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        possible_values: typing.List[str] = [],
+        value: str = "",
     ):
         super(DropDownList, self).__init__()
         assert font_size >= 0

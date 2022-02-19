@@ -5,9 +5,9 @@ from pathlib import Path
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.layout.shape.disjoint_shape import DisjointShape
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.shape.disjoint_shape import DisjointShape
 from borb.pdf.canvas.layout.shape.gradient_colored_disjoint_shape import (
     GradientColoredDisjointShape,
 )
@@ -16,7 +16,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.rectangular_maze_factory import RectangularMazeFactory
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth

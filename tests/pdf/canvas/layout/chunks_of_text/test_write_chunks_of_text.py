@@ -6,6 +6,7 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor, Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -14,7 +15,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth
@@ -90,10 +91,7 @@ class TestWriteChunksOfText(unittest.TestCase):
         HeterogeneousParagraph(chunks_of_text).layout(page, bb)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=bb,
-        )
+        page.append_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
 
         # determine output location
         out_file = self.output_dir / "output_001.pdf"
@@ -160,10 +158,7 @@ class TestWriteChunksOfText(unittest.TestCase):
         ).layout(page, bb)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=bb,
-        )
+        page.append_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"
@@ -230,10 +225,7 @@ class TestWriteChunksOfText(unittest.TestCase):
         ).layout(page, bb)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=bb,
-        )
+        page.append_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
 
         # determine output location
         out_file = self.output_dir / "output_003.pdf"
@@ -304,10 +296,7 @@ class TestWriteChunksOfText(unittest.TestCase):
         ).layout(page, bb)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=bb,
-        )
+        page.append_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
 
         # determine output location
         out_file = self.output_dir / "output_004.pdf"
@@ -379,10 +368,7 @@ class TestWriteChunksOfText(unittest.TestCase):
         ).layout(page, bb)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=bb,
-        )
+        page.append_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
 
         # determine output location
         out_file = self.output_dir / "output_005.pdf"

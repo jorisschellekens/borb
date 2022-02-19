@@ -5,13 +5,16 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.remote_go_to_annotation import (
+    RemoteGoToAnnotation,
+)
 from borb.pdf.canvas.layout.image.barcode import Barcode, BarcodeType
 from borb.pdf.canvas.layout.image.image import Image
-from borb.pdf.canvas.layout.shape.shape import Shape
 from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.shape.shape import Shape
 from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
@@ -19,7 +22,7 @@ from borb.pdf.canvas.layout.table.flexible_column_width_table import (
 from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
@@ -175,8 +178,10 @@ class TestWriteFlyer(unittest.TestCase):
             )
             .no_borders()
         )
-        page.append_remote_go_to_annotation(
-            qr_code.get_bounding_box(), uri="https://www.borbpdf.com"
+        page.append_annotation(
+            RemoteGoToAnnotation(
+                qr_code.get_bounding_box(), uri="https://www.borbpdf.com"
+            )
         )
 
         # title

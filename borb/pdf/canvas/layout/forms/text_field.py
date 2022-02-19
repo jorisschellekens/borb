@@ -24,19 +24,19 @@ class TextField(FormField):
 
     def __init__(
         self,
-        font_size: Decimal = Decimal(12),
-        font_color: Color = HexColor("000000"),
-        value: str = "",
         default_value: str = "",
         field_name: typing.Optional[str] = None,
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
-        padding_bottom: Decimal = Decimal(0),
-        padding_left: Decimal = Decimal(0),
-        margin_top: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
+        font_color: Color = HexColor("000000"),
+        font_size: Decimal = Decimal(12),
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        value: str = "",
     ):
         super(TextField, self).__init__(
             padding_top=padding_top,
@@ -81,11 +81,14 @@ class TextField(FormField):
         widget_normal_appearance["BBox"].append(bDecimal(layout_box.width))
         widget_normal_appearance["BBox"].append(bDecimal(self._font_size))
         widget_normal_appearance[Name("Resources")] = widget_resources
-        bts = b"/Tx BMC EMC"
-        widget_normal_appearance[Name("DecodedBytes")] = bts
-        widget_normal_appearance[Name("Bytes")] = zlib.compress(bts, 9)
+        widget_normal_appearance[Name("DecodedBytes")] = b"/Tx BMC EMC"
+        widget_normal_appearance[Name("Bytes")] = zlib.compress(
+            widget_normal_appearance[Name("DecodedBytes")], 9
+        )
         widget_normal_appearance[Name("Filter")] = Name("FlateDecode")
-        widget_normal_appearance[Name("Length")] = bDecimal(len(bts))
+        widget_normal_appearance[Name("Length")] = bDecimal(
+            len(widget_normal_appearance[Name("Bytes")])
+        )
 
         # widget appearance dictionary
         widget_appearance_dictionary: Dictionary = Dictionary()
@@ -158,15 +161,15 @@ class TextField(FormField):
         self._init_widget_dictionary(page, layout_rect)
 
         # set location
+        # fmt: off
         assert self._widget_dictionary is not None
         self._widget_dictionary["AP"]["N"]["BBox"][2] = bDecimal(layout_box.width)
         self._widget_dictionary["AP"]["N"]["BBox"][3] = bDecimal(self._font_size)
         self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
-        self._widget_dictionary["Rect"][1] = bDecimal(
-            layout_box.y + layout_box.height - self._font_size
-        )
+        self._widget_dictionary["Rect"][1] = bDecimal(layout_box.y + layout_box.height - self._font_size)
         self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
         self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
+        # fmt: on
 
         # return Rectangle
         return layout_rect

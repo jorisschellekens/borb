@@ -4,11 +4,10 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from tests.test_util import compare_visually_to_ground_truth
-
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream
 from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.layout.annotation.redact_annotation import RedactAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -16,12 +15,13 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -102,8 +102,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_redact_annotation(
-                    bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")
+                doc.get_page(0).append_annotation(
+                    RedactAnnotation(
+                        bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")
+                    )
                 )
 
         # attempt to store PDF
@@ -204,8 +206,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_redact_annotation(
-                    bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")
+                doc.get_page(0).append_annotation(
+                    RedactAnnotation(
+                        bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")
+                    )
                 )
 
         # attempt to store PDF

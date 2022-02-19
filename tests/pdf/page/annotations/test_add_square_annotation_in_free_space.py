@@ -3,12 +3,12 @@ from decimal import Decimal
 from math import ceil
 from pathlib import Path
 
-from tests.test_util import compare_visually_to_ground_truth
-
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -44,10 +44,12 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
                     continue
                 x = Decimal(i * 10)
                 y = Decimal(j * 10)
-                doc.get_page(0).append_square_annotation(
-                    Rectangle(x, y, Decimal(10), Decimal(10)),
-                    stroke_color=HexColor("BF4E30"),
-                    fill_color=HexColor("BF4E30"),
+                doc.get_page(0).append_annotation(
+                    SquareAnnotation(
+                        Rectangle(x, y, Decimal(10), Decimal(10)),
+                        stroke_color=HexColor("BF4E30"),
+                        fill_color=HexColor("BF4E30"),
+                    )
                 )
 
         # attempt to store PDF
@@ -73,10 +75,12 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         free_rectangle = l.get_free_space_for_page(0, ideal_rectangle)
 
         # add annotation
-        doc.get_page(0).append_square_annotation(
-            free_rectangle,
-            stroke_color=HexColor("0B3954"),
-            fill_color=HexColor("f1cd2e"),
+        doc.get_page(0).append_annotation(
+            SquareAnnotation(
+                free_rectangle,
+                stroke_color=HexColor("0B3954"),
+                fill_color=HexColor("f1cd2e"),
+            )
         )
 
         # attempt to store PDF

@@ -2,14 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
-    This class represents a PDF document
+This class represents a PDF document
 """
 import typing
+import zlib
 from decimal import Decimal
 
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
-from borb.pdf.page.page import DestinationType, Page
+from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType
+from borb.pdf.document.name_tree import NameTree
+from borb.pdf.page.page import Page
 from borb.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 
@@ -30,6 +33,10 @@ class Document(Dictionary):
         This function returns the XMPDocumentInfo of this Document
         """
         return XMPDocumentInfo(self)
+
+    #
+    # adding/removing pages
+    #
 
     def get_page(self, page_number: int) -> Page:
         """
@@ -134,6 +141,10 @@ class Document(Dictionary):
         # return
         return self
 
+    #
+    # signatures
+    #
+
     def has_signatures(self) -> bool:
         """
         This function returns True if this Document has signatures, False otherwise
@@ -149,6 +160,10 @@ class Document(Dictionary):
         """
         # TODO
         return True
+
+    #
+    # outlines
+    #
 
     def has_outlines(self) -> bool:
         """
@@ -334,6 +349,10 @@ class Document(Dictionary):
 
         return self
 
+    #
+    # embedded files
+    #
+
     def append_embedded_file(self, file_name: str, file_bytes: bytes) -> "Document":
         """
         If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
@@ -344,83 +363,22 @@ class Document(Dictionary):
         embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
         This method embeds a file (specified by its name and bytes) into this Document
         """
-        assert "XRef" in self
-        assert "Trailer" in self["XRef"]
-        assert "Root" in self["XRef"]["Trailer"]
-        root = self["XRef"]["Trailer"]["Root"]
 
-        # set up /Names dictionary
-        if "Names" not in root:
-            root[Name("Names")] = Dictionary()
-        names = root["Names"]
+        # build actual file stream
+        stream = Stream()
+        stream[Name("Type")] = Name("EmbeddedFile")
+        stream[Name("Bytes")] = file_bytes
+        stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
 
-        # set up /EmbeddedFiles
-        if "EmbeddedFiles" not in names:
-            names[Name("EmbeddedFiles")] = Dictionary()
-            names["EmbeddedFiles"][Name("Kids")] = List()
+        # build /EF NameTree node
+        leaf = Dictionary()
+        leaf[Name("EF")] = Dictionary()
+        leaf[Name("EF")][Name("F")] = stream
+        leaf[Name("F")] = String(file_name)
+        leaf[Name("Type")] = Name("Filespec")
 
-        # find parent
-        parent = names["EmbeddedFiles"]
-        while "Kids" in parent:
-            for k in parent["Kids"]:
-                lower_limit = str(k["Limits"][0])
-                upper_limit = str(k["Limits"][1])
-                if lower_limit == upper_limit:
-                    continue
-                if lower_limit < file_name < upper_limit:
-                    parent = k
-                    break
-            break
-
-        # add new child
-        if (
-            len(
-                [
-                    x
-                    for x in parent["Kids"]
-                    if x["Limits"][0] == x["Limits"][1] == file_name
-                ]
-            )
-            == 0
-        ):
-
-            kid = Dictionary()
-            kid[Name("F")] = String(file_name)
-            kid[Name("Type")] = Name("Filespec")
-            kid[Name("Limits")] = List()
-            for _ in range(0, 2):
-                kid["Limits"].append(String(file_name))
-
-            # build leaf /Names dictionary
-            names = List()
-            names.append(String(file_name))
-            kid[Name("Names")] = names
-
-            # build actual file stream
-            stream = Stream()
-            stream[Name("Type")] = Name("EmbeddedFile")
-            stream[Name("Bytes")] = file_bytes
-            stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
-
-            # build leaf /Filespec dictionary
-            file_spec = Dictionary()
-            file_spec[Name("EF")] = Dictionary()
-            file_spec["EF"][Name("F")] = stream
-            file_spec[Name("F")] = String(file_name)
-            file_spec[Name("Type")] = Name("Filespec")
-            names.append(file_spec)
-
-            # append
-            parent["Kids"].append(kid)
-
-        # change existing child
-        else:
-            kid = [
-                x
-                for x in parent["Kids"]
-                if x["Limits"][0] == x["Limits"][1] == file_name
-            ][0]
-            # TODO
+        # put
+        NameTree(self, name=Name("EmbeddedFiles")).put(file_name, leaf)
 
         # return
         return self
@@ -435,42 +393,10 @@ class Document(Dictionary):
         embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
         This method returns all embedded files, as a dictionary of names unto bytes
         """
-        assert "XRef" in self
-        assert "Trailer" in self["XRef"]
-        assert "Root" in self["XRef"]["Trailer"]
-        root = self["XRef"]["Trailer"]["Root"]
-
-        # look up /Names dictionary
-        if "Names" not in root:
-            return {}
-        names = root["Names"]
-
-        # look up /EmbeddedFiles dictionary
-        if "EmbeddedFiles" not in names:
-            return {}
-
-        nodes_to_visit = [names["EmbeddedFiles"]]
-        file_names = []
-        while len(nodes_to_visit) > 0:
-            n = nodes_to_visit[0]
-            nodes_to_visit.pop(0)
-            if "Kids" in n:
-                for k in n["Kids"]:
-                    nodes_to_visit.append(k)
-            if "Limits" in n:
-                lower_limit = str(n["Limits"][0])
-                upper_limit = str(n["Limits"][1])
-                if upper_limit == lower_limit:
-                    file_names.append(upper_limit)
-
-        file_names_and_contents: typing.Dict[str, bytes] = {}
-        for n in file_names:
-            contents = self.get_embedded_file(n)
-            assert contents is not None
-            file_names_and_contents[n] = contents
-
-        # return
-        return file_names_and_contents
+        return {
+            k: v["EF"]["F"]["DecodedBytes"]
+            for k, v in NameTree(self, Name("EmbeddedFiles")).items()
+        }
 
     def get_embedded_file(self, file_name: str) -> typing.Optional[bytes]:
         """
@@ -482,47 +408,36 @@ class Document(Dictionary):
         embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
         This method returns the embedded file specified by the given file_name
         """
-        assert "XRef" in self
-        assert "Trailer" in self["XRef"]
-        assert "Root" in self["XRef"]["Trailer"]
-        root = self["XRef"]["Trailer"]["Root"]
 
-        # look up /Names dictionary
-        if "Names" not in root:
-            return None
-        names = root["Names"]
-
-        # look up /EmbeddedFiles dictionary
-        if "EmbeddedFiles" not in names:
-            return None
-
-        # find parent
-        parent = names["EmbeddedFiles"]
-        while "Kids" in parent:
-            for k in parent["Kids"]:
-                lower_limit = str(k["Limits"][0])
-                upper_limit = str(k["Limits"][1])
-                if lower_limit == upper_limit == file_name:
-                    assert "Names" in k
-                    assert isinstance(k["Names"], list)
-                    assert len(k["Names"]) == 2
-                    assert str(k["Names"][0]) == file_name
-
-                    # go to /FileSpec leaf
-                    file_spec_leaf = k["Names"][1]
-                    assert isinstance(file_spec_leaf, dict)
-                    assert "EF" in file_spec_leaf
-                    assert isinstance(file_spec_leaf["EF"], dict)
-                    assert "F" in file_spec_leaf["EF"]
-                    assert isinstance(file_spec_leaf["EF"]["F"], Stream)
-
-                    # extract bytes from Stream
-                    return file_spec_leaf["EF"]["F"]["DecodedBytes"]
-
-                if lower_limit < file_name < upper_limit:
-                    parent = k
-                    break
-            break
+        for k, v in NameTree(self, Name("EmbeddedFiles")).items():
+            if k == file_name:
+                return v["EF"]["F"]["DecodedBytes"]
 
         # default
         return None
+
+    #
+    # embedded javascript
+    #
+
+    def append_embedded_javascript(self, javascript: str) -> "Document":
+
+        # build actual javascript stream
+        stream = Stream()
+        stream[Name("Type")] = Name("JavaScript")
+        stream[Name("DecodedBytes")] = bytes(javascript, "latin1")
+        stream[Name("Bytes")] = zlib.compress(stream[Name("DecodedBytes")], 9)
+        stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
+        stream[Name("Filter")] = Name("FlateDecode")
+
+        # set up NameTree leaf
+        leaf = Dictionary()
+        leaf[Name("S")] = Name("JavaScript")
+        leaf[Name("JS")] = stream
+
+        # put
+        nt: NameTree = NameTree(self, name=Name("JavaScript"))
+        nt.put("script-{0:03d}.js".format(len(nt)), leaf)
+
+        # return
+        return self

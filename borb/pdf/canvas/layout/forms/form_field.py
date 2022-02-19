@@ -40,7 +40,7 @@ class FormField(LayoutElement):
             if isinstance(d, List):
                 for c in d:
                     stk.append(c)
-        return "Field %d" % (number_of_fields + 1)
+        return "field-{0:03d}".format(number_of_fields)
 
     def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed

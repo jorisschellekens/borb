@@ -21,7 +21,7 @@ from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.heading import Heading
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
 

@@ -3,10 +3,9 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from tests.test_util import compare_visually_to_ground_truth
-
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.polygon_annotion import PolygonAnnotation
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -14,9 +13,10 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestAddAllLineArtAnnotations(unittest.TestCase):
@@ -152,9 +152,11 @@ class TestAddAllLineArtAnnotations(unittest.TestCase):
 
         # add annotation
         for i, s in enumerate(shapes):
-            pdf.get_page(0).append_polygon_annotation(
-                points=s,
-                stroke_color=colors[i % len(colors)],
+            pdf.get_page(0).append_annotation(
+                PolygonAnnotation(
+                    points=s,
+                    stroke_color=colors[i % len(colors)],
+                )
             )
 
         # attempt to store PDF

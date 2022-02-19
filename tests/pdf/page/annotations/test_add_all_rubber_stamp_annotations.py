@@ -3,18 +3,21 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from tests.test_util import compare_visually_to_ground_truth
-
 from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.rubber_stamp_annotation import (
+    RubberStampAnnotation,
+    RubberStampAnnotationIconType,
+)
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
-from borb.pdf.page.page import Page, RubberStampAnnotationIconType
+from borb.pdf.document.document import Document
+from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth
 
 
 class TestAddAllRubberStampAnnotations(unittest.TestCase):
@@ -57,13 +60,18 @@ class TestAddAllRubberStampAnnotations(unittest.TestCase):
 
         # add annotation
         for index, name in enumerate(RubberStampAnnotationIconType):
-            pdf.get_page(0).append_stamp_annotation(
-                name=name,
-                contents="Approved by Joris Schellekens",
-                color=X11Color("White"),
-                rectangle=Rectangle(
-                    Decimal(128), Decimal(128 + index * 34), Decimal(64), Decimal(32)
-                ),
+            pdf.get_page(0).append_annotation(
+                RubberStampAnnotation(
+                    name=name,
+                    contents="Approved by Joris Schellekens",
+                    color=X11Color("White"),
+                    bounding_box=Rectangle(
+                        Decimal(128),
+                        Decimal(128 + index * 34),
+                        Decimal(64),
+                        Decimal(32),
+                    ),
+                )
             )
 
         # attempt to store PDF

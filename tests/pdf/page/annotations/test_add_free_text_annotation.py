@@ -3,23 +3,23 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from tests.test_util import compare_visually_to_ground_truth
-
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.free_text_annotation import FreeTextAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -93,12 +93,16 @@ class TestAddFreeTextAnnotation(unittest.TestCase):
             doc = PDF.loads(in_file_handle, [l])
 
         bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
-        doc.get_page(0).append_free_text_annotation(
-            rectangle=Rectangle(Decimal(59), Decimal(500), Decimal(200), Decimal(100)),
-            font=StandardType1Font("Helvetica"),
-            font_size=Decimal(12),
-            text="""Lorem Ipsum""",
-            font_color=HexColor("F1CD2E"),
+        doc.get_page(0).append_annotation(
+            FreeTextAnnotation(
+                bounding_box=Rectangle(
+                    Decimal(59), Decimal(500), Decimal(200), Decimal(100)
+                ),
+                font=StandardType1Font("Helvetica"),
+                font_size=Decimal(12),
+                contents="""Lorem Ipsum""",
+                font_color=HexColor("F1CD2E"),
+            )
         )
 
         # attempt to store PDF

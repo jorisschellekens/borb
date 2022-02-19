@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.markdown_to_pdf.markdown_to_pdf import MarkdownToPDF
 

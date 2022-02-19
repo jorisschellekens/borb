@@ -10,7 +10,7 @@ from decimal import Decimal
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.heading import Heading
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.toolkit.export.markdown_to_pdf.read.transformer import (
     Transformer,

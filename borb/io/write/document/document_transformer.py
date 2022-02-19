@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 from borb.io.read.types import AnyPDFType, Dictionary, HexadecimalString, List, Name
 from borb.io.write.transformer import Transformer, WriteTransformerState
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 
 logger = logging.getLogger(__name__)
 

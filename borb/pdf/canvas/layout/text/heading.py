@@ -11,10 +11,11 @@ from decimal import Decimal
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
-from borb.pdf.page.page import DestinationType, Page
+from borb.pdf.document.document import Document
+from borb.pdf.page.page import Page
 
 
 class Heading(Paragraph):

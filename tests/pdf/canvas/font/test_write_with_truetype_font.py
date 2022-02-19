@@ -5,14 +5,14 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
+from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth
@@ -74,9 +74,8 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         layout.add(p)
 
         # add box
-        page.append_polygon_annotation(
-            LineArtFactory.rectangle(p.get_bounding_box()),
-            stroke_color=HexColor("ff0000"),
+        page.append_annotation(
+            SquareAnnotation(p.get_bounding_box(), stroke_color=HexColor("ff0000"))
         )
 
         # determine output location

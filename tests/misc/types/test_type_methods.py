@@ -1,6 +1,6 @@
 import unittest
 
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
 

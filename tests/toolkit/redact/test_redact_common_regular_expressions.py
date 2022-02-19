@@ -5,12 +5,13 @@ from pathlib import Path
 
 from borb.io.read.types import List
 from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.layout.annotation.redact_annotation import RedactAnnotation
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.redact.common_regular_expressions import CommonRegularExpression
@@ -102,7 +103,7 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
             # fmt: off
             for m in l.get_matches_for_page(0):
                 for bb in m.get_bounding_boxes():
-                    doc.get_page(0).append_redact_annotation(bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black"))
+                    doc.get_page(0).append_annotation(RedactAnnotation(bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")))
             # fmt: on
 
         # attempt to store PDF

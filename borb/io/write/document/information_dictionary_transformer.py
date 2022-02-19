@@ -18,7 +18,7 @@ from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.object.stream_transformer import StreamTransformer
 from borb.io.write.transformer import Transformer, WriteTransformerState
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.trailer.document_info import XMPDocumentInfo
 
 logger = logging.getLogger(__name__)

@@ -22,7 +22,7 @@ from borb.io.write.any_object_transformer import (
 from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.canvas.event.event_listener import EventListener
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 
 
 class PDF:

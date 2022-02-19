@@ -3,8 +3,9 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.color.color import HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -12,7 +13,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 )
 from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 
@@ -78,15 +79,72 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
             rs.append(r)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=Rectangle(
-                Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
-            ),
+        page.append_annotation(
+            SquareAnnotation(
+                Rectangle(
+                    Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
+                ),
+                stroke_color=HexColor("f1cd2e"),
+            )
         )
 
         # determine output location
-        out_file = self.output_dir / "output.pdf"
+        out_file = self.output_dir / "output_001.pdf"
+
+        # attempt to store PDF
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+    def test_write_single_line_of_text_with_annotation(self):
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.append_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a single LineOfText object in it, horizontal alignment set to RIGHT."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        # Rectangle
+        rect: Rectangle = Rectangle(Decimal(59), Decimal(550 - 24), Decimal(476), Decimal(24))
+
+        # Shape
+        page.append_annotation(SquareAnnotation(rect, stroke_color=HexColor("000000")))
+
+        # LineOfText
+        LineOfText(
+                "Lorem Ipsum Dolor Sit Amet",
+                font_size=Decimal(10),
+            background_color=X11Color("Gray"),
+            border_color=X11Color("Black"),
+            border_top=True,
+            border_right=True,
+            border_bottom=True,
+            border_left=True,
+                horizontal_alignment=Alignment.RIGHT,
+            ).layout(
+                page,
+                rect,
+            )
+
+        # determine output location
+        out_file = self.output_dir / "output_002.pdf"
 
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:

@@ -15,7 +15,7 @@ from borb.pdf.canvas.layout.table.flexible_column_width_table import (
 from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.heading import Heading
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth

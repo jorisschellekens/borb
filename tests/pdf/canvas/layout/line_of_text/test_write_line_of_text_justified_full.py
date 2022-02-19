@@ -5,6 +5,7 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -12,7 +13,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 )
 from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 
@@ -82,11 +83,13 @@ class TestWriteLineOfTextJustifiedFull(unittest.TestCase):
             rs.append(r)
 
         # add rectangle annotation
-        page.append_square_annotation(
-            stroke_color=HexColor("f1cd2e"),
-            rectangle=Rectangle(
-                Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
-            ),
+        page.append_annotation(
+            SquareAnnotation(
+                stroke_color=HexColor("f1cd2e"),
+                bounding_box=Rectangle(
+                    Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
+                ),
+            )
         )
 
         # determine output location

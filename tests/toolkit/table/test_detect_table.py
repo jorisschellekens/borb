@@ -5,6 +5,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -14,7 +15,7 @@ from borb.pdf.canvas.layout.table.flexible_column_width_table import (
 )
 from borb.pdf.canvas.layout.table.table import Table, TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.table.table_detection_by_lines import TableDetectionByLines
@@ -181,15 +182,19 @@ class TestDetectTable(unittest.TestCase):
             # add annotation around table
             for t in tables:
                 r = t.get_bounding_box().grow(Decimal(5))
-                doc.get_page(0).append_square_annotation(
-                    r, stroke_color=X11Color("Red")
+                doc.get_page(0).append_annotation(
+                    SquareAnnotation(r, stroke_color=X11Color("Red"))
                 )
 
                 for tc in t._content:
                     r = tc.get_bounding_box()
                     r = r.shrink(Decimal(2))
-                    doc.get_page(0).append_square_annotation(
-                        r, stroke_color=X11Color("Green"), fill_color=X11Color("Green")
+                    doc.get_page(0).append_annotation(
+                        SquareAnnotation(
+                            r,
+                            stroke_color=X11Color("Green"),
+                            fill_color=X11Color("Green"),
+                        )
                     )
 
             # determine output name

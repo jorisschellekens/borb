@@ -4,14 +4,18 @@ from decimal import Decimal
 from pathlib import Path
 
 from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.layout.annotation.text_annotation import (
+    TextAnnotationIconType,
+    TextAnnotation,
+)
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
-from borb.pdf.page.page import Page, TextAnnotationIconType
+from borb.pdf.document.document import Document
+from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
@@ -90,9 +94,10 @@ class TestAddTextAnnotation(unittest.TestCase):
             doc = PDF.loads(in_file_handle, [l])
 
         bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
-        doc.get_page(0).append_text_annotation(
-            bb,
-            contents="""
+        doc.get_page(0).append_annotation(
+            TextAnnotation(
+                bb,
+                contents="""
             Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
             Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
             when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
@@ -101,8 +106,9 @@ class TestAddTextAnnotation(unittest.TestCase):
             It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
             and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.            
             """,
-            text_annotation_icon=TextAnnotationIconType.COMMENT,
-            color=HexColor("F1CD2E"),
+                text_annotation_icon=TextAnnotationIconType.COMMENT,
+                color=HexColor("F1CD2E"),
+            )
         )
 
         # attempt to store PDF

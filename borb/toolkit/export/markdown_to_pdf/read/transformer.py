@@ -11,7 +11,7 @@ import typing
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.browser_layout import BrowserLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
 

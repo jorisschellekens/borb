@@ -9,7 +9,7 @@ import typing
 
 from borb.io.filter.stream_decode_util import decode_stream
 from borb.io.read.types import Decimal, Dictionary, List, Name, Stream
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 
 
 class PDFDiff:

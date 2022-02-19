@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from borb.io.read.types import Dictionary, Name, String
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 from borb.toolkit.export.html_to_pdf.tag_transformer.base_tag_transformer import (
     BaseTagTransformer,

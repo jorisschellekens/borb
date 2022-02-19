@@ -7,6 +7,8 @@
 [![Text Extraction : 88.6%](https://img.shields.io/badge/text%20extraction-88.6%25-orange)]()
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 
+[![Downloads](https://pepy.tech/badge/borb)](https://pepy.tech/project/borb)
+[![Downloads](https://pepy.tech/badge/borb/month)](https://pepy.tech/project/borb)
 
 `borb` is a library for creating and manipulating PDF files in python.
 
@@ -60,7 +62,7 @@ from pathlib import Path
 
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 

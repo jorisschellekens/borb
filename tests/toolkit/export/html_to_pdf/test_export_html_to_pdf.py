@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
 from tests.test_util import compare_visually_to_ground_truth

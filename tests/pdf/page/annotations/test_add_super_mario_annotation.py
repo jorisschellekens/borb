@@ -5,13 +5,17 @@ from pathlib import Path
 
 from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.annotation.link_annotation import (
+    DestinationType,
+    LinkAnnotation,
+)
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
-from borb.pdf.page.page import DestinationType, Page
+from borb.pdf.document.document import Document
+from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth
 
@@ -91,16 +95,18 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
                     continue
                 x = pixel_size * j + float(page_width) / 2
                 y = pixel_size * (len(m) - i) + float(page_height) / 2
-                pdf.get_page(0).append_link_annotation(
-                    page=Decimal(0),
-                    color=c[m[i][j]],
-                    destination_type=DestinationType.FIT,
-                    rectangle=Rectangle(
-                        Decimal(x),
-                        Decimal(y),
-                        Decimal(pixel_size),
-                        Decimal(pixel_size),
-                    ),
+                pdf.get_page(0).append_annotation(
+                    LinkAnnotation(
+                        page=Decimal(0),
+                        color=c[m[i][j]],
+                        destination_type=DestinationType.FIT,
+                        bounding_box=Rectangle(
+                            Decimal(x),
+                            Decimal(y),
+                            Decimal(pixel_size),
+                            Decimal(pixel_size),
+                        ),
+                    )
                 )
 
         # attempt to store PDF

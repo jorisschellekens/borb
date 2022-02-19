@@ -4,7 +4,7 @@
 """
 This class converts Markdown to PDF
 """
-from borb.pdf.document import Document
+from borb.pdf.document.document import Document
 from borb.toolkit.export.markdown_to_pdf.read.any_markdown_transformer import (
     AnyMarkdownTransformer,
 )

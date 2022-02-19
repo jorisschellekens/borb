@@ -248,8 +248,14 @@ class OCRImageRenderEventListener(EventListener):
         )
 
         # write text
-        text_image_draw = ImageDraw.Draw(text_image)
-        text_image_draw.text((0, 0), text, fill=(0, 0, 0))
+        # this can go wrong if the default font for drawing text
+        # does not support one or more of the characters being drawn
+        # in which case this code returns black
+        try:
+            text_image_draw = ImageDraw.Draw(text_image)
+            text_image_draw.text((0, 0), text, fill=(0, 0, 0))
+        except:
+            return HexColor("000000")
 
         # count number of text pixels
         percentage_of_text_pixels: Decimal = Decimal(0)
@@ -273,12 +279,12 @@ class OCRImageRenderEventListener(EventListener):
             )
         )
 
-        # count colors in cropped image
-        surface: Decimal = (
-            cropped_image.width
-            * (image_bounding_box.height / image_bounding_box.width)
-            * cropped_image.height
+        # count number of pixels in cropped image
+        number_of_pixels_in_cropped_image: Decimal = (
+            cropped_image.width * cropped_image.height
         )
+
+        # build color histogram
         color_histogram: typing.Dict[str, Decimal] = {}
         for i in range(0, cropped_image.width):
             for j in range(0, cropped_image.height):
@@ -299,7 +305,11 @@ class OCRImageRenderEventListener(EventListener):
                     hex_color, Decimal(0)
                 ) + Decimal(1)
 
-        color_histogram = {k: (v / surface) for k, v in color_histogram.items()}
+        # normalize
+        color_histogram = {
+            k: (v / number_of_pixels_in_cropped_image)
+            for k, v in color_histogram.items()
+        }
 
         # trim
         color_histogram = {k: v for k, v in color_histogram.items() if v > 0.05}
