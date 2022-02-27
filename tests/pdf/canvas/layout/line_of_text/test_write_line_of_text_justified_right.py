@@ -122,26 +122,28 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
         )
 
         # Rectangle
-        rect: Rectangle = Rectangle(Decimal(59), Decimal(550 - 24), Decimal(476), Decimal(24))
+        rect: Rectangle = Rectangle(
+            Decimal(59), Decimal(550 - 24), Decimal(476), Decimal(24)
+        )
 
         # Shape
         page.append_annotation(SquareAnnotation(rect, stroke_color=HexColor("000000")))
 
         # LineOfText
         LineOfText(
-                "Lorem Ipsum Dolor Sit Amet",
-                font_size=Decimal(10),
+            "Lorem Ipsum Dolor Sit Amet",
+            font_size=Decimal(10),
             background_color=X11Color("Gray"),
             border_color=X11Color("Black"),
             border_top=True,
             border_right=True,
             border_bottom=True,
             border_left=True,
-                horizontal_alignment=Alignment.RIGHT,
-            ).layout(
-                page,
-                rect,
-            )
+            horizontal_alignment=Alignment.RIGHT,
+        ).layout(
+            page,
+            rect,
+        )
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"

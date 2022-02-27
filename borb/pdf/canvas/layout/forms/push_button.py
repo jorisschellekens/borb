@@ -10,10 +10,9 @@ from decimal import Decimal
 
 from borb.io.read.types import Dictionary, Name, List, String, Stream, Boolean
 from borb.io.read.types import Decimal as bDecimal
-from borb.pdf.canvas.color.color import HexColor, Color, X11Color
+from borb.pdf.canvas.color.color import HexColor, Color
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.forms.form_field import FormField
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.line_of_text import LineOfText
@@ -209,3 +208,77 @@ class PushButton(FormField):
 
         # return Rectangle
         return text_layout_box
+
+
+class JavaScriptPushButton(PushButton):
+    """
+    This implementation of FormField represents a push button that triggers JavaScript.
+    """
+
+    def __init__(
+        self,
+        javascript: str,
+        text: str,
+        background_color: typing.Optional[Color] = HexColor("efefef"),
+        border_bottom: bool = True,
+        border_color: Color = HexColor("767676"),
+        border_left: bool = True,
+        border_right: bool = True,
+        border_top: bool = True,
+        border_width: Decimal = Decimal(1),
+        field_name: typing.Optional[str] = None,
+        font_size: typing.Optional[Decimal] = Decimal(12),
+        font_color: Color = HexColor("000000"),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
+        padding_bottom: Decimal = Decimal(2),
+        padding_left: Decimal = Decimal(6),
+        padding_right: Decimal = Decimal(6),
+        padding_top: Decimal = Decimal(2),
+    ):
+        super(JavaScriptPushButton, self).__init__(
+            text=text,
+            background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            field_name=field_name,
+            font_size=font_size,
+            font_color=font_color,
+            horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
+        )
+        self._javascript: str = javascript
+
+    def _init_widget_dictionary(self, page: Page) -> None:
+        # call to super
+        super(JavaScriptPushButton, self)._init_widget_dictionary(page)
+
+        # build JavaScript stream object
+        javascript_stream = Stream()
+        javascript_stream[Name("Type")] = Name("JavaScript")
+        javascript_stream[Name("DecodedBytes")] = bytes(self._javascript, "latin1")
+        javascript_stream[Name("Bytes")] = zlib.compress(
+            javascript_stream[Name("DecodedBytes")], 9
+        )
+        javascript_stream[Name("Length")] = bDecimal(
+            len(javascript_stream[Name("Bytes")])
+        )
+        javascript_stream[Name("Filter")] = Name("FlateDecode")
+
+        # modify action dictionary of PushButton (super)
+        self._widget_dictionary[Name("AA")][Name("D")][Name("S")] = Name("JavaScript")
+        self._widget_dictionary[Name("AA")][Name("D")][Name("JS")] = javascript_stream

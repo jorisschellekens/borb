@@ -6,7 +6,7 @@ from pathlib import Path
 
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.forms.push_button import PushButton
+from borb.pdf.canvas.layout.forms.push_button import PushButton, JavaScriptPushButton
 from borb.pdf.canvas.layout.forms.text_area import TextArea
 from borb.pdf.canvas.layout.forms.text_field import TextField
 from borb.pdf.canvas.layout.layout_element import Alignment
@@ -95,7 +95,11 @@ class TestWritePushButton(unittest.TestCase):
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(Paragraph("This test creates a PDF with a few TextField objects and a TextArea in it."))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a few TextField objects and a TextArea in it."
+                )
+            )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
@@ -105,9 +109,17 @@ class TestWritePushButton(unittest.TestCase):
                 number_of_rows=4, number_of_columns=2, margin_top=Decimal(20)
             )
             .add(Paragraph("Name:"))
-            .add(TextField(value="Doe", font_color=HexColor("56cbf9"), font_size=Decimal(20)))
+            .add(
+                TextField(
+                    value="Doe", font_color=HexColor("56cbf9"), font_size=Decimal(20)
+                )
+            )
             .add(Paragraph("Firstname:"))
-            .add(TextField(value="John", font_color=HexColor("56cbf9"), font_size=Decimal(20)))
+            .add(
+                TextField(
+                    value="John", font_color=HexColor("56cbf9"), font_size=Decimal(20)
+                )
+            )
             .add(Paragraph("Place of residence:"))
             .add(TextArea(field_name="place_of_residence"))
             .add(Paragraph(" "))
@@ -128,6 +140,48 @@ class TestWritePushButton(unittest.TestCase):
 
         assert doc is not None
         assert doc.get_page(0).has_acroforms()
+
+    def test_write_javascript_push_button_using_layout_manager(self):
+
+        # create empty document
+        pdf: Document = Document()
+
+        # create empty page
+        page: Page = Page()
+
+        # add page to document
+        pdf.append_page(page)
+
+        # layout manager
+        l: PageLayout = SingleColumnLayout(page)
+
+        # write test info
+        l.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph("This test creates a PDF with a JavaScript PushButton in it.")
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        # add JavaSciptPushButton
+        l.add(
+            JavaScriptPushButton(
+                text="Hello World!",
+                javascript="app.alert('Hello World', 3)",
+                horizontal_alignment=Alignment.RIGHT,
+            )
+        )
+
+        # write
+        file = self.output_dir / "output_003.pdf"
+        with open(file, "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
 
 
 if __name__ == "__main__":

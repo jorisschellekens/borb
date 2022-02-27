@@ -13,15 +13,20 @@ On top of the resulting network the Pagerank algorithm is applied to get the imp
 The top 1/3 of all these words are kept and are considered relevant.
 After this, a keywords table is constructed by combining the relevant words together if they appear following one another in the text.
 """
-import json
 import re
 import typing
-from pathlib import Path
+
 
 from borb.pdf.page.page import Page
-from borb.toolkit.text.bigram_part_of_speech_tagger import BigramPartOfSpeechTagger
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
+
+try:
+    from textblob import TextBlob
+except:
+    assert (
+        "TextBlob needs to be installed for TextRankKeywordExtraction to work properly."
+    )
 
 
 class TextRankKeywordExtraction(SimpleTextExtraction):
@@ -41,16 +46,6 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
     def __init__(self):
         super().__init__()
         self._stopwords = [x.upper() for x in ENGLISH_STOP_WORDS]
-
-        # set up part of speech tagger
-        self._part_of_speech_tagger: BigramPartOfSpeechTagger = (
-            BigramPartOfSpeechTagger()
-        )
-        bigram_tagger_file: Path = (
-            Path(__file__).parent / "bigram_part_of_speech_tagger_en.json"
-        )
-        with open(bigram_tagger_file, "r") as json_file_handle:
-            self._part_of_speech_tagger.from_json(json.loads(json_file_handle.read()))
 
         # keep track of keywords_per_page
         self._keywords_per_page: typing.Dict[
@@ -73,12 +68,10 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
         for line in lines:
 
             # POS tagging
-            tags_and_tokens: typing.List[
-                typing.Tuple[str, str]
-            ] = self._part_of_speech_tagger.tag_str(line)
+            tags_and_tokens: typing.List[typing.Tuple[str, str]] = TextBlob(line).tags
 
             # select only NOUN, ADJ
-            toks = [x[0] for x in tags_and_tokens if x[1] in ["nn", "jj"]]
+            toks = [x[0] for x in tags_and_tokens if x[1] in ["NN", "JJ"]]
 
             # build transfer matrix
             for i0 in range(0, len(toks)):
