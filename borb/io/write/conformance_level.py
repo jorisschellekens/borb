@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+In turn, each PDF/A standard supports different conformance levels (a & b for PDF/A-1; and a, b & u for PDF/A-2 and -3).
+These conformance levels control the “accessibility” requirements of a file that impact the ability of machines and people to understand the content.
+"""
+
 import enum
 
 

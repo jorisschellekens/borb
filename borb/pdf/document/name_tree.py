@@ -1,9 +1,32 @@
+"""
+Some categories of objects in a PDF file can be referred to by name rather than by object reference. The
+correspondence between names and objects is established by the document’s name dictionary (PDF 1.2),
+located by means of the Names entry in the document’s catalog (see 7.7.2, "Document Catalog"). Each entry in
+this dictionary designates the root of a name tree (see 7.9.6, "Name Trees") defining names for a particular
+category of objects.
+
+A name tree serves a similar purpose to a dictionary—associating keys and values—but by different means.
+A name tree differs from a dictionary in the following important ways:
+- Unlike the keys in a dictionary, which are name objects, those in a name tree are strings.
+- The keys are ordered.
+- The values associated with the keys may be objects of any type. Stream objects shall be specified by
+indirect object references (7.3.8, "Stream Objects"). The dictionary, array, and string objects should be
+specified by indirect object references, and other PDF objects (nulls, numbers, booleans, and names)
+should be specified as direct objects.
+- The data structure can represent an arbitrarily large collection of key-value pairs, which can be looked up
+efficiently without requiring the entire data structure to be read from the PDF file. (In contrast, a dictionary
+can be subject to an implementation limit on the number of entries it can contain.)
+"""
 import typing
 
 from borb.io.read.types import Dictionary, Name, List, String
 
 
 class NameTree:
+    """
+    A name tree is similar to a dictionary that associates keys and values but the keys in a name tree are strings and are ordered
+    """
+
     def __init__(self, document: Dictionary, name: Name):
         self._document: Dictionary = document
         self._name: Name = name
@@ -70,6 +93,7 @@ class NameTree:
         parent["Kids"].append(kid)
 
     def _put_existing(self, parent: Dictionary, key: str, value: typing.Any):
+        # TODO
         pass
 
     #

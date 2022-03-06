@@ -77,6 +77,12 @@ class RectangularHitomezashi:
             random.choice([True, False, False]) for _ in range(0, 32)
         ],
     ):
+        """
+        This function generates a rectangular Hitomezashi grid pattern
+        :param horizontal_seed:     a typing.List[bool] to be used as the horizontal seed
+        :param vertical_seed:       a typing.List[bool] to be used as the vertical seed
+        :return:                    a rectangular Hitomezashi pattern, represented as a typing.List[typing.Tuple[typing.Tuple[Decimal, Decimal], typing.Tuple[Decimal, Decimal]]]
+        """
 
         # keep track of lines
         lines: typing.List[

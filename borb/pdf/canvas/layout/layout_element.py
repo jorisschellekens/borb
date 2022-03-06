@@ -410,6 +410,12 @@ class LayoutElement:
 
         # print("R %f %f %f %f " % (border_box.x, border_box.y, border_box.width, border_box.height))
 
+        n: int = 0
+        xll: float = round(border_box.x, n)
+        yll: float = round(border_box.y, n)
+        xur: float = round(border_box.x + border_box.width, n)
+        yur: float = round(border_box.y + border_box.height, n)
+
         # draw border(s)
         rgb_color = self._border_color.to_rgb()
         content = "q %f %f %f RG %f w" % (
@@ -420,31 +426,31 @@ class LayoutElement:
         )
         if self._border_top:
             content += " %f %f m %f %f l s" % (
-                border_box.x,
-                border_box.y + border_box.height,
-                border_box.x + border_box.width,
-                border_box.y + border_box.height,
+                xll,
+                yur,
+                xur,
+                yur,
             )
         if self._border_right:
             content += " %d %d m %d %d l s" % (
-                border_box.x + border_box.width,
-                border_box.y + border_box.height,
-                border_box.x + border_box.width,
-                border_box.y,
+                xur,
+                yur,
+                xur,
+                yll,
             )
         if self._border_bottom:
             content += " %d %d m %d %d l s" % (
-                border_box.x + border_box.width,
-                border_box.y,
-                border_box.x,
-                border_box.y,
+                xll,
+                yll,
+                xur,
+                yll,
             )
         if self._border_left:
             content += " %d %d m %d %d l s" % (
-                border_box.x,
-                border_box.y,
-                border_box.x,
-                border_box.y + border_box.height,
+                xll,
+                yur,
+                xll,
+                yll,
             )
         content += " Q "
         self._append_to_content_stream(page, content)

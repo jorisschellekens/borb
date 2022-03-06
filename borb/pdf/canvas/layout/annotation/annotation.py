@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+An annotation associates an object such as a note, sound, or movie with a location on a page of a PDF
+document, or provides a way to interact with the user by means of the mouse and keyboard. PDF includes a
+wide variety of standard annotation types, described in detail in 12.5.6, “Annotation Types.”
+"""
 import datetime
 import typing
 from decimal import Decimal
@@ -8,6 +16,12 @@ from borb.pdf.canvas.geometry.rectangle import Rectangle
 
 
 class Annotation(Dictionary):
+    """
+    An annotation associates an object such as a note, sound, or movie with a location on a page of a PDF
+    document, or provides a way to interact with the user by means of the mouse and keyboard. PDF includes a
+    wide variety of standard annotation types, described in detail in 12.5.6, “Annotation Types.”
+    """
+
     @staticmethod
     def _timestamp_to_str() -> str:
         timestamp_str = "D:"

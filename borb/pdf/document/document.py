@@ -421,6 +421,11 @@ class Document(Dictionary):
     #
 
     def append_embedded_javascript(self, javascript: str) -> "Document":
+        """
+        This function appends embedded JavaScript to this Document, returning self.
+        :param javascript:  the Javascript str to be appended to this Document
+        :return:            self
+        """
 
         # build actual javascript stream
         stream = Stream()

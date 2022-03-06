@@ -212,7 +212,12 @@ class Page(Dictionary):
             self[Name("Annots")] = List()
         return self["Annots"]
 
-    def append_annotation(self, annotation: Annotation):
+    def append_annotation(self, annotation: Annotation) -> "Page":
+        """
+        This function appends an Annotation to this Page, returning self.
+        :param annotation:  the Annotation object to append to this Page
+        :return:            self
+        """
 
         # (Optional except as noted below; PDF 1.3; not used in FDF files) An
         # indirect reference to the page object with which this annotation is

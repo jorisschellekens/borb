@@ -7,7 +7,7 @@ A link annotation represents either a hypertext link to a destination elsewhere 
 entries specific to this type of annotation.
 This method adds a link annotation with an action that opens a remote URI.
 """
-from borb.io.read.types import Name, String, Dictionary
+from borb.io.read.types import Name, String, Dictionary, List, Decimal as bDecimal
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation
 
@@ -26,6 +26,21 @@ class RemoteGoToAnnotation(Annotation):
         # (Required) The type of annotation that this dictionary describes; shall be
         # Link for a link annotation.
         self[Name("Subtype")] = Name("Link")
+
+        # (Optional) An array specifying the characteristics of the annotation’s
+        # border, which shall be drawn as a rounded rectangle.
+        # (PDF 1.0) The array consists of three numbers defining the horizontal
+        # corner radius, vertical corner radius, and border width, all in default user
+        # space units. If the corner radii are 0, the border has square (not rounded)
+        # corners; if the border width is 0, no border is drawn.
+        # (PDF 1.1) The array may have a fourth element, an optional dash array
+        # defining a pattern of dashes and gaps that shall be used in drawing the
+        # border. The dash array shall be specified in the same format as in the
+        # line dash pattern parameter of the graphics state (see 8.4.3.6, “Line
+        # Dash Pattern”).
+        self[Name("Border")] = List().set_can_be_referenced(False)
+        for _ in range(0, 3):
+            self[Name("Border")].append(bDecimal(0))
 
         # (Optional; PDF 1.1) An action that shall be performed when the link
         # annotation is activated (see 12.6, “Actions”).

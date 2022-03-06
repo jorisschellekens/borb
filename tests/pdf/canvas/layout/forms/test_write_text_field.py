@@ -145,11 +145,11 @@ class TestWriteTextField(unittest.TestCase):
 
         assert doc is not None
         assert doc.get_page(0).has_acroforms()
-        assert doc.get_page(0).has_form_field("Field 1")
+        assert doc.get_page(0).has_form_field("field-000")
 
-        doc.get_page(0).set_form_field_value("Field 1", "Lipsum")
+        doc.get_page(0).set_form_field_value("field-000", "Lipsum")
 
-        assert doc.get_page(0).get_form_field_value("Field 1") == "Lipsum"
+        assert doc.get_page(0).get_form_field_value("field-000") == "Lipsum"
 
 
 if __name__ == "__main__":

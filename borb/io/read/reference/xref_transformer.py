@@ -17,6 +17,7 @@ from borb.io.read.types import AnyPDFType, Dictionary, Name
 from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.document.document import Document
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
+from borb.pdf.xref.rebuilt_xref import RebuiltXREF
 from borb.pdf.xref.stream_xref import StreamXREF
 from borb.pdf.xref.xref import XREF
 
@@ -257,7 +258,23 @@ class XREFTransformer(Transformer):
                 else:
                     doc[Name("XRef")] = most_recent_xref
             except Exception as ex0:
-                raise ex0
+                most_recent_xref = None
+                exceptions_to_rethrow.append(ex0)
+
+        # attempt to rebuild XREF from document
+        if most_recent_xref is None:
+            try:
+                most_recent_xref = RebuiltXREF()
+                assert most_recent_xref is not None
+                most_recent_xref.set_parent(doc)
+                most_recent_xref.read(src, tok)
+                if "XRef" in doc:
+                    doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
+                else:
+                    doc[Name("XRef")] = most_recent_xref
+            except Exception as ex0:
+                most_recent_xref = None
+                exceptions_to_rethrow.append(ex0)
 
         # unable to read XREF
         # re-throw exceptions
