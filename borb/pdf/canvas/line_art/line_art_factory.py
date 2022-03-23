@@ -20,6 +20,70 @@ class LineArtFactory:
     such as arrows, rectangles, triangles, regular n-gons, stars, etc
     """
 
+    def EURion(
+        bounding_box: Rectangle,
+    ) -> typing.List[
+        typing.Tuple[typing.Tuple[Decimal, Decimal], typing.Tuple[Decimal, Decimal]]
+    ]:
+        """
+        The EURion constellation (also known as Omron rings or doughnuts) is a pattern of symbols incorporated into a number of secure documents
+        such as banknotes and ownership title certificates designs worldwide since about 1996.
+        It is added to help imaging software detect the presence of such a document in a digital image.
+        Such software can then block the user from reproducing banknotes to prevent counterfeiting using colour photocopiers.
+        According to research from 2004, the EURion constellation is used for colour photocopiers but probably not used in computer software.
+        It has been reported that Adobe Photoshop will not allow editing of an image of a banknote,
+        but in some versions this is believed to be due to a different, unknown digital watermark rather than the EURion constellation.
+        :return:
+        """
+        # 269,  73 r 25 s 17
+        #  85, 170 r 25 s 17
+        # 237, 228 r 25 s 17
+        # 475, 280 r 25 s 17
+        # 263, 487 r 25 s 17
+        line_segments = []
+        for x, y in [(269, 73), (85, 170), (237, 228), (475, 280), (263, 487)]:
+
+            # calculate points of a circle
+            circle_segments = []
+            for i in range(0, 360):
+                px: Decimal = Decimal(math.cos(math.radians(i)) * 25 - (25 / 2) + x)
+                py: Decimal = Decimal(math.sin(math.radians(i)) * 25 - (25 / 2) + y)
+                circle_segments.append((px, py))
+
+            # add segments
+            line_segments.extend(
+                [
+                    (
+                        circle_segments[i],
+                        circle_segments[(i + 1) % len(circle_segments)],
+                    )
+                    for i in range(0, len(circle_segments))
+                ]
+            )
+
+        # scale
+        min_x: Decimal = min([min(l[0][0], l[1][0]) for l in line_segments])
+        max_x: Decimal = max([max(l[0][0], l[1][0]) for l in line_segments])
+        w: Decimal = max_x - min_x
+        min_y: Decimal = min([min(l[0][1], l[1][1]) for l in line_segments])
+        max_y: Decimal = max([max(l[0][1], l[1][1]) for l in line_segments])
+        h: Decimal = max_y - min_y
+        w_scale = bounding_box.get_width() / w
+        h_scale = bounding_box.get_height() / h
+        line_segments = [
+            (
+                (l[0][0] * w_scale, l[0][1] * h_scale),
+                (l[1][0] * w_scale, l[1][1] * h_scale),
+            )
+            for l in line_segments
+        ]
+
+        # translate
+        # TODO
+
+        # return
+        return line_segments
+
     @staticmethod
     def lissajours(
         bounding_box: Rectangle, x_frequency: int, y_frequency: int

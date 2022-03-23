@@ -61,13 +61,13 @@ class DocumentTransformer(Transformer):
         random_id = HexadecimalString("%032x" % random.randrange(16 ** 32))
         if "ID" not in object_to_transform["XRef"]["Trailer"]:
             # fmt: off
-            object_to_transform["XRef"]["Trailer"][Name("ID")] = List().set_can_be_referenced(False) # type: ignore [attr-defined]
+            object_to_transform["XRef"]["Trailer"][Name("ID")] = List().set_is_inline(True) # type: ignore [attr-defined]
             object_to_transform["XRef"]["Trailer"]["ID"].append(random_id)
             object_to_transform["XRef"]["Trailer"]["ID"].append(random_id)
             # fmt: on
         else:
             object_to_transform["XRef"]["Trailer"]["ID"][1] = random_id
-        object_to_transform["XRef"]["Trailer"]["ID"].set_can_be_referenced(False)
+        object_to_transform["XRef"]["Trailer"]["ID"].set_is_inline(True)
 
         # /Info
         self._build_empty_document_info_dictionary(object_to_transform)

@@ -60,11 +60,11 @@ this is the classic `Hello World` example, in `borb`:
 ```python
 from pathlib import Path
 
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document.document import Document
-from borb.pdf.page.page import Page
-from borb.pdf.pdf import PDF
+from borb.pdf import Document
+from borb.pdf import Page
+from borb.pdf import SingleColumnLayout
+from borb.pdf import Paragraph
+from borb.pdf import PDF
 
 # create an empty Document
 pdf = Document()

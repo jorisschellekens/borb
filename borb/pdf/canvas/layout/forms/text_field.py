@@ -61,6 +61,9 @@ class TextField(FormField):
         if self._widget_dictionary is not None:
             return
 
+        if "XRef" not in page.get_root():
+            return
+
         # init page and font resources
         assert self._font_size is not None
         font_resource_name: Name = self._get_font_resource_name(
@@ -75,7 +78,7 @@ class TextField(FormField):
         widget_normal_appearance: Stream = Stream()
         widget_normal_appearance[Name("Type")] = Name("XObject")
         widget_normal_appearance[Name("Subtype")] = Name("Form")
-        widget_normal_appearance[Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        widget_normal_appearance[Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         widget_normal_appearance["BBox"].append(bDecimal(0))
         widget_normal_appearance["BBox"].append(bDecimal(0))
         widget_normal_appearance["BBox"].append(bDecimal(layout_box.width))
@@ -103,7 +106,7 @@ class TextField(FormField):
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)
-        self._widget_dictionary[Name("Rect")] = List().set_can_be_referenced(False) # type: ignore [attr-defined]
+        self._widget_dictionary[Name("Rect")] = List().set_is_inline(True) # type: ignore [attr-defined]
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size))
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
@@ -162,13 +165,13 @@ class TextField(FormField):
 
         # set location
         # fmt: off
-        assert self._widget_dictionary is not None
-        self._widget_dictionary["AP"]["N"]["BBox"][2] = bDecimal(layout_box.width)
-        self._widget_dictionary["AP"]["N"]["BBox"][3] = bDecimal(self._font_size)
-        self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
-        self._widget_dictionary["Rect"][1] = bDecimal(layout_box.y + layout_box.height - self._font_size)
-        self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
-        self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
+        if self._widget_dictionary is not None:
+            self._widget_dictionary["AP"]["N"]["BBox"][2] = bDecimal(layout_box.width)
+            self._widget_dictionary["AP"]["N"]["BBox"][3] = bDecimal(self._font_size)
+            self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
+            self._widget_dictionary["Rect"][1] = bDecimal(layout_box.y + layout_box.height - self._font_size)
+            self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
+            self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
         # fmt: on
 
         # return Rectangle

@@ -64,7 +64,7 @@ class LinkAnnotation(Annotation):
         # (Optional; not permitted if an A entry is present) A destination that shall
         # be displayed when the annotation is activated (see 12.3.2,
         # “Destinations”).
-        destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        destination = List().set_is_inline(True)  # type: ignore [attr-defined]
         destination.append(bDecimal(page))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:

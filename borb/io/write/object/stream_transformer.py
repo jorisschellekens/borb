@@ -74,7 +74,7 @@ class StreamTransformer(Transformer):
                 isinstance(v, Dictionary)
                 or isinstance(v, List)
                 or isinstance(v, Stream)
-            ) and v.can_be_referenced():  # type: ignore [union-attr]
+            ) and not v.is_inline():  # type: ignore [union-attr]
                 stream_dictionary[k] = self.get_reference(v, context)
                 queue.append(v)
             else:

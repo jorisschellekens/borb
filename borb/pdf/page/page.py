@@ -34,7 +34,7 @@ class Page(Dictionary):
         self[Name("Type")] = Name("Page")
 
         # size: A4 portrait
-        self[Name("MediaBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("MediaBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["MediaBox"].append(bDecimal(0))
         self["MediaBox"].append(bDecimal(0))
         self["MediaBox"].append(bDecimal(width))
@@ -218,6 +218,11 @@ class Page(Dictionary):
         :param annotation:  the Annotation object to append to this Page
         :return:            self
         """
+
+        # (Optional; PDF 1.4) The annotation name, a text string uniquely
+        # identifying it among all the annotations on its page.
+        len_annots = len(self["Annots"]) if "Annots" in self else 0
+        annotation[Name("NM")] = String("annotation-{0:03d}".format(len_annots))
 
         # (Optional except as noted below; PDF 1.3; not used in FDF files) An
         # indirect reference to the page object with which this annotation is

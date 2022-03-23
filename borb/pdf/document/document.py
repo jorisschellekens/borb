@@ -201,7 +201,7 @@ class Document(Dictionary):
         contents to display the document’s structure to the user.
         This function adds an outline to this Document
         """
-        destination = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        destination = List().set_is_inline(True)  # type: ignore [attr-defined]
         destination.append(bDecimal(page_nr))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:

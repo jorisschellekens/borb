@@ -4,7 +4,9 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable as Table
+from borb.pdf.canvas.layout.table.fixed_column_width_table import (
+    FixedColumnWidthTable as Table,
+)
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
@@ -58,7 +60,6 @@ class TestRemovePage(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
-
     def test_break_document(self):
         # read input document
         bytes_in: bytes = b""
@@ -71,17 +72,29 @@ class TestRemovePage(unittest.TestCase):
             while i < len(bytes_in):
 
                 # 1 0 obj
-                if 48 <= bytes_in[i] <= 57 and bytes_in[i+1] == 32 and 48 <= bytes_in[i+2] <= 57 and bytes_in[i+3] == 32 and bytes_in[i+4] == 111 and bytes_in[i+5] == 98 and bytes_in[i+6] == 106:
+                if (
+                    48 <= bytes_in[i] <= 57
+                    and bytes_in[i + 1] == 32
+                    and 48 <= bytes_in[i + 2] <= 57
+                    and bytes_in[i + 3] == 32
+                    and bytes_in[i + 4] == 111
+                    and bytes_in[i + 5] == 98
+                    and bytes_in[i + 6] == 106
+                ):
                     pdf_out_file_handle.write(b"\n")
-                    pdf_out_file_handle.write(b"% These bytes were added after the document was created.\n")
-                    pdf_out_file_handle.write(b"% This causes the XREF table to be wrong.\n")
+                    pdf_out_file_handle.write(
+                        b"% These bytes were added after the document was created.\n"
+                    )
+                    pdf_out_file_handle.write(
+                        b"% This causes the XREF table to be wrong.\n"
+                    )
                     pdf_out_file_handle.write(b"\n")
-                    pdf_out_file_handle.write(bytes_in[i:i+7])
+                    pdf_out_file_handle.write(bytes_in[i : i + 7])
                     i += 7
                     continue
 
                 # regular
-                pdf_out_file_handle.write(bytes_in[i:i+1])
+                pdf_out_file_handle.write(bytes_in[i : i + 1])
                 i += 1
 
     def test_read_broken_document(self):
@@ -93,13 +106,13 @@ class TestRemovePage(unittest.TestCase):
             doc = PDF.loads(pdf_in_file_handle, [l])
 
         # read info properties
-        assert doc.get_document_info().get_producer() == 'borb'
+        assert doc.get_document_info().get_producer() == "borb"
 
         # check number of pages
         assert doc.get_document_info().get_number_of_pages() == 1
 
         # check text
         txt: str = l.get_text_for_page(0)
-        assert 'test_fix_broken_xref' in txt
-        assert 'Description This test creates a PDF with 1 page.' in txt
-        assert 'Subsequent tests then screw up the XREF.' in txt
+        assert "test_fix_broken_xref" in txt
+        assert "Description This test creates a PDF with 1 page." in txt
+        assert "Subsequent tests then screw up the XREF." in txt

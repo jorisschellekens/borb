@@ -61,7 +61,7 @@ class GradientColoredDisjointShape(DisjointShape):
         self.scale_to_fit(bounding_box.width, bounding_box.height)
 
         # translate points to fit in box
-        self.translate_to_align(
+        self.move_to(
             bounding_box.x, bounding_box.y + bounding_box.height - self.get_height()
         )
 

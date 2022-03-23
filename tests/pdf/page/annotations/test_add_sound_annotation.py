@@ -17,7 +17,6 @@ from borb.pdf.pdf import PDF
 
 
 class TestAddSoundAnnotation(unittest.TestCase):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -112,7 +111,8 @@ class TestAddSoundAnnotation(unittest.TestCase):
         # add sound annotation
         page.append_annotation(
             SoundAnnotation(
-                img.get_bounding_box(), "https://commons.wikimedia.org/wiki/File:Variations_for_flute_and_piano.mp3"
+                img.get_bounding_box(),
+                "https://commons.wikimedia.org/wiki/File:Variations_for_flute_and_piano.mp3",
             )
         )
 

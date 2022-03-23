@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 Some categories of objects in a PDF file can be referred to by name rather than by object reference. The
 correspondence between names and objects is established by the document’s name dictionary (PDF 1.2),
@@ -31,8 +34,13 @@ class NameTree:
         self._document: Dictionary = document
         self._name: Name = name
 
-    def put(self, key: str, value: typing.Any):
-
+    def put(self, key: str, value: typing.Any) -> "NameTree":
+        """
+        This function adds a key/value pair in this NameTree
+        :param key:     the key
+        :param value:   the value
+        :return:        self
+        """
         assert "XRef" in self._document
         assert "Trailer" in self._document["XRef"]
         assert "Root" in self._document["XRef"]["Trailer"]
@@ -70,6 +78,9 @@ class NameTree:
         else:
             self._put_existing(parent, key, value)
 
+        # return
+        return self
+
     def _put_new(self, parent: Dictionary, key: str, value: typing.Any):
 
         kid = Dictionary()
@@ -100,14 +111,25 @@ class NameTree:
     # dictionary methods
     #
 
-    def get_keys(self) -> typing.List[String]:
+    def keys(self) -> typing.List[String]:
+        """
+        This function returns the keys in this NameTree
+        :return:    the keys in this NameTree
+        """
         return [k for k, v in self.items()]
 
-    def get_values(self) -> typing.List[typing.Any]:
+    def values(self) -> typing.List[typing.Any]:
+        """
+        This function returns the values in this NameTree
+        :return:    the values in this NameTree
+        """
         return [v for k, v in self.items()]
 
     def items(self) -> typing.Iterable[typing.Tuple[String, typing.Any]]:
-
+        """
+        This function returns all key/value pairs in this NameTree
+        :return:    all key/value pairs in this NameTree
+        """
         assert "XRef" in self._document
         assert "Trailer" in self._document["XRef"]
         assert "Root" in self._document["XRef"]["Trailer"]

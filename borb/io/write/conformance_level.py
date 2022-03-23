@@ -25,6 +25,10 @@ class ConformanceLevel(enum.Enum):
     PDFA_3U = 19
 
     def get_standard(self) -> int:
+        """
+        This function returns the standard (the numeric part) of this ConformanceLevel
+        :return:    the numeric part of this ConformanceLevel (1, 2, 3)
+        """
         if self in [ConformanceLevel.PDFA_1A, ConformanceLevel.PDFA_1B]:
             return 1
         if self in [
@@ -42,6 +46,10 @@ class ConformanceLevel(enum.Enum):
         assert False
 
     def get_conformance_level(self) -> str:
+        """
+        This function returns the conformance-level (non-numeric part) of this ConformanceLevel
+        :return:    the non-numeric part of this ConformanceLevel (A, B, U)
+        """
         if self in [ConformanceLevel.PDFA_1A, ConformanceLevel.PDFA_2A]:
             return "A"
         if self in [

@@ -5,6 +5,7 @@
 This class represents a generic shape (specified by a List of points).
 It has convenience methods to calculate width and height, perform scaling, etc
 """
+import math
 import typing
 from decimal import Decimal
 from math import sqrt
@@ -110,7 +111,21 @@ class Shape(LayoutElement):
             self._points = [(x[0], x[1] * h_scale) for x in self._points]
         return self
 
-    def translate_to_align(self, lower_left_x: Decimal, lower_left_y: Decimal):
+    def rotate(self, angle_in_radians: float) -> "Shape":
+        """
+        This function rotates the Shape for a given angle
+        :param angle_in_radians:    the angle
+        :return:                    this Shape
+        """
+        a: Decimal = Decimal(math.cos(angle_in_radians))
+        b: Decimal = Decimal(-math.sin(angle_in_radians))
+        c: Decimal = Decimal(math.sin(angle_in_radians))
+        d: Decimal = Decimal(math.cos(angle_in_radians))
+        self._points = [(a*x+c*y,
+                         b*x+d*y) for x,y in self._points]
+        return self
+
+    def move_to(self, lower_left_x: Decimal, lower_left_y: Decimal) -> "Shape":
         """
         This method translates this Shape so its lower left corner aligns with the given coordinates
         """
@@ -119,13 +134,14 @@ class Shape(LayoutElement):
         delta_x = lower_left_x - min_x
         delta_y = lower_left_y - min_y
         self._points = [(x[0] + delta_x, x[1] + delta_y) for x in self._points]
+        return self
 
     def _do_layout_without_padding(
         self, page: Page, bounding_box: Rectangle
     ) -> Rectangle:
 
         # translate points to fit in box
-        self.translate_to_align(
+        self.move_to(
             bounding_box.x, bounding_box.y + bounding_box.height - self.get_height()
         )
 

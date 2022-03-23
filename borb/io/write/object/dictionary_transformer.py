@@ -65,7 +65,7 @@ class DictionaryTransformer(Transformer):
                 or isinstance(v, Stream)
                 or isinstance(v, Image)
                 or isinstance(v, Element)
-            ) and v.can_be_referenced():  # type: ignore [union-attr]
+            ) and not v.is_inline():  # type: ignore [union-attr]
                 out_value[k] = self.get_reference(v, context)
                 queue.append(v)
             else:
@@ -89,7 +89,12 @@ class DictionaryTransformer(Transformer):
             self.get_root_transformer().transform(v, context)
             if i != N - 1:
                 context.destination.write(bytes(" ", "latin1"))
-        context.destination.write(bytes(">>\n", "latin1"))
+
+        # write newline if the object is not inline
+        if object_to_transform.is_inline():
+            context.destination.write(bytes(">>", "latin1"))
+        else:
+            context.destination.write(bytes(">>\n", "latin1"))
 
         # end object if needed
         if started_object:

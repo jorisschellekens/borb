@@ -42,7 +42,7 @@ class PagesTransformer(DictionaryTransformer):
         ), "A WriteTransformerState must be defined in order to write Pages Dictionary objects."
 
         # /Kids can be written immediately
-        object_to_transform[Name("Kids")].set_can_be_referenced(False)  # type: ignore [attr-defined]
+        object_to_transform[Name("Kids")].set_is_inline(True)  # type: ignore [attr-defined]
 
         # queue writing of /Page objects
         queue: typing.List[AnyPDFType] = []

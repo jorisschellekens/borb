@@ -163,7 +163,7 @@ class TrueTypeFont(Type1Font):
         if cap_height is None:
             cap_height = bDecimal(840)
 
-        font_descriptor[Name("FontBBox")] = List().set_can_be_referenced(False)  # type: ignore[attr-defined]
+        font_descriptor[Name("FontBBox")] = List().set_is_inline(True)  # type: ignore[attr-defined]
         font_descriptor["FontBBox"].append(bDecimal(min_x))
         font_descriptor["FontBBox"].append(bDecimal(min_y))
         font_descriptor["FontBBox"].append(bDecimal(max_x))

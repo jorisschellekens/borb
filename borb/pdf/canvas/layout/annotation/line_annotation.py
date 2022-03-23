@@ -50,7 +50,7 @@ class LineAnnotation(Annotation):
         # starting and ending coordinates of the line in default user space.
         # If the LL entry is present, this value shall represent the endpoints of the
         # leader lines rather than the endpoints of the line itself; see Figure 60.
-        self[Name("L")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("L")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["L"].append(start_point[0])
         self["L"].append(start_point[1])
         self["L"].append(end_point[0])
@@ -62,7 +62,7 @@ class LineAnnotation(Annotation):
         # defined, respectively, by the first and second pairs of coordinates, (x 1 , y 1 )
         # and (x 2 , y 2 ), in the L array. Table 176 shows the possible values. Default
         # value: [ /None /None ].
-        self[Name("LE")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("LE")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["LE"].append(left_line_end_style.value)
         self["LE"].append(right_line_end_style)
 
@@ -71,7 +71,7 @@ class LineAnnotation(Annotation):
         # rectangle or ellipse. The number of array elements determines the colour
         # space in which the colour shall be defined
         if stroke_color is not None:
-            self[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            self[Name("IC")] = List().set_is_inline(True)  # type: ignore [attr-defined]
             self["IC"].append(bDecimal(stroke_color.to_rgb().red))
             self["IC"].append(bDecimal(stroke_color.to_rgb().green))
             self["IC"].append(bDecimal(stroke_color.to_rgb().blue))

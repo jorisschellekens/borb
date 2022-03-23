@@ -77,7 +77,7 @@ class RedactAnnotation(Annotation):
         # redaction region is left transparent. This entry is ignored if the RO
         # entry is present.
         if fill_color is not None:
-            self[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            self[Name("IC")] = List().set_is_inline(True)  # type: ignore [attr-defined]
             self["IC"].append(bDecimal(fill_color.to_rgb().red))
             self["IC"].append(bDecimal(fill_color.to_rgb().green))
             self["IC"].append(bDecimal(fill_color.to_rgb().blue))
@@ -136,7 +136,7 @@ class RedactAnnotation(Annotation):
         # The lower-left corner of the bounding box (BBox) is set to coordinates (0, 0) in the form coordinate system.
         # The box’s top and right coordinates are taken from the dimensions of the annotation rectangle (the Rect
         # entry in the widget annotation dictionary).
-        self["AP"]["N"][Name("BBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self["AP"]["N"][Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["AP"]["N"]["BBox"].append(bDecimal(0))
         self["AP"]["N"]["BBox"].append(bDecimal(0))
         self["AP"]["N"]["BBox"].append(bDecimal(100))

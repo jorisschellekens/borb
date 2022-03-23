@@ -5,7 +5,7 @@
 This class represents a generic disjoint shape (specified by a List of lines).
 It has convenience methods to calculate width and height, perform scaling, etc
 """
-
+import math
 from decimal import Decimal
 
 import typing
@@ -59,6 +59,20 @@ class DisjointShape(LayoutElement):
         max_y = max([max(x[0][1], x[1][1]) for x in self._lines])
         return max_y - min_y
 
+    def rotate(self, angle_in_radians: float) -> "Shape":
+        """
+        This function rotates the DisjointShape for a given angle
+        :param angle_in_radians:    the angle
+        :return:                    this DisjointShape
+        """
+        a: Decimal = Decimal(math.cos(angle_in_radians))
+        b: Decimal = Decimal(-math.sin(angle_in_radians))
+        c: Decimal = Decimal(math.sin(angle_in_radians))
+        d: Decimal = Decimal(math.cos(angle_in_radians))
+        self._lines = [((a*l[0][0] + c*l[0][1], b*l[0][0] + d*l[0][1]),
+                        (a*l[1][0] + c*l[1][1], b*l[1][0] + d*l[1][1])) for l in self._lines]
+        return self
+
     def scale_to_fit(self, max_width: Decimal, max_height: Decimal) -> "DisjointShape":
         """
         This method scales this DisjointShape to fit a given max. width / height
@@ -80,7 +94,7 @@ class DisjointShape(LayoutElement):
             ]
         return self
 
-    def translate_to_align(
+    def move_to(
         self, lower_left_x: Decimal, lower_left_y: Decimal
     ) -> "DisjointShape":
         """
@@ -107,7 +121,7 @@ class DisjointShape(LayoutElement):
         self.scale_to_fit(bounding_box.width, bounding_box.height)
 
         # translate points to fit in box
-        self.translate_to_align(
+        self.move_to(
             bounding_box.x, bounding_box.y + bounding_box.height - self.get_height()
         )
 

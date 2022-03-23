@@ -153,34 +153,34 @@ def add_base_methods(object: typing.Any) -> typing.Any:
             setattr(self, "_reference", None)
         return self._reference
 
-    # set_can_be_referenced
-    def set_can_be_referenced(self, a_flag: bool):
+    # set_is_inline
+    def set_is_inline(self, a_flag: bool):
         """
-        This function sets whether or not this Object can be referenced.
-        When an object can not be referenced, it is always embedded immediately in the PDF byte stream.
+        This function sets whether or not this Object is written inline.
+        When an object is inline, it is always embedded immediately in the PDF byte stream.
         """
-        if "_can_be_referenced" not in vars(self):
-            setattr(self, "_can_be_referenced", None)
-        self._can_be_referenced = a_flag
+        if "_is_inline" not in vars(self):
+            setattr(self, "_is_inline", None)
+        self._is_inline = a_flag
         return self
 
-    # can_be_referenced
-    def can_be_referenced(self) -> bool:
+    # is_inline
+    def get_is_inline(self) -> bool:
         """
         This function returns whether or not this Object can be referenced.
         When an object can not be referenced, it is always embedded immediately in the PDF byte stream.
         """
-        if "_can_be_referenced" not in vars(self):
-            setattr(self, "_can_be_referenced", True)
-        return self._can_be_referenced
+        if "_is_inline" not in vars(self):
+            setattr(self, "_is_inline", False)
+        return self._is_inline
 
     object.set_parent = types.MethodType(set_parent, object)
     object.get_parent = types.MethodType(get_parent, object)
     object.get_root = types.MethodType(get_root, object)
     object.set_reference = types.MethodType(set_reference, object)
     object.get_reference = types.MethodType(get_reference, object)
-    object.set_can_be_referenced = types.MethodType(set_can_be_referenced, object)
-    object.can_be_referenced = types.MethodType(can_be_referenced, object)
+    object.set_is_inline = types.MethodType(set_is_inline, object)
+    object.is_inline = types.MethodType(get_is_inline, object)
     object.to_json_serializable = types.MethodType(to_json_serializable, object)
     if isinstance(object, Image):
         object.__deepcopy__ = types.MethodType(deepcopy_mod, object)

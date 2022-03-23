@@ -175,7 +175,7 @@ class TestWritePushButton(unittest.TestCase):
                 text="Hello World!",
                 javascript="app.alert('Hello World', 3)",
                 horizontal_alignment=Alignment.RIGHT,
-                margin_top=Decimal(10)
+                margin_top=Decimal(10),
             )
         )
 

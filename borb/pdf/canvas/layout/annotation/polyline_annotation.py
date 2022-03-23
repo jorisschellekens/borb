@@ -76,7 +76,7 @@ class PolylineAnnotation(Annotation):
         # (Required) An array of numbers (see Table 174) specifying the width and
         # dash pattern that shall represent the alternating horizontal and vertical
         # coordinates, respectively, of each vertex, in default user space.
-        self[Name("Vertices")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("Vertices")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         for p in points:
             self["Vertices"].append(bDecimal(p[0]))
             self["Vertices"].append(bDecimal(p[1]))
@@ -87,12 +87,12 @@ class PolylineAnnotation(Annotation):
         # defined, respectively, by the first and second pairs of coordinates, (x 1 , y 1 )
         # and (x 2 , y 2 ), in the L array. Table 176 shows the possible values. Default
         # value: [ /None /None ].
-        self[Name("LE")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("LE")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["LE"].append(left_line_end_style)
         self["LE"].append(right_line_end_style)
 
         if fill_color is not None:
-            self[Name("IC")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            self[Name("IC")] = List().set_is_inline(True)  # type: ignore [attr-defined]
             self["IC"].append(bDecimal(fill_color.to_rgb().red))
             self["IC"].append(bDecimal(fill_color.to_rgb().green))
             self["IC"].append(bDecimal(fill_color.to_rgb().blue))

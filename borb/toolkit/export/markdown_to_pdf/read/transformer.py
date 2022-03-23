@@ -64,6 +64,12 @@ class TransformerState:
     def get_parent_layout_element(
         self,
     ) -> typing.Union[Document, Page, LayoutElement, PageLayout]:
+        """
+        This function returns the parent LayoutElement object.
+        e.g.: In case of a Page being laid out, this is the PageLayout or Document.
+        In case of a TableCell being laid out, this would typically be the Table object.
+        :return:    the parent LayoutElement object
+        """
         return self._parent_layout_element
 
 

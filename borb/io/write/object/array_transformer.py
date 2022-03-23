@@ -64,7 +64,7 @@ class ArrayTransformer(Transformer):
                 or isinstance(v, List)
                 or isinstance(v, Stream)
                 or isinstance(v, Image)
-            ) and v.can_be_referenced():  # type: ignore [union-attr]
+            ) and not v.is_inline():  # type: ignore [union-attr]
                 out_value.append(self.get_reference(v, context))
                 queue.append(v)
             else:
@@ -86,7 +86,12 @@ class ArrayTransformer(Transformer):
             self.get_root_transformer().transform(v, context)
             if i != N - 1:
                 context.destination.write(bytes(" ", "latin1"))
-        context.destination.write(bytes("]\n", "latin1"))
+
+        # write newline if the object is not inline
+        if object_to_transform.is_inline():
+            context.destination.write(bytes("]", "latin1"))
+        else:
+            context.destination.write(bytes("]\n", "latin1"))
 
         # end object if needed
         if started_object:

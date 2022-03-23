@@ -16,6 +16,11 @@ from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
 from borb.toolkit.text.text_rank_keyword_extraction import TextRankKeywordExtraction
 from borb.toolkit.text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
 
+import nltk
+
+nltk.download("punkt")
+nltk.download("averaged_perceptron_tagger")
+
 unittest.TestLoader.sortTestMethodsUsing = None
 
 

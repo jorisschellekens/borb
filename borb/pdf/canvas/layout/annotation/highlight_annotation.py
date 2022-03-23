@@ -39,7 +39,7 @@ class HighlightAnnotation(Annotation):
         # underlying the annotation. The coordinates for each quadrilateral shall
         # be given in the order
         # x1 y1 x2 y2 x3 y3 x4 y4
-        self[Name("QuadPoints")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("QuadPoints")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         # x1, y1
         self["QuadPoints"].append(bDecimal(bounding_box.get_x()))
         self["QuadPoints"].append(bDecimal(bounding_box.get_y()))
@@ -62,7 +62,7 @@ class HighlightAnnotation(Annotation):
         )
 
         # border
-        self[Name("Border")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+        self[Name("Border")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["Border"].append(bDecimal(0))
         self["Border"].append(bDecimal(0))
         self["Border"].append(bDecimal(1))

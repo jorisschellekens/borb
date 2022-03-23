@@ -370,7 +370,7 @@ class Font(Dictionary):
             f1[Name("FontWeight")] = f0["FontWeight"]
         f1[Name("Flags")] = f0["Flags"]
         if "FontBBox" in f0 and False:  # TODO
-            f1[Name("FontBBox")] = List().set_can_be_referenced(False)  # type: ignore [attr-defined]
+            f1[Name("FontBBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
             for i in range(0, len(f0["FontBBox"])):
                 f1["FontBBox"].append(f0["FontBBox"][i])
         f1[Name("ItalicAngle")] = f0["ItalicAngle"]
