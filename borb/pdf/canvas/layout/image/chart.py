@@ -9,8 +9,7 @@ import typing
 from decimal import Decimal
 from typing import Optional
 
-import matplotlib.pyplot as MatPlotLibPlot  # type: ignore [import]
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImage           # type: ignore [import]
 
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
@@ -23,7 +22,7 @@ class Chart(Image):
 
     def __init__(
         self,
-        chart: MatPlotLibPlot,
+        chart: "matplotlib.pyplot",
         width: Optional[Decimal] = None,
         height: Optional[Decimal] = None,
         margin_top: typing.Optional[Decimal] = None,
@@ -33,6 +32,7 @@ class Chart(Image):
         horizontal_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,
     ):
+        # chart to image
         byte_buffer = io.BytesIO()
         chart.savefig(byte_buffer, format="png")
         byte_buffer.seek(0)

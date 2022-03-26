@@ -1,13 +1,6 @@
-# :mega: borb release 2.0.22
+# :mega: borb release 2.0.22.2
 
-This release is a small feature release:
-
-- Test have been added corresponding to issues on GitHub.
-- More documentation has been added in general. No undocumented public methods!
-- Unsplash API has been added, to ensure you can build rapid prototypes for Documents by just specifying keywords for images, rather than having to look for the perfect `Image`
-- Small bugfix w.r.t. annotation names
-- Small improvement in writing a PDF to bytes, inline array objects no longer have trailing newline character
-- Small bugfix to fix layout of `FormField` objects using `FlexibleWidthColumnTable`
-- Added some imports to `borb/pdf/__init__.py` to make it easier to import `borb` objects in general
-- Added the EURion symbol to the `LineArtFactory`
-- Added methods to rotate `Shape` and `DisjointShape`
+This release is a small bugfix release.
+By adding al lot of imports to `borb/pdf/__init__.py` suddenly all imports for `Chart` were imported.
+This included `matplotlib.pyplot`. This import is only needed when working with `Chart`.
+I changed the code in `Chart` to only declare the type, but not do the import (as it didn't really need to in the first place).
