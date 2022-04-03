@@ -54,7 +54,7 @@ class BlobFactory:
         return R
 
     @staticmethod
-    def _smooth_polygon(
+    def smooth_closed_polygon(
         points: typing.List[typing.Tuple[Decimal, Decimal]], number_of_refinements: int
     ):
         for _ in range(0, number_of_refinements):
@@ -90,7 +90,7 @@ class BlobFactory:
 
         # smoothing
         while len(points) < 1024:
-            points = BlobFactory._smooth_polygon(points, 2)
+            points = BlobFactory.smooth_closed_polygon(points, 2)
         points.append(points[0])
 
         # return

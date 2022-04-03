@@ -55,6 +55,10 @@ class CodeBlock(Paragraph):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_bottom_left: Decimal = Decimal(0),
         border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(5),
@@ -62,7 +66,6 @@ class CodeBlock(Paragraph):
         padding_bottom: Decimal = Decimal(5),
         padding_left: Decimal = Decimal(5),
         background_color: typing.Optional[Color] = HexColor("f6f8fa"),
-        parent: typing.Optional[LayoutElement] = None,
     ):
         # format string using black
         if able_to_import_black:
@@ -80,6 +83,10 @@ class CodeBlock(Paragraph):
             border_right=border_right,
             border_bottom=border_bottom,
             border_left=border_left,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_bottom_left=border_radius_bottom_left,
             border_color=border_color,
             border_width=border_width,
             padding_top=padding_top,
@@ -89,5 +96,4 @@ class CodeBlock(Paragraph):
             background_color=background_color,
             respect_newlines_in_text=True,
             respect_spaces_in_text=True,
-            parent=parent,
         )

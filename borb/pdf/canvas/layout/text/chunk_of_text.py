@@ -33,6 +33,10 @@ class ChunkOfText(LayoutElement):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_bottom_left: Decimal = Decimal(0),
         border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
@@ -48,7 +52,6 @@ class ChunkOfText(LayoutElement):
         fixed_leading: typing.Optional[Decimal] = None,
         multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
-        parent: typing.Optional["LayoutElement"] = None,
     ):
         super().__init__(
             font_size=font_size,
@@ -56,6 +59,10 @@ class ChunkOfText(LayoutElement):
             border_right=border_right,
             border_bottom=border_bottom,
             border_left=border_left,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_bottom_left=border_radius_bottom_left,
             border_color=border_color,
             border_width=border_width,
             padding_top=padding_top,
@@ -69,7 +76,6 @@ class ChunkOfText(LayoutElement):
             vertical_alignment=vertical_alignment,
             horizontal_alignment=horizontal_alignment,
             background_color=background_color,
-            parent=parent,
         )
         self._text = text
 

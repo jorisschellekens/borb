@@ -779,7 +779,7 @@ class LineArtFactory:
         points = LineArtFactory.dragon_curve(bounding_box, number_of_iterations)
 
         # smooth lines
-        return BlobFactory._smooth_polygon(points, 2)[:-8]
+        return BlobFactory.smooth_closed_polygon(points, 2)[:-6]
 
     @staticmethod
     def dragon_curve(

@@ -25,32 +25,47 @@ class TableCell(LayoutElement):
         layout_element: LayoutElement,
         row_span: int = 1,
         col_span: int = 1,
-        preferred_width: typing.Optional[Decimal] = None,
-        preferred_height: typing.Optional[Decimal] = None,
-        border_top: bool = True,
-        border_right: bool = True,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = True,
-        border_left: bool = True,
         border_color: Color = HexColor("000000"),
+        border_left: bool = True,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = True,
+        border_top: bool = True,
         border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
-        background_color: typing.Optional[Color] = None,
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        preferred_height: typing.Optional[Decimal] = None,
+        preferred_width: typing.Optional[Decimal] = None,
     ):
         super(TableCell, self).__init__(
-            border_top=border_top,
-            border_right=border_right,
+            background_color=background_color,
             border_bottom=border_bottom,
-            border_left=border_left,
             border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
             border_width=border_width,
-            padding_top=padding_top,
-            padding_right=padding_right,
+            font_size=Decimal(12),  # not used
+            horizontal_alignment=Alignment.RIGHT,  # not used
+            margin_bottom=Decimal(0),  # not used
+            margin_left=Decimal(0),  # not used
+            margin_right=Decimal(0),  # not used
+            margin_top=Decimal(0),  # not used
             padding_bottom=padding_bottom,
             padding_left=padding_left,
-            background_color=background_color,
+            padding_right=padding_right,
+            padding_top=padding_top,
+            vertical_alignment=Alignment.TOP,  # not used
         )
         self._layout_element = layout_element
         assert row_span >= 1
@@ -178,41 +193,50 @@ class Table(LayoutElement):
         self,
         number_of_rows: int,
         number_of_columns: int,
-        border_top: bool = False,
-        border_right: bool = False,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
-        border_left: bool = False,
         border_color: Color = HexColor("000000"),
+        border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = False,
+        border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        margin_bottom: typing.Optional[Decimal] = None,
+        margin_left: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
-        margin_top: Decimal = Decimal(0),
-        margin_right: Decimal = Decimal(0),
-        margin_bottom: Decimal = Decimal(0),
-        margin_left: Decimal = Decimal(0),
-        horizontal_alignment: Alignment = Alignment.LEFT,
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
         vertical_alignment: Alignment = Alignment.TOP,
-        background_color: typing.Optional[Color] = None,
     ):
         super(Table, self).__init__(
-            border_top=border_top,
-            border_right=border_right,
+            background_color=background_color,
             border_bottom=border_bottom,
-            border_left=border_left,
             border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
             border_width=border_width,
-            padding_top=padding_top,
-            padding_right=padding_right,
+            font_size=Decimal(12),
+            horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom or Decimal(5),
+            margin_left=margin_left or Decimal(5),
+            margin_right=margin_right or Decimal(5),
+            margin_top=margin_top or Decimal(5),
             padding_bottom=padding_bottom,
             padding_left=padding_left,
-            margin_top=margin_top,
-            margin_right=margin_right,
-            margin_bottom=margin_bottom,
-            margin_left=margin_left,
-            background_color=background_color,
-            horizontal_alignment=horizontal_alignment,
+            padding_right=padding_right,
+            padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
         assert number_of_rows >= 1
@@ -323,6 +347,35 @@ class Table(LayoutElement):
             c._border_right = False
         return self
 
+    def outer_borders_rounded(self, border_radius: Decimal = Decimal(20)) -> "Table":
+        """
+        This function sets rounded borders on the outside of this Table
+        :param border_radius:   the desired border radius
+        :return:                self
+        """
+        # upper left
+        ul: typing.Optional[TableCell] = self._get_cells_at(0, 0)
+        if ul is not None:
+            ul._border_radius_top_left = border_radius
+        # upper right
+        ur: typing.Optional[TableCell] = self._get_cells_at(
+            0, self._number_of_columns - 1
+        )
+        if ur is not None:
+            ur._border_radius_top_right = border_radius
+        # lower right
+        lr: typing.Optional[TableCell] = self._get_cells_at(
+            self._number_of_rows - 1, self._number_of_columns - 1
+        )
+        if lr is not None:
+            lr._border_radius_bottom_right = border_radius
+        # lower left
+        ll: typing.Optional[TableCell] = self._get_cells_at(self._number_of_rows - 1, 0)
+        if ll is not None:
+            ll._border_radius_bottom_left = border_radius
+        # return
+        return self
+
     def even_odd_row_colors(
         self, even_row_color: Color, odd_row_color: Color
     ) -> "Table":
@@ -338,6 +391,15 @@ class Table(LayoutElement):
                 else:
                     tc._background_color = odd_row_color
         return self
+
+    def _get_cells_at(self, row: int, column: int) -> typing.Optional[TableCell]:
+        for t in self._content:
+            if (
+                len([p for p in t._table_coordinates if p[0] == row and p[1] == column])
+                > 0
+            ):
+                return t
+        return None
 
     def _get_cells_at_column(self, column: int) -> typing.List[TableCell]:
         out: typing.List[TableCell] = []

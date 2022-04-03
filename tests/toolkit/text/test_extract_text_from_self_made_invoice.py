@@ -286,7 +286,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
 
     def test_extract_text(self):
 
-        r: Rectangle = Rectangle(Decimal(280), Decimal(500), Decimal(200), Decimal(130))
+        r: Rectangle = Rectangle(Decimal(280), Decimal(490), Decimal(200), Decimal(140))
         l0: LocationFilter = LocationFilter(r)
         l1: SimpleTextExtraction = SimpleTextExtraction()
         l0.add_listener(l1)
@@ -299,8 +299,9 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         assert d is not None
 
         # check text
+        txt: str = l1.get_text_for_page(0)
         assert (
-            l1.get_text_for_page(0)
+            txt
             == "SHIP TO\n[Recipient Name]\n[Company Name]\n[Street Address]\n[City, State, ZIP Code]\n[Phone]"
         )
 
@@ -320,7 +321,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         r: Rectangle = matches[0].get_bounding_boxes()[0]
 
         assert 298 <= r.get_x() <= 301
-        assert 594 <= r.get_y() <= 596
+        assert 584 <= r.get_y() <= 586
 
     def test_match_regular_expression_use_location(self):
 

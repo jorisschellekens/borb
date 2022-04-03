@@ -28,20 +28,57 @@ class DisjointShape(LayoutElement):
             typing.Tuple[typing.Tuple[Decimal, Decimal], typing.Tuple[Decimal, Decimal]]
         ],
         stroke_color: Color = HexColor("000000"),
-        line_width: Decimal = Decimal(0),
+        background_color: typing.Optional[Color] = None,
+        border_bottom: bool = False,
+        border_color: Color = HexColor("000000"),
+        border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = False,
+        border_top: bool = False,
+        border_width: Decimal = Decimal(1),
         horizontal_alignment: Alignment = Alignment.LEFT,
+        line_width: Decimal = Decimal(1),
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
         vertical_alignment: Alignment = Alignment.TOP,
-        preserve_aspect_ratio: bool = True,
     ):
         super(DisjointShape, self).__init__(
+            background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
         assert len(lines) > 0
         self._lines = lines
         self._stroke_color = stroke_color
         self._line_width = line_width
-        self._preserve_aspect_ratio = preserve_aspect_ratio
 
     def get_width(self) -> Decimal:
         """
@@ -69,8 +106,13 @@ class DisjointShape(LayoutElement):
         b: Decimal = Decimal(-math.sin(angle_in_radians))
         c: Decimal = Decimal(math.sin(angle_in_radians))
         d: Decimal = Decimal(math.cos(angle_in_radians))
-        self._lines = [((a*l[0][0] + c*l[0][1], b*l[0][0] + d*l[0][1]),
-                        (a*l[1][0] + c*l[1][1], b*l[1][0] + d*l[1][1])) for l in self._lines]
+        self._lines = [
+            (
+                (a * l[0][0] + c * l[0][1], b * l[0][0] + d * l[0][1]),
+                (a * l[1][0] + c * l[1][1], b * l[1][0] + d * l[1][1]),
+            )
+            for l in self._lines
+        ]
         return self
 
     def scale_to_fit(self, max_width: Decimal, max_height: Decimal) -> "DisjointShape":
@@ -79,9 +121,11 @@ class DisjointShape(LayoutElement):
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()
-        if self._preserve_aspect_ratio:
-            w_scale = min(w_scale, h_scale)
-            h_scale = w_scale
+
+        # preserve aspect ration
+        w_scale = min(w_scale, h_scale)
+        h_scale = w_scale
+
         if w_scale < 1:
             self._lines = [
                 ((x[0][0] * w_scale, x[0][1]), (x[1][0] * w_scale, x[1][1]))
@@ -94,9 +138,7 @@ class DisjointShape(LayoutElement):
             ]
         return self
 
-    def move_to(
-        self, lower_left_x: Decimal, lower_left_y: Decimal
-    ) -> "DisjointShape":
+    def move_to(self, lower_left_x: Decimal, lower_left_y: Decimal) -> "DisjointShape":
         """
         This method translates this DisjointShape so its lower left corner aligns with the given coordinates
         """

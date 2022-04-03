@@ -14,6 +14,7 @@ from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, Name, Stream
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.line_art.blob_factory import BlobFactory
 
 
 class Alignment(Enum):
@@ -47,6 +48,10 @@ class LayoutElement:
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
         border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
@@ -71,6 +76,18 @@ class LayoutElement:
         self._border_right = border_right
         self._border_bottom = border_bottom
         self._border_left = border_left
+
+        # border radii
+        assert border_radius_top_right >= 0
+        assert border_radius_top_left >= 0
+        assert border_radius_bottom_left >= 0
+        assert border_radius_bottom_right >= 0
+        self._border_radius_top_left: Decimal = border_radius_top_left
+        self._border_radius_top_right: Decimal = border_radius_top_right
+        self._border_radius_bottom_right: Decimal = border_radius_bottom_right
+        self._border_radius_bottom_left: Decimal = border_radius_bottom_left
+
+        # border width and color
         assert border_width >= 0
         self._border_width = border_width
         self._border_color = border_color
@@ -376,22 +393,198 @@ class LayoutElement:
             return
         assert self._background_color
         rgb_color = self._background_color.to_rgb()
+
+        # easy case
+        if (
+            self._border_radius_top_right == 0
+            and self._border_radius_top_left == 0
+            and self._border_radius_bottom_left == 0
+            and self._border_radius_bottom_right == 0
+        ):
+            # fmt: off
+            content = """
+                q %f %f %f rg %f %f m
+                %f %f l
+                %f %f l
+                %f %f l
+                %f %f l
+                f
+                Q
+                """ % (
+                Decimal(rgb_color.red),
+                Decimal(rgb_color.green),
+                Decimal(rgb_color.blue),
+                border_box.get_x(),                             # ul_x
+                border_box.get_y() + border_box.get_height(),   # ul_y
+
+                border_box.get_x() + border_box.get_width(),    # ur_x
+                border_box.get_y() + border_box.get_height(),   # ur_y
+
+                border_box.get_x() + border_box.get_width(),    # lr_x
+                border_box.get_y(),                             # lr_y
+
+                border_box.get_x(),                             # ll_x
+                border_box.get_y(),                             # ll_y
+
+                border_box.get_x(),                             # ul_x
+                border_box.get_y() + border_box.get_height(),  # ul_y
+            )
+            # fmt: on
+            self._append_to_content_stream(page, content)
+            return
+
+        # remember border state
+        before = [
+            self._border_top,
+            self._border_right,
+            self._border_bottom,
+            self._border_left,
+        ]
+
+        # set all borders
+        self._border_top = True
+        self._border_right = True
+        self._border_bottom = True
+        self._border_left = True
+
+        # get outline
+        outline_points = self._get_outline(border_box)
+
+        # restore all borders
+        self._border_top = before[0]
+        self._border_right = before[1]
+        self._border_bottom = before[2]
+        self._border_left = before[3]
+
+        # write
         content = """
-            q %f %f %f rg %f %f m %f %f l %f %f l %f %f l f Q
+            q %f %f %f rg %f %f m
             """ % (
             Decimal(rgb_color.red),
             Decimal(rgb_color.green),
             Decimal(rgb_color.blue),
-            border_box.x,  # lower left corner
-            border_box.y,  # lower left corner
-            border_box.x + border_box.width,  # lower right corner
-            border_box.y,  # lower right corner
-            border_box.x + border_box.width,  # upper right corner
-            border_box.y + border_box.height,  # upper right corner
-            border_box.x,  # upper left corner
-            border_box.y + border_box.height,  # upper left corner
+            outline_points[0][0],
+            outline_points[0][1],
         )
+        for p in outline_points:
+            content += " %f %f l" % (p[0], p[1])
+        content += " f Q"
+
         self._append_to_content_stream(page, content)
+
+    def _get_outline(
+        self, border_box: Rectangle
+    ) -> typing.List[typing.Optional[typing.Tuple[Decimal, Decimal]]]:
+        n: int = 0
+        xll: float = round(border_box.x, n)
+        yll: float = round(border_box.y, n)
+        xur: float = round(border_box.x + border_box.width, n)
+        yur: float = round(border_box.y + border_box.height, n)
+
+        # top left arc
+        points = []
+        if self._border_top and self._border_left and self._border_radius_top_left != 0:
+            points += [
+                (xll, yur - self._border_radius_top_left)
+            ] + BlobFactory.smooth_closed_polygon(
+                [
+                    (xll, yur - self._border_radius_top_left),
+                    (xll, yur),
+                    (xll + self._border_radius_top_left, yur),
+                ],
+                2,
+            )[
+                :-6
+            ]
+        if self._border_left and self._border_radius_top_left == 0:
+            points += [(xll, yur - self._border_radius_top_left)]
+            points += [(xll, yur)]
+        if self._border_top and self._border_radius_top_left == 0:
+            points += [(xll + self._border_radius_top_left, yur)]
+
+        # top
+        if self._border_top:
+            points += [(xur - self._border_radius_top_right, yur)]
+        else:
+            points += [None]
+
+        # top right arc
+        if (
+            self._border_top
+            and self._border_right
+            and self._border_radius_top_right != 0
+        ):
+            points += BlobFactory.smooth_closed_polygon(
+                [
+                    (xur - self._border_radius_top_right, yur),
+                    (xur, yur),
+                    (xur, yur - self._border_radius_top_right),
+                ],
+                2,
+            )[:-6]
+        if self._border_top and self._border_radius_top_right == 0:
+            points += [(xur, yur)]
+        if self._border_right and self._border_radius_top_right == 0:
+            points += [(xur, yur - self._border_radius_top_right)]
+
+        # right
+        if self._border_right:
+            points += [(xur, yll + self._border_radius_bottom_right)]
+        else:
+            points += [None]
+
+        # bottom right arc
+        if (
+            self._border_bottom
+            and self._border_right
+            and self._border_radius_bottom_right != 0
+        ):
+            points += BlobFactory.smooth_closed_polygon(
+                [
+                    (xur, yll + self._border_radius_bottom_right),
+                    (xur, yll),
+                    (xur - self._border_radius_bottom_right, yll),
+                ],
+                2,
+            )[:-6]
+        if self._border_right and self._border_radius_bottom_right == 0:
+            points += [(xur, yll)]
+        if self._border_bottom and self._border_radius_bottom_right == 0:
+            points += [(xur - self._border_radius_bottom_right, yll)]
+
+        # bottom
+        if self._border_bottom:
+            points += [(xll + self._border_radius_bottom_left, yll)]
+        else:
+            points += [None]
+
+        # bottom left arc
+        if (
+            self._border_bottom
+            and self._border_left
+            and self._border_radius_bottom_left != 0
+        ):
+            points += BlobFactory.smooth_closed_polygon(
+                [
+                    (xll + self._border_radius_bottom_left, yll),
+                    (xll, yll),
+                    (xll, yll + self._border_radius_bottom_left),
+                ],
+                2,
+            )[:-6]
+        if self._border_bottom and self._border_radius_bottom_left == 0:
+            points += [(xll, yll)]
+        if self._border_left and self._border_radius_bottom_left == 0:
+            points += [(xll, yll + self._border_radius_bottom_right)]
+
+        # left
+        if self._border_left:
+            points += [(xll, yur - self._border_radius_top_left)]
+        else:
+            points += [None]
+
+        # return
+        return points
 
     def _draw_border(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
         # border is not wanted on any side
@@ -408,49 +601,27 @@ class LayoutElement:
         if self._border_width == 0:
             return
 
-        # print("R %f %f %f %f " % (border_box.x, border_box.y, border_box.width, border_box.height))
-
-        n: int = 0
-        xll: float = round(border_box.x, n)
-        yll: float = round(border_box.y, n)
-        xur: float = round(border_box.x + border_box.width, n)
-        yur: float = round(border_box.y + border_box.height, n)
-
         # draw border(s)
         rgb_color = self._border_color.to_rgb()
-        content = "q %f %f %f RG %f w" % (
+        content = "q %f %f %f RG %f w " % (
             Decimal(rgb_color.red),
             Decimal(rgb_color.green),
             Decimal(rgb_color.blue),
             self._border_width,
         )
-        if self._border_top:
-            content += " %f %f m %f %f l s" % (
-                xll,
-                yur,
-                xur,
-                yur,
-            )
-        if self._border_right:
+
+        # turn points into lines
+        points = self._get_outline(border_box)
+        for i, p in enumerate(points[:-1]):
+            p0: typing.Optional[typing.Tuple[Decimal, Decimal]] = p
+            p1: typing.Optional[typing.Tuple[Decimal, Decimal]] = points[i + 1]
+            if p0 is None or p1 is None:
+                continue
             content += " %d %d m %d %d l s" % (
-                xur,
-                yur,
-                xur,
-                yll,
+                p0[0],
+                p0[1],
+                p1[0],
+                p1[1],
             )
-        if self._border_bottom:
-            content += " %d %d m %d %d l s" % (
-                xll,
-                yll,
-                xur,
-                yll,
-            )
-        if self._border_left:
-            content += " %d %d m %d %d l s" % (
-                xll,
-                yur,
-                xll,
-                yll,
-            )
-        content += " Q "
+        content += " Q"
         self._append_to_content_stream(page, content)

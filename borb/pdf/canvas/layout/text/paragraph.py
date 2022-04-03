@@ -43,6 +43,10 @@ class Paragraph(LineOfText):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_bottom_left: Decimal = Decimal(0),
         border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
@@ -57,7 +61,6 @@ class Paragraph(LineOfText):
         multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
         hyphenation: typing.Optional[Hyphenation] = None,
-        parent: typing.Optional["LayoutElement"] = None,
     ):
         super().__init__(
             text=text,
@@ -70,6 +73,10 @@ class Paragraph(LineOfText):
             border_right=border_right,
             border_bottom=border_bottom,
             border_left=border_left,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_bottom_left=border_radius_bottom_left,
             border_color=border_color,
             border_width=border_width,
             padding_top=padding_top,
@@ -83,7 +90,6 @@ class Paragraph(LineOfText):
             multiplied_leading=multiplied_leading,
             fixed_leading=fixed_leading,
             background_color=background_color,
-            parent=parent,
         )
         self._respect_newlines_in_text = respect_newlines_in_text
         self._respect_spaces_in_text = respect_spaces_in_text
@@ -258,7 +264,6 @@ class Paragraph(LineOfText):
                 horizontal_alignment=self._text_alignment,
                 multiplied_leading=self._multiplied_leading,
                 fixed_leading=self._fixed_leading,
-                parent=self,
             ).layout(
                 page,
                 bounding_box=Rectangle(
@@ -311,7 +316,6 @@ class Paragraph(LineOfText):
                     font_color=self._font_color,
                     multiplied_leading=self._multiplied_leading,
                     fixed_leading=self._fixed_leading,
-                    parent=self,
                 ).layout(
                     page,
                     bounding_box=Rectangle(
@@ -353,7 +357,6 @@ class Paragraph(LineOfText):
                     font_color=self._font_color,
                     multiplied_leading=self._multiplied_leading,
                     fixed_leading=self._fixed_leading,
-                    parent=self,
                 ).layout(
                     page,
                     bounding_box=Rectangle(

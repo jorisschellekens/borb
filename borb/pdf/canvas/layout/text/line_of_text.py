@@ -54,6 +54,10 @@ class LineOfText(ChunkOfText):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_bottom_left: Decimal = Decimal(0),
         border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
@@ -67,7 +71,6 @@ class LineOfText(ChunkOfText):
         background_color: typing.Optional[Color] = None,
         fixed_leading: typing.Optional[Decimal] = None,
         multiplied_leading: typing.Optional[Decimal] = None,
-        parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
         super().__init__(
             text=text,
@@ -78,6 +81,10 @@ class LineOfText(ChunkOfText):
             border_right=border_right,
             border_bottom=border_bottom,
             border_left=border_left,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_bottom_left=border_radius_bottom_left,
             border_color=border_color,
             border_width=border_width,
             padding_top=padding_top,
@@ -93,5 +100,4 @@ class LineOfText(ChunkOfText):
             horizontal_alignment=horizontal_alignment,
             multiplied_leading=multiplied_leading,
             fixed_leading=fixed_leading,
-            parent=parent,
         )

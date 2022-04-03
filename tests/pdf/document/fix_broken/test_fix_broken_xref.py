@@ -113,6 +113,10 @@ class TestRemovePage(unittest.TestCase):
 
         # check text
         txt: str = l.get_text_for_page(0)
+        while "\n" in txt:
+            txt = txt.replace("\n", " ")
+        while "  " in txt:
+            txt = txt.replace("  ", " ")
         assert "test_fix_broken_xref" in txt
         assert "Description This test creates a PDF with 1 page." in txt
         assert "Subsequent tests then screw up the XREF." in txt

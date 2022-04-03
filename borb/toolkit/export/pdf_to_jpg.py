@@ -57,6 +57,10 @@ class PDFToJPG(PDFToSVG):
         root_font_dir: typing.Optional[Path] = None
         if system == "Linux":
             root_font_dir = Path("/usr/share/fonts")
+        if system == "Darwin":
+            root_font_dir = Path("/Library/Fonts/")
+        if system == "Windows":
+            root_font_dir = Path("C:/Windows/Fonts")
 
         # BFS directory
         ttf_font_files = []

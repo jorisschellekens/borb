@@ -26,15 +26,54 @@ class Shape(LayoutElement):
     def __init__(
         self,
         points: typing.List[Tuple[Decimal, Decimal]],
-        stroke_color: typing.Optional[Color],
         fill_color: typing.Optional[Color],
-        line_width: Decimal = Decimal(0),
-        horizontal_alignment: Alignment = Alignment.LEFT,
-        vertical_alignment: Alignment = Alignment.TOP,
+        stroke_color: typing.Optional[Color],
         auto_close_shape: bool = False,
+        background_color: typing.Optional[Color] = None,
+        border_bottom: bool = False,
+        border_color: Color = HexColor("000000"),
+        border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = False,
+        border_top: bool = False,
+        border_width: Decimal = Decimal(1),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        line_width: Decimal = Decimal(1),
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(Shape, self).__init__(
+            background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
         assert len(points) >= 3
@@ -121,8 +160,7 @@ class Shape(LayoutElement):
         b: Decimal = Decimal(-math.sin(angle_in_radians))
         c: Decimal = Decimal(math.sin(angle_in_radians))
         d: Decimal = Decimal(math.cos(angle_in_radians))
-        self._points = [(a*x+c*y,
-                         b*x+d*y) for x,y in self._points]
+        self._points = [(a * x + c * y, b * x + d * y) for x, y in self._points]
         return self
 
     def move_to(self, lower_left_x: Decimal, lower_left_y: Decimal) -> "Shape":

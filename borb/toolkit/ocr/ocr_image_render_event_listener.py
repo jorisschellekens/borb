@@ -4,6 +4,7 @@
 """
     This module contains all classes needed to apply OCR (using Tesseract) to a PDF document.
 """
+import logging
 import typing
 from decimal import Decimal
 from pathlib import Path
@@ -26,6 +27,8 @@ try:
     from pytesseract import Output  # type: ignore [import]
 except ImportError:
     assert False, "Unable to import pytesseract"
+
+logger = logging.getLogger(__name__)
 
 
 class OCREvent(Event):
@@ -255,19 +258,24 @@ class OCRImageRenderEventListener(EventListener):
             text_image_draw = ImageDraw.Draw(text_image)
             text_image_draw.text((0, 0), text, fill=(0, 0, 0))
         except:
+            logger.debug("Unable to write '%s' in default PIL font. No metrics available to determine color. Defaulting to black.")
             return HexColor("000000")
 
         # count number of text pixels
-        percentage_of_text_pixels: Decimal = Decimal(0)
-        max_x: int = 0
-        max_y: int = 0
-        for i in range(0, text_image.width):
-            for j in range(0, text_image.height):
-                if text_image.getpixel((i, j)) == (0, 0, 0):
-                    percentage_of_text_pixels += Decimal(1)
-                    max_x = max(max_x, i)
-                    max_y = max(max_y, j)
-        percentage_of_text_pixels /= Decimal(max_x * max_y)
+        try:
+            percentage_of_text_pixels: Decimal = Decimal(0)
+            max_x: int = 0
+            max_y: int = 0
+            for i in range(0, text_image.width):
+                for j in range(0, text_image.height):
+                    if text_image.getpixel((i, j)) == (0, 0, 0):
+                        percentage_of_text_pixels += Decimal(1)
+                        max_x = max(max_x, i)
+                        max_y = max(max_y, j)
+            percentage_of_text_pixels /= Decimal(max_x * max_y)
+        except:
+            logger.debug("Unable to obtain metrics to determine color. Defaulting to black.")
+            return HexColor("000000")
 
         # crop image
         cropped_image = image.crop(

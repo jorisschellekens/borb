@@ -1,6 +1,10 @@
-# :mega: borb release 2.0.22.2
+# :mega: borb release 2.0.23
 
-This release is a small bugfix release.
-By adding al lot of imports to `borb/pdf/__init__.py` suddenly all imports for `Chart` were imported.
-This included `matplotlib.pyplot`. This import is only needed when working with `Chart`.
-I changed the code in `Chart` to only declare the type, but not do the import (as it didn't really need to in the first place).
+This release is a small feature release.
+- rounded corners are available on `LayoutElement` and all its children
+- all properties of `LayoutElement` are now available on all its children
+  - with the exception of `FormField`
+  - with the exception of nonsensical properties
+    - e.g.: `font_size` on `Shape`
+- `PDFToJPG` can now locate fonts on Windows and Mac
+- `OCRImageRenderEventListener` has been made more resillient to bad input

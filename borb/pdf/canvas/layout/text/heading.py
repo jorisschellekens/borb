@@ -12,6 +12,7 @@ from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType
+from borb.pdf.canvas.layout.hyphenation.hyphenation import Hyphenation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
@@ -24,76 +25,89 @@ class Heading(Paragraph):
     It also adds an outline in the document outline tree.
     """
 
+    @staticmethod
+    def _get_margin_for_outline_level(
+        outline_level: int = 0, font_size: Decimal = Decimal(12)
+    ) -> Decimal:
+        return {
+            1: Decimal(0.335),
+            2: Decimal(0.553),
+            3: Decimal(0.855),
+            4: Decimal(1.333),
+            5: Decimal(2.012),
+            6: Decimal(3.477),
+        }.get(outline_level + 1, Decimal(1)) * font_size
+
     def __init__(
         self,
         text: str,
-        outline_text: typing.Optional[str] = None,
-        outline_level: int = 0,
-        respect_newlines_in_text: bool = False,
+        background_color: typing.Optional[Color] = None,
+        border_bottom: bool = False,
+        border_color: Color = HexColor("000000"),
+        border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = False,
+        border_top: bool = False,
+        border_width: Decimal = Decimal(1),
+        fixed_leading: typing.Optional[Decimal] = None,
         font: typing.Union[Font, str] = "Helvetica",
+        font_color: Color = HexColor("000000"),
         font_size: Decimal = Decimal(12),
         horizontal_alignment: Alignment = Alignment.LEFT,
-        vertical_alignment: Alignment = Alignment.TOP,
-        font_color: Color = HexColor("000000"),
-        border_top: bool = False,
-        border_right: bool = False,
-        border_bottom: bool = False,
-        border_left: bool = False,
-        border_color: Color = HexColor("000000"),
-        border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
-        padding_bottom: Decimal = Decimal(0),
-        padding_left: Decimal = Decimal(0),
-        margin_top: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
+        hyphenation: typing.Optional[Hyphenation] = None,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
-        background_color: typing.Optional[Color] = None,
-        parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
+        margin_right: typing.Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
+        multiplied_leading: typing.Optional[Decimal] = None,
+        outline_level: int = 0,
+        outline_text: typing.Optional[str] = None,
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        respect_newlines_in_text: bool = False,
+        respect_spaces_in_text: bool = False,
+        text_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super().__init__(
-            text=text,
-            respect_newlines_in_text=respect_newlines_in_text,
-            font=font,
-            font_size=font_size,
-            vertical_alignment=vertical_alignment,
-            horizontal_alignment=horizontal_alignment,
-            font_color=font_color,
-            border_top=border_top,
-            border_right=border_right,
+            background_color=background_color,
             border_bottom=border_bottom,
-            border_left=border_left,
             border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
             border_width=border_width,
-            padding_top=padding_top,
-            padding_right=padding_right,
+            fixed_leading=fixed_leading,
+            font=font,
+            font_color=font_color,
+            font_size=font_size,
+            horizontal_alignment=horizontal_alignment,
+            hyphenation=hyphenation,
+            margin_bottom=margin_bottom
+            or Heading._get_margin_for_outline_level(outline_level, font_size),
+            margin_left=margin_left or Decimal(0),
+            margin_right=margin_right or Decimal(0),
+            margin_top=margin_top
+            or Heading._get_margin_for_outline_level(outline_level, font_size),
+            multiplied_leading=multiplied_leading,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
-            margin_top=margin_top
-            or {
-                1: Decimal(0.335),
-                2: Decimal(0.553),
-                3: Decimal(0.855),
-                4: Decimal(1.333),
-                5: Decimal(2.012),
-                6: Decimal(3.477),
-            }.get(outline_level + 1, Decimal(1))
-            * font_size,
-            margin_right=margin_right or Decimal(0),
-            margin_bottom=margin_bottom
-            or {
-                1: Decimal(0.335),
-                2: Decimal(0.553),
-                3: Decimal(0.855),
-                4: Decimal(1.333),
-                5: Decimal(2.012),
-                6: Decimal(3.477),
-            }.get(outline_level + 1, Decimal(1))
-            * font_size,
-            margin_left=margin_left or Decimal(0),
-            background_color=background_color,
-            parent=parent,
+            padding_right=padding_right,
+            padding_top=padding_top,
+            respect_newlines_in_text=respect_newlines_in_text,
+            respect_spaces_in_text=respect_spaces_in_text,
+            text=text,
+            text_alignment=text_alignment,
+            vertical_alignment=vertical_alignment,
         )
         self._outline_text = outline_text or text
         self._outline_level = outline_level

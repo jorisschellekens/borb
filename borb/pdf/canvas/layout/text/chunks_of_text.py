@@ -40,6 +40,10 @@ class Span(Paragraph):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_bottom_left: Decimal = Decimal(0),
         border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
@@ -53,42 +57,35 @@ class Span(Paragraph):
         fixed_leading: typing.Optional[Decimal] = None,
         multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
-        parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
-
-        # background color
-        self._background_color: typing.Optional[Color] = background_color
-
-        # borders
-        self._border_color: Color = border_color
-        self._border_width: Decimal = border_width
-        self._border_top: bool = border_top
-        self._border_right: bool = border_right
-        self._border_bottom: bool = border_bottom
-        self._border_left: bool = border_left
-
-        # alignment
-        self._horizontal_alignment = horizontal_alignment
-        self._vertical_alignment = vertical_alignment
-
-        # padding
-        self._padding_top: Decimal = padding_top
-        self._padding_right: Decimal = padding_right
-        self._padding_bottom: Decimal = padding_bottom
-        self._padding_left: Decimal = padding_left
-
-        # margin
-        self._margin_top: typing.Optional[Decimal] = margin_top
-        self._margin_right: typing.Optional[Decimal] = margin_right
-        self._margin_bottom: typing.Optional[Decimal] = margin_bottom
-        self._margin_left: typing.Optional[Decimal] = margin_left
-
-        # leading
-        self._font_size: typing.Optional[Decimal] = None
-        if fixed_leading is None and multiplied_leading is None:
-            multiplied_leading = Decimal(1.2)
-        self._fixed_leading: typing.Optional[Decimal] = fixed_leading
-        self._multiplied_leading: typing.Optional[Decimal] = multiplied_leading
+        super(Span, self).__init__(
+            text="",
+            vertical_alignment=vertical_alignment,
+            horizontal_alignment=horizontal_alignment,
+            border_top=border_top,
+            border_right=border_right,
+            border_bottom=border_bottom,
+            border_left=border_left,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_color=border_color,
+            border_width=border_width,
+            padding_top=padding_top,
+            padding_right=padding_right,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            margin_top=margin_top,
+            margin_right=margin_right,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            multiplied_leading=multiplied_leading,
+            fixed_leading=fixed_leading,
+            background_color=background_color,
+        )
+        # modify
+        self._font_size = None
 
         # store chunks
         self._chunks_of_text: typing.List[ChunkOfText] = []
@@ -249,6 +246,10 @@ class HeterogeneousParagraph(Span):
         border_right: bool = False,
         border_bottom: bool = False,
         border_left: bool = False,
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_bottom_left: Decimal = Decimal(0),
         border_color: Color = HexColor("000000"),
         border_width: Decimal = Decimal(1),
         padding_top: Decimal = Decimal(0),
@@ -262,7 +263,6 @@ class HeterogeneousParagraph(Span):
         fixed_leading: typing.Optional[Decimal] = None,
         multiplied_leading: typing.Optional[Decimal] = None,
         background_color: typing.Optional[Color] = None,
-        parent: typing.Optional["LayoutElement"] = None,  # type: ignore [name-defined]
     ):
         super(HeterogeneousParagraph, self).__init__(
             chunks_of_text=chunks_of_text,
@@ -272,6 +272,10 @@ class HeterogeneousParagraph(Span):
             border_right=border_right,
             border_bottom=border_bottom,
             border_left=border_left,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_bottom_left=border_radius_bottom_left,
             border_color=border_color,
             border_width=border_width,
             padding_top=padding_top,
@@ -285,7 +289,6 @@ class HeterogeneousParagraph(Span):
             fixed_leading=fixed_leading,
             multiplied_leading=multiplied_leading,
             background_color=background_color,
-            parent=parent,
         )
 
     def add(
