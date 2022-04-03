@@ -258,7 +258,10 @@ class OCRImageRenderEventListener(EventListener):
             text_image_draw = ImageDraw.Draw(text_image)
             text_image_draw.text((0, 0), text, fill=(0, 0, 0))
         except:
-            logger.debug("Unable to write '%s' in default PIL font. No metrics available to determine color. Defaulting to black.")
+            logger.debug(
+                "Unable to write '%s' in default PIL font. No metrics available to determine color. Defaulting to black."
+                % text
+            )
             return HexColor("000000")
 
         # count number of text pixels
@@ -274,7 +277,9 @@ class OCRImageRenderEventListener(EventListener):
                         max_y = max(max_y, j)
             percentage_of_text_pixels /= Decimal(max_x * max_y)
         except:
-            logger.debug("Unable to obtain metrics to determine color. Defaulting to black.")
+            logger.debug(
+                "Unable to obtain metrics to determine color. Defaulting to black."
+            )
             return HexColor("000000")
 
         # crop image
