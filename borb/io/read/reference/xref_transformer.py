@@ -266,7 +266,7 @@ class XREFTransformer(Transformer):
             try:
                 most_recent_xref = RebuiltXREF()
                 assert most_recent_xref is not None
-                most_recent_xref.set_parent(doc)
+                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
                 most_recent_xref.read(src, tok)
                 if "XRef" in doc:
                     doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)

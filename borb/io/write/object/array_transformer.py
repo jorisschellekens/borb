@@ -35,12 +35,11 @@ class ArrayTransformer(Transformer):
         """
         This method writes a List to a byte stream
         """
-        assert isinstance(object_to_transform, List)
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write Array objects."
-        assert context.destination is not None
-        assert context.destination
+        # fmt: off
+        assert isinstance(object_to_transform, List), "object_to_transform must be of type List"
+        assert (context is not None), "context must be defined in order to write Array objects."
+        assert (context.destination is not None), "context.destination must be defined to write Array objects"
+        # fmt: on
 
         # avoid resolving objects twice
         object_ref: typing.Optional[Reference] = object_to_transform.get_reference()  # type: ignore [attr-defined]
@@ -88,7 +87,7 @@ class ArrayTransformer(Transformer):
                 context.destination.write(bytes(" ", "latin1"))
 
         # write newline if the object is not inline
-        if object_to_transform.is_inline():
+        if object_to_transform.is_inline():  # type: ignore [attr-defined]
             context.destination.write(bytes("]", "latin1"))
         else:
             context.destination.write(bytes("]\n", "latin1"))

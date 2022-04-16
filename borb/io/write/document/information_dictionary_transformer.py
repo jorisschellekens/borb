@@ -304,7 +304,7 @@ class InformationDictionaryTransformer(Transformer):
                 h.transform(document["XRef"]["Trailer"][Name("Info")], context)
                 break
 
-        # assert reference
+        # check reference
         assert document["XRef"]["Trailer"][Name("Info")].get_reference() is not None
         assert (
             document["XRef"]["Trailer"][Name("Info")].get_reference().byte_offset

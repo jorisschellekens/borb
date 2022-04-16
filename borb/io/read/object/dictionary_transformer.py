@@ -38,7 +38,9 @@ class DictionaryTransformer(Transformer):
         """
 
         # create root object
-        assert isinstance(object_to_transform, Dictionary)
+        # fmt: off
+        assert isinstance(object_to_transform, Dictionary), "object_to_transform must be of type Dictionary"
+        # fmt: on
         object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
         # transform key/value pair(s)

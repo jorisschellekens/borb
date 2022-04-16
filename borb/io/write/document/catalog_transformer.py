@@ -68,16 +68,16 @@ class CatalogTransformer(DictionaryTransformer):
         rgb_outputintent[Name("Info")] = String("sRGB IEC61966-2.1")
         rgb_outputintent[Name("RegistryName")] = String("http://www.color.org")
         rgb_outputintent[Name("DestOutputProfile")] = dest_output_profile
-        dest_output_profile.set_parent(rgb_outputintent)
+        dest_output_profile.set_parent(rgb_outputintent)  # type: ignore [attr-defined]
 
         # creatte OutputIntents
         outputintents_array = bList()
         outputintents_array.append(rgb_outputintent)
-        rgb_outputintent.set_parent(outputintents_array)
+        rgb_outputintent.set_parent(outputintents_array)  # type: ignore [attr-defined]
 
         # add to root_dictionary
         root_dictionary[Name("OutputIntents")] = outputintents_array
-        outputintents_array.set_parent(root_dictionary)
+        outputintents_array.set_parent(root_dictionary)  # type: ignore [attr-defined]
 
     def transform(
         self,
@@ -89,11 +89,11 @@ class CatalogTransformer(DictionaryTransformer):
         """
 
         # /OutputIntents
-        needs_outputintents: bool = (
-            context is not None and context.conformance_level is not None
-        )
+        # fmt: off
+        needs_outputintents: bool = (context is not None and context.conformance_level is not None)
         if needs_outputintents:
             self._build_rgb_outputintent_dictionary(object_to_transform)
+        # fmt: on
 
         # call super
         return super(CatalogTransformer, self).transform(object_to_transform, context)

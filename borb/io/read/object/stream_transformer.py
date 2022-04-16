@@ -41,8 +41,10 @@ class StreamTransformer(Transformer):
         object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
         # resolve references in stream dictionary
-        assert context is not None
-        assert context.tokenizer is not None
+        # fmt: off
+        assert context is not None, "context must be defined to read Stream objects"
+        assert (context.tokenizer is not None), "context.tokenizer must be defined to read Stream objects"
+        # fmt: on
         xref = parent_object.get_root().get("XRef")
         for k, v in object_to_transform.items():
             if isinstance(v, Reference):

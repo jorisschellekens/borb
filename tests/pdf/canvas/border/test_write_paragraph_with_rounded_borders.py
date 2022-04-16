@@ -669,7 +669,6 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         compare_visually_to_ground_truth(out_file)
 
-
     def test_write_paragraph_with_borders_011(self):
 
         # create an empty Document

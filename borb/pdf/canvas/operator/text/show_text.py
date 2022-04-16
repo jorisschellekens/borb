@@ -39,7 +39,6 @@ class ShowText(CanvasOperator):
             canvas.graphics_state.font = canvas_stream_processor.get_resource(
                 "Font", canvas.graphics_state.font
             )
-
         tri = ChunkOfTextRenderEvent(canvas.graphics_state, operands[0])
 
         # render

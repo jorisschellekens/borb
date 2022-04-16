@@ -20,6 +20,7 @@ class LineArtFactory:
     such as arrows, rectangles, triangles, regular n-gons, stars, etc
     """
 
+    @staticmethod
     def EURion(
         bounding_box: Rectangle,
     ) -> typing.List[

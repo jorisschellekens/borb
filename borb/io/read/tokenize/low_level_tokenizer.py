@@ -40,17 +40,10 @@ class Token:
     The token name is a category of lexical unit.
     """
 
-    def __init__(self, byte_offset: int, token_type: TokenType, text: str):
-        self._byte_offset = byte_offset
-        self._token_type = token_type
-        self._text = text
-
-    def set_byte_offset(self, byte_offset: int) -> "Token":
-        """
-        Set the byte offset of this Token
-        """
-        self._byte_offset = byte_offset
-        return self
+    def __init__(self, byte_offset: int, token_type: TokenType, bts: bytes):
+        self._byte_offset: int = byte_offset
+        self._token_type: TokenType = token_type
+        self._bytes: bytes = bts
 
     def get_byte_offset(self) -> int:
         """
@@ -58,25 +51,17 @@ class Token:
         """
         return self._byte_offset
 
-    def set_text(self, text: str) -> "Token":
+    def get_bytes(self) -> bytes:
         """
-        Set the text of this Token
+        Get the bytes of this Token
         """
-        self._text = text
-        return self
+        return self._bytes
 
-    def get_text(self) -> str:
+    def get_text(self, encoding: str = "latin1") -> str:
         """
-        Get the text of this Token
+        Get the text of this Token, using a given encoding (default: latin1)
         """
-        return self._text
-
-    def set_token_type(self, token_type: TokenType) -> "Token":
-        """
-        Set the TokenType of this Token
-        """
-        self._token_type = token_type
-        return self
+        return self._bytes.decode(encoding)
 
     def get_token_type(self) -> TokenType:
         """
@@ -97,9 +82,11 @@ class LowLevelTokenizer:
 
     def __init__(self, io_source):
         self._io_source = io_source
-        self._is_pseudo_digit = set("0123456789+-.").__contains__
-        self._is_delimiter = set("\x00\t\n\x0c\r %()/<>[]").__contains__
-        self._is_whitespace = set("\x00\t\n\x0c\r ").__contains__
+        # fmt: off
+        self._is_pseudo_digit = set([b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9', b'+', b'-', b'.']).__contains__
+        self._is_delimiter = set([b'\x00', b'\t', b'\n', b'\r', b'\x0c', b" ", b'%', b'(', b')', b'/', b'<', b'>', b'[', b']']).__contains__
+        self._is_whitespace = set([b'\x00', b'\t', b'\n', b'\r', b'\x0c', b' ']).__contains__
+        # fmt: on
 
     def next_non_comment_token(self) -> Optional[Token]:
         """
@@ -116,124 +103,127 @@ class LowLevelTokenizer:
         This function retrieves the next Token.
         It returns None if no such Token exists (end of stream/file)
         """
-        ch = self._next_char()
+        ch = self._next_byte()
         if len(ch) == 0:
             return None
 
+        # skip whitespace
         while len(ch) > 0 and self._is_whitespace(ch):
-            ch = self._next_char()
+            ch = self._next_byte()
 
         # START_ARRAY
-        if ch == "[":
-            return Token(self._io_source.tell() - 1, TokenType.START_ARRAY, "[")
+        if ch == b'[':
+            return Token(self._io_source.tell() - 1, TokenType.START_ARRAY, b'[')
 
         # END ARRAY
-        if ch == "]":
-            return Token(self._io_source.tell() - 1, TokenType.END_ARRAY, "]")
+        if ch == b']':
+            return Token(self._io_source.tell() - 1, TokenType.END_ARRAY, b']')
 
         # NAME
-        if ch == "/":
-            out_str = "/"
+        if ch == b'/':
+            out_str: bytearray = bytearray(b'/')
             out_pos = self._io_source.tell() - 1
             while True:
-                ch = self._next_char()
+                ch = self._next_byte()
                 if len(ch) == 0:
                     break
                 if self._is_delimiter(ch):
                     break
                 out_str += ch
             if len(ch) != 0:
-                self._prev_char()
-            return Token(out_pos, TokenType.NAME, out_str)
+                self._prev_byte()
+            return Token(out_pos, TokenType.NAME, bytes(out_str))
 
         # END_DICT
-        if ch == ">":
+        if ch == b'>':
             out_pos = self._io_source.tell() - 1
-            ch = self._next_char()
-            # CHECK UNEXPECTED CHARACTER AFTER >
-            assert ch == ">"
-            return Token(out_pos, TokenType.END_DICT, ">>")
+            ch = self._next_byte()
+            # CHECK UNEXPECTED CHARACTER AFTER FIRST >
+            assert ch == b'>', "Unexpected character at end of dictionary."
+            return Token(out_pos, TokenType.END_DICT, b'>>')
 
         # COMMENT
-        if ch == "%":
-            out_str = ""
+        if ch == b'%':
+            out_str: bytearray = bytearray([])
             out_pos = self._io_source.tell() - 1
-            while len(ch) != 0 and ch != "\r" and ch != "\n":
+            while len(ch) != 0 and ch != b'\r' and ch != b'\n':
                 out_str += ch
-                ch = self._next_char()
+                ch = self._next_byte()
             if len(ch) != 0:
-                self._prev_char()
-            return Token(out_pos, TokenType.COMMENT, out_str)
+                self._prev_byte()
+            return Token(out_pos, TokenType.COMMENT, bytes(out_str))
 
         # HEX_STRING OR DICT
-        if ch == "<":
+        if ch == b'<':
             out_pos = self._io_source.tell() - 1
-            ch = self._next_char()
+            ch = self._next_byte()
 
             # DICT
-            if ch == "<":
-                return Token(out_pos, TokenType.START_DICT, "<<")
+            if ch == b'<':
+                return Token(out_pos, TokenType.START_DICT, b'<<')
 
             # empty hex string
-            if ch == ">":
-                return Token(out_pos, TokenType.HEX_STRING, "<>")
+            if ch == b'>':
+                return Token(out_pos, TokenType.HEX_STRING, b'<>')
 
             # HEX_STRING
-            out_str = "<" + ch
+            out_str: bytearray = bytearray(b'<')
+            out_str += ch
             while True:
-                ch = self._next_char()
+                ch = self._next_byte()
                 if len(ch) == 0:
                     break
                 out_str += ch
-                if ch == ">":
+                if ch == b'>':
                     break
-
-            return Token(out_pos, TokenType.HEX_STRING, out_str)
+            return Token(out_pos, TokenType.HEX_STRING, bytes(out_str))
 
         # NUMBER
-        if ch in "-+.0123456789":
-            out_str = ""
+        if self._is_pseudo_digit(ch):
+            out_str: bytearray = bytearray([])
             out_pos = self._io_source.tell() - 1
-            while len(ch) != 0 and ch in "-+.0123456789":
+            while len(ch) != 0 and self._is_pseudo_digit(ch):
                 out_str += ch
-                ch = self._next_char()
+                ch = self._next_byte()
             if len(ch) != 0:
-                self._prev_char()
-            return Token(out_pos, TokenType.NUMBER, out_str)
+                self._prev_byte()
+            return Token(out_pos, TokenType.NUMBER, bytes(out_str))
 
         # STRING
-        if ch == "(":
+        if ch == b'(':
             bracket_nesting_level = 1
-            out_str = "("
+            out_str: bytearray = bytearray(b'(')
             out_pos = self._io_source.tell() - 1
             while True:
-                ch = self._next_char()
+                ch = self._next_byte()
                 if len(ch) == 0:
                     break
-                if ch == "\\":
-                    ch = self._next_char()
-                    out_str += "\\" + ch
+                # escape char
+                if ch == b'\\':
+                    ch = self._next_byte()
+                    out_str += b'\\'
+                    out_str += ch
                     continue
-                if ch == "(":
+                if ch == b'(':
                     bracket_nesting_level += 1
-                if ch == ")":
+                if ch == b')':
                     bracket_nesting_level -= 1
                 out_str += ch
                 if bracket_nesting_level == 0:
                     break
             assert len(ch) != 0
-            assert not out_str.endswith("\\")
-            return Token(out_pos, TokenType.STRING, out_str)
+            assert out_str[-1] != b'\\'
+            return Token(out_pos, TokenType.STRING, bytes(out_str))
 
         # OTHER
-        out_str = ""
+        out_str: bytearray = bytearray([])
         out_pos = self._io_source.tell() - 1
         while len(ch) != 0 and not self._is_delimiter(ch):
             out_str += ch
-            ch = self._next_char()
+            ch = self._next_byte()
         if len(ch) != 0:
-            self._prev_char()
-        return Token(out_pos, TokenType.OTHER, out_str)
+            self._prev_byte()
+        return Token(out_pos, TokenType.OTHER, bytes(out_str))
 
     def seek(self, pos: int, whence: int = io.SEEK_SET):
         """
@@ -252,8 +242,8 @@ class LowLevelTokenizer:
         """
         return self._io_source.tell()
 
-    def _next_char(self):
-        return self._io_source.read(1).decode("latin-1")
+    def _next_byte(self):
+        return self._io_source.read(1)
 
-    def _prev_char(self):
+    def _prev_byte(self):
         return self._io_source.seek(-1, io.SEEK_CUR)

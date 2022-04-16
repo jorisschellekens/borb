@@ -42,19 +42,18 @@ class MultiColumnLayout(PageLayout):
         # fmt: off
         self._page_width: typing.Optional[Decimal] = self._page.get_page_info().get_width()
         self._page_height: typing.Optional[Decimal] = self._page.get_page_info().get_height()
-        assert self._page_width
-        assert self._page_height
+        assert self._page_width, "page.get_width() must be defined for MultiColumnLayout to work"
+        assert self._page_height, "page.get_height() must be defined for MultiColumnLayout to work"
         # fmt: on
 
         # paragraph spacing
         if fixed_paragraph_spacing is None and multiplied_paragraph_spacing is None:
             multiplied_paragraph_spacing = Decimal(1.2)
-        assert (
-            fixed_paragraph_spacing is not None
-            or multiplied_paragraph_spacing is not None
-        )
-        assert fixed_paragraph_spacing is None or fixed_paragraph_spacing >= 0
-        assert multiplied_paragraph_spacing is None or multiplied_paragraph_spacing >= 0
+        # fmt: off
+        assert (fixed_paragraph_spacing is not None or multiplied_paragraph_spacing is not None), "fixed_paragraph_spacing or multiplied_paragraph_spacing must be defined for MultiColumnLayout to work"
+        assert fixed_paragraph_spacing is None or fixed_paragraph_spacing >= 0, "fixed_paragraph_spacing must be a non-negative number"
+        assert multiplied_paragraph_spacing is None or multiplied_paragraph_spacing >= 0, "multiplied_paragraph_spacing must be a non-negative number"
+        # fmt: on
         self._fixed_paragraph_spacing: typing.Optional[
             Decimal
         ] = fixed_paragraph_spacing

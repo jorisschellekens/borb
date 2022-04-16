@@ -59,17 +59,17 @@ class PushButton(FormField):
         assert border_width >= 0
         self._border_width = border_width
         self._field_name: typing.Optional[str] = field_name
-        assert font_size >= 0
+        assert font_size is not None and font_size >= 0
         self._font_size = font_size
         self._font_color = font_color
         self._horizontal_alignment = horizontal_alignment
-        assert margin_bottom >= 0
+        assert margin_bottom is not None and margin_bottom >= 0
         self._margin_bottom = margin_bottom
-        assert margin_left >= 0
+        assert margin_left is not None and margin_left >= 0
         self._margin_left = margin_left
-        assert margin_right >= 0
+        assert margin_right is not None and margin_right >= 0
         self._margin_right = margin_right
-        assert margin_top >= 0
+        assert margin_top is not None and margin_top >= 0
         self._margin_top = margin_top
         assert padding_bottom >= 0
         self._padding_bottom = padding_bottom
@@ -113,7 +113,7 @@ class PushButton(FormField):
         self._widget_dictionary[Name("AP")][Name("N")] = Stream()
         self._widget_dictionary[Name("AP")][Name("N")][Name("Type")] = Name("XObject")
         self._widget_dictionary[Name("AP")][Name("N")][Name("Subtype")] = Name("Form")
-        self._widget_dictionary[Name("AP")][Name("N")][Name("BBox")] = List().set_is_inline(True)
+        self._widget_dictionary[Name("AP")][Name("N")][Name("BBox")] = List().set_is_inline(True)   # type: ignore[attr-defined]
         for _ in range(0, 4):
             self._widget_dictionary[Name("AP")][Name("N")][Name("BBox")].append(bDecimal(0))
         self._widget_dictionary[Name("AP")][Name("N")][Name("DecodedBytes")] = b"/Tx BMC EMC"
@@ -121,7 +121,7 @@ class PushButton(FormField):
         self._widget_dictionary[Name("AP")][Name("N")][Name("Filter")] = Name("FlateDecode")
         self._widget_dictionary[Name("AP")][Name("N")][Name("Length")] = bDecimal(len(self._widget_dictionary[Name("AP")][Name("N")][Name("Bytes")]))
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")] = Dictionary()
-        self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")] = List().set_is_inline(True)
+        self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")] = List().set_is_inline(True) # type: ignore [attr-defined]
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")].append(Name("PDF"))
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")].append(Name("Text"))
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("Font")] = Dictionary()
@@ -140,12 +140,12 @@ class PushButton(FormField):
         self._widget_dictionary[Name("Ff")] = bDecimal(65536)
         self._widget_dictionary[Name("FT")] = Name("Btn")
         self._widget_dictionary[Name("MK")] = Dictionary()
-        self._widget_dictionary[Name("MK")][Name("BC")] = List().set_is_inline(True)
-        self._widget_dictionary[Name("MK")][Name("BG")] = List().set_is_inline(True)
+        self._widget_dictionary[Name("MK")][Name("BC")] = List().set_is_inline(True)    # type: ignore [attr-defined]
+        self._widget_dictionary[Name("MK")][Name("BG")] = List().set_is_inline(True)    # type: ignore [attr-defined]
         self._widget_dictionary[Name("MK")][Name("CA")] = String("")
         self._widget_dictionary[Name("P")] = catalog
         self._widget_dictionary[Name("Q")] = bDecimal(1)
-        self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+        self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)              # type: ignore [attr-defined]
         for _ in range(0, 4):
             self._widget_dictionary[Name("Rect")].append(bDecimal(0))
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
@@ -279,5 +279,10 @@ class JavaScriptPushButton(PushButton):
         # fmt: on
 
         # modify action dictionary of PushButton (super)
-        self._widget_dictionary[Name("AA")][Name("D")][Name("S")] = Name("JavaScript")
-        self._widget_dictionary[Name("AA")][Name("D")][Name("JS")] = javascript_stream
+        if self._widget_dictionary is not None:
+            self._widget_dictionary[Name("AA")][Name("D")][Name("S")] = Name(
+                "JavaScript"
+            )
+            self._widget_dictionary[Name("AA")][Name("D")][
+                Name("JS")
+            ] = javascript_stream

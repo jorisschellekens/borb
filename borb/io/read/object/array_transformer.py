@@ -38,7 +38,9 @@ class ArrayTransformer(Transformer):
         """
 
         # create root object
-        assert isinstance(object_to_transform, List)
+        # fmt: off
+        assert isinstance(object_to_transform, List), "object_to_transform must be of type List"
+        # fmt: on
         object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
         # transform child(ren)

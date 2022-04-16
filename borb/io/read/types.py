@@ -529,8 +529,11 @@ class String:
     described in this sub-clause. Balanced pairs of parentheses within a string require no special treatment.
     """
 
-    def __init__(self, text: str):  # type: ignore [name-defined]
-        self._text = text
+    def __init__(self, bts: typing.Union[bytes, str]):  # type: ignore [name-defined]
+        if isinstance(bts, str):
+            self._text: str = bts
+        if isinstance(bts, bytes):
+            self._text = [(b & 0xFF) for b in bts]
         add_base_methods(self)
 
     def __eq__(self, other):
@@ -632,7 +635,7 @@ class String:
                 continue
             txt += self[i]
             i += 1
-        return bytearray(txt, encoding="utf8")
+        return bytearray(txt, encoding="latin1")
 
     def get_value_bytes(self):
         """

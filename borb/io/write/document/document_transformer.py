@@ -67,7 +67,7 @@ class DocumentTransformer(Transformer):
             # fmt: on
         else:
             object_to_transform["XRef"]["Trailer"]["ID"][1] = random_id
-        object_to_transform["XRef"]["Trailer"]["ID"].set_is_inline(True)
+        object_to_transform["XRef"]["Trailer"]["ID"].set_is_inline(True)  # type: ignore [attr-defined]
 
         # /Info
         self._build_empty_document_info_dictionary(object_to_transform)
@@ -90,12 +90,16 @@ class DocumentTransformer(Transformer):
                 logger.debug(str(ex))
                 pass
             if isinstance(obj, List):
-                assert isinstance(obj, List)
+                # fmt: off
+                assert isinstance(obj, List), "unexpected error while performing _invalidate_all_references"
+                # fmt: on
                 for v in obj:
                     objects_todo.append(v)
                 continue
             if isinstance(obj, Dictionary):
-                assert isinstance(obj, Dictionary)
+                # fmt: off
+                assert isinstance(obj, Dictionary), "unexpected error while performing _invalidate_all_references"
+                # fmt: on
                 for k, v in obj.items():
                     objects_todo.append(k)
                     objects_todo.append(v)

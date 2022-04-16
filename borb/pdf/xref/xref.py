@@ -42,33 +42,32 @@ class XREF(Dictionary):
     ## LOWLEVEL IO
     ##
 
-    def _find_backwards(
+    def _find_startxref_token(
         self,
         src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
-        text_to_find: str,
     ) -> int:
 
-        # length of str to check
-        str_len = 1024
-
-        # go to end of file
+        # measure file length
         src.seek(0, io.SEEK_END)
-        file_length = src.tell()
+        file_length: int = src.tell()
 
-        pos = file_length - str_len
-        if pos < 1:
-            pos = 1
+        # go to start of search window
+        pos: int = max(0, file_length - 1024)
+        tok.seek(pos)
 
+        # look for 'startxref'
         while pos > 0:
-            src.seek(pos)
-            bytes_near_eof = "".join([tok._next_char() for _ in range(0, str_len)])
-            idx = bytes_near_eof.find(text_to_find)
+            # get bytes in window
+            bytes_near_eof: bytes = b"".join([tok._next_byte() for _ in range(0, 1024)])
+            idx = bytes_near_eof.find(b"startxref")
             if idx >= 0:
                 return pos + idx
-            pos = pos - str_len + len(text_to_find)
+            # next iteration
+            pos = pos - 1024
+            tok.seek(pos)
 
-        # raise error
+        # not found
         return -1
 
     def _seek_to_xref_token(
@@ -78,17 +77,16 @@ class XREF(Dictionary):
     ):
 
         # find "startxref" text
-        start_of_xref_token_byte_offset = self._find_backwards(src, tok, "startxref")
-        assert start_of_xref_token_byte_offset is not None
-        assert start_of_xref_token_byte_offset != -1
+        start_of_xref_token_byte_offset = self._find_startxref_token(src, tok)
+        assert start_of_xref_token_byte_offset != -1, "startxref not found in PDF"
 
         # set tokenizer to "startxref"
         src.seek(start_of_xref_token_byte_offset)
         token = tok.next_non_comment_token()
         assert token is not None
-        if token.get_text() == "xref":
-            src.seek(start_of_xref_token_byte_offset)
-            return
+        # if token.get_text() == "xref":
+        #    src.seek(start_of_xref_token_byte_offset)
+        #    return
 
         # if we are at startxref, we are reading the XREF table backwards
         # and we need to go back to the start of XREF

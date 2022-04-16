@@ -35,9 +35,11 @@ class ASCIIArtTransformer(Transformer):
         """
         This method writes ASCII art to a byte stream
         """
-        assert context is not None
-        assert context.destination is not None
+        # fmt: off
+        assert (context is not None), "context must be defined to write ASCII art (borb meta-info)"
+        assert (context.destination is not None), "context.destination must be defined to write ASCII art (borb meta-info)"
         assert isinstance(object_to_transform, Stream)
+        # fmt: on
 
         f = Path(__file__).parent / "ascii_logo.txt"
         with open(f, "r") as logo_file_handle:

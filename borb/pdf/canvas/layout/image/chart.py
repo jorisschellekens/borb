@@ -23,7 +23,7 @@ class Chart(Image):
 
     def __init__(
         self,
-        chart: "matplotlib.pyplot",
+        chart: "matplotlib.pyplot",  # type: ignore[name-defined]
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
         border_left: bool = False,

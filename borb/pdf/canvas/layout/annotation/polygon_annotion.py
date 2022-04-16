@@ -24,7 +24,7 @@ class PolygonAnnotation(Annotation):
 
     def __init__(
         self,
-        points: typing.List[typing.Tuple[Decimal]],
+        points: typing.List[typing.Tuple[Decimal, Decimal]],
         stroke_color: Color = HexColor("000000"),
     ):
 

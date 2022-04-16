@@ -54,7 +54,7 @@ class DropDownList(FormField):
         if self._widget_dictionary is not None:
             return
 
-        if "XRef" not in page.get_root():
+        if "XRef" not in page.get_root():  # type: ignore [attr-defined]
             return
 
         # init page and font resources

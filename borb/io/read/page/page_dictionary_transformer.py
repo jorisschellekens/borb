@@ -54,7 +54,9 @@ class PageDictionaryTransformer(Transformer):
         page_out = Page().set_parent(parent_object)  # type: ignore [attr-defined]
 
         # convert key/value pairs
-        assert isinstance(object_to_transform, Dictionary)
+        # fmt: off
+        assert isinstance(object_to_transform, Dictionary), "object_to_transform must be of type Dictionary"
+        # fmt: on
         for k, v in object_to_transform.items():
             # avoid circular reference
             if k == "Parent":

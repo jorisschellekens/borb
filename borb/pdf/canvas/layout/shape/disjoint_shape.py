@@ -96,7 +96,7 @@ class DisjointShape(LayoutElement):
         max_y = max([max(x[0][1], x[1][1]) for x in self._lines])
         return max_y - min_y
 
-    def rotate(self, angle_in_radians: float) -> "Shape":
+    def rotate(self, angle_in_radians: float) -> "Shape":  # type: ignore[name-defined]
         """
         This function rotates the DisjointShape for a given angle
         :param angle_in_radians:    the angle

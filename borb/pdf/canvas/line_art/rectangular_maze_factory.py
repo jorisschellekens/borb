@@ -103,16 +103,36 @@ class RectangularMazeFactory:
             for j in range(0, grid_height):
                 # NORTH
                 if cells[i][j][0]:
-                    lines.append(((i * 10, j * 10), ((i + 1) * 10, j * 10)))
+                    lines.append(
+                        (
+                            (Decimal(i * 10), Decimal(j * 10)),
+                            (Decimal((i + 1) * 10), Decimal(j * 10)),
+                        )
+                    )
                 # EAST
                 if cells[i][j][1]:
-                    lines.append((((i + 1) * 10, j * 10), ((i + 1) * 10, (j + 1) * 10)))
+                    lines.append(
+                        (
+                            (Decimal((i + 1) * 10), Decimal(j * 10)),
+                            (Decimal((i + 1) * 10), Decimal((j + 1) * 10)),
+                        )
+                    )
                 # SOUTH
                 if cells[i][j][2]:
-                    lines.append((((i + 1) * 10, (j + 1) * 10), (i * 10, (j + 1) * 10)))
+                    lines.append(
+                        (
+                            (Decimal((i + 1) * 10), Decimal((j + 1) * 10)),
+                            (Decimal(i * 10), Decimal((j + 1) * 10)),
+                        )
+                    )
                 # WEST
                 if cells[i][j][3]:
-                    lines.append(((i * 10, (j + 1) * 10), (i * 10, j * 10)))
+                    lines.append(
+                        (
+                            (Decimal(i * 10), Decimal((j + 1) * 10)),
+                            (Decimal(i * 10), Decimal(j * 10)),
+                        )
+                    )
 
         # return
         return lines

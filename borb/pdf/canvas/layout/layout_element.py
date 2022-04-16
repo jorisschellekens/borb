@@ -449,6 +449,7 @@ class LayoutElement:
 
         # get outline
         outline_points = self._get_outline(border_box)
+        assert outline_points[0] is not None
 
         # restore all borders
         self._border_top = before[0]
@@ -467,6 +468,7 @@ class LayoutElement:
             outline_points[0][1],
         )
         for p in outline_points:
+            assert p is not None
             content += " %f %f l" % (p[0], p[1])
         content += " f Q"
 
@@ -476,13 +478,13 @@ class LayoutElement:
         self, border_box: Rectangle
     ) -> typing.List[typing.Optional[typing.Tuple[Decimal, Decimal]]]:
         n: int = 0
-        xll: float = round(border_box.x, n)
-        yll: float = round(border_box.y, n)
-        xur: float = round(border_box.x + border_box.width, n)
-        yur: float = round(border_box.y + border_box.height, n)
+        xll: Decimal = round(border_box.x, n)
+        yll: Decimal = round(border_box.y, n)
+        xur: Decimal = round(border_box.x + border_box.width, n)
+        yur: Decimal = round(border_box.y + border_box.height, n)
 
         # top left arc
-        points = []
+        points: typing.List[typing.Optional[typing.Tuple[Decimal, Decimal]]] = []
         if self._border_top and self._border_left and self._border_radius_top_left != 0:
             points += [
                 (xll, yur - self._border_radius_top_left)

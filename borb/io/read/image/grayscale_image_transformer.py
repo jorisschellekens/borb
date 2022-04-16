@@ -56,15 +56,19 @@ class GrayscaleImageTransformer(Transformer):
         This function reads a grayscale Image from a byte stream
         """
 
-        assert isinstance(object_to_transform, Stream)
+        # fmt: off
+        assert isinstance(object_to_transform, Stream), "object_to_transform must be of type Stream"
+        # fmt: on
 
         # resolve references in stream dictionary
         xref = parent_object.get_root().get("XRef")
         for k, v in object_to_transform.items():
             if isinstance(v, Reference):
-                assert context is not None
-                assert context.source is not None
-                assert context.tokenizer is not None
+                # fmt: off
+                assert (context is not None), "context must be defined to read Image objects"
+                assert (context.source is not None), "context.source must be defined to read Image objects"
+                assert (context.tokenizer is not None), "context.tokenizer must be defined to read Image objects"
+                # fmt: on
                 v = xref.get_object(v, context.source, context.tokenizer)
                 object_to_transform[k] = v
 

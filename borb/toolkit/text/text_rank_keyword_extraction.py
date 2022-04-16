@@ -22,7 +22,7 @@ from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
 
 try:
-    from textblob import TextBlob
+    from textblob import TextBlob  # type: ignore [import]
 except:
     assert (
         "TextBlob needs to be installed for TextRankKeywordExtraction to work properly."

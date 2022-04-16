@@ -36,13 +36,13 @@ class PageTransformer(DictionaryTransformer):
         """
         This method writes a /Page Dictionary to a byte stream
         """
+        # fmt: off
         assert isinstance(object_to_transform, Dictionary)
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write Page objects."
-        assert context.root_object is not None
+        assert (context is not None), "context must be defined in order to write Page objects."
+        assert context.root_object is not None, "context.root_object must be defined in order to write Page objects."
+        assert isinstance(context.root_object, Document), "context.root_object must be of type Document in order to write Page objects."
+        # fmt: on
 
-        assert isinstance(context.root_object, Document)
         pages_dict = context.root_object["XRef"]["Trailer"]["Root"]["Pages"]
 
         # add /Parent reference to /Pages

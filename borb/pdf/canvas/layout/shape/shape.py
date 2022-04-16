@@ -76,7 +76,7 @@ class Shape(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        assert len(points) >= 3
+        assert len(points) >= 3, "A Shape must consist of at least 3 points."
         self._points = points
         self._stroke_color = stroke_color
         self._fill_color = fill_color

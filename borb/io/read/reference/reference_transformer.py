@@ -48,8 +48,9 @@ class ReferenceTransformer(Transformer):
         """
         This function reads a Reference from a byte stream
         """
-
-        assert isinstance(object_to_transform, Reference)
+        # fmt: off
+        assert isinstance(object_to_transform, Reference), "object_to_transform must be of type Reference"
+        # fmt: on
 
         # check for circular reference
         assert context is not None
@@ -81,16 +82,17 @@ class ReferenceTransformer(Transformer):
         )
 
         # lookup xref
-        assert context.root_object is not None
+        # fmt: off
+        assert (context.root_object is not None), "context.root_object must be defined to read Reference objects"
+        assert context.root_object["XRef"] is not None, "XREF must be defined to read Reference objects"
+        assert isinstance(context.root_object["XRef"], XREF), "XREF must be defined to read Reference objects"
+        assert (context.tokenizer is not None), "context.tokenizer must be defined to read Reference objects"
+        assert (context.source is not None), "context.source must be defined to read Reference objects"
+        # fmt: on
+
         xref = context.root_object["XRef"]
-        assert xref is not None
-        assert isinstance(xref, XREF)
-
         src = context.source
-        assert src is not None
-
         tok = context.tokenizer
-        assert tok is not None
 
         # get reference
         referenced_object = xref.get_object(object_to_transform, src, tok)

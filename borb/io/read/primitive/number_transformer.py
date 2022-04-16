@@ -36,5 +36,7 @@ class NumberTransformer(Transformer):
         """
         This function reads a Decimal from a byte stream
         """
-        assert isinstance(object_to_transform, Decimal)
+        # fmt: off
+        assert isinstance(object_to_transform, Decimal), "object_to_transform must be of type Decimal"
+        # fmt: on
         return Decimal(object_to_transform).set_parent(parent_object)  # type: ignore [attr-defined]

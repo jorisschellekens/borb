@@ -6,18 +6,15 @@ from argparse import RawTextHelpFormatter
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import \
-    SingleColumnLayout
-from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document import Document
+from borb.pdf import SingleColumnLayout
+from borb.pdf import PageLayout
+from borb.pdf import Paragraph
+from borb.pdf import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.image.simple_image_extraction import SimpleImageExtraction
-from borb.toolkit.ocr.ocr_as_optional_content_group import \
-    OCRAsOptionalContentGroup
-from borb.toolkit.text.regular_expression_text_extraction import \
-    RegularExpressionTextExtraction
+from borb.toolkit.ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
+from borb.toolkit.text.regular_expression_text_extraction import RegularExpressionTextExtraction
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
@@ -167,6 +164,7 @@ def _redact_regex(input_file: Path, pattern: str, output: typing.Optional[Path])
                 page.append_redact_annotation(b.grow(Decimal(1)))
     with open(output, "wb") as pdf_file_handle:
         PDF.dumps(pdf_file_handle, doc)
+
 
 def _text_to_pdf(input_file: Path, output: typing.Optional[Path]):
     """

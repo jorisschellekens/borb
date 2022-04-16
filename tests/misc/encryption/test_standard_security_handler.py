@@ -21,48 +21,24 @@ class TestStandardSecurityHandler(unittest.TestCase):
 
     def test_standard_security_handler(self):
 
+        # fmt: off
         trailer_dictionary = Dictionary()
         trailer_dictionary[Name("ID")] = List()
-        trailer_dictionary["ID"].append(
-            HexadecimalString("87B0E1BD8B0F59E30AFCF1DB4A6F70B2")
-        )
-        trailer_dictionary["ID"].append(
-            HexadecimalString("29F4AA99CA167B4D90E8853A67131865")
-        )
+        trailer_dictionary["ID"].append(HexadecimalString("87B0E1BD8B0F59E30AFCF1DB4A6F70B2"))
+        trailer_dictionary["ID"].append(HexadecimalString("29F4AA99CA167B4D90E8853A67131865"))
+        # fmt: on
 
+        # fmt: off
         encryption_dictionary = Dictionary()
         encryption_dictionary.set_parent(trailer_dictionary)
         encryption_dictionary[Name("Filter")] = Name("Standard")
         encryption_dictionary[Name("Length")] = bDecimal(128)
-
-        # fmt: off
-        encryption_dictionary[Name("U")] = TestStandardSecurityHandler.ints_to_string_object(
-            [
-                194, 150, 116, 195, 142, 3, 194, 166,
-                19, 52, 68, 121, 53, 194, 174, 6,
-                100, 46, 85, 26, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0,
-            ]
-        )
-        # fmt: on
-
+        encryption_dictionary[Name("U")] = TestStandardSecurityHandler.ints_to_string_object([194, 150, 116, 195, 142, 3, 194, 166, 19, 52, 68, 121, 53, 194, 174, 6, 100, 46, 85, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,])
         encryption_dictionary[Name("P")] = bDecimal(-1068)
         encryption_dictionary[Name("R")] = bDecimal(3)
-        # fmt: off
-        encryption_dictionary[Name("O")] = TestStandardSecurityHandler.ints_to_string_object(
-            [194, 128, 194, 176, 195, 141, 194, 188,
-             195, 172, 194, 161, 67, 81, 75, 195,
-             148, 25, 194, 170, 195, 145, 1, 195,
-             179, 194, 140, 195, 189, 195, 155, 117,
-             45, 195, 139, 195, 169, 111, 109, 194,
-             157, 195, 129, 106, 195, 184, 195, 142,
-             44, 49, 194, 172,
-            ]
-        )
-        # fmt: on
-
+        encryption_dictionary[Name("O")] = TestStandardSecurityHandler.ints_to_string_object([194, 128, 194, 176, 195, 141, 194, 188, 195, 172, 194, 161, 67, 81, 75, 195, 148, 25, 194, 170, 195, 145, 1, 195, 179, 194, 140, 195, 189, 195, 155, 117, 45, 195, 139, 195, 169, 111, 109, 194, 157, 195, 129, 106, 195, 184, 195, 142, 44, 49, 194, 172,])
         encryption_dictionary[Name("V")] = bDecimal(2)
+        # fmt: on
 
         # create security handler
         ssh = StandardSecurityHandler(encryption_dictionary)

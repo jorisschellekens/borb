@@ -50,7 +50,8 @@ class RebuiltXREF(PlainTextXREF):
         # get object declarations
         i: int = 0
         trailer_pos: typing.Optional[int] = None
-        bytes_in_pdf: bytes = src.read()
+        bytes_in_pdf: typing.Optional[bytes] = src.read()
+        assert bytes_in_pdf is not None
         while i < len(bytes_in_pdf):
             # 0 0 obj
             if (

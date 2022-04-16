@@ -55,7 +55,9 @@ class CompressedJPEGImageTransformer(Transformer):
         """
         This function reads a JPEG Image from a byte stream
         """
-        assert isinstance(object_to_transform, Stream)
+        # fmt: off
+        assert isinstance(object_to_transform, Stream), "object_to_transform must be of type Stream"
+        # fmt: on
 
         # modify filter (temporarily)
         filters: typing.List = object_to_transform["Filter"]
@@ -68,7 +70,6 @@ class CompressedJPEGImageTransformer(Transformer):
         filters.append(Name("DCTDecode"))
 
         # use PIL to read image bytes
-        assert isinstance(object_to_transform, Stream)
         raw_byte_array = object_to_transform["Bytes"]
 
         try:

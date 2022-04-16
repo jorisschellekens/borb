@@ -250,6 +250,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # literal strings and hex strings
         if token.get_token_type() in [TokenType.STRING, TokenType.HEX_STRING]:
             if token.get_token_type() == TokenType.STRING:
+                # TODO: we should pass the bytes rather than the text
                 return String(token.get_text()[1:-1])
             else:
                 return HexadecimalString(token.get_text()[1:-1])
@@ -296,11 +297,11 @@ class HighLevelTokenizer(LowLevelTokenizer):
             self.seek(pos_before)
 
         # process newline
-        ch = self._next_char()
-        assert ch in ["\r", "\n"]
-        if ch == "\r":
-            ch = self._next_char()
-            assert ch == "\n"
+        ch = self._next_byte()
+        assert ch in [b"\r", b"\n"]
+        if ch == b"\r":
+            ch = self._next_byte()
+            assert ch == b"\n"
 
         bytes = self._io_source.read(int(length_of_stream))
 

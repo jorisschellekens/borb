@@ -8,6 +8,7 @@ from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from borb.pdf.pdf import PDF
+from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 from tests.test_util import compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
@@ -31,8 +32,9 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         doc = None
         input_file: Path = Path(__file__).parent / "input_001.pdf"
         l: FreeSpaceFinder = FreeSpaceFinder()
+        l2: SimpleTextExtraction = SimpleTextExtraction()
         with open(input_file, "rb") as in_file_handle:
-            doc = PDF.loads(in_file_handle, [l])
+            doc = PDF.loads(in_file_handle, [l, l2])
 
         # write (debug purposes)
         N: int = ceil(doc.get_page(0).get_page_info().get_width() / 10)

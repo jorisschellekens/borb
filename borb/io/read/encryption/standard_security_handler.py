@@ -86,7 +86,7 @@ class StandardSecurityHandler:
         assert len(self._o) == 32
 
         # /ID
-        trailer: dict = encryption_dictionary.get_parent()  # type: ignore [attr-defined]
+        trailer: typing.Dict[typing.Any, typing.Any] = encryption_dictionary.get_parent()  # type: ignore [attr-defined]
         if "ID" in trailer:
             self._document_id: bytes = trailer["ID"][0].get_content_bytes()
 
@@ -125,7 +125,7 @@ class StandardSecurityHandler:
             password = bytes(owner_password, encoding="charmap")
 
         # calculate encryption_key
-        assert password is not None
+        #assert password is not None
         self._encryption_key: bytes = self._compute_encryption_key(password)
 
     def _encrypt_data(self, object: AnyPDFType) -> AnyPDFType:
@@ -415,9 +415,9 @@ class StandardSecurityHandler:
             return None
         # String
         if isinstance(s, String):
-            return str(s.get_content_bytes(), encoding="utf8")
+            return str(s.get_content_bytes(), encoding="latin1")
         # str
-        return str(String(s).get_content_bytes(), encoding="utf8")
+        return str(String(s).get_content_bytes(), encoding="latin1")
 
     @staticmethod
     def _str_to_bytes(s: typing.Optional[str]) -> typing.Optional[bytes]:

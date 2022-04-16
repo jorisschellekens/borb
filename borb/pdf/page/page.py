@@ -241,14 +241,12 @@ class Page(Dictionary):
 
         # FreeTextAnnotation needs to embed resources in the Page
         if "Subtype" in annotation and annotation["Subtype"] == "FreeText":
-            annotation._embed_font_in_page(self)
+            annotation._embed_font_in_page(self)  # type: ignore [attr-defined]
 
         # return
         return self
 
-    def apply_redact_annotations(
-        self, rectangles_to_redact: typing.List[Rectangle] = []
-    ):
+    def apply_redact_annotations(self):
         """
         This function applies the redaction annotations on this Page
         """
@@ -256,7 +254,7 @@ class Page(Dictionary):
             RedactedCanvasStreamProcessor,
         )
 
-        rectangles_to_redact += [
+        rectangles_to_redact: typing.List[Rectangle] = [
             Rectangle(
                 x["Rect"][0],
                 x["Rect"][1],

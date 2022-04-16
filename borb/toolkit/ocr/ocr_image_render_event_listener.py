@@ -108,8 +108,11 @@ class OCRImageRenderEventListener(EventListener):
     def __init__(
         self, tesseract_data_dir: Path, minimal_confidence: Decimal = Decimal(0.75)
     ):
-        assert tesseract_data_dir.exists()
-        assert tesseract_data_dir.is_dir()
+        # fmt: off
+        assert tesseract_data_dir.exists(), "OCRImageRenderEventListener requires the tesseract data directory."
+        assert tesseract_data_dir.is_dir(), "OCRImageRenderEventListener requires the tesseract data directory."
+        # fmt: on
+
         self._tesseract_data_dir: Path = tesseract_data_dir
         self._minimum_confidence: Decimal = minimal_confidence
         self._helvetica: Font = StandardType1Font("Helvetica")

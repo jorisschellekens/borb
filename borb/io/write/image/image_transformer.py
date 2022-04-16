@@ -59,11 +59,11 @@ class ImageTransformer(Transformer):
         """
         This method writes an Image to a byte stream
         """
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write Image objects."
-        assert context.destination is not None
-        assert isinstance(object_to_transform, PILImage.Image)
+        # fmt: off
+        assert (context is not None), "context must be defined in order to write Image objects."
+        assert context.destination is not None, "context.destination must be defined in order to write Image objects."
+        assert isinstance(object_to_transform, PILImage.Image), "object_to_transform must be of type PILImage.Image"
+        # fmt: on
 
         # get image bytes
         contents: typing.Optional[bytes] = None
@@ -81,7 +81,7 @@ class ImageTransformer(Transformer):
         except Exception as e:
             pass
 
-        # assert that the image has some byte-representation
+        # check that the image has some byte-representation
         assert contents is not None
 
         # build corresponding Stream (XObject)

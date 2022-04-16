@@ -41,7 +41,7 @@ class Trie:
                 n = n._children[c]
             else:
                 return None
-        assert n is not None
+        assert n is not None, "unexpected error while performing __getitem__ on Trie"
         return n._value
 
     def __setitem__(self, key, value):
@@ -49,11 +49,11 @@ class Trie:
         if n is None:
             self._root = Trie.TrieNode()
             n = self._root
-        assert n is not None
+        assert n is not None, "unexpected error while performing __setitem__ on Trie"
         for c in key:
             if c not in n._children:
                 n._children[c] = Trie.TrieNode()
             n = n._children[c]
-        assert n is not None
+        assert n is not None, "unexpected error while performing __setitem__ on Trie"
         n._value = value
         return self

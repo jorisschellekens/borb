@@ -94,7 +94,7 @@ class FreeTextAnnotation(Annotation):
         # Default value: FreeText
         self[Name("IT")] = Name("FreeTextTypeWriter")
 
-    def _embed_font_in_page(self, page: "Page") -> None:
+    def _embed_font_in_page(self, page: "Page") -> None:  # type: ignore[name-defined]
         if "Resources" not in page:
             page[Name("Resources")] = Dictionary()
         if "Font" not in page["Resources"]:

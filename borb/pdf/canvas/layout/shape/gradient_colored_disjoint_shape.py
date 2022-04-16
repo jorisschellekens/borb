@@ -95,7 +95,7 @@ class GradientColoredDisjointShape(DisjointShape):
 
         # DIAGONAL
         if self._gradient_type == GradientColoredDisjointShape.GradientType.DIAGONAL:
-            n = math.sqrt((min_x - max_x) ** 2 + (min_y - max_y) ** 2)
+            n = Decimal(math.sqrt((min_x - max_x) ** 2 + (min_y - max_y) ** 2))
 
         # HORIZONTAL
         if self._gradient_type == GradientColoredDisjointShape.GradientType.HORIZONTAL:
@@ -105,11 +105,13 @@ class GradientColoredDisjointShape(DisjointShape):
         if self._gradient_type == GradientColoredDisjointShape.GradientType.RADIAL:
             mid_x = (max_x - min_x) / 2 + min_x
             mid_y = (max_y - min_y) / 2 + min_y
-            n = max(
-                [
-                    math.sqrt((l[0][0] - mid_x) ** 2 + (l[0][1] - mid_y) ** 2)
-                    for l in self._lines
-                ]
+            n = Decimal(
+                max(
+                    [
+                        math.sqrt((l[0][0] - mid_x) ** 2 + (l[0][1] - mid_y) ** 2)
+                        for l in self._lines
+                    ]
+                )
             )
 
         # VERTICAL
@@ -126,31 +128,23 @@ class GradientColoredDisjointShape(DisjointShape):
         # now we can draw each line
         for l in self._lines:
             d: Decimal = Decimal(0)
-            if (
-                self._gradient_type
-                == GradientColoredDisjointShape.GradientType.DIAGONAL
-            ):
-                d = math.sqrt((l[0][0] - min_x) ** 2 + (l[0][1] - min_y) ** 2)
-            if (
-                self._gradient_type
-                == GradientColoredDisjointShape.GradientType.HORIZONTAL
-            ):
-                d = l[0][0] - min_x
+            # fmt: off
+            if self._gradient_type == GradientColoredDisjointShape.GradientType.DIAGONAL:
+                d = Decimal(math.sqrt((l[0][0] - min_x) ** 2 + (l[0][1] - min_y) ** 2))
+            if self._gradient_type == GradientColoredDisjointShape.GradientType.HORIZONTAL:
+                d = Decimal(l[0][0] - min_x)
             if self._gradient_type == GradientColoredDisjointShape.GradientType.RADIAL:
-                d = math.sqrt((l[0][0] - mid_x) ** 2 + (l[0][1] - mid_y) ** 2)
-            if (
-                self._gradient_type
-                == GradientColoredDisjointShape.GradientType.VERTICAL
-            ):
-                d = l[0][1] - min_y
-            d = Decimal(d)
+                d = Decimal(math.sqrt((l[0][0] - mid_x) ** 2 + (l[0][1] - mid_y) ** 2))
+            if self._gradient_type == GradientColoredDisjointShape.GradientType.VERTICAL:
+                d = Decimal(l[0][1] - min_y)
+            # fmt: on
 
             # calculate color based on the distance between this line and the origin of the gradient
+            # fmt: off
             h = start_color.hue + (end_color.hue - start_color.hue) * (d / n)
-            s = start_color.saturation + (
-                end_color.saturation - start_color.saturation
-            ) * (d / n)
+            s = start_color.saturation + (end_color.saturation - start_color.saturation) * (d / n)
             v = start_color.value + (end_color.value - start_color.value) * (d / n)
+            # fmt: on
 
             # convert to RGB
             stroke_color: RGBColor = HSVColor(h, s, v).to_rgb()

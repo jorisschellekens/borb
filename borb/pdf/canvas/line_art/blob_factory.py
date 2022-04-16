@@ -57,6 +57,16 @@ class BlobFactory:
     def smooth_closed_polygon(
         points: typing.List[typing.Tuple[Decimal, Decimal]], number_of_refinements: int
     ):
+        """
+        This function smooths a polygon by using Chaikin's algorithm.
+        In 1974, George Chaikin gave a lecture at the University of Utah in which he specified a novel
+        procedure for generating curves from a limited number of points. This algorithm is interesting as it was
+        one of the first corner cutting or refinement algorithms specified to generate a curve from a set of control
+        points, or control polygon.
+        :param points:                  the points of the polygon
+        :param number_of_refinements:   the number of iterations to do, each iteration makes the polygon more smooth
+        :return:                        a smoothed version of the input polygon
+        """
         for _ in range(0, number_of_refinements):
             points_next_iter = []
             for num, pt in enumerate(points):

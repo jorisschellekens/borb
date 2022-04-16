@@ -79,7 +79,9 @@ class Hyphenation:
         in syllables. This function returns the word with hyphenation_character inserted.
         """
         # don't spend effort on stupid input
-        assert len(hyphenation_character) == 1
+        # fmt: off
+        assert (len(hyphenation_character) == 1), "The hyphenation_character must be a single character str."
+        # fmt: on
         if len(s) <= 4:
             return s
 

@@ -10,7 +10,7 @@ import json
 import typing
 from decimal import Decimal
 
-import keyring as keyring
+import keyring as keyring  # type: ignore [import]
 import urllib.request
 
 from borb.pdf.canvas.layout.image.image import Image
