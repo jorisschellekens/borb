@@ -35,6 +35,7 @@ class MultiColumnLayout(PageLayout):
         vertical_margin: typing.Optional[Decimal] = None,
         fixed_paragraph_spacing: typing.Optional[Decimal] = None,
         multiplied_paragraph_spacing: typing.Optional[Decimal] = None,
+        gutter_width = None,
     ):
         super().__init__(page)
 
@@ -76,7 +77,9 @@ class MultiColumnLayout(PageLayout):
             self._vertical_margin = vertical_margin
 
         # inter-column margin
-        self._inter_column_margin = self._page_width * Decimal(0.05)
+        if gutter_width is None:
+            gutter_width = 0.05
+        self._inter_column_margin = self._page_width * Decimal(gutter_width)
         self._number_of_columns = Decimal(number_of_columns)
         self._column_width = (
             self._page_width
