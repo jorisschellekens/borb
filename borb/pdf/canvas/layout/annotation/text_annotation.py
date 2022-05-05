@@ -52,6 +52,9 @@ class TextAnnotation(Annotation):
             bounding_box=bounding_box, contents=contents, color=color
         )
 
+        # specific for text annotations
+        self[Name("Subtype")] = Name("Text")
+
         # (Optional) A flag specifying whether the annotation shall initially be
         # displayed open. Default value: false (closed).
         if open is not None:

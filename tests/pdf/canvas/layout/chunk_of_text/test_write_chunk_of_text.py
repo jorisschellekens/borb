@@ -13,6 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import check_pdf_using_validator
 
 
 class TestWriteChunkOfText(unittest.TestCase):
@@ -70,3 +71,6 @@ class TestWriteChunkOfText(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # check
+        check_pdf_using_validator(out_file)

@@ -20,7 +20,7 @@ from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.color.color_spectrum_extraction import ColorSpectrumExtraction
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -97,6 +97,7 @@ class TestExtractColors(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_extract_colors_from_document(self):
 
@@ -172,7 +173,8 @@ class TestExtractColors(unittest.TestCase):
             PDF.dumps(in_file_handle, pdf)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
 
 if __name__ == "__main__":

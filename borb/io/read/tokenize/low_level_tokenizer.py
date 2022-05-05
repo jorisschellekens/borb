@@ -112,16 +112,16 @@ class LowLevelTokenizer:
             ch = self._next_byte()
 
         # START_ARRAY
-        if ch == b'[':
-            return Token(self._io_source.tell() - 1, TokenType.START_ARRAY, b'[')
+        if ch == b"[":
+            return Token(self._io_source.tell() - 1, TokenType.START_ARRAY, b"[")
 
         # END ARRAY
-        if ch == b']':
-            return Token(self._io_source.tell() - 1, TokenType.END_ARRAY, b']')
+        if ch == b"]":
+            return Token(self._io_source.tell() - 1, TokenType.END_ARRAY, b"]")
 
         # NAME
-        if ch == b'/':
-            out_str: bytearray = bytearray(b'/')
+        if ch == b"/":
+            out_str: bytearray = bytearray(b"/")
             out_pos = self._io_source.tell() - 1
             while True:
                 ch = self._next_byte()
@@ -135,18 +135,18 @@ class LowLevelTokenizer:
             return Token(out_pos, TokenType.NAME, bytes(out_str))
 
         # END_DICT
-        if ch == b'>':
+        if ch == b">":
             out_pos = self._io_source.tell() - 1
             ch = self._next_byte()
             # CHECK UNEXPECTED CHARACTER AFTER FIRST >
-            assert ch == b'>', "Unexpected character at end of dictionary."
-            return Token(out_pos, TokenType.END_DICT, b'>>')
+            assert ch == b">", "Unexpected character at end of dictionary."
+            return Token(out_pos, TokenType.END_DICT, b">>")
 
         # COMMENT
-        if ch == b'%':
+        if ch == b"%":
             out_str: bytearray = bytearray([])
             out_pos = self._io_source.tell() - 1
-            while len(ch) != 0 and ch != b'\r' and ch != b'\n':
+            while len(ch) != 0 and ch != b"\r" and ch != b"\n":
                 out_str += ch
                 ch = self._next_byte()
             if len(ch) != 0:
@@ -154,27 +154,27 @@ class LowLevelTokenizer:
             return Token(out_pos, TokenType.COMMENT, bytes(out_str))
 
         # HEX_STRING OR DICT
-        if ch == b'<':
+        if ch == b"<":
             out_pos = self._io_source.tell() - 1
             ch = self._next_byte()
 
             # DICT
-            if ch == b'<':
-                return Token(out_pos, TokenType.START_DICT, b'<<')
+            if ch == b"<":
+                return Token(out_pos, TokenType.START_DICT, b"<<")
 
             # empty hex string
-            if ch == b'>':
-                return Token(out_pos, TokenType.HEX_STRING, b'<>')
+            if ch == b">":
+                return Token(out_pos, TokenType.HEX_STRING, b"<>")
 
             # HEX_STRING
-            out_str: bytearray = bytearray(b'<')
+            out_str: bytearray = bytearray(b"<")
             out_str += ch
             while True:
                 ch = self._next_byte()
                 if len(ch) == 0:
                     break
                 out_str += ch
-                if ch == b'>':
+                if ch == b">":
                     break
             return Token(out_pos, TokenType.HEX_STRING, bytes(out_str))
 
@@ -190,29 +190,29 @@ class LowLevelTokenizer:
             return Token(out_pos, TokenType.NUMBER, bytes(out_str))
 
         # STRING
-        if ch == b'(':
+        if ch == b"(":
             bracket_nesting_level = 1
-            out_str: bytearray = bytearray(b'(')
+            out_str: bytearray = bytearray(b"(")
             out_pos = self._io_source.tell() - 1
             while True:
                 ch = self._next_byte()
                 if len(ch) == 0:
                     break
                 # escape char
-                if ch == b'\\':
+                if ch == b"\\":
                     ch = self._next_byte()
-                    out_str += b'\\'
+                    out_str += b"\\"
                     out_str += ch
                     continue
-                if ch == b'(':
+                if ch == b"(":
                     bracket_nesting_level += 1
-                if ch == b')':
+                if ch == b")":
                     bracket_nesting_level -= 1
                 out_str += ch
                 if bracket_nesting_level == 0:
                     break
             assert len(ch) != 0
-            assert out_str[-1] != b'\\'
+            assert out_str[-1] != b"\\"
             return Token(out_pos, TokenType.STRING, bytes(out_str))
 
         # OTHER

@@ -21,7 +21,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -88,8 +88,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_add_redact_annotation_001(self):
 
@@ -109,8 +111,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+        check_pdf_using_validator(out_file)
 
     def test_apply_redact_annotation_001(self):
 
@@ -127,11 +131,13 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         doc.get_page(0).apply_redact_annotations()
 
         # attempt to store PDF
-        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_003.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     #
     #   the following tests use the "TJ" operator (rather than "Tj")
@@ -152,8 +158,8 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
             q
             BT
             /F1 10 Tf            
-            59 640 Td            
-            [(Lorem ipsum dolor sit amet,), 2, ( consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et)] TJ
+            59 590 Td            
+            [(Lorem ipsum dolor sit amet,) 2 ( consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et)] TJ
             ET
             Q
         """
@@ -192,8 +198,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_004.pdf", "wb") as in_file_handle:
+        out_file: Path = self.output_dir / "output_004.pdf"
+        with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_add_redact_annotation_002(self):
 
@@ -213,8 +221,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_005.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_005.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+        check_pdf_using_validator(out_file)
 
     def test_apply_redact_annotation_002(self):
 
@@ -231,8 +241,10 @@ class TestApplyRedactionAnnotations(unittest.TestCase):
         doc.get_page(0).apply_redact_annotations()
 
         # attempt to store PDF
-        with open(self.output_dir / "output_006.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_006.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_006.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

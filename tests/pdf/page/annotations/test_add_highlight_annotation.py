@@ -16,7 +16,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestAddHighlightAnnotation(unittest.TestCase):
@@ -92,8 +92,10 @@ class TestAddHighlightAnnotation(unittest.TestCase):
                 doc.get_page(0).append_annotation(HighlightAnnotation(bb))
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

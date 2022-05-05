@@ -19,6 +19,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import check_pdf_using_validator
 
 
 class TestCopyDocumentCompareSize(unittest.TestCase):

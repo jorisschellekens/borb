@@ -17,11 +17,12 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestAddSquigglyAnnotation(unittest.TestCase):
+class TestAddSquiggleAnnotation(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -78,8 +79,10 @@ class TestAddSquigglyAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_add_squiggle_annotation(self):
 
@@ -100,5 +103,7 @@ class TestAddSquigglyAnnotation(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+        check_pdf_using_validator(out_file)

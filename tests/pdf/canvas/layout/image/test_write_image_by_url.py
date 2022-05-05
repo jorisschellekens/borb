@@ -13,9 +13,10 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
-class TestSimpleImageByURL(unittest.TestCase):
+class TestWriteImageByURL(unittest.TestCase):
     """
     This test creates a PDF with an Image in it, this is specified by a URL
     """
@@ -72,9 +73,13 @@ class TestSimpleImageByURL(unittest.TestCase):
         )
 
         # write
-        file = self.output_dir / "output.pdf"
-        with open(file, "wb") as pdf_file_handle:
+        out_file = self.output_dir / "output.pdf"
+        with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
 
 if __name__ == "__main__":

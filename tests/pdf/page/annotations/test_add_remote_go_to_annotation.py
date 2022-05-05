@@ -17,7 +17,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -79,15 +79,17 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # attempt to re-open PDF
-        with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
+        with open(out_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_add_remote_go_to_annotation_by_regex(self):
 
@@ -132,12 +134,14 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # attempt to re-open PDF
-        with open(self.output_dir / "output_002.pdf", "rb") as in_file_handle:
+        with open(out_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

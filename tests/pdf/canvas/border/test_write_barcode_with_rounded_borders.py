@@ -9,7 +9,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -81,6 +81,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_001(self):
 
@@ -138,6 +139,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_002(self):
 
@@ -195,6 +197,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_003(self):
 
@@ -252,6 +255,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_004(self):
 
@@ -309,6 +313,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_005(self):
 
@@ -368,6 +373,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_006(self):
 
@@ -426,6 +432,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_007(self):
 
@@ -484,6 +491,7 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_barcode_with_borders_008(self):
 
@@ -547,3 +555,4 @@ class TestWriteBarcodeWithRoundedBorders(unittest.TestCase):
             PDF.dumps(out_file_handle, pdf)
 
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

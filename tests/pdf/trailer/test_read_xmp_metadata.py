@@ -25,14 +25,11 @@ class TestReadXMPMetaData(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
             doc_info = doc.get_xmp_document_info()
-            assert (
-                doc_info.get_document_id()
-                == "xmp.id:54e5adca-494c-4c10-983a-daa03cdae65a"
-            )
-            assert (
-                doc_info.get_original_document_id()
-                == "xmp.did:b857e947-9e0d-4cd3-aff9-40a81c991e7a"
-            )
+
+            # fmt: off
+            assert doc_info.get_document_id() == "xmp.id:54e5adca-494c-4c10-983a-daa03cdae65a"
+            assert doc_info.get_original_document_id() == "xmp.did:b857e947-9e0d-4cd3-aff9-40a81c991e7a"
+            # fmt: on
 
 
 if __name__ == "__main__":

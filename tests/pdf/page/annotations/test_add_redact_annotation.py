@@ -20,7 +20,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -82,8 +82,12 @@ class TestAddRedactAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+
+        # check
+        check_pdf_using_validator(out_file)
 
     def test_add_redact_annotation(self):
 
@@ -104,11 +108,13 @@ class TestAddRedactAnnotation(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_add_redact_annotation_to_wild_caught_document(self):
 
@@ -131,11 +137,13 @@ class TestAddRedactAnnotation(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_003.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_create_document_with_truetype_font(self):
 
@@ -156,8 +164,11 @@ class TestAddRedactAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_004.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_004.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf_doc)
+
+        check_pdf_using_validator(out_file)
 
     def test_add_redact_annotation_to_document_with_truetype_font(self):
 
@@ -179,5 +190,8 @@ class TestAddRedactAnnotation(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_005.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_005.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+
+        check_pdf_using_validator(out_file)

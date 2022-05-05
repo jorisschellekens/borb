@@ -35,6 +35,7 @@ class MultiColumnLayout(PageLayout):
         vertical_margin: typing.Optional[Decimal] = None,
         fixed_paragraph_spacing: typing.Optional[Decimal] = None,
         multiplied_paragraph_spacing: typing.Optional[Decimal] = None,
+        multiplied_inter_column_spacing: typing.Optional[Decimal] = None,
     ):
         super().__init__(page)
 
@@ -76,12 +77,19 @@ class MultiColumnLayout(PageLayout):
             self._vertical_margin = vertical_margin
 
         # inter-column margin
-        self._inter_column_margin = self._page_width * Decimal(0.05)
+        # fmt: off
+        if multiplied_inter_column_spacing is None:
+            multiplied_inter_column_spacing = Decimal(0.05)
+        assert multiplied_inter_column_spacing >= Decimal(0), "multiplied_inter_column_spacing must be a non-negative number"
+        assert multiplied_inter_column_spacing * (number_of_columns - 1) < Decimal(1), "multiplied_inter_column_spacing must not be larger than 1"
+        self._inter_column_spacing = self._page_width * multiplied_inter_column_spacing
+        # fmt: on
+
         self._number_of_columns = Decimal(number_of_columns)
         self._column_width = (
             self._page_width
             - Decimal(2) * self._horizontal_margin
-            - Decimal(number_of_columns - 1) * self._inter_column_margin
+            - Decimal(number_of_columns - 1) * self._inter_column_spacing
         ) / Decimal(number_of_columns)
 
         # previous element information
@@ -177,7 +185,7 @@ class MultiColumnLayout(PageLayout):
 
         # fmt: off
         next_available_rect: Rectangle = Rectangle(
-            self._horizontal_margin + self._current_column_index * (self._column_width + self._inter_column_margin) + layout_element.get_margin_left(),
+            self._horizontal_margin + self._current_column_index * (self._column_width + self._inter_column_spacing) + layout_element.get_margin_left(),
             self._vertical_margin + layout_element.get_margin_bottom(),
             self._column_width - layout_element.get_margin_right() - layout_element.get_margin_left(),
             available_height

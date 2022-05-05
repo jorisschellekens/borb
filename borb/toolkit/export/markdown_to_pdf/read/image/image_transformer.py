@@ -91,12 +91,10 @@ class ImageTransformer(Transformer):
         assert isinstance(parent_element, PageLayout)
 
         # get page width and height
-        page_width: Decimal = (
-            parent_element.get_page().get_page_info().get_width() or Decimal(0)
-        )
-        page_height: Decimal = (
-            parent_element.get_page().get_page_info().get_height() or Decimal(0)
-        )
+        # fmt: off
+        page_width: Decimal = parent_element.get_page().get_page_info().get_width() or Decimal(0)
+        page_height: Decimal = parent_element.get_page().get_page_info().get_height() or Decimal(0)
+        # fmt: on
 
         if isinstance(parent_element, Page):
             W = int(page_width * Decimal(0.8))

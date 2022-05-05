@@ -20,7 +20,7 @@ from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteSingleLineJustifiedFull(unittest.TestCase):
@@ -87,7 +87,8 @@ class TestWriteSingleLineJustifiedFull(unittest.TestCase):
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_002(self):
 
@@ -139,4 +140,5 @@ class TestWriteSingleLineJustifiedFull(unittest.TestCase):
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

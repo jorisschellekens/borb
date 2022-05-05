@@ -15,7 +15,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestCopyCircleAnnotation(unittest.TestCase):
@@ -73,11 +73,13 @@ class TestCopyCircleAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # test
-        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_create_document_002(self):
         # create document
@@ -105,11 +107,13 @@ class TestCopyCircleAnnotation(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # test
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_copy_circle_annotation(self):
 
@@ -130,8 +134,10 @@ class TestCopyCircleAnnotation(unittest.TestCase):
             doc_in_b.get_page(0)["Annots"].append(a)
 
         # attempt to store PDF
-        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_003.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc_in_b)
 
         # test
-        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

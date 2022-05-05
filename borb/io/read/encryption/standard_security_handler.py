@@ -125,7 +125,7 @@ class StandardSecurityHandler:
             password = bytes(owner_password, encoding="charmap")
 
         # calculate encryption_key
-        #assert password is not None
+        # assert password is not None
         self._encryption_key: bytes = self._compute_encryption_key(password)
 
     def _encrypt_data(self, object: AnyPDFType) -> AnyPDFType:

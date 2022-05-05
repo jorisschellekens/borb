@@ -23,6 +23,7 @@ from borb.toolkit.text.regular_expression_text_extraction import (
     PDFMatch,
 )
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -281,8 +282,10 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         )
 
         # store
-        with open(self.output_dir / "output.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+        check_pdf_using_validator(out_file)
 
     def test_extract_text(self):
 

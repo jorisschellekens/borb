@@ -13,6 +13,7 @@ from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteParagraphWithAccentedLetters(unittest.TestCase):
@@ -76,6 +77,10 @@ class TestWriteParagraphWithAccentedLetters(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
         # attempt to re-open PDF
         l = SimpleTextExtraction()

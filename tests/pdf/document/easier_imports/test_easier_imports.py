@@ -8,7 +8,7 @@ from borb.pdf import Page
 from borb.pdf import SingleColumnLayout
 from borb.pdf import Paragraph
 from borb.pdf import PDF
-
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -46,3 +46,4 @@ class TestWriteHelloWorldWithEasierImports(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+        check_pdf_using_validator(out_file)

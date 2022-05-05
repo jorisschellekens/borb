@@ -51,6 +51,7 @@ from .pdf import PDF
 from .canvas.layout.page_layout.page_layout import PageLayout
 from .canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from .canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
+from .canvas.layout.layout_element import Alignment
 
 # Paragraph
 from .canvas.layout.text.paragraph import Paragraph

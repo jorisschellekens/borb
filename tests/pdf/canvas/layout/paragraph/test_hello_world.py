@@ -6,6 +6,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -43,3 +44,4 @@ class TestWriteHelloWorld(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+        check_pdf_using_validator(out_file)

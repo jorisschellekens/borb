@@ -13,7 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteFixedColumnWidthTable(unittest.TestCase):
@@ -107,7 +107,8 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
             PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_002(self):
 
@@ -193,7 +194,8 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
             PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_003(self):
 
@@ -279,7 +281,8 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
             PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_004(self):
 
@@ -365,7 +368,8 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
             PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_004.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_005(self):
 
@@ -452,4 +456,5 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
             PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_005.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

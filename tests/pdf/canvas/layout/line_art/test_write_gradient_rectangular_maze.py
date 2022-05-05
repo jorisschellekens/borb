@@ -19,7 +19,7 @@ from borb.pdf.canvas.line_art.rectangular_maze_factory import RectangularMazeFac
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteGradientRectangularMaze(unittest.TestCase):
@@ -100,7 +100,9 @@ class TestWriteGradientRectangularMaze(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_002(self):
 
@@ -137,7 +139,9 @@ class TestWriteGradientRectangularMaze(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_document_003(self):
 
@@ -176,4 +180,6 @@ class TestWriteGradientRectangularMaze(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

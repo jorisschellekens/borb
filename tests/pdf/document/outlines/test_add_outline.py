@@ -13,6 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -86,6 +87,9 @@ class TestAddOutline(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        # check
+        check_pdf_using_validator(out_file)
+
     def test_add_outline(self):
 
         input_file: Path = self.output_dir / "output_001.pdf"
@@ -111,6 +115,9 @@ class TestAddOutline(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, doc)
+
+        # check
+        check_pdf_using_validator(out_file)
 
     def test_outline_exists(self):
 

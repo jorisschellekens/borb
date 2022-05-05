@@ -16,6 +16,7 @@ from borb.pdf.canvas.line_art.blob_factory import BlobFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import check_pdf_using_validator
 
 
 class TestWriteBlobs(unittest.TestCase):
@@ -87,5 +88,9 @@ class TestWriteBlobs(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        # attempt to read PDF again
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # check
+        check_pdf_using_validator(out_file)

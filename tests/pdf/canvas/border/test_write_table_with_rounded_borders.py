@@ -13,7 +13,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -83,7 +83,9 @@ class TestWriteTableWithRoundedBorders(unittest.TestCase):
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_table_with_borders_001(self):
 
@@ -138,7 +140,9 @@ class TestWriteTableWithRoundedBorders(unittest.TestCase):
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_table_with_borders_002(self):
 
@@ -193,7 +197,9 @@ class TestWriteTableWithRoundedBorders(unittest.TestCase):
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_table_with_borders_003(self):
 
@@ -249,7 +255,9 @@ class TestWriteTableWithRoundedBorders(unittest.TestCase):
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_write_table_with_borders_004(self):
 
@@ -306,4 +314,6 @@ class TestWriteTableWithRoundedBorders(unittest.TestCase):
         with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

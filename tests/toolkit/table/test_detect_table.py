@@ -19,7 +19,7 @@ from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.table.table_detection_by_lines import TableDetectionByLines
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TableDefinition:
@@ -155,6 +155,7 @@ class TestDetectTable(unittest.TestCase):
             )
             with open(output_path, "wb") as pdf_file_handle:
                 PDF.dumps(pdf_file_handle, d)
+            check_pdf_using_validator(output_path)
 
     def test_find_table(self):
 
@@ -208,3 +209,4 @@ class TestDetectTable(unittest.TestCase):
 
             # compare visually
             compare_visually_to_ground_truth(output_file)
+            check_pdf_using_validator(output_file)

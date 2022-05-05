@@ -4,7 +4,7 @@ from pathlib import Path
 from borb.pdf.document.document import Document
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestExportHTMLToPDF(unittest.TestCase):
@@ -79,12 +79,13 @@ class TestExportHTMLToPDF(unittest.TestCase):
         document: Document = HTMLToPDF.convert_html_to_pdf(txt)
 
         # store
-        output_file = self.output_dir / (file_to_convert.replace(".html", ".pdf"))
-        with open(output_file, "wb") as pdf_file_handle:
+        out_file = self.output_dir / (file_to_convert.replace(".html", ".pdf"))
+        with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, document)
 
         # compare visually
-        compare_visually_to_ground_truth(output_file)
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
 
 if __name__ == "__main__":

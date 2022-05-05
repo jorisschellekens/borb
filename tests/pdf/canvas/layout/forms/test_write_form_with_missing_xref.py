@@ -23,6 +23,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteFormWithMissingXRef(unittest.TestCase):
@@ -102,9 +103,13 @@ class TestWriteFormWithMissingXRef(unittest.TestCase):
         )
 
         # write
-        file = self.output_dir / "output_001.pdf"
-        with open(file, "wb") as pdf_file_handle:
+        out_file = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
 
 if __name__ == "__main__":

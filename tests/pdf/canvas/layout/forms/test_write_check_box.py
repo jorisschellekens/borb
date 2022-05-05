@@ -16,7 +16,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteCheckBox(unittest.TestCase):
@@ -53,9 +53,10 @@ class TestWriteCheckBox(unittest.TestCase):
         )
 
         # write
-        file = self.output_dir / "output_001.pdf"
-        with open(file, "wb") as pdf_file_handle:
+        out_file = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_write_check_box_using_layout_manager(self):
 
@@ -94,11 +95,13 @@ class TestWriteCheckBox(unittest.TestCase):
         )
 
         # write
-        file = self.output_dir / "output_002.pdf"
-        with open(file, "wb") as pdf_file_handle:
+        out_file = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
 
-        compare_visually_to_ground_truth(file)
+        # check
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
 
 if __name__ == "__main__":

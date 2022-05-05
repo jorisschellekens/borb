@@ -4,6 +4,7 @@ from pathlib import Path
 from borb.pdf.document.document import Document
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.markdown_to_pdf.markdown_to_pdf import MarkdownToPDF
+from tests.test_util import check_pdf_using_validator
 
 
 class TestExportMarkdownToPDF(unittest.TestCase):
@@ -63,9 +64,10 @@ class TestExportMarkdownToPDF(unittest.TestCase):
         document: Document = MarkdownToPDF.convert_markdown_to_pdf(txt)
 
         # store
-        output_file = self.output_dir / (file_to_convert + ".pdf")
-        with open(output_file, "wb") as pdf_file_handle:
+        out_file = self.output_dir / (file_to_convert + ".pdf")
+        with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, document)
+        check_pdf_using_validator(out_file)
 
 
 if __name__ == "__main__":

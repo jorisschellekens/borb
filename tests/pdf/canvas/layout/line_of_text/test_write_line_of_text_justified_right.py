@@ -16,6 +16,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
@@ -95,6 +96,10 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
+
     def test_write_single_line_of_text_with_annotation(self):
 
         # create document
@@ -151,3 +156,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

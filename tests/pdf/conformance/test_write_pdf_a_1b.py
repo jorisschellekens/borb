@@ -9,7 +9,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWritePDFA1B(unittest.TestCase):
@@ -58,6 +58,10 @@ class TestWritePDFA1B(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf, ConformanceLevel.PDFA_1B)
 
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
+
     def test_re_open_pdfa_1_b(self):
 
         # attempt to re-open PDF
@@ -97,4 +101,6 @@ class TestWritePDFA1B(unittest.TestCase):
         assert xmp.get_subject() == "Subject Value"
         assert xmp.get_keywords() == "Keyword1 Keyword2 Keyword3"
 
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

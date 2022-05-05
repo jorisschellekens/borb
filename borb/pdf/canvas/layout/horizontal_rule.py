@@ -25,13 +25,12 @@ class HorizontalRule(LayoutElement):
         margin_top: typing.Optional[Decimal] = None,
         margin_bottom: typing.Optional[Decimal] = None,
     ):
+        # fmt: off
         super(HorizontalRule, self).__init__(
-            margin_top=margin_top or Decimal(6),
-            margin_bottom=margin_bottom
-            or Decimal(
-                6,
-            ),
+            margin_top=margin_top if margin_top is not None else Decimal(5),
+            margin_bottom=margin_bottom if margin_bottom is not None else Decimal(5),
         )
+        # fmt: on
         self._line_width: Decimal = line_width
         self._line_color: Color = line_color
 

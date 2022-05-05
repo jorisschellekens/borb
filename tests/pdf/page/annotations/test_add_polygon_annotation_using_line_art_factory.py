@@ -16,7 +16,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestAddAllLineArtAnnotations(unittest.TestCase):
@@ -160,12 +160,14 @@ class TestAddAllLineArtAnnotations(unittest.TestCase):
             )
 
         # attempt to store PDF
-        with open(self.output_dir / "output.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # attempt to re-open PDF
-        with open(self.output_dir / "output.pdf", "rb") as in_file_handle:
+        with open(out_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
         # compare visually
         compare_visually_to_ground_truth(self.output_dir / "output.pdf")
+        check_pdf_using_validator(out_file)

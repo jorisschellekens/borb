@@ -11,7 +11,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestRotatePage(unittest.TestCase):
@@ -72,11 +72,13 @@ class TestRotatePage(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_rotate_page_right(self):
 
@@ -90,11 +92,13 @@ class TestRotatePage(unittest.TestCase):
         doc.get_page(0).rotate_right()
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_002.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_rotate_page_left(self):
 
@@ -108,8 +112,10 @@ class TestRotatePage(unittest.TestCase):
         doc.get_page(0).rotate_left()
 
         # attempt to store PDF
-        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_003.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_003.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

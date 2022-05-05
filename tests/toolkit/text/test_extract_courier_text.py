@@ -15,6 +15,7 @@ from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.font_name_filter import FontNameFilter
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -88,8 +89,10 @@ class TestExtractCourierText(unittest.TestCase):
         )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_extract_text_from_document(self):
 

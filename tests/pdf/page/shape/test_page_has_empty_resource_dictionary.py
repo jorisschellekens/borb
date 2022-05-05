@@ -10,7 +10,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestPageHasEmptyResourceDictionary(unittest.TestCase):
@@ -49,11 +49,13 @@ class TestPageHasEmptyResourceDictionary(unittest.TestCase):
         ).layout(page, bounding_box)
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output_001.pdf")
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
         # check Resources dictionary
         page_dictionary: Dictionary = pdf["XRef"]["Trailer"]["Root"]["Pages"]["Kids"][0]

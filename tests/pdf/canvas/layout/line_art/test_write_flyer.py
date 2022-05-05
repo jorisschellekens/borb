@@ -26,7 +26,7 @@ from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
 class TestWriteFlyer(unittest.TestCase):
@@ -274,5 +274,6 @@ class TestWriteFlyer(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
-        # check
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

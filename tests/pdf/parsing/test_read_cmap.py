@@ -7,8 +7,8 @@ from borb.io.read.tokenize.low_level_tokenizer import Token
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
-class TestParseCMAP(unittest.TestCase):
 
+class TestParseCMAP(unittest.TestCase):
     def test_parse_cmap(self):
         cmap_bytes: bytes = b"""
         <1E> <00660069>
@@ -21,8 +21,10 @@ class TestParseCMAP(unittest.TestCase):
         <41> <0041>
         """
         cmap_tokenizer: HighLevelTokenizer = HighLevelTokenizer(io.BytesIO(cmap_bytes))
-        tokens: typing.List[Token] = [cmap_tokenizer.next_non_comment_token() for _ in range(0, 20)]
-        assert tokens[0].get_text() == '<1E>'
-        assert tokens[1].get_text() == '<00660069>'
-        assert tokens[2].get_text() == '<1F>'
-        assert tokens[3].get_text() == '<0066006C>'
+        tokens: typing.List[Token] = [
+            cmap_tokenizer.next_non_comment_token() for _ in range(0, 20)
+        ]
+        assert tokens[0].get_text() == "<1E>"
+        assert tokens[1].get_text() == "<00660069>"
+        assert tokens[2].get_text() == "<1F>"
+        assert tokens[3].get_text() == "<0066006C>"

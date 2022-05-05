@@ -12,6 +12,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -81,8 +82,10 @@ class TestChangeInfoDictionaryAuthor(unittest.TestCase):
         pdf["XRef"]["Trailer"]["Info"][Name("Author")] = String("Joris Schellekens")
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
+        check_pdf_using_validator(out_file)
 
     def test_read_document_info_dictionary_raw(self):
 
@@ -118,8 +121,10 @@ class TestChangeInfoDictionaryAuthor(unittest.TestCase):
         doc["XRef"]["Trailer"]["Info"][Name("Author")] = String("Boris Schellekens")
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+        check_pdf_using_validator(out_file)
 
     def test_read_document_info_dictionary_convenience_002(self):
 

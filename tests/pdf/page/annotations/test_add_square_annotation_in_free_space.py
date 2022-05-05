@@ -9,7 +9,7 @@ from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.free_space_finder import FreeSpaceFinder
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
-from tests.test_util import compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -55,8 +55,10 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
                 )
 
         # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_001.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
+        check_pdf_using_validator(out_file)
 
     def test_document_write_annotation(self):
 
@@ -86,9 +88,10 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         )
 
         # attempt to store PDF
-        output_path: Path = self.output_dir / "output_002.pdf"
-        with open(output_path, "wb") as out_file_handle:
+        out_file: Path = self.output_dir / "output_002.pdf"
+        with open(out_file, "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(output_path)
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
