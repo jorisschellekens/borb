@@ -47,6 +47,12 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         self.fails_per_document: typing.Dict[str, int] = []
 
     @unittest.skip
+    def test_against_specific_file(self):
+        pdfs = [self.corpus_dir / "0213.pdf"]
+        self._test_list_of_documents(pdfs)
+        plt.close("all")
+
+    @unittest.skip
     def test_against_entire_corpus(self):
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [

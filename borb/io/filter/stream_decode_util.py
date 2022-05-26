@@ -66,7 +66,7 @@ def decode_stream(s: Stream) -> Stream:
 
         # LZW
         if filter_name in ["LZWDecode"]:
-            transformed_bytes = LZWDecode.decode(transformed_bytes)
+            transformed_bytes = LZWDecode().decode(transformed_bytes)
             continue
 
         # RunLengthDecode
