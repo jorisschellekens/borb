@@ -123,11 +123,11 @@ class DocumentInfo:
         """
         return self._document["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
 
-    def get_file_size(self) -> Optional[int]:
+    def get_file_size(self) -> Optional[Decimal]:
         """
         This function returns the filesize (in bytes) of this Document
         """
-        return int(self._document("FileSize"))
+        return self._document.get("FileSize", None)
 
     def get_ids(self) -> Optional[List[str]]:
         """

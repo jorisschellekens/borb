@@ -32,7 +32,7 @@ class JPEGImageTransformer(Transformer):
         return (
             isinstance(object, Stream)
             and object.get("Type", None) in ["XObject", None]
-            and object.get("Subtype", None) == "Image"
+            and object.get("Subtype", None) in ["Image", None]
             and "Filter" in object
             and (
                 object["Filter"] == "DCTDecode"
@@ -58,6 +58,14 @@ class JPEGImageTransformer(Transformer):
         # fmt: off
         assert isinstance(object_to_transform, Stream), "object_to_transform must be of type Stream"
         # fmt: on
+
+        # warnings
+        if object_to_transform.get("Type", None) is None:
+            logger.debug("Image object did not specify /Type /XObject.")
+        if object_to_transform.get("Subtype", None) is None:
+            logger.debug("Image object did not specify /Subtype /Image.")
+
+        # read a pixel
         try:
             tmp = Image.open(io.BytesIO(object_to_transform["Bytes"]))
             tmp.getpixel(

@@ -48,7 +48,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
 
     @unittest.skip
     def test_against_specific_file(self):
-        pdfs = [self.corpus_dir / "0213.pdf"]
+        pdfs = [self.corpus_dir / "0445_page_0.pdf"]
         self._test_list_of_documents(pdfs)
         plt.close("all")
 
