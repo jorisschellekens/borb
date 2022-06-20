@@ -247,3 +247,6 @@ dmypy.json
 .prof
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
+
+# Testing only @xD34THROW
+pr_test.py
