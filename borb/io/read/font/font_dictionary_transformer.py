@@ -9,6 +9,8 @@ import typing
 from typing import Any, Optional, Union
 
 from borb.io.read.transformer import ReadTransformerState, Transformer
+# import borb.io.read.transformer.ReadTransformerState
+# import borb.io.read.transformer.Transformer
 from borb.io.read.types import AnyPDFType, Dictionary, Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.font.composite_font.cid_font_type_0 import CIDType0Font

@@ -8,18 +8,18 @@ import io
 import os
 import typing
 from decimal import Decimal
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, TYPE_CHECKING
 
 from borb.io.read.encryption.standard_security_handler import StandardSecurityHandler
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType, Dictionary, Name
-from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.document.document import Document
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 from borb.pdf.xref.rebuilt_xref import RebuiltXREF
 from borb.pdf.xref.stream_xref import StreamXREF
 from borb.pdf.xref.xref import XREF
+from borb.pdf.canvas.event.event_listener import Event, EventListener
 
 
 class BeginDocumentEvent(Event):

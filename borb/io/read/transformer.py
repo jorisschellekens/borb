@@ -8,10 +8,13 @@ Add children to handle specific cases (transforming dictionaries, arrays, xref, 
 import io
 import typing
 from typing import Any, Optional, Union
+from typing import TYPE_CHECKING
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.types import AnyPDFType, Reference
-from borb.pdf.canvas.event.event_listener import EventListener
+
+if TYPE_CHECKING:
+    from borb.pdf.canvas.event.event_listener import EventListener
 
 
 class ReadTransformerState:
@@ -107,7 +110,7 @@ class Transformer:
         object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
         parent_object: Any,
         context: Optional[ReadTransformerState] = None,
-        event_listeners: typing.List[EventListener] = [],
+        event_listeners: typing.List["EventListener"] = [],
     ) -> Any:
         """
         This function reads an object from a byte stream.
