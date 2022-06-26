@@ -41,7 +41,7 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -74,7 +74,7 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
             pdf.get_page(0), r
         )
 
-        pdf.get_page(0).append_annotation(
+        pdf.get_page(0).add_annotation(
             RemoteGoToAnnotation(bounding_box=r, uri="https://www.borbpdf.com")
         )
 
@@ -98,7 +98,7 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -127,7 +127,7 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
         layout.add(hp)
 
         # add annotation
-        pdf.get_page(0).append_annotation(
+        pdf.get_page(0).add_annotation(
             RemoteGoToAnnotation(
                 bounding_box=chunks[4].get_bounding_box(), uri="https://www.borbpdf.com"
             )

@@ -212,7 +212,7 @@ class Page(Dictionary):
             self[Name("Annots")] = List()
         return self["Annots"]
 
-    def append_annotation(self, annotation: Annotation) -> "Page":
+    def add_annotation(self, annotation: Annotation) -> "Page":
         """
         This function appends an Annotation to this Page, returning self.
         :param annotation:  the Annotation object to append to this Page

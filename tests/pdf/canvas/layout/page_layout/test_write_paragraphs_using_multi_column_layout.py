@@ -41,7 +41,7 @@ class TestWriteParagraphsUsingMultiColumnLayout(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -61,7 +61,7 @@ class TestWriteParagraphsUsingMultiColumnLayout(unittest.TestCase):
         )
 
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
         layout = MultiColumnLayout(page, number_of_columns=2)
         layout.add(Paragraph("Lorem Ipsum", font_size=Decimal(20)))
 

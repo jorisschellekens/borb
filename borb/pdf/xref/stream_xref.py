@@ -215,7 +215,7 @@ class StreamXREF(XREF):
 
         # add section
         for r in indirect_references:
-            self.append(r)
+            self.add(r)
 
         # initialize trailer
         self[Name("Trailer")] = Dictionary()

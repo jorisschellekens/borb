@@ -44,7 +44,7 @@ class TestWriteChunksOfTextPreservesBoundingBoxes(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -86,7 +86,7 @@ class TestWriteChunksOfTextPreservesBoundingBoxes(unittest.TestCase):
         for i, c in enumerate(chunks_of_text):
             r: Rectangle = copy.deepcopy(chunks_of_text[i].get_bounding_box())
             r.y -= (i + 1) * Decimal(10)
-            page.append_annotation(
+            page.add_annotation(
                 SquareAnnotation(
                     stroke_color=colors[i],
                     fill_color=colors[i],

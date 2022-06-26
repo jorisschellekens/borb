@@ -42,7 +42,7 @@ class TestWriteLineOfTextJustifiedCenter(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -84,7 +84,7 @@ class TestWriteLineOfTextJustifiedCenter(unittest.TestCase):
             rs.append(r)
 
         # add rectangle annotation
-        page.append_annotation(
+        page.add_annotation(
             SquareAnnotation(
                 stroke_color=HexColor("f1cd2e"),
                 bounding_box=Rectangle(

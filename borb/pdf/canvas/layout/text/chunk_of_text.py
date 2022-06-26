@@ -122,9 +122,7 @@ class ChunkOfText(LayoutElement):
             page["Resources"][Name("Font")] = Dictionary()
 
         # insert font into resources
-        font_resource_name = [
-            k for k, v in page["Resources"]["Font"].items() if v == font
-        ]
+        font_resource_name = [k for k, v in page["Resources"]["Font"].items() if v == font]
         if len(font_resource_name) > 0:
             return font_resource_name[0]
         else:

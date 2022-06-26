@@ -5,6 +5,8 @@
     This class adds performs OCR and adds recognized text in an optional content group on the PDF.
     This enables the user to have a searchable PDF, whilst being able to turn on/off OCR features.
 """
+# FIX: circular imports (1/2)
+from __future__ import annotations
 import datetime
 import typing
 import zlib
@@ -12,7 +14,6 @@ from decimal import Decimal
 from pathlib import Path
 
 from borb.datastructure.disjoint_set import disjointset
-from borb.io.read.reference.xref_transformer import EndDocumentEvent
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, String
 from borb.pdf.canvas.event.event_listener import Event
@@ -24,6 +25,12 @@ from borb.toolkit.ocr.ocr_image_render_event_listener import (
     OCREvent,
     OCRImageRenderEventListener,
 )
+
+# FIX: circular imports (2/2)
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from borb.io.read.reference.xref_transformer import EndDocumentEvent
 
 
 class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
@@ -80,9 +87,7 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
         # add to /Resources Dictionary of the Page
         now = datetime.datetime.now()
         ocr_layer_internal_name: str = "ocr%d%d%d" % (now.year, now.month, now.day)
-        number_of_pages: typing.Optional[
-            Decimal
-        ] = document.get_document_info().get_number_of_pages()
+        number_of_pages: typing.Optional[Decimal] = document.get_document_info().get_number_of_pages()
         assert number_of_pages is not None
         for page_nr in range(0, int(number_of_pages)):
             page: Page = document.get_page(page_nr)
@@ -93,11 +98,11 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
             page["Resources"]["Properties"][Name(ocr_layer_internal_name)] = ocg_dict
 
             # do nothing if no events are processed for this Page
-            ocr_events_per_page: typing.List[OCREvent] = [
-                x for x in self._ocr_events if x.get_page() == page
-            ]
+            # fmt: off
+            ocr_events_per_page: typing.List[OCREvent] = [x for x in self._ocr_events if x.get_page() == page]
             if len(ocr_events_per_page) == 0:
                 continue
+            # fmt: on
 
             # re-align events
             # fmt: off

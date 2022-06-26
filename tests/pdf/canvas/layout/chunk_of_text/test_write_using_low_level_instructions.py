@@ -40,7 +40,7 @@ class TestWriteUsingLowLevelInstructions(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # set layout
         layout = SingleColumnLayout(page)
@@ -62,7 +62,7 @@ class TestWriteUsingLowLevelInstructions(unittest.TestCase):
         )
 
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # create content stream
         content_stream = Stream()

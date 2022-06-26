@@ -38,7 +38,7 @@ class TestWriteNestedUnorderedList(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)

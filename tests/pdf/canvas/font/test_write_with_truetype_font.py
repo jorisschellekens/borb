@@ -42,7 +42,7 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # layout
         layout: PageLayout = SingleColumnLayout(page)
@@ -74,7 +74,7 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
         layout.add(p)
 
         # add box
-        page.append_annotation(
+        page.add_annotation(
             SquareAnnotation(p.get_bounding_box(), stroke_color=HexColor("ff0000"))
         )
 
@@ -96,7 +96,7 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # layout
         layout: PageLayout = SingleColumnLayout(page)
@@ -176,7 +176,7 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # layout
         layout: PageLayout = SingleColumnLayout(page)
@@ -256,7 +256,7 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # layout
         layout: PageLayout = SingleColumnLayout(page)

@@ -10,7 +10,7 @@ class TestTypeMethods(unittest.TestCase):
         # first document
         d0 = Document()
         p0 = Page()
-        d0.append_page(p0)
+        d0.add_page(p0)
 
         # check methods
         assert hasattr(d0, "get_root")

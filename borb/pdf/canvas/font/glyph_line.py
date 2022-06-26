@@ -182,9 +182,7 @@ class GlyphLine:
             out[-1]._glyphs = [g]
         return out
 
-    def append(
-        self, glyph_or_glyphline: typing.Union[Glyph, "GlyphLine"]
-    ) -> "GlyphLine":
+    def add(self, glyph_or_glyphline: typing.Union[Glyph, "GlyphLine"]) -> "GlyphLine":
         """
         This function appends a Glyph (or all Glyph objects in a GlyphLine) to this GlyphLine.
         This function returns self.

@@ -35,7 +35,7 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write test information
         layout = SingleColumnLayout(page)
@@ -117,7 +117,7 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write test information
         layout = SingleColumnLayout(page)
@@ -204,7 +204,7 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write test information
         layout = SingleColumnLayout(page)
@@ -291,7 +291,7 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write test information
         layout = SingleColumnLayout(page)
@@ -378,7 +378,7 @@ class TestWriteFixedColumnWidthTable(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write test information
         layout = SingleColumnLayout(page)

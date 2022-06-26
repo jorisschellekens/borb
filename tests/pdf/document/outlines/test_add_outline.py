@@ -37,7 +37,7 @@ class TestAddOutline(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -59,7 +59,7 @@ class TestAddOutline(unittest.TestCase):
 
         for _ in range(0, 5):
             page = Page()
-            pdf.append_page(page)
+            pdf.add_page(page)
             layout = SingleColumnLayout(page)
             for _ in range(0, 3):
                 layout.add(

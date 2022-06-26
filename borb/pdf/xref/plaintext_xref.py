@@ -66,7 +66,7 @@ class PlainTextXREF(XREF):
                 break
             else:
                 for r in xref_section:
-                    self.append(r)
+                    self.add(r)
 
         # process trailer
         self[Name("Trailer")] = self._read_trailer(src, tok)

@@ -42,7 +42,7 @@ class TestExtractText(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -113,7 +113,7 @@ class TestExtractText(unittest.TestCase):
         # add page(s)
         for s in ["Lorem Ipsum", "Dolor Sit Amet"]:
             page = Page()
-            pdf.append_page(page)
+            pdf.add_page(page)
             layout = SingleColumnLayout(page)
             layout.add(Paragraph(s))
 

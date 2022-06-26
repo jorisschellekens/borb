@@ -140,7 +140,7 @@ class TestWriteFlyer(unittest.TestCase):
         page = Page()
 
         # add Page to Document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # create PageLayout
         layout: PageLayout = SingleColumnLayout(page)
@@ -178,7 +178,7 @@ class TestWriteFlyer(unittest.TestCase):
             )
             .no_borders()
         )
-        page.append_annotation(
+        page.add_annotation(
             RemoteGoToAnnotation(
                 qr_code.get_bounding_box(), uri="https://www.borbpdf.com"
             )

@@ -42,7 +42,7 @@ class TestAddXLImage(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add PageLayout
         layout = SingleColumnLayout(page)
@@ -88,7 +88,7 @@ class TestAddXLImage(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add PageLayout
         layout = BrowserLayout(page)

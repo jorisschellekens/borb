@@ -52,7 +52,7 @@ class BrowserLayoutRow:
         self._display_value = display_value
         self._layout_elements: typing.List[LayoutElement] = []
 
-    def append(self, layout_element: LayoutElement) -> "BrowserLayoutRow":
+    def add(self, layout_element: LayoutElement) -> "BrowserLayoutRow":
         """
         This function appends a LayoutElement to this BrowserLayout.
         This function returns self.
@@ -207,7 +207,7 @@ class BrowserLayout(PageLayout):
 
         # create new Page
         page: Page = Page(self._page_width, self._page_height)
-        pdf_document.append_page(page)
+        pdf_document.add_page(page)
 
         # layout and reset rows
         self._page["Contents"][Name("DecodedBytes")] = self._page_content_stream_restore
@@ -277,7 +277,7 @@ class BrowserLayout(PageLayout):
         # else append to new row
         layout_element.layout(self._page, layout_element.get_bounding_box())  # type: ignore [arg-type]
         self._page_content_stream_restore = self._page["Contents"][Name("DecodedBytes")]
-        self._rows.append(BrowserLayoutRow(DisplayValue.BLOCK).append(layout_element))
+        self._rows.append(BrowserLayoutRow(DisplayValue.BLOCK).add(layout_element))
 
     def _add_inline_element(self, layout_element: LayoutElement) -> None:
         assert self._page_width is not None
@@ -350,7 +350,7 @@ class BrowserLayout(PageLayout):
             return
 
         layout_element.layout(self._page, layout_element.get_bounding_box())  # type: ignore [arg-type]
-        self._rows[-1].append(layout_element)
+        self._rows[-1].add(layout_element)
         self._rows[-1]._align_ys()
 
         # ensure page content is correct

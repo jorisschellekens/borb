@@ -45,7 +45,7 @@ class HTMLToPDF:
         first_page: Page = Page(
             PageSize.A4_LANDSCAPE.value[0], PageSize.A4_LANDSCAPE.value[1]
         )
-        pdf_document.append_page(first_page)
+        pdf_document.add_page(first_page)
 
         # build PageLayout
         page_layout: PageLayout = BrowserLayout(first_page)

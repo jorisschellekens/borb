@@ -43,7 +43,7 @@ class TestSimpleParagraphExtraction(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add Image
         layout = SingleColumnLayout(page)
@@ -96,7 +96,7 @@ class TestSimpleParagraphExtraction(unittest.TestCase):
 
         # add SquareAnnotation(s)
         for p in l.get_paragraphs_for_page(0):
-            doc.get_page(0).append_annotation(
+            doc.get_page(0).add_annotation(
                 SquareAnnotation(p.get_bounding_box(), stroke_color=HexColor("f1cd2e"))
             )
 

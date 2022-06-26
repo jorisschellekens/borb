@@ -44,7 +44,7 @@ class TestAddRedactAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -100,7 +100,7 @@ class TestAddRedactAnnotation(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     RedactAnnotation(
                         bb,
                         stroke_color=HexColor("FF0000"),
@@ -129,7 +129,7 @@ class TestAddRedactAnnotation(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     RedactAnnotation(
                         bb,
                         stroke_color=HexColor("FF0000"),
@@ -150,7 +150,7 @@ class TestAddRedactAnnotation(unittest.TestCase):
         pdf_doc: Document = Document()
 
         page: Page = Page()
-        pdf_doc.append_page(page)
+        pdf_doc.add_page(page)
 
         layout: PageLayout = SingleColumnLayout(page)
 
@@ -182,7 +182,7 @@ class TestAddRedactAnnotation(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     RedactAnnotation(
                         bb,
                         stroke_color=HexColor("FF0000"),

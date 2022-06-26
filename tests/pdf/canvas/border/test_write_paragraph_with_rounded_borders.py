@@ -33,7 +33,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -91,7 +91,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -150,7 +150,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -209,7 +209,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -268,7 +268,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -327,7 +327,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -388,7 +388,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -448,7 +448,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -508,7 +508,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -573,7 +573,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -635,7 +635,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)
@@ -698,7 +698,7 @@ class TestWriteParagraphWithRoundedBorders(unittest.TestCase):
 
         # add an empty Page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # use a PageLayout (SingleColumnLayout in this case)
         layout = SingleColumnLayout(page)

@@ -29,7 +29,7 @@ class TransformerState:
         self._start_index: int = 0
         self._document: Document = Document()
         page: Page = Page()
-        self._document.append_page(page)
+        self._document.add_page(page)
         layout: PageLayout = BrowserLayout(page)
         self._parent_layout_element: typing.Union[
             Document, Page, LayoutElement, PageLayout

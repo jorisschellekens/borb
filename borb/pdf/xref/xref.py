@@ -101,7 +101,7 @@ class XREF(Dictionary):
     ## GETTERS AND SETTERS
     ##
 
-    def append(self, r: Reference) -> "XREF":
+    def add(self, r: Reference) -> "XREF":
         """
         Add a new Reference to this XREF
         """
@@ -126,7 +126,7 @@ class XREF(Dictionary):
                     and x.index_in_parent_stream == r.index_in_parent_stream
                 ]
             if len(duplicate_entries) == 0:
-                self.append(r)
+                self.add(r)
         return self
 
     def get_object(

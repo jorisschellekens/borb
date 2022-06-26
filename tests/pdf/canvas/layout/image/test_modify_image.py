@@ -60,7 +60,7 @@ class TestModifyImage(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add Image
         layout = SingleColumnLayout(page)

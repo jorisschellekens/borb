@@ -42,7 +42,7 @@ class TestCountAnnotations(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -97,7 +97,7 @@ class TestCountAnnotations(unittest.TestCase):
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
                 bb = bb.grow(Decimal(2))
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     RedactAnnotation(
                         bb,
                         stroke_color=HexColor("FF0000"),

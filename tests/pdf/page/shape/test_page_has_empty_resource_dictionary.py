@@ -32,7 +32,7 @@ class TestPageHasEmptyResourceDictionary(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add Shape
         W: Decimal = page.get_page_info().get_width()

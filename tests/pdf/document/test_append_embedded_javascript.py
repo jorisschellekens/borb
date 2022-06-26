@@ -35,7 +35,7 @@ class TestAppendEmbeddedJavascript(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -54,7 +54,7 @@ class TestAppendEmbeddedJavascript(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        pdf.append_embedded_javascript("app.alert('Hello World!', 3)")
+        pdf.add_embedded_javascript("app.alert('Hello World!', 3)")
 
         # determine output location
         out_file = self.output_dir / "output_001.pdf"

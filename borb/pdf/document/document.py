@@ -44,7 +44,7 @@ class Document(Dictionary):
         """
         return self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"][page_number]
 
-    def append_document(self, document: "Document") -> "Document":
+    def add_document(self, document: "Document") -> "Document":
         """
         This method appends another Document to this one
         """
@@ -52,10 +52,10 @@ class Document(Dictionary):
             document.get_document_info().get_number_of_pages() or 0
         )
         for i in range(0, number_of_pages_in_other):
-            self.append_page(document.get_page(i))
+            self.add_page(document.get_page(i))
         return self
 
-    def append_page(self, page: Page) -> "Document":  # type: ignore [name-defined]
+    def add_page(self, page: Page) -> "Document":  # type: ignore [name-defined]
         """
         This method appends a page (from another Document) to this Document
         """
@@ -140,26 +140,6 @@ class Document(Dictionary):
 
         # return
         return self
-
-    #
-    # signatures
-    #
-
-    def has_signatures(self) -> bool:
-        """
-        This function returns True if this Document has signatures, False otherwise
-        """
-        # TODO
-        return False
-
-    def check_signatures(self) -> bool:
-        """
-        This method verifies the signatures in the Document,
-        it returns True if the signatures match the digest of the Document
-        (or if the Document has no signatures), False otherwise
-        """
-        # TODO
-        return True
 
     #
     # outlines
@@ -353,7 +333,7 @@ class Document(Dictionary):
     # embedded files
     #
 
-    def append_embedded_file(self, file_name: str, file_bytes: bytes) -> "Document":
+    def add_embedded_file(self, file_name: str, file_bytes: bytes) -> "Document":
         """
         If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
         some provision should be made to ensure that the external references will remain valid. One way to do this is to
@@ -420,7 +400,7 @@ class Document(Dictionary):
     # embedded javascript
     #
 
-    def append_embedded_javascript(self, javascript: str) -> "Document":
+    def add_embedded_javascript(self, javascript: str) -> "Document":
         """
         This function appends embedded JavaScript to this Document, returning self.
         :param javascript:  the Javascript str to be appended to this Document

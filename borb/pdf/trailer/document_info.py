@@ -8,6 +8,8 @@ import typing
 from decimal import Decimal
 from typing import List, Optional
 
+from borb.io.read.types import Name
+
 
 class DocumentInfo:
     """
@@ -17,6 +19,56 @@ class DocumentInfo:
     def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super().__init__()
         self._document: "Document" = document  # type: ignore [name-defined]
+
+    def has_signatures(self) -> bool:
+        """
+        This function returns True if this Document has signatures, False otherwise
+        """
+        # A PDF document may contain the following standard types of signatures:
+        # 1. One or more approval signatures. These signatures appear in signature form fields (see 12.7.4.5,
+        # “Signature Fields”).
+        catalog_dict = self._document["XRef"]["Trailer"]["Root"]
+        has_approval_signatures: bool = any(
+            [
+                d.get(Name("FT"), None) == Name("Sig")
+                for d in catalog_dict.get(Name("AcroForm"), {}).get(Name("Fields"), [])
+                if isinstance(d, dict)
+            ]
+        )
+
+        # 2. At most one certification signature (PDF 1.5). The signature dictionary of a certification signature shall be
+        # the value of a signature field and shall contain a ByteRange entry. It may also be referenced from the
+        # DocMDP entry in the permissions dictionary (see 12.8.4, “Permissions”).
+        has_certification_signature: bool = any(
+            [
+                d.get(Name("FT"), None) == Name("Sig") and (Name("DocMDP") in d)
+                for d in catalog_dict.get(Name("AcroForm"), {}).get(Name("Fields"), [])
+                if isinstance(d, dict)
+            ]
+        )
+
+        # 3. At most two usage rights signatures (PDF 1.5). Its signature dictionary shall be referenced from the UR3
+        # (PDF 1.6) entry in the permissions dictionary, whose entries are listed in Table 258, (not from a signature
+        # field).
+        has_usage_rights_signatures: bool = (
+            catalog_dict.get(Name("Perm"), {}).get(Name("UR3"), None) is not None
+        )
+
+        # return
+        return (
+            has_approval_signatures
+            or has_certification_signature
+            or has_usage_rights_signatures
+        )
+
+    def check_signatures(self) -> bool:
+        """
+        This method verifies the signatures in the Document,
+        it returns True if the signatures match the digest of the Document
+        (or if the Document has no signatures), False otherwise
+        """
+        # TODO
+        return True
 
     def has_optional_content(self) -> bool:
         """

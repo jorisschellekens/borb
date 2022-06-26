@@ -38,7 +38,7 @@ class TestMarginAndPadding(unittest.TestCase):
 
         # add test information
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
         layout = SingleColumnLayout(page)
 
         layout.add(
@@ -93,7 +93,7 @@ class TestMarginAndPadding(unittest.TestCase):
 
         # add test information
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
         layout = SingleColumnLayout(page)
 
         layout.add(

@@ -45,7 +45,7 @@ class TestWriteParagraphsWithHeadings(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         layout = SingleColumnLayout(page)
 
@@ -66,7 +66,7 @@ class TestWriteParagraphsWithHeadings(unittest.TestCase):
         )
 
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
         layout = MultiColumnLayout(page, number_of_columns=2)
 
         layout.add(

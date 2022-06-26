@@ -37,7 +37,7 @@ class TestAddPolylineAnnotationUsingLineArtFactory(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -151,7 +151,7 @@ class TestAddPolylineAnnotationUsingLineArtFactory(unittest.TestCase):
 
         # add annotation
         for i, s in enumerate(shapes):
-            pdf.get_page(0).append_annotation(
+            pdf.get_page(0).add_annotation(
                 PolylineAnnotation(
                     points=s,
                     fill_color=colors[(i + 1) % len(colors)],

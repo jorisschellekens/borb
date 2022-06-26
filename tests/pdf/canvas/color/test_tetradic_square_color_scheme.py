@@ -36,7 +36,7 @@ class TestTetradicSquareColorScheme(unittest.TestCase):
         d: Document = Document()
 
         p: Page = Page()
-        d.append_page(p)
+        d.add_page(p)
 
         l: PageLayout = SingleColumnLayout(p)
 

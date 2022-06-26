@@ -14,7 +14,7 @@ from borb.io.read.encryption.standard_security_handler import StandardSecurityHa
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.transformer import ReadTransformerState, Transformer
 from borb.io.read.types import AnyPDFType, Dictionary, Name
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import EventListener, Event
 from borb.pdf.document.document import Document
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 from borb.pdf.xref.rebuilt_xref import RebuiltXREF

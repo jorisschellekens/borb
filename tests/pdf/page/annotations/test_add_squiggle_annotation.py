@@ -41,7 +41,7 @@ class TestAddSquiggleAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -94,7 +94,7 @@ class TestAddSquiggleAnnotation(unittest.TestCase):
 
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     SquigglyAnnotation(
                         bb,
                         stroke_width=Decimal(2),

@@ -12,6 +12,6 @@ class TestGetSizeOfNewlyCreatedPage(unittest.TestCase):
 
     def test_get_size_of_newly_created_page_by_document(self):
         d: Document = Document()
-        d.append_page(Page())
+        d.add_page(Page())
         assert d.get_page(0).get_page_info().get_width() == 595
         assert d.get_page(0).get_page_info().get_height() == 842

@@ -37,7 +37,7 @@ class TestWriteBattleship(unittest.TestCase):
 
         doc: Document = Document()
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         font: Font = TrueTypeFont.true_type_font_from_file(
             Path(__file__).parent / "Pacifico.ttf"

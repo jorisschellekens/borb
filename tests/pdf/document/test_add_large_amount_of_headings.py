@@ -38,7 +38,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -64,7 +64,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
             page = Page()
 
             # Add Page to Document
-            pdf.append_page(page)
+            pdf.add_page(page)
 
             # Create PageLayout
             layout = SingleColumnLayout(page)
@@ -94,7 +94,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -120,7 +120,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
             page = Page()
 
             # Add Page to Document
-            pdf.append_page(page)
+            pdf.add_page(page)
 
             # Create PageLayout
             layout = SingleColumnLayout(page)

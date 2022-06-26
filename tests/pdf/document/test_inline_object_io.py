@@ -38,7 +38,7 @@ class TestInlineObjectIO(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -80,7 +80,7 @@ class TestInlineObjectIO(unittest.TestCase):
                 )
             if i != N - 1:
                 page = Page()
-                pdf.append_page(page)
+                pdf.add_page(page)
                 layout = SingleColumnLayout(page)
 
         # determine output location

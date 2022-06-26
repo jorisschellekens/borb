@@ -39,7 +39,7 @@ class TestAddAllRubberStampAnnotations(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -60,7 +60,7 @@ class TestAddAllRubberStampAnnotations(unittest.TestCase):
 
         # add annotation
         for index, name in enumerate(RubberStampAnnotationIconType):
-            pdf.get_page(0).append_annotation(
+            pdf.get_page(0).add_annotation(
                 RubberStampAnnotation(
                     name=name,
                     contents="Approved by Joris Schellekens",

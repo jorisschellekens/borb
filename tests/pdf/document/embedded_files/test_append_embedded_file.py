@@ -41,7 +41,7 @@ class TestAppendEmbeddedFile(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -96,7 +96,7 @@ class TestAppendEmbeddedFile(unittest.TestCase):
             info_dict.to_json_serializable(), indent=4
         ).encode("latin1")
 
-        doc.append_embedded_file("embedded_data.json", info_dict_bytes)
+        doc.add_embedded_file("embedded_data.json", info_dict_bytes)
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"

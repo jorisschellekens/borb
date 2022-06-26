@@ -44,7 +44,7 @@ class TestAddTextAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -96,7 +96,7 @@ class TestAddTextAnnotation(unittest.TestCase):
             doc = PDF.loads(in_file_handle, [l])
 
         bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
-        doc.get_page(0).append_annotation(
+        doc.get_page(0).add_annotation(
             TextAnnotation(
                 bb,
                 contents="""

@@ -44,7 +44,7 @@ class TestWriteDropDownList(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write TextField
         tf: DropDownList = DropDownList(
@@ -74,7 +74,7 @@ class TestWriteDropDownList(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # layout manager
         l: PageLayout = SingleColumnLayout(page)

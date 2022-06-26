@@ -37,7 +37,7 @@ class TestDuplicatePages(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -71,7 +71,7 @@ class TestDuplicatePages(unittest.TestCase):
         assert doc is not None
 
         # append duplicate page
-        doc.append_page(doc.get_page(0))
+        doc.add_page(doc.get_page(0))
 
         # attempt to store PDF
         with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
@@ -102,7 +102,7 @@ class TestDuplicatePages(unittest.TestCase):
         )
 
         # append duplicate page
-        doc.append_page(doc.get_page(0))
+        doc.add_page(doc.get_page(0))
 
         # attempt to store PDF
         with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
@@ -119,7 +119,7 @@ class TestDuplicatePages(unittest.TestCase):
         assert doc is not None
 
         # append duplicate page
-        doc.append_page(doc.get_page(0))
+        doc.add_page(doc.get_page(0))
 
         # add content
         Paragraph(

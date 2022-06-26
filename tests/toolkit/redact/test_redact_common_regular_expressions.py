@@ -45,7 +45,7 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -103,7 +103,7 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
             # fmt: off
             for m in l.get_matches_for_page(0):
                 for bb in m.get_bounding_boxes():
-                    doc.get_page(0).append_annotation(RedactAnnotation(bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")))
+                    doc.get_page(0).add_annotation(RedactAnnotation(bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")))
             # fmt: on
 
         # attempt to store PDF

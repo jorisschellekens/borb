@@ -40,7 +40,7 @@ class TestBuildMatryoshkaPDF(unittest.TestCase):
 
         # create Page
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         # layout
         layout: PageLayout = SingleColumnLayout(page)
@@ -56,7 +56,7 @@ class TestBuildMatryoshkaPDF(unittest.TestCase):
 
         # nesting
         if embedded_bytes is not None:
-            doc.append_embedded_file("next-level.pdf", embedded_bytes)
+            doc.add_embedded_file("next-level.pdf", embedded_bytes)
 
         # to bytes
         buffer = io.BytesIO()
@@ -72,7 +72,7 @@ class TestBuildMatryoshkaPDF(unittest.TestCase):
 
         # create Page
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         # layout
         layout: PageLayout = SingleColumnLayout(page)
@@ -99,7 +99,7 @@ class TestBuildMatryoshkaPDF(unittest.TestCase):
         ):
             to_embed = self._build_embedded_pdf(url, to_embed)
         assert to_embed is not None
-        doc.append_embedded_file("next-level.pdf", to_embed)
+        doc.add_embedded_file("next-level.pdf", to_embed)
 
         # determine output location
         out_file = self.output_dir / "output.pdf"

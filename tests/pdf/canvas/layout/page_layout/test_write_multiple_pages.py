@@ -39,7 +39,7 @@ class TestWriteMultiplePages(unittest.TestCase):
         N = 3
         for i in range(0, N):
             page = Page()
-            pdf.append_page(page)
+            pdf.add_page(page)
             layout = SingleColumnLayout(page)
             if i == 0:
                 # add test information

@@ -38,7 +38,7 @@ class TestWriteTableWithNonBlackParagraphs(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # set layout
         layout = SingleColumnLayout(page)

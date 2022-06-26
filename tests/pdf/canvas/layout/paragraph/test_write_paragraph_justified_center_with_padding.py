@@ -45,7 +45,7 @@ class TestWriteParagraphJustifiedCenterWithPadding(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -91,7 +91,7 @@ class TestWriteParagraphJustifiedCenterWithPadding(unittest.TestCase):
         # fmt: on
 
         # this is a quick and dirty way to draw a rectangle on the page
-        page.append_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
+        page.add_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
 
         # add the paragraph to the page
         p.layout(page, r)

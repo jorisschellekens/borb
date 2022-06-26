@@ -242,7 +242,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
 
         # add Page
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         # set PageLayout
         page_layout: PageLayout = SingleColumnLayout(

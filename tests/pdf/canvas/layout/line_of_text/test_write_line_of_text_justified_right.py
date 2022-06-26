@@ -38,7 +38,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -80,7 +80,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
             rs.append(r)
 
         # add rectangle annotation
-        page.append_annotation(
+        page.add_annotation(
             SquareAnnotation(
                 Rectangle(
                     Decimal(59), Decimal(550 - 24 * 4), Decimal(476), Decimal(24 * 5)
@@ -107,7 +107,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -132,7 +132,7 @@ class TestWriteLineOfTextJustifiedRight(unittest.TestCase):
         )
 
         # Shape
-        page.append_annotation(SquareAnnotation(rect, stroke_color=HexColor("000000")))
+        page.add_annotation(SquareAnnotation(rect, stroke_color=HexColor("000000")))
 
         # LineOfText
         LineOfText(

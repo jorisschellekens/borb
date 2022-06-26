@@ -42,7 +42,7 @@ class TestWriteParagraph(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout: PageLayout = SingleColumnLayout(page)
@@ -83,7 +83,7 @@ class TestWriteParagraph(unittest.TestCase):
         )
 
         # add rectangle annotation
-        page.append_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
+        page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
 
         # determine output location
         out_file = self.output_dir / "output.pdf"

@@ -41,7 +41,7 @@ class TestExtractRegularExpression(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -100,7 +100,7 @@ class TestExtractRegularExpression(unittest.TestCase):
         assert 6 <= int(bb.height) <= 8
 
         bb = bb.grow(Decimal(2))
-        doc.get_page(0).append_annotation(
+        doc.get_page(0).add_annotation(
             SquareAnnotation(
                 bb,
                 stroke_color=HexColor("DE6449"),

@@ -91,7 +91,7 @@ class TestDetectTable(unittest.TestCase):
 
             # add Page
             p: Page = Page()
-            d.append_page(p)
+            d.add_page(p)
 
             # set LayoutManager
             l: PageLayout = SingleColumnLayout(p)
@@ -183,14 +183,14 @@ class TestDetectTable(unittest.TestCase):
             # add annotation around table
             for t in tables:
                 r = t.get_bounding_box().grow(Decimal(5))
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     SquareAnnotation(r, stroke_color=X11Color("Red"))
                 )
 
                 for tc in t._content:
                     r = tc.get_bounding_box()
                     r = r.shrink(Decimal(2))
-                    doc.get_page(0).append_annotation(
+                    doc.get_page(0).add_annotation(
                         SquareAnnotation(
                             r,
                             stroke_color=X11Color("Green"),

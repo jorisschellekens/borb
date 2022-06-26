@@ -38,7 +38,7 @@ class TestAddHighlightAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -89,7 +89,7 @@ class TestAddHighlightAnnotation(unittest.TestCase):
 
         for m in l.get_matches_for_page(0):
             for bb in m.get_bounding_boxes():
-                doc.get_page(0).append_annotation(HighlightAnnotation(bb))
+                doc.get_page(0).add_annotation(HighlightAnnotation(bb))
 
         # attempt to store PDF
         out_file: Path = self.output_dir / "output_002.pdf"

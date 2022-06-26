@@ -37,7 +37,7 @@ class TestCopyCircleAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -59,7 +59,7 @@ class TestCopyCircleAnnotation(unittest.TestCase):
         # add annotation
         w: Decimal = pdf.get_page(0).get_page_info().get_width()
         h: Decimal = pdf.get_page(0).get_page_info().get_height()
-        pdf.get_page(0).append_annotation(
+        pdf.get_page(0).add_annotation(
             CircleAnnotation(
                 bounding_box=Rectangle(
                     w / Decimal(2) - Decimal(32),
@@ -87,7 +87,7 @@ class TestCopyCircleAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)

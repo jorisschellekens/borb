@@ -46,7 +46,7 @@ class TestWriteParagraphAlignment(unittest.TestCase):
 
         # add test information
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
         layout = SingleColumnLayout(page)
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
@@ -78,7 +78,7 @@ class TestWriteParagraphAlignment(unittest.TestCase):
                     print("building example %d / 36" % page_number)
                     page_number += 1
                     page = Page()
-                    pdf.append_page(page)
+                    pdf.add_page(page)
                     Paragraph(
                         str(va)
                         + " "
@@ -106,7 +106,7 @@ class TestWriteParagraphAlignment(unittest.TestCase):
                     )
 
                     # add rectangle annotation
-                    page.append_annotation(
+                    page.add_annotation(
                         SquareAnnotation(bb, stroke_color=HexColor("f1cd2e"))
                     )
 

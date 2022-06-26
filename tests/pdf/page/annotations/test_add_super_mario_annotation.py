@@ -66,7 +66,7 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -95,7 +95,7 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
                     continue
                 x = pixel_size * j + float(page_width) / 2
                 y = pixel_size * (len(m) - i) + float(page_height) / 2
-                pdf.get_page(0).append_annotation(
+                pdf.get_page(0).add_annotation(
                     LinkAnnotation(
                         page=Decimal(0),
                         color=c[m[i][j]],

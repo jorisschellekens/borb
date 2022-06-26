@@ -377,19 +377,31 @@ class Table(LayoutElement):
         return self
 
     def even_odd_row_colors(
-        self, even_row_color: Color, odd_row_color: Color
+        self,
+            even_row_color: Color,
+            odd_row_color: Color,
+            header_row_color: typing.Optional[Color] = None
     ) -> "Table":
         """
         This function colors the Table with the classic "zebra stripes"
         e.a. one color for all even rows, and a contrasting color for the odd rows.
+        :param even_row_color:      the Color to be used for even rows
+        :param odd_row_color:       the Color to be used for odd rows
+        :param header_row_color:    the Color to be used for the header row, if None is specified the even_row_color will be used
         This function returns self.
         """
+        if header_row_color is None:
+            header_row_color = even_row_color
+        assert header_row_color is not None
         for r in range(0, self._number_of_rows):
             for tc in self._get_cells_at_row(r):
-                if r % 2 == 0:
-                    tc._background_color = even_row_color
+                if r == 0:
+                    tc._background_color = header_row_color
                 else:
-                    tc._background_color = odd_row_color
+                    if r % 2 == 0:
+                        tc._background_color = even_row_color
+                    else:
+                        tc._background_color = odd_row_color
         return self
 
     def _get_cells_at(self, row: int, column: int) -> typing.Optional[TableCell]:

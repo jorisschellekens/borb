@@ -84,7 +84,7 @@ class TestOpenDocument(unittest.TestCase):
 
         # append page
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         # add test information
         layout: PageLayout = SingleColumnLayout(page)

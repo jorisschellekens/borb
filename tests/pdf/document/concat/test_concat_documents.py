@@ -35,7 +35,7 @@ class TestConcatDocuments(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -83,11 +83,11 @@ class TestConcatDocuments(unittest.TestCase):
         # concat all pages to same document
         doc_003 = Document()
         for i in range(0, int(doc_000.get_document_info().get_number_of_pages())):
-            doc_003.append_page(doc_000.get_page(i))
+            doc_003.add_page(doc_000.get_page(i))
         for i in range(0, int(doc_001.get_document_info().get_number_of_pages())):
-            doc_003.append_page(doc_001.get_page(i))
+            doc_003.add_page(doc_001.get_page(i))
         for i in range(0, int(doc_002.get_document_info().get_number_of_pages())):
-            doc_003.append_page(doc_002.get_page(i))
+            doc_003.add_page(doc_002.get_page(i))
 
         # attempt to store PDF
         out_file: Path = self.output_dir / "output_001.pdf"
@@ -115,8 +115,8 @@ class TestConcatDocuments(unittest.TestCase):
         with open(input_file_002, "rb") as in_file_handle_b:
             doc_002 = PDF.loads(in_file_handle_b)
 
-        doc_000.append_document(doc_001)
-        doc_000.append_document(doc_002)
+        doc_000.add_document(doc_001)
+        doc_000.add_document(doc_002)
 
         # attempt to store PDF
         out_file: Path = self.output_dir / "output_002.pdf"

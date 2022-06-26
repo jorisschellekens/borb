@@ -32,7 +32,7 @@ class TestWriteEmptyDocument(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # write
         out_file = self.output_dir / "output.pdf"

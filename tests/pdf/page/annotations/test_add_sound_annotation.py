@@ -36,7 +36,7 @@ class TestAddSoundAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -65,7 +65,7 @@ class TestAddSoundAnnotation(unittest.TestCase):
         layout.add(img)
 
         # add sound annotation
-        page.append_annotation(
+        page.add_annotation(
             SoundAnnotation(
                 img.get_bounding_box(), "/home/joris/Downloads/audioclip.mp3"
             )
@@ -84,7 +84,7 @@ class TestAddSoundAnnotation(unittest.TestCase):
 
         # add page
         page = Page()
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -112,7 +112,7 @@ class TestAddSoundAnnotation(unittest.TestCase):
         layout.add(img)
 
         # add sound annotation
-        page.append_annotation(
+        page.add_annotation(
             SoundAnnotation(
                 img.get_bounding_box(),
                 "https://commons.wikimedia.org/wiki/File:Variations_for_flute_and_piano.mp3",

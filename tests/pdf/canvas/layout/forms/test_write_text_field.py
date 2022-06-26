@@ -45,7 +45,7 @@ class TestWriteTextField(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -84,7 +84,7 @@ class TestWriteTextField(unittest.TestCase):
         page: Page = Page()
 
         # add page to document
-        pdf.append_page(page)
+        pdf.add_page(page)
 
         # layout manager
         l: PageLayout = SingleColumnLayout(page)

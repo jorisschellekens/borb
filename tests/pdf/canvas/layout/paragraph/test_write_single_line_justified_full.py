@@ -42,7 +42,7 @@ class TestWriteSingleLineJustifiedFull(unittest.TestCase):
     def test_write_document_001(self):
         doc: Document = Document()
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         # add test information
         layout = SingleColumnLayout(page)
@@ -76,7 +76,7 @@ class TestWriteSingleLineJustifiedFull(unittest.TestCase):
         # fmt: on
 
         # this is a quick and dirty way to draw a rectangle on the page
-        page.append_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
+        page.add_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
 
         # add the paragraph to the page
         p.layout(page, r)
@@ -94,7 +94,7 @@ class TestWriteSingleLineJustifiedFull(unittest.TestCase):
 
         doc: Document = Document()
         page: Page = Page()
-        doc.append_page(page)
+        doc.add_page(page)
 
         # add test information
         page_layout_001 = SingleColumnLayout(page)

@@ -46,7 +46,7 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
                     continue
                 x = Decimal(i * 10)
                 y = Decimal(j * 10)
-                doc.get_page(0).append_annotation(
+                doc.get_page(0).add_annotation(
                     SquareAnnotation(
                         Rectangle(x, y, Decimal(10), Decimal(10)),
                         stroke_color=HexColor("BF4E30"),
@@ -79,7 +79,7 @@ class TestAddSquareAnnotationInFreeSpace(unittest.TestCase):
         free_rectangle = l.get_free_space_for_page(0, ideal_rectangle)
 
         # add annotation
-        doc.get_page(0).append_annotation(
+        doc.get_page(0).add_annotation(
             SquareAnnotation(
                 free_rectangle,
                 stroke_color=HexColor("0B3954"),

@@ -124,7 +124,7 @@ class MultiColumnLayout(PageLayout):
         assert self._page_height
         new_page = Page(width=self._page_width, height=self._page_height)
         self._page = new_page
-        doc.append_page(new_page)
+        doc.add_page(new_page)
 
         # return
         return self
@@ -218,14 +218,14 @@ class MultiColumnLayout(PageLayout):
 
         # switch to next column
         if layout_rect.y < self._vertical_margin:
+            # fmt: off
             content_stream = self._page["Contents"]
             content_stream[Name("DecodedBytes")] = previous_decoded_bytes
-            content_stream[Name("Bytes")] = zlib.compress(
-                content_stream["DecodedBytes"], 9
-            )
+            content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
             content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
             self.switch_to_next_column()
             return self.add(layout_element)
+            # fmt: on
 
         # calculate previous_y
         self._previous_element = layout_element
