@@ -378,9 +378,9 @@ class Table(LayoutElement):
 
     def even_odd_row_colors(
         self,
-            even_row_color: Color,
-            odd_row_color: Color,
-            header_row_color: typing.Optional[Color] = None
+        even_row_color: Color,
+        odd_row_color: Color,
+        header_row_color: typing.Optional[Color] = None,
     ) -> "Table":
         """
         This function colors the Table with the classic "zebra stripes"
