@@ -1,7 +1,7 @@
 {
     "analysis-summary": {
         "can-be-optimized": false,
-        "date": "Sun Jul  3 02:59:35 2022",
+        "date": "Sat Jul 23 11:35:47 2022",
         "input": "/home/joris/Code/borb-dev/tests/output/test_write_check_box/output_002.pdf",
         "metadata": {
             "Author": "",
@@ -19,7 +19,7 @@
         "pdf-major-version": 1,
         "pdf-minor-version": 7,
         "profile": "/home/joris/Downloads/PDF-CHECKER-Lin64/PDF_Checker/CheckerProfiles/iso_32000.json",
-        "size-in-bytes": 5604,
+        "size-in-bytes": 5655,
         "triggered-abort": "pdf-error"
     },
     "cleanup-results": {

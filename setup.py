@@ -29,7 +29,7 @@ dependency_links = [
 
 setuptools.setup(
     name="borb",
-    version="2.0.29",
+    version="2.0.30",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="borb is a library for reading, creating and manipulating PDF files in python.",

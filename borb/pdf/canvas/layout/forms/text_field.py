@@ -4,6 +4,7 @@
 """
 This implementation of FormField represents a text field.
 """
+import random
 import typing
 import zlib
 
@@ -84,17 +85,16 @@ class TextField(FormField):
         widget_normal_appearance["BBox"].append(bDecimal(layout_box.width))
         widget_normal_appearance["BBox"].append(bDecimal(self._font_size))
         widget_normal_appearance[Name("Resources")] = widget_resources
+        # fmt: off
         widget_normal_appearance[Name("DecodedBytes")] = b"/Tx BMC EMC"
-        widget_normal_appearance[Name("Bytes")] = zlib.compress(
-            widget_normal_appearance[Name("DecodedBytes")], 9
-        )
+        widget_normal_appearance[Name("Bytes")] = zlib.compress(widget_normal_appearance[Name("DecodedBytes")], 9)
         widget_normal_appearance[Name("Filter")] = Name("FlateDecode")
-        widget_normal_appearance[Name("Length")] = bDecimal(
-            len(widget_normal_appearance[Name("Bytes")])
-        )
+        widget_normal_appearance[Name("Length")] = bDecimal(len(widget_normal_appearance[Name("Bytes")]))
+        # fmt: on
 
         # widget appearance dictionary
         widget_appearance_dictionary: Dictionary = Dictionary()
+        widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 
         # get Catalog
@@ -103,6 +103,7 @@ class TextField(FormField):
         # widget dictionary
         # fmt: off
         self._widget_dictionary = Dictionary()
+        self._widget_dictionary.set_is_unique(True)
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)

@@ -52,7 +52,7 @@ class TestExtractTextExpectGroundTruth(unittest.TestCase):
         self._test_list_of_documents(pdfs)
         plt.close("all")
 
-    # @unittest.skip
+    @unittest.skip
     def test_against_entire_corpus(self):
         pdf_file_names = os.listdir(self.corpus_dir)
         pdfs = [

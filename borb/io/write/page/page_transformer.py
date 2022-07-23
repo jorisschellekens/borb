@@ -9,6 +9,7 @@ import logging
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Dictionary, Name
+from borb.io.write.font.subsetter import Subsetter
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.document.document import Document
@@ -52,6 +53,10 @@ class PageTransformer(DictionaryTransformer):
         for k in ["ArtBox", "BleedBox", "CropBox", "MediaBox", "TrimBox"]:
             if k in object_to_transform:
                 object_to_transform[k].set_is_inline(True)  # type: ignore [attr-defined]
+
+        # apply subsetting
+        if context.apply_font_subsetting:
+            page = Subsetter.apply(object_to_transform)
 
         # delegate to super
         super(PageTransformer, self).transform(object_to_transform, context)

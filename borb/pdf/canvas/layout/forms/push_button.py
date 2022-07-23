@@ -101,6 +101,7 @@ class PushButton(FormField):
         # widget dictionary
         # fmt: off
         self._widget_dictionary = Dictionary()
+        self._widget_dictionary.set_is_unique(True)
         self._widget_dictionary[Name("AA")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")][Name("Type")] = Name("Action")

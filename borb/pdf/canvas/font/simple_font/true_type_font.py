@@ -6,6 +6,7 @@ format for the Microsoft Windows operating system. Specifications for the TrueTy
 available in Apple’s TrueType Reference Manual and Microsoft’s TrueType 1.0 Font Files Technical
 Specification (see Bibliography).
 """
+import io
 import typing
 import zlib
 from decimal import Decimal
@@ -38,21 +39,26 @@ class TrueTypeFont(Type1Font):
 
     @staticmethod
     def true_type_font_from_file(
-        path_to_font_file: Path,
+        font_file: typing.Union[Path, bytes],
     ) -> typing.Union["TrueTypeFont", "Type0Font"]:
         """
         This function returns the PDF TrueTypeFont object for a given TTF file
         """
-        assert path_to_font_file.exists()
-        assert path_to_font_file.name.endswith(".ttf")
+        if isinstance(font_file, Path):
+            assert font_file.exists()
+            assert font_file.name.endswith(".ttf")
 
+        # read bytes if needed
         font_file_bytes: typing.Optional[bytes] = None
-        with open(path_to_font_file, "rb") as ffh:
-            font_file_bytes = ffh.read()
-        assert font_file_bytes
+        if isinstance(font_file, Path):
+            with open(font_file, "rb") as ffh:
+                font_file_bytes = ffh.read()
+            assert font_file_bytes
+        else:
+            font_file_bytes = font_file
 
         # read file
-        ttf_font_file: TTFont = TTFont(path_to_font_file)
+        ttf_font_file: TTFont = TTFont(io.BytesIO(font_file_bytes))
 
         # read cmap
         cmap: typing.Optional[typing.Dict[int, str]] = ttf_font_file.getBestCmap()
@@ -84,8 +90,10 @@ class TrueTypeFont(Type1Font):
         # build widths
         units_per_em: bDecimal = bDecimal(ttf_font_file["head"].unitsPerEm)
         if cmap is not None:
-            font[Name("FirstChar")] = bDecimal(0)
-            font[Name("LastChar")] = bDecimal(len(glyph_order))
+            # fmt: off
+            font[Name("FirstChar")] = bDecimal(min([cid for cid, _ in enumerate(glyph_order)]))
+            font[Name("LastChar")] = bDecimal(max([cid for cid, _ in enumerate(glyph_order)]))
+            # fmt: on
             font[Name("Widths")] = List()
             for glyph_name in glyph_order:
                 w: typing.Union[bDecimal, Decimal] = (
@@ -109,9 +117,9 @@ class TrueTypeFont(Type1Font):
             font["Encoding"]["Differences"].append(Name(glyph_order[i]))
 
         # embed font file
-        font["FontDescriptor"][Name("FontFile2")] = TrueTypeFont._get_font_file_stream(
-            font_file_bytes
-        )
+        # fmt: off
+        font["FontDescriptor"][Name("FontFile2")] = TrueTypeFont._get_font_file_stream(font_file_bytes)
+        # fmt: on
 
         # return
         return font
@@ -120,7 +128,6 @@ class TrueTypeFont(Type1Font):
     def _get_font_file_stream(font_file_bytes: bytes) -> Stream:
         font_stream: Stream = Stream()
         font_stream[Name("Type")] = Name("Font")
-        font_stream[Name("Subtype")] = Name("TrueType")
         font_stream[Name("Length")] = bDecimal(len(font_file_bytes))
         font_stream[Name("Length1")] = bDecimal(len(font_file_bytes))
         font_stream[Name("Filter")] = Name("FlateDecode")
@@ -207,7 +214,6 @@ class TrueTypeFont(Type1Font):
         <0000> <FFFF>
         endcodespacerange
         """
-
         # 1 beginbfchar
         # <0000> <0000>
         # endbfchar

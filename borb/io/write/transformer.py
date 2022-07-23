@@ -37,6 +37,7 @@ class WriteTransformerState:
         self.resolved_references: typing.List[Reference] = []                               # these references have already been written
         self.compression_level: int = 9                                                     # default compression level
         self.conformance_level: typing.Optional[ConformanceLevel] = conformance_level       # default conformance level
+        self.apply_font_subsetting: bool = False                                            # whether to apply Font subsetting or not
         # fmt: on
 
 
@@ -173,15 +174,20 @@ class Transformer:
         This function builds a Reference for the input object
         References are re-used whenever possible (hashing is used to detect duplicate objects)
         """
+        is_unique: bool = False
+        try:
+            is_unique = object.is_unique()
+        except:
+            pass
         obj_id = id(object)
-        if obj_id in context.indirect_objects_by_id:
+        if (not is_unique) and obj_id in context.indirect_objects_by_id:
             cached_indirect_object: AnyPDFType = context.indirect_objects_by_id[obj_id]
             assert not isinstance(cached_indirect_object, Reference)
             return cached_indirect_object.get_reference()  # type: ignore [union-attr]
 
         # look through existing indirect object hashes
         obj_hash: int = self._hash(object)
-        if obj_hash in context.indirect_objects_by_hash:
+        if (not is_unique) and obj_hash in context.indirect_objects_by_hash:
             for obj in context.indirect_objects_by_hash[obj_hash]:
                 if obj == object:
                     ref = obj.get_reference()  # type: ignore [union-attr]

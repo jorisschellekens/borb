@@ -17,7 +17,7 @@ class FormField(LayoutElement):
     This implementation of LayoutElement acts as a common base class to form fields.
     """
 
-    def _get_auto_generated_field_name(self, page: Page) -> str:
+    def _count_fields_on_page(self, page: Page) -> int:
         number_of_fields: int = 0
         acroform_dict: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"].get(  # type: ignore [attr-defined]
             "AcroForm", Dictionary()
@@ -40,7 +40,10 @@ class FormField(LayoutElement):
             if isinstance(d, List):
                 for c in d:
                     stk.append(c)
-        return "field-{0:03d}".format(number_of_fields)
+        return number_of_fields
+
+    def _get_auto_generated_field_name(self, page: Page) -> str:
+        return "field-{0:03d}".format(self._count_fields_on_page(page))
 
     def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed

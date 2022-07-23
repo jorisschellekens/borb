@@ -102,6 +102,11 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
             )
 
     def switch_to_next_page(self) -> "PageLayout":
+        """
+        This function forces this PageLayout to switch to the nex Page
+        This function returns self.
+        :return:    self
+        """
         # call super
         super(HeaderFooterMultiColumnLayout, self).switch_to_next_page()
 

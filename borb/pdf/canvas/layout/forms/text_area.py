@@ -97,6 +97,7 @@ class TextArea(FormField):
 
         # widget appearance dictionary
         widget_appearance_dictionary: Dictionary = Dictionary()
+        widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 
         # get Catalog
@@ -105,6 +106,7 @@ class TextArea(FormField):
         # widget dictionary
         # fmt: off
         self._widget_dictionary = Dictionary()
+        self._widget_dictionary.set_is_unique(True)
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)

@@ -153,7 +153,28 @@ def add_base_methods(object: typing.Any) -> typing.Any:
             setattr(self, "_reference", None)
         return self._reference
 
-    # set_is_inline
+    # is_uniaue
+    def set_is_unique(self, a_flag: bool):
+        """
+        This function sets whether or not this Object is unique.
+        When an object is unique, it is not checked against the cache.
+        """
+        if "_is_unique" not in vars(self):
+            setattr(self, "_is_unique", None)
+        self._is_unique = a_flag
+        return self
+
+    # is_uniaue
+    def get_is_unique(self) -> bool:
+        """
+        This function returns whether or not this Object is unique.
+        When an object is unique, it is not checked against the cache.
+        """
+        if "_is_unique" not in vars(self):
+            setattr(self, "_is_unique", False)
+        return self._is_unique
+
+    # is_inline
     def set_is_inline(self, a_flag: bool):
         """
         This function sets whether or not this Object is written inline.
@@ -181,6 +202,8 @@ def add_base_methods(object: typing.Any) -> typing.Any:
     object.get_reference = types.MethodType(get_reference, object)
     object.set_is_inline = types.MethodType(set_is_inline, object)
     object.is_inline = types.MethodType(get_is_inline, object)
+    object.set_is_unique = types.MethodType(set_is_unique, object)
+    object.is_unique = types.MethodType(get_is_unique, object)
     object.to_json_serializable = types.MethodType(to_json_serializable, object)
     if isinstance(object, Image):
         object.__deepcopy__ = types.MethodType(deepcopy_mod, object)
