@@ -264,7 +264,7 @@ class CanvasOperatorName:
         "v",
         "w", "W", "W*",
         "y",
-        "''",
+        "'",
         '"',
     ]
     # fmt: on
