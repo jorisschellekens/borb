@@ -1,6 +1,4 @@
-# :mega: borb release 2.0.30
+# :mega: borb release 2.0.31
 
-This release is a feature release.
-- Initial support for `Font` subsetting in PDF
-- Small fix for `TextField` appearance dictionary
-- Small fix for `CheckBox` appearance dictionary
+This release is a small bugfix release:
+- include `'` as a valid postfix operator (improve text reading by 2%)

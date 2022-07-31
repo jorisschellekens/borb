@@ -97,10 +97,10 @@ class StandardSecurityHandler:
 
         # (Optional; PDF 1.4; only if V is 2 or 3) The length of the encryption key, in bits.
         # The value shall be a multiple of 8, in the range 40 to 128. Default value: 40.
+        # fmt: off
         self._key_length: int = int(encryption_dictionary.get("Length", Decimal(40)))
-        assert (
-            self._key_length % 8 == 0
-        ), "The length of the encryption key, in bits must be a multiple of 8."
+        assert self._key_length % 8 == 0, "The length of the encryption key, in bits must be a multiple of 8."
+        # fmt: on
 
         # (Required) A number specifying which revision of the standard security
         # handler shall be used to interpret this dictionary

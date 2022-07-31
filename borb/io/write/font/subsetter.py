@@ -118,9 +118,10 @@ class Subsetter:
 
             # perform subsetting
             subsetter = fSubsetter()
+            subsetter.populate(text="".join([x for x in characters_per_font[old_font]]))
+            subsetter.options.glyph_names = True
             subsetter.options.recalc_bounds = True
             subsetter.options.recalc_average_width = True
-            subsetter.populate(text="".join([x for x in characters_per_font[old_font]]))
             subsetter.subset(ttfont)
 
             # determine (modified) DecodedBytes

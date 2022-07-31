@@ -22,8 +22,11 @@ class TestDocumentHasSignatures(unittest.TestCase):
     def test_document_has_signatures_001(self):
 
         # read Document
+        input_dir: Path = Path(__file__).parent
         doc: typing.Optional[Document] = None
-        with open("hello_world_signed_initials_001.pdf", "rb") as pdf_file_handle:
+        with open(
+            input_dir / "hello_world_signed_initials_001.pdf", "rb"
+        ) as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
 
         # check whether we have read the Document
@@ -35,8 +38,11 @@ class TestDocumentHasSignatures(unittest.TestCase):
     def test_document_has_signatures_002(self):
 
         # read Document
+        input_dir: Path = Path(__file__).parent
         doc: typing.Optional[Document] = None
-        with open("hello_world_signed_initials_002.pdf", "rb") as pdf_file_handle:
+        with open(
+            input_dir / "hello_world_signed_initials_002.pdf", "rb"
+        ) as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
 
         # check whether we have read the Document

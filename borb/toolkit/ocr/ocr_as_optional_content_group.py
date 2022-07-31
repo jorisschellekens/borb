@@ -29,6 +29,7 @@ from borb.toolkit.ocr.ocr_image_render_event_listener import (
 # FIX: circular imports (2/2)
 from typing import TYPE_CHECKING
 
+EndDocumentEvent = type(None)
 if TYPE_CHECKING:
     from borb.io.read.reference.xref_transformer import EndDocumentEvent
 

@@ -41,9 +41,9 @@ class NameTree:
         :param value:   the value
         :return:        self
         """
-        assert "XRef" in self._document
-        assert "Trailer" in self._document["XRef"]
-        assert "Root" in self._document["XRef"]["Trailer"]
+        assert "XRef" in self._document, "No XREF found in this PDF"
+        assert "Trailer" in self._document["XRef"], "No /Trailer dictionary found in the XREF"
+        assert "Root" in self._document["XRef"]["Trailer"], "No /Root dictionary found in the /Trailer"
         root = self._document["XRef"]["Trailer"]["Root"]
 
         # set up /Names dictionary
@@ -130,9 +130,9 @@ class NameTree:
         This function returns all key/value pairs in this NameTree
         :return:    all key/value pairs in this NameTree
         """
-        assert "XRef" in self._document
-        assert "Trailer" in self._document["XRef"]
-        assert "Root" in self._document["XRef"]["Trailer"]
+        assert "XRef" in self._document, "No XREF found in this PDF"
+        assert "Trailer" in self._document["XRef"], "No /Trailer dictionary found in the XREF"
+        assert "Root" in self._document["XRef"]["Trailer"], "No /Root dictionary found in the /Trailer"
         root = self._document["XRef"]["Trailer"]["Root"]
 
         # set up /Names dictionary
@@ -164,9 +164,9 @@ class NameTree:
     #
 
     def _get_root_or_empty(self):
-        assert "XRef" in self._document
-        assert "Trailer" in self._document["XRef"]
-        assert "Root" in self._document["XRef"]["Trailer"]
+        assert "XRef" in self._document, "No XREF found in this PDF"
+        assert "Trailer" in self._document["XRef"], "No /Trailer dictionary found in the XREF"
+        assert "Root" in self._document["XRef"]["Trailer"], "No /Root dictionary found in the /Trailer"
         root = self._document["XRef"]["Trailer"]["Root"]
         return root.get(Name("Names"), Dictionary())
 

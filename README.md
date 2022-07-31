@@ -3,8 +3,8 @@
 
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Corpus Coverage : 99.0%](https://img.shields.io/badge/corpus%20coverage-99.0%25-green)]()
-[![Text Extraction : 90.1%](https://img.shields.io/badge/text%20extraction-90.1%25-green)]()
+[![Corpus Coverage : 100.0%](https://img.shields.io/badge/corpus%20coverage-100.0%25-green)]()
+[![Text Extraction : 93.1%](https://img.shields.io/badge/text%20extraction-93.1%25-green)]()
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 
 [![Downloads](https://pepy.tech/badge/borb)](https://pepy.tech/project/borb)
