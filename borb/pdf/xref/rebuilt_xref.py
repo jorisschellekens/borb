@@ -51,7 +51,7 @@ class RebuiltXREF(PlainTextXREF):
         i: int = 0
         trailer_pos: typing.Optional[int] = None
         bytes_in_pdf: typing.Optional[bytes] = src.read()
-        assert bytes_in_pdf is not None
+        assert bytes_in_pdf is not None, "rebuilding an XREF is only possible if all the bytes of the PDF are known"
         while i < len(bytes_in_pdf):
             # 0 0 obj
             if (

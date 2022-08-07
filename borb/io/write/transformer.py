@@ -118,8 +118,10 @@ class Transformer:
         It also does some bookkeeping to ensure the byte offset is stored in the XREF
         """
         # get offset position
-        assert context is not None
-        assert context.destination is not None
+        # fmt: off
+        assert context is not None, "A WriteTransformerState must be defined in order to write indirect objects."
+        assert context.destination is not None, "A WriteTransformerState must be defined in order to write indirect objects."
+        # fmt: on
         byte_offset = context.destination.tell()
 
         # update offset
@@ -146,8 +148,10 @@ class Transformer:
         This function writes the "endobj" bytes whenever a direct object needs to be closed
         """
         # write endobj
-        assert context is not None
-        assert context.destination is not None
+        # fmt: off
+        assert context is not None, "A WriteTransformerState must be defined in order to write indirect objects."
+        assert context.destination is not None, "A WriteTransformerState must be defined in order to write indirect objects."
+        # fmt: on
         context.destination.write(bytes("endobj\n\n", "latin1"))
 
     @staticmethod

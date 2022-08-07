@@ -233,9 +233,9 @@ class PostScriptEval:
                     continue
                 # exp
                 if operator == "exp":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator exp, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator exp, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -247,9 +247,9 @@ class PostScriptEval:
                     continue
                 # floor
                 if operator == "floor":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator floor, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator floor, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -279,18 +279,18 @@ class PostScriptEval:
                     continue
                 # idiv
                 if operator == "idiv":
-                    assert (
-                        len(stk) >= 2
-                    ), "Unable to apply operator idiv, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 2, "Unable to apply operator idiv, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     y = stk[-2]
                     assert isinstance(x, Decimal)
                     assert isinstance(y, Decimal)
                     stk.pop(len(stk) - 1)
                     stk.pop(len(stk) - 1)
-                    assert x != Decimal(
-                        0
-                    ), "Unable to apply operator idiv, division by zero"
+                    # fmt: off
+                    assert x != Decimal(0), "Unable to apply operator idiv, division by zero"
+                    # fmt: on
                     stk.append(Decimal(int(y / x)))
                     continue
                 # le
@@ -314,9 +314,9 @@ class PostScriptEval:
                     continue
                 # log
                 if operator == "log":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator log, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator log, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -335,25 +335,25 @@ class PostScriptEval:
                     continue
                 # mod
                 if operator == "mod":
-                    assert (
-                        len(stk) >= 2
-                    ), "Unable to apply operator mod, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 2, "Unable to apply operator mod, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     y = stk[-2]
                     assert isinstance(x, Decimal)
                     assert isinstance(y, Decimal)
                     stk.pop(len(stk) - 1)
                     stk.pop(len(stk) - 1)
-                    assert y != Decimal(
-                        0
-                    ), "Unable to apply operator mod, division by zero"
+                    # fmt: off
+                    assert y != Decimal(0), "Unable to apply operator mod, division by zero"
+                    # fmt: on
                     stk.append(Decimal(int(y) % int(x)))
                     continue
                 # mul
                 if operator == "mul":
-                    assert (
-                        len(stk) >= 2
-                    ), "Unable to apply operator mul, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 2, "Unable to apply operator mul, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     y = stk[-2]
                     assert isinstance(x, Decimal)
@@ -373,9 +373,9 @@ class PostScriptEval:
                     continue
                 # neg
                 if operator == "neg":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator neg, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator neg, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -383,9 +383,9 @@ class PostScriptEval:
                     continue
                 # not
                 if operator == "not":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator not, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator not, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, bool)
                     stk.pop(len(stk) - 1)
@@ -404,16 +404,16 @@ class PostScriptEval:
                     continue
                 # pop
                 if operator == "pop":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator pop, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator pop, stack underflow"
+                    # fmt: on
                     stk.pop(-1)
                     continue
                 # round
                 if operator == "round":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator round, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator round, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -421,9 +421,9 @@ class PostScriptEval:
                     continue
                 # sin
                 if operator == "sin":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator sin, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator sin, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -431,9 +431,9 @@ class PostScriptEval:
                     continue
                 # sqrt
                 if operator == "sqrt":
-                    assert (
-                        len(stk) >= 1
-                    ), "Unable to apply operator sqrt, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 1, "Unable to apply operator sqrt, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     assert isinstance(x, Decimal)
                     stk.pop(len(stk) - 1)
@@ -441,9 +441,9 @@ class PostScriptEval:
                     continue
                 # sub
                 if operator == "sub":
-                    assert (
-                        len(stk) >= 2
-                    ), "Unable to apply operator sub, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 2, "Unable to apply operator sub, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     y = stk[-2]
                     assert isinstance(x, Decimal)
@@ -458,9 +458,9 @@ class PostScriptEval:
                     continue
                 # xor
                 if operator == "xor":
-                    assert (
-                        len(stk) >= 2
-                    ), "Unable to apply operator xor, stack underflow"
+                    # fmt: off
+                    assert len(stk) >= 2, "Unable to apply operator xor, stack underflow"
+                    # fmt: on
                     x = stk[-1]
                     y = stk[-2]
                     assert isinstance(x, bool)

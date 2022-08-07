@@ -46,8 +46,10 @@ class DocumentTransformer(Transformer):
         This method writes a Document object to a byte stream
         """
         # write header
-        assert context is not None
-        assert context.destination is not None
+        # fmt: off
+        assert context is not None, "A WriteTransformerState must be defined in order to write Document objects."
+        assert context.destination is not None, "A WriteTransformerState must be defined in order to write Document objects."
+        # fmt: on
 
         context.destination.write(b"%PDF-1.7\n")
         context.destination.write(b"%")

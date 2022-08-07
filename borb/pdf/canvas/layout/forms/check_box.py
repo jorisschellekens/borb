@@ -10,6 +10,7 @@ import zlib
 
 from borb.io.read.types import Boolean, Decimal
 from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import String as bString
 from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
@@ -97,20 +98,12 @@ class CheckBox(FormField):
         self._widget_dictionary[Name("F")] = bDecimal(4)
         self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
-        )
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.x + layout_box.width)
-        )
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height)
-        )
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size - 2))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
         self._widget_dictionary[Name("FT")] = Name("Btn")
         self._widget_dictionary[Name("P")] = catalog
-        self._widget_dictionary[
-            Name("T")
-        ] = self._field_name or self._get_auto_generated_field_name(page)
+        self._widget_dictionary[Name("T")] = bString(self._field_name or self._get_auto_generated_field_name(page))
         self._widget_dictionary[Name("V")] = Name("Yes")
         self._widget_dictionary[Name("DR")] = widget_resources
 

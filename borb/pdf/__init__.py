@@ -71,6 +71,7 @@ from .canvas.layout.shape.disjoint_shape import DisjointShape
 from .canvas.layout.table.table import Table, TableCell
 from .canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from .canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
+from .canvas.layout.table.table_util import TableUtil
 
 # List
 from .canvas.layout.list.list import List

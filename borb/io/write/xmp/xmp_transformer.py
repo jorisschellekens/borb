@@ -37,11 +37,10 @@ class XMPTransformer(Transformer):
         This method writes an ET.Element (representing XMP meta information) to a byte stream
         """
         assert isinstance(object_to_transform, ET.Element)
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write XMP objects."
-        assert context.destination is not None
-        assert context.destination
+        # fmt: off
+        assert context is not None, "A WriteTransformerState must be defined in order to write XMP objects."
+        assert context.destination is not None, "A WriteTransformerState must be defined in order to write XMP objects."
+        # fmt: on
 
         # build stream
         out_value = Stream()

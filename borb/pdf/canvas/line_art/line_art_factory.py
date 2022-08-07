@@ -1200,7 +1200,7 @@ class LineArtFactory:
         """
         This function returns the coordinates for an n-point star that fits in the given bounding box
         """
-        assert n >= 3
+        assert n >= 3, "An n-pointed star must have at least 3 points"
         r = min(bounding_box.width, bounding_box.height) / Decimal(2)
         mid_x = bounding_box.x + r
         mid_y = bounding_box.y + r

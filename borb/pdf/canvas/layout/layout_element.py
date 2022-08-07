@@ -78,10 +78,10 @@ class LayoutElement:
         self._border_left = border_left
 
         # border radii
-        assert border_radius_top_right >= 0
-        assert border_radius_top_left >= 0
-        assert border_radius_bottom_left >= 0
-        assert border_radius_bottom_right >= 0
+        assert border_radius_top_right >= 0, "border_radius_top_right must be a non-negative integer"
+        assert border_radius_top_left >= 0, "border_radius_top_left must be a non-negative integer"
+        assert border_radius_bottom_left >= 0, "border_radius_bottom_left must be a non-negative integer"
+        assert border_radius_bottom_right >= 0, "border_radius_bottom_right must be a non-negative integer"
         self._border_radius_top_left: Decimal = border_radius_top_left
         self._border_radius_top_right: Decimal = border_radius_top_right
         self._border_radius_bottom_right: Decimal = border_radius_bottom_right

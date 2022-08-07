@@ -34,10 +34,10 @@ class XREFTransformer(Transformer):
         assert isinstance(object_to_transform, XREF)
         assert "Trailer" in object_to_transform
         assert isinstance(object_to_transform["Trailer"], Dictionary)
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write XREF objects."
-        assert context.destination is not None
+        # fmt: off
+        assert context is not None, "A WriteTransformerState must be defined in order to write XREF objects."
+        assert context.destination is not None, "A WriteTransformerState must be defined in order to write XREF objects."
+        # fmt: on
 
         # Transform the Trailer dictionary (replacing objects by references)
         # we do this upfront because the normal write_dictionary_transformer will write the dictionary first,

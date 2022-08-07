@@ -36,10 +36,10 @@ class PagesTransformer(DictionaryTransformer):
         """
         This method writes a /Pages Dictionary to a byte stream
         """
+        # fmt: off
         assert isinstance(object_to_transform, Dictionary)
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write Pages Dictionary objects."
+        assert context is not None, "A WriteTransformerState must be defined in order to write Pages Dictionary objects."
+        # fmt: on
 
         # /Kids can be written immediately
         object_to_transform[Name("Kids")].set_is_inline(True)  # type: ignore [attr-defined]
