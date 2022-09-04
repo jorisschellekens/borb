@@ -18,12 +18,11 @@ from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
-from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 
 try:
-    import black
-
+    import black    # type: ignore[import]
     able_to_import_black = True
 except ImportError:
     able_to_import_black = False

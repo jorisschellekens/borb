@@ -7,14 +7,13 @@ A link annotation represents either a hypertext link to a destination elsewhere 
 entries specific to this type of annotation.
 """
 import enum
+import typing
 from decimal import Decimal
 
-import typing
-
+from borb.io.read.types import Name, List, Decimal as bDecimal, String
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation
-from borb.io.read.types import Name, List, Decimal as bDecimal, String
 
 
 class DestinationType(enum.Enum):

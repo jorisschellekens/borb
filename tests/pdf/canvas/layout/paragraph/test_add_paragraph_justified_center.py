@@ -44,7 +44,12 @@ class TestAddParagraphJustifiedCenter(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -74,7 +79,7 @@ class TestAddParagraphJustifiedCenter(unittest.TestCase):
         page.add_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
 
         # add the paragraph to the page
-        p.layout(page, r)
+        p.paint(page, r)
 
         # determine output location
         out_file = self.output_dir / "output_001.pdf"
@@ -103,7 +108,12 @@ class TestAddParagraphJustifiedCenter(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -141,7 +151,7 @@ class TestAddParagraphJustifiedCenter(unittest.TestCase):
         page.add_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
 
         # add the paragraph to the page
-        p.layout(page, r)
+        p.paint(page, r)
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"

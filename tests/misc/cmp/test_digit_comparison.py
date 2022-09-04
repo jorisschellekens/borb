@@ -24,7 +24,7 @@ class TestDigitComparison(unittest.TestCase):
         )
 
     def test_digit_comparison_by_array(self):
-        for i in [10 ** x for x in range(0, 6)]:
+        for i in [10**x for x in range(0, 6)]:
 
             is_digit_001_time_avg = 0
             is_digit_002_time_avg = 0

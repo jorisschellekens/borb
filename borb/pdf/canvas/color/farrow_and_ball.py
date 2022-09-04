@@ -5,14 +5,13 @@
 Farrow & Ball is a British manufacturer of paints and wallpapers largely based upon historic colour palettes and archives.
 The company is particularly well known for the unusual names of its products.
 """
+import typing
 from decimal import Decimal
 
-import typing
-
-from borb.pdf import RGBColor, HexColor, Color
+from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 
 
-class FarrowAndBall:
+class FarrowAndBall(HexColor):
     """
     Farrow & Ball is a British manufacturer of paints and wallpapers largely based upon historic colour palettes and archives.
     The company is particularly well known for the unusual names of its products.
@@ -165,7 +164,7 @@ class FarrowAndBall:
         return self.color_name
 
     @staticmethod
-    def find_nearest_pantone_color(color: Color) -> "FarrowAndBall":
+    def find_nearest_farrow_and_ball_color(color: Color) -> "FarrowAndBall":
         """
         This function find the nearest `Farrow and Ball` equivalent for a given Color
         """

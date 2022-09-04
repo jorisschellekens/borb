@@ -13,7 +13,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from borb.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
+from borb.pdf.canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -51,7 +51,12 @@ class TestAddChunksOfText(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -88,7 +93,7 @@ class TestAddChunksOfText(unittest.TestCase):
         ]
 
         bb = Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124))
-        HeterogeneousParagraph(chunks_of_text).layout(page, bb)
+        HeterogeneousParagraph(chunks_of_text).paint(page, bb)
 
         # add rectangle annotation
         page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
@@ -117,7 +122,12 @@ class TestAddChunksOfText(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -156,7 +166,7 @@ class TestAddChunksOfText(unittest.TestCase):
         bb = Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124))
         HeterogeneousParagraph(
             chunks_of_text, horizontal_alignment=Alignment.RIGHT
-        ).layout(page, bb)
+        ).paint(page, bb)
 
         # add rectangle annotation
         page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
@@ -185,7 +195,12 @@ class TestAddChunksOfText(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -224,7 +239,7 @@ class TestAddChunksOfText(unittest.TestCase):
         bb = Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124))
         HeterogeneousParagraph(
             chunks_of_text, horizontal_alignment=Alignment.CENTERED
-        ).layout(page, bb)
+        ).paint(page, bb)
 
         # add rectangle annotation
         page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
@@ -253,7 +268,12 @@ class TestAddChunksOfText(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -296,7 +316,7 @@ class TestAddChunksOfText(unittest.TestCase):
             padding_right=Decimal(10),
             padding_bottom=Decimal(10),
             padding_left=Decimal(10),
-        ).layout(page, bb)
+        ).paint(page, bb)
 
         # add rectangle annotation
         page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
@@ -325,7 +345,12 @@ class TestAddChunksOfText(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -369,7 +394,7 @@ class TestAddChunksOfText(unittest.TestCase):
             padding_bottom=Decimal(5),
             padding_left=Decimal(5),
             background_color=HexColor("0b3954"),
-        ).layout(page, bb)
+        ).paint(page, bb)
 
         # add rectangle annotation
         page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))

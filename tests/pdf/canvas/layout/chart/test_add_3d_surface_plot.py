@@ -6,6 +6,7 @@ import matplotlib.pyplot as MatPlotLibPlot
 import pandas as pd
 
 from borb.io.read.types import Decimal
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.image.chart import Chart
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -16,7 +17,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import check_pdf_using_validator
+from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 
 class TestAdd3DSurfacePlot(unittest.TestCase):
@@ -53,11 +54,9 @@ class TestAdd3DSurfacePlot(unittest.TestCase):
         for angle in range(70, 210, 2):
 
             # Make the plot
-            fig = MatPlotLibPlot.figure()
+            fig = MatPlotLibPlot.figure(dpi=600)
             ax = fig.gca(projection="3d")
-            ax.plot_trisurf(
-                df["Y"], df["X"], df["Z"], cmap=MatPlotLibPlot.cm.viridis, linewidth=0.2
-            )
+            ax.plot_trisurf(df["Y"], df["X"], df["Z"], cmap="Blues", linewidth=0.2)
 
             # Set the angle of the camera
             ax.view_init(30, angle)
@@ -82,7 +81,12 @@ class TestAdd3DSurfacePlot(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -104,7 +108,10 @@ class TestAdd3DSurfacePlot(unittest.TestCase):
         out_file = self.output_dir / "output.pdf"
         with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
+
+        # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)
 
 
 if __name__ == "__main__":

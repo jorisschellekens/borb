@@ -72,16 +72,14 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
                 + graphics_state.font.get_ascent() * Decimal(0.001),
                 Decimal(1),
             )
-            self.set_bounding_box(
-                Rectangle(
-                    min(p0[0], p1[0]),
-                    min(p0[1], p1[1]),
-                    abs(p1[0] - p0[0]),
-                    abs(p1[1] - p0[1]),
-                )
+            self._previous_layout_box = Rectangle(
+                min(p0[0], p1[0]),
+                min(p0[1], p1[1]),
+                abs(p1[0] - p0[0]),
+                abs(p1[1] - p0[1]),
             )
         else:
-            self.set_bounding_box(self._baseline_bounding_box)
+            self._previous_layout_box = self._baseline_bounding_box
 
         # calculate space character width estimate
         current_font: Font = graphics_state.font
@@ -162,7 +160,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
             e._baseline_bounding_box = Rectangle(
                 p0[0], p0[1], p1[0] - p0[0], p1[1] - p0[1]
             )
-            e.bounding_box = e._baseline_bounding_box
+            e._previous_layout_box = e._baseline_bounding_box
 
             # change bounding box (descent)
             if g.uses_descent():
@@ -176,7 +174,7 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
                     y + font.get_ascent() * Decimal(0.001),
                     Decimal(1),
                 )
-                e.bounding_box = Rectangle(
+                e._previous_layout_box = Rectangle(
                     min(p0[0], p1[0]),
                     min(p0[1], p1[1]),
                     abs(p1[0] - p0[0]),

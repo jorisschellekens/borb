@@ -53,7 +53,12 @@ class TestAddTextArea(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -63,7 +68,7 @@ class TestAddTextArea(unittest.TestCase):
 
         # write TextField
         tf: TextArea = TextArea()
-        tf.layout(
+        tf.paint(
             page, Rectangle(Decimal(59), Decimal(600), Decimal(476), Decimal(12.5 * 5))
         )
 
@@ -76,7 +81,7 @@ class TestAddTextArea(unittest.TestCase):
         compare_visually_to_ground_truth(out_file)
         check_pdf_using_validator(out_file)
 
-    def test_write_text_field_using_layout_manager(self):
+    def test_add_text_area_using_layout_manager(self):
 
         # create empty document
         pdf: Document = Document()
@@ -94,7 +99,12 @@ class TestAddTextArea(unittest.TestCase):
         l.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))

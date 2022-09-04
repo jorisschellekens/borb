@@ -24,7 +24,7 @@ class PDFToJPG(PDFToSVG):
     """
 
     @staticmethod
-    def convert_pdf_to_jpg(file: Path, page_number: int) -> PILImage:
+    def convert_pdf_to_jpg(file: Path, page_number: int) -> PILImage:   # type: ignore[valid-type]
         """
         This function converts a PDF to an PIL.Image
         """
@@ -42,7 +42,7 @@ class PDFToJPG(PDFToSVG):
             default_page_width=default_page_width,
             default_page_height=default_page_height,
         )
-        self._jpg_image_per_page: typing.Dict[int, PILImage] = {}
+        self._jpg_image_per_page: typing.Dict[int, PILImage] = {}   # type: ignore[valid-type]
 
         # figure out fonts
         self._regular_font: typing.Optional[Path] = None
@@ -102,7 +102,7 @@ class PDFToJPG(PDFToSVG):
         self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
     ) -> None:
         self._jpg_image_per_page[int(page_nr)] = PILImage.new(
-            "RGB", (page_width, page_height), color=(255, 255, 255)
+            "RGB", (int(page_width), int(page_height)), color=(255, 255, 255)
         )
 
     def _render_text(
@@ -142,7 +142,7 @@ class PDFToJPG(PDFToSVG):
         assert self._jpg_image_per_page.get(int(page_nr)) is not None
         draw = ImageDraw.Draw(self._jpg_image_per_page[int(page_nr)])
         draw.text(
-            (x, page_height - y),
+            (float(x), float(page_height - y)),
             text,
             font=font,
             fill=(
@@ -161,7 +161,7 @@ class PDFToJPG(PDFToSVG):
         y: Decimal,
         image_width: Decimal,
         image_height: Decimal,
-        image: PILImage,
+        image: PILImage,    # type: ignore[valid-type]
     ):
         page_image = self._jpg_image_per_page.get(int(page_nr))
         assert page_image is not None
@@ -172,7 +172,7 @@ class PDFToJPG(PDFToSVG):
         # paste
         page_image.paste(image, (int(x), int(page_height - y - image_height)))
 
-    def get_image_for_page(self, page_nr: int) -> PILImage:
+    def get_image_for_page(self, page_nr: int) -> PILImage:     # type: ignore[valid-type]
         """
         This function returns the PIL.Image for a given page_nr
         """

@@ -91,7 +91,7 @@ class TestAddXLImage(unittest.TestCase):
         pdf.add_page(page)
 
         # add PageLayout
-        layout = BrowserLayout(page)
+        layout = SingleColumnLayout(page)
 
         # add test information
         layout.add(

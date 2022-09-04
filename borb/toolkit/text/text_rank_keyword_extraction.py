@@ -16,7 +16,6 @@ After this, a keywords table is constructed by combining the relevant words toge
 import re
 import typing
 
-
 from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS

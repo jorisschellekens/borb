@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -45,7 +46,12 @@ class TestAddFlexiTableWithPreferredWidth(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -88,7 +94,11 @@ class TestAddFlexiTableWithPreferredWidth(unittest.TestCase):
         def _insert_number(n: int):
             t.add(
                 TableCell(
-                    Paragraph(str(n), text_alignment=Alignment.CENTERED),
+                    Paragraph(
+                        str(n),
+                        horizontal_alignment=Alignment.CENTERED,
+                        text_alignment=Alignment.CENTERED,
+                    ),
                     preferred_width=Decimal(16),
                     preferred_height=Decimal(16),
                 )
@@ -190,6 +200,7 @@ class TestAddFlexiTableWithPreferredWidth(unittest.TestCase):
         _insert_n_blanks(1)
         _insert_n_blanks_all_borders(19)
 
+        t.set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         layout.add(t)
 
         # determine output location

@@ -52,7 +52,12 @@ class TestSimpleParagraphExtraction(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -97,7 +102,9 @@ class TestSimpleParagraphExtraction(unittest.TestCase):
         # add SquareAnnotation(s)
         for p in l.get_paragraphs_for_page(0):
             doc.get_page(0).add_annotation(
-                SquareAnnotation(p.get_bounding_box(), stroke_color=HexColor("f1cd2e"))
+                SquareAnnotation(
+                    p.get_previous_layout_box(), stroke_color=HexColor("f1cd2e")
+                )
             )
 
         # write

@@ -10,8 +10,8 @@ from enum import Enum
 
 import barcode  # type: ignore [import]
 import qrcode  # type: ignore [import]
-from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [import]
 from PIL import Image as PILImage  # type: ignore [import]
+from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [import]
 
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.layout.image.image import Image
@@ -69,7 +69,7 @@ class InMemoryBarcodeWriter(BarcodeImageWriter):
         """
         self.output_image = output
 
-    def get_output_image(self) -> PILImage:
+    def get_output_image(self) -> PILImage: # type: ignore[valid-type]
         """
         This function returns the PILImage representing the barcode
         """
@@ -99,10 +99,10 @@ class Barcode(Image):
         border_width: Decimal = Decimal(1),
         height: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
-        margin_bottom: typing.Optional[Decimal] = None,
-        margin_left: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
-        margin_top: typing.Optional[Decimal] = None,
+        margin_bottom: Decimal = Decimal(0),
+        margin_left: Decimal = Decimal(0),
+        margin_right: Decimal = Decimal(0),
+        margin_top: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
@@ -138,10 +138,10 @@ class Barcode(Image):
             border_top=border_top,
             border_width=border_width,
             horizontal_alignment=horizontal_alignment,
-            margin_bottom=margin_bottom if margin_bottom is not None else Decimal(5),
-            margin_left=margin_left if margin_left is not None else Decimal(5),
-            margin_right=margin_right if margin_right is not None else Decimal(5),
-            margin_top=margin_top if margin_top is not None else Decimal(5),
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
             padding_right=padding_right,
@@ -163,7 +163,7 @@ class Barcode(Image):
         )
 
         # get the rendered image from InMemoryBarcodeWriter
-        image: PILImage = writer.get_output_image()
+        image: PILImage = writer.get_output_image() # type: ignore[valid-type]
         assert image is not None
         assert image.width > 0
         assert image.height > 0
@@ -182,10 +182,10 @@ class Barcode(Image):
         qr.make(fit=True)
 
         # png to jpg
-        png_image: PILImage = qr.make_image(
+        png_image: PILImage = qr.make_image(    # type: ignore[valid-type]
             fill_color=self._stroke_color.to_rgb().to_hex_string(),
             back_color=self._fill_color.to_rgb().to_hex_string(),
         )
-        jpg_image = png_image.convert("RGB")
+        jpg_image = png_image.convert("RGB")    # type: ignore [attr-defined]
 
         return jpg_image

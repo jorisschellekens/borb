@@ -6,10 +6,9 @@ Show one or more text strings, allowing individual glyph positioning. Each
 element of array shall be either a string or a number.
 """
 import typing
-from decimal import Decimal
 from typing import List
 
-from borb.io.read.types import AnyPDFType, Name, String, HexadecimalString
+from borb.io.read.types import AnyPDFType, Name, String, HexadecimalString, Decimal as bDecimal
 from borb.io.write.font.copy_command_operator import CopyCommandOperator
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
@@ -85,7 +84,7 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
             obj = operands[0][i]
 
             # adjust
-            if isinstance(obj, Decimal):
+            if isinstance(obj, bDecimal):
                 operands_out.append(obj)
                 continue
 

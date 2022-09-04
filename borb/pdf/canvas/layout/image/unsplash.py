@@ -8,10 +8,10 @@ This class expects `keyring.get_password("unsplash", "access_key")` to have been
 
 import json
 import typing
+import urllib.request
 from decimal import Decimal
 
 import keyring as keyring  # type: ignore [import]
-import urllib.request
 
 from borb.pdf.canvas.layout.image.image import Image
 
@@ -52,11 +52,8 @@ class Unsplash:
 
         # fetch json
         min_delta: typing.Optional[Decimal] = None
-        min_image: typing.Optional[typing.Any] = None
-        url: str = (
-            "https://api.unsplash.com/search/photos?page=1&query=%s&client_id=%s"
-            % (keyword_str, unsplash_access_key)
-        )
+        min_image: typing.Optional[dict] = None
+        url: str = ("https://api.unsplash.com/search/photos?page=1&query=%s&client_id=%s" % (keyword_str, unsplash_access_key))
         with urllib.request.urlopen(url) as response:
             for result in json.loads(response.read().decode())["results"]:
                 if "width" not in result:
@@ -71,9 +68,14 @@ class Unsplash:
                 h: Decimal = Decimal(result["height"])
                 r: Decimal = w / h
 
-                delta: Decimal = round(abs(r - R), 3)
-                if min_delta is None or delta < min_delta:
-                    min_image = result
+                if R is not None:
+                    delta: Decimal = abs(r - R)
+                    if min_delta is None or delta < min_delta:
+                        min_image = result
+                else:
+                    if min_image is None:
+                        min_image = result
 
         # return
+        assert min_image is not None
         return Image(min_image["urls"]["regular"], width=width, height=height)

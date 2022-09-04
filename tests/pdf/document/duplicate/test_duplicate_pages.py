@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -44,7 +45,12 @@ class TestDuplicatePages(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -96,7 +102,7 @@ class TestDuplicatePages(unittest.TestCase):
         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         """,
             text_alignment=Alignment.JUSTIFIED,
-        ).layout(
+        ).paint(
             doc.get_page(0),
             Rectangle(Decimal(100), Decimal(100), Decimal(200), Decimal(200)),
         )
@@ -130,7 +136,7 @@ class TestDuplicatePages(unittest.TestCase):
         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         """,
             text_alignment=Alignment.JUSTIFIED,
-        ).layout(
+        ).paint(
             doc.get_page(0),
             Rectangle(Decimal(100), Decimal(100), Decimal(200), Decimal(200)),
         )

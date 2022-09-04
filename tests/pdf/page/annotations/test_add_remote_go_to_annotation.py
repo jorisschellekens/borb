@@ -12,7 +12,7 @@ from borb.pdf.canvas.layout.annotation.remote_go_to_annotation import (
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from borb.pdf.canvas.layout.text.chunks_of_text import HeterogeneousParagraph
+from borb.pdf.canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -48,7 +48,12 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
         layout.add(
             FixedColumnWidthTable(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -70,7 +75,7 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
             Decimal(64),
         )
 
-        Paragraph("borbpdf.com", font_color=HexColor("004573")).layout(
+        Paragraph("borbpdf.com", font_color=HexColor("004573")).paint(
             pdf.get_page(0), r
         )
 
@@ -105,7 +110,12 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
         layout.add(
             FixedColumnWidthTable(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -129,7 +139,8 @@ class TestAddRemoteGoToAnnotation(unittest.TestCase):
         # add annotation
         pdf.get_page(0).add_annotation(
             RemoteGoToAnnotation(
-                bounding_box=chunks[4].get_bounding_box(), uri="https://www.borbpdf.com"
+                bounding_box=chunks[4].get_previous_layout_box(),
+                uri="https://www.borbpdf.com",
             )
         )
 

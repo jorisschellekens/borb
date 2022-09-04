@@ -9,7 +9,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.shape.disjoint_shape import DisjointShape
+from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -47,11 +47,11 @@ class TestAddEurion(unittest.TestCase):
         assert w is not None
         assert h is not None
         layout.add(
-            DisjointShape(
+            DisconnectedShape(
                 LineArtFactory.EURion(Rectangle(0, 0, 50, 50)),
                 horizontal_alignment=Alignment.CENTERED,
                 vertical_alignment=Alignment.MIDDLE,
-                stroke_color=HexColor("ff0000"),
+                stroke_color=HexColor("56cbf9"),
                 line_width=Decimal(3),
             ),
         )
@@ -66,11 +66,11 @@ class TestAddEurion(unittest.TestCase):
         assert w is not None
         assert h is not None
         layout.add(
-            DisjointShape(
+            DisconnectedShape(
                 LineArtFactory.EURion(Rectangle(0, 0, 50, 50)),
                 horizontal_alignment=Alignment.CENTERED,
                 vertical_alignment=Alignment.MIDDLE,
-                stroke_color=HexColor("ff0000"),
+                stroke_color=HexColor("56cbf9"),
                 line_width=Decimal(3),
             ).rotate(math.radians(45)),
         )
@@ -89,7 +89,12 @@ class TestAddEurion(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -126,7 +131,12 @@ class TestAddEurion(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))

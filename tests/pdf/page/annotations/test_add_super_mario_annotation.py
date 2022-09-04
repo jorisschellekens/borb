@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.color.color import X11Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.link_annotation import (
     DestinationType,
@@ -73,7 +73,12 @@ class TestAddSuperMarioAnnotation(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))

@@ -46,8 +46,9 @@ class RunLengthDecode:
                 break
             # If the length byte is in the range 0 to 127, the following length + 1 (1 to 128)
             # bytes shall be copied literally during decompression.
+            length: int = 0
             if 0 <= b <= 127:
-                length: int = b + 1
+                length = b + 1
                 i += 1
                 for j in range(0, length):
                     bytes_out.append(bytes_in[i + j])
@@ -56,7 +57,7 @@ class RunLengthDecode:
             # If length is in the range 129 to 255, the following single
             # byte shall be copied 257 - length (2 to 128) times during decompression
             if 129 <= b <= 255:
-                length: int = 257 - b
+                length = 257 - b
                 i += 1
                 for _ in range(0, length):
                     bytes_out.append(bytes_in[i])

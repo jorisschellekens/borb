@@ -107,15 +107,14 @@ class SimpleLineOfTextExtraction(EventListener):
                 font=chunks_of_text[0]._font,
                 font_size=chunks_of_text[0]._font_size,
                 font_color=chunks_of_text[0]._font_color,
-            ).set_bounding_box(
-                Rectangle(
-                    chunks_of_text[0]._baseline_bounding_box.x,
-                    chunks_of_text[0]._baseline_bounding_box.y,
-                    chunks_of_text[-1]._baseline_bounding_box.x
-                    + chunks_of_text[-1]._baseline_bounding_box.width
-                    - chunks_of_text[0]._baseline_bounding_box.x,
-                    chunks_of_text[0]._baseline_bounding_box.height,
-                )
+            )
+            l._previous_layout_box = Rectangle(
+                chunks_of_text[0]._baseline_bounding_box.x,
+                chunks_of_text[0]._baseline_bounding_box.y,
+                chunks_of_text[-1]._baseline_bounding_box.x
+                + chunks_of_text[-1]._baseline_bounding_box.width
+                - chunks_of_text[0]._baseline_bounding_box.x,
+                chunks_of_text[0]._baseline_bounding_box.height,
             )
             assert isinstance(l, LineOfText)
             lines_of_text.append(l)

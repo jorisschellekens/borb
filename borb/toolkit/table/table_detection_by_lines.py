@@ -54,10 +54,11 @@ class TableDetectionByLines(EventListener):
         This function returns the bounding boxes (as Rectangle objects) of each Table
         that was recognized on the given page.
         """
+        ZERO: Decimal = Decimal(0)
         return [
-            x.bounding_box
+            x.get_previous_layout_box() or Rectangle(ZERO, ZERO, ZERO, ZERO)
             for x in self._tables_per_page.get(page_number, [])
-            if x.bounding_box is not None
+            if x.get_previous_layout_box() is not None
         ]
 
     def get_tables_for_page(self, page_number: int) -> typing.List[Table]:
@@ -148,14 +149,10 @@ class TableDetectionByLines(EventListener):
                 r, c = self._determine_number_of_rows_and_columns(v)
                 if r * c >= 2:
 
-                    # determine bounding box
-                    table_bounding_box: Rectangle = self._determine_table_bounding_box(
-                        v
-                    )
-
                     # determine table
                     table: Table = self._determine_table_cell_boundaries(v)
-                    table.bounding_box = table_bounding_box
+                    table._previous_layout_box = self._determine_table_bounding_box(v)
+                    table._previous_paint_box = table._previous_layout_box
 
                     # store
                     self._tables_per_page[self._current_page_number].append(table)
@@ -318,12 +315,13 @@ class TableDetectionByLines(EventListener):
             )
 
             # set bounding_box
-            tc.bounding_box = Rectangle(
+            tc._previous_layout_box = Rectangle(
                 xs[min_col],
                 ys[min_row],
                 xs[max_col + 1] - xs[min_col],
                 ys[max_row + 1] - ys[min_row],
             )
+            tc._previous_paint_box = tc._previous_layout_box
 
             # add to Table
             table.add(tc)

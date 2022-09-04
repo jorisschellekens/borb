@@ -7,15 +7,12 @@ This module contains various implementations of `PageLayout`.
 having to specify coordinates.
 """
 import typing
-import zlib
 from decimal import Decimal
 
-from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Name
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
@@ -33,9 +30,7 @@ class MultiColumnLayout(PageLayout):
         number_of_columns: int = 2,
         horizontal_margin: typing.Optional[Decimal] = None,
         vertical_margin: typing.Optional[Decimal] = None,
-        fixed_paragraph_spacing: typing.Optional[Decimal] = None,
-        multiplied_paragraph_spacing: typing.Optional[Decimal] = None,
-        multiplied_inter_column_spacing: typing.Optional[Decimal] = None,
+        inter_column_margin: typing.Optional[Decimal] = None,
     ):
         super().__init__(page)
 
@@ -47,22 +42,10 @@ class MultiColumnLayout(PageLayout):
         assert self._page_height, "page.get_height() must be defined for MultiColumnLayout to work"
         # fmt: on
 
-        # paragraph spacing
-        if fixed_paragraph_spacing is None and multiplied_paragraph_spacing is None:
-            multiplied_paragraph_spacing = Decimal(1.2)
-        # fmt: off
-        assert (fixed_paragraph_spacing is not None or multiplied_paragraph_spacing is not None), "fixed_paragraph_spacing or multiplied_paragraph_spacing must be defined for MultiColumnLayout to work"
-        assert fixed_paragraph_spacing is None or fixed_paragraph_spacing >= 0, "fixed_paragraph_spacing must be a non-negative number"
-        assert multiplied_paragraph_spacing is None or multiplied_paragraph_spacing >= 0, "multiplied_paragraph_spacing must be a non-negative number"
-        # fmt: on
-        self._fixed_paragraph_spacing: typing.Optional[
-            Decimal
-        ] = fixed_paragraph_spacing
-        self._multiplied_paragraph_spacing: typing.Optional[
-            Decimal
-        ] = multiplied_paragraph_spacing
-
         # horizontal margin
+        self._inter_column_margin: Decimal = Decimal(self._page_width) * Decimal(0.05)
+        if inter_column_margin is not None:
+            self._inter_column_margin = inter_column_margin
         if horizontal_margin is None:
             self._horizontal_margin = self._page_width * Decimal(0.1)
         else:
@@ -71,30 +54,45 @@ class MultiColumnLayout(PageLayout):
 
         # vertical margin
         if vertical_margin is None:
-            self._vertical_margin = self._page_height * Decimal(0.1)
+            self._vertical_margin_top = self._page_height * Decimal(0.1)
+            self._vertical_margin_bottom = self._vertical_margin_top
         else:
             assert vertical_margin >= 0
-            self._vertical_margin = vertical_margin
-
-        # inter-column margin
-        # fmt: off
-        if multiplied_inter_column_spacing is None:
-            multiplied_inter_column_spacing = Decimal(0.05)
-        assert multiplied_inter_column_spacing >= Decimal(0), "multiplied_inter_column_spacing must be a non-negative number"
-        assert multiplied_inter_column_spacing * (number_of_columns - 1) < Decimal(1), "multiplied_inter_column_spacing must not be larger than 1"
-        self._inter_column_spacing = self._page_width * multiplied_inter_column_spacing
-        # fmt: on
+            self._vertical_margin_top = vertical_margin
+            self._vertical_margin_bottom = vertical_margin
 
         self._number_of_columns = Decimal(number_of_columns)
         self._column_width = (
             self._page_width
             - Decimal(2) * self._horizontal_margin
-            - Decimal(number_of_columns - 1) * self._inter_column_spacing
+            - Decimal(number_of_columns - 1) * self._inter_column_margin
         ) / Decimal(number_of_columns)
 
         # previous element information
         self._previous_element: typing.Optional[LayoutElement] = None
         self._current_column_index = Decimal(0)
+
+    def _get_margin_between_elements(
+        self, previous_element: LayoutElement, element: LayoutElement
+    ) -> Decimal:
+        if previous_element is None:
+            return Decimal(0)
+
+        # text elements
+        if isinstance(previous_element, ChunkOfText) and isinstance(
+            element, ChunkOfText
+        ):
+            return max(
+                previous_element.get_font_size() * Decimal(1.2),
+                element.get_font_size() * Decimal(1.2),
+            )
+        if isinstance(previous_element, ChunkOfText):
+            return previous_element.get_font_size() * Decimal(1.2)
+        if isinstance(element, ChunkOfText):
+            return element.get_font_size() * Decimal(1.2)
+
+        # default
+        return Decimal(5)
 
     def switch_to_next_column(self) -> "PageLayout":
         """
@@ -140,67 +138,47 @@ class MultiColumnLayout(PageLayout):
         assert self._page_height is not None
         assert self._page_width is not None
         previous_element_margin_bottom: Decimal = Decimal(0)
-        previous_element_y = self._page_height - self._vertical_margin
-        inter_paragraph_space: Decimal = Decimal(0)
+        previous_element_y = self._page_height - self._vertical_margin_top
         if self._previous_element is not None:
-            previous_element_margin_bottom = self._previous_element.get_margin_bottom()
-            previous_element_y = self._previous_element.get_bounding_box().get_y()
-
-            # generate space
-            if isinstance(self._previous_element, Paragraph) or isinstance(
-                layout_element, Paragraph
-            ):
-                assert (
-                    self._multiplied_paragraph_spacing is not None
-                    or self._fixed_paragraph_spacing is not None
-                )
-                assert (
-                    self._multiplied_paragraph_spacing is None
-                    or self._multiplied_paragraph_spacing > 0
-                )
-                assert (
-                    self._fixed_paragraph_spacing is None
-                    or self._fixed_paragraph_spacing > 0
-                )
-                if self._multiplied_paragraph_spacing is not None:
-                    inter_paragraph_space = (
-                        layout_element.get_font_size()
-                        * self._multiplied_paragraph_spacing
-                    )
-                if self._fixed_paragraph_spacing is not None:
-                    inter_paragraph_space = self._fixed_paragraph_spacing
+            previous_element_y = (
+                self._previous_element.get_previous_layout_box().get_y()
+            )
 
         # calculate next available rectangle
         available_height: Decimal = (
             previous_element_y
-            - self._vertical_margin
-            - inter_paragraph_space
+            - self._vertical_margin_bottom
+            - self._get_margin_between_elements(self._previous_element, layout_element)
             - max(previous_element_margin_bottom, layout_element.get_margin_top())
             - layout_element.get_margin_bottom()
         )
+
+        # switch to new column if needed
         assert self._page_height
         if available_height < 0:
             self.switch_to_next_column()
             return self.add(layout_element)
 
         # fmt: off
-        next_available_rect: Rectangle = Rectangle(
-            self._horizontal_margin + self._current_column_index * (self._column_width + self._inter_column_spacing) + layout_element.get_margin_left(),
-            self._vertical_margin + layout_element.get_margin_bottom(),
+        available_space: Rectangle = Rectangle(
+            self._horizontal_margin + self._current_column_index * (self._column_width + self._inter_column_margin) + layout_element.get_margin_left(),
+            self._vertical_margin_bottom + layout_element.get_margin_bottom(),
             self._column_width - layout_element.get_margin_right() - layout_element.get_margin_left(),
             available_height
         )
         # fmt: on
 
-        # store previous contents
-        if "Contents" not in self._page:
-            layout_element._initialize_page_content_stream(self._page)
-        previous_decoded_bytes = self._page["Contents"]["DecodedBytes"]
-
-        # attempt layout
-        layout_rect = layout_element.layout(
-            self._page, bounding_box=next_available_rect
-        )
+        # get layout_box
+        layout_rect = layout_element.get_layout_box(available_space)
+        if layout_rect.get_height() > available_space.get_height():
+            if self._previous_element is not None:
+                self.switch_to_next_column()
+                return self.add(layout_element)
+            else:
+                assert False, (
+                    "%s is too tall to fit inside column / page."
+                    % layout_element.__class__.__name__
+                )
 
         # content that is too large for the page should not be attempted to be laid out again
         if round(layout_rect.get_width(), 2) > round(self._column_width, 2):
@@ -208,27 +186,18 @@ class MultiColumnLayout(PageLayout):
                 "%s is too wide to fit inside column / page."
                 % layout_element.__class__.__name__
             )
-        if round(layout_rect.get_height(), 2) > round(
-            self._page_height - 2 * self._vertical_margin, 2
-        ):
-            assert False, (
-                "%s is too tall to fit inside column / page."
-                % layout_element.__class__.__name__
-            )
 
         # switch to next column
-        if layout_rect.y < self._vertical_margin:
-            # fmt: off
-            content_stream = self._page["Contents"]
-            content_stream[Name("DecodedBytes")] = previous_decoded_bytes
-            content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-            content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
+        if layout_rect.y < self._vertical_margin_bottom:
             self.switch_to_next_column()
             return self.add(layout_element)
-            # fmt: on
 
-        # calculate previous_y
+        # paint
+        layout_element.paint(self._page, available_space)
+
+        # store previous
         self._previous_element = layout_element
+        self._previous_element_layout_rect = layout_rect
 
         # return
         return self

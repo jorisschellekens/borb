@@ -129,7 +129,7 @@ class ShowTextMod(CanvasOperator):
         # get bounding box
         bounding_box: typing.Optional[Rectangle] = ChunkOfTextRenderEvent(
             canvas.graphics_state, operands[0]
-        ).get_bounding_box()
+        ).get_previous_layout_box()
         assert bounding_box is not None
 
         # write every glyph
@@ -140,12 +140,14 @@ class ShowTextMod(CanvasOperator):
 
             letter_should_be_redacted: bool = any(
                 [
-                    x.intersects(evt.get_bounding_box())
+                    x.intersects(evt.get_previous_layout_box())
                     for x in canvas_stream_processor._redacted_rectangles  # type: ignore[attr-defined]
                 ]
             )
             graphics_state = canvas_stream_processor.get_canvas().graphics_state
-            event_bounding_box: typing.Optional[Rectangle] = evt.get_bounding_box()
+            event_bounding_box: typing.Optional[
+                Rectangle
+            ] = evt.get_previous_layout_box()
             assert event_bounding_box is not None
             w: Decimal = event_bounding_box.get_width()
 
@@ -236,14 +238,14 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
 
                     letter_should_be_redacted: bool = any(
                         [
-                            x.intersects(evt.get_bounding_box())
+                            x.intersects(evt.get_previous_layout_box())
                             for x in canvas_stream_processor._redacted_rectangles  # type: ignore[attr-defined]
                         ]
                     )
                     graphics_state = canvas_stream_processor.get_canvas().graphics_state
                     event_bounding_box: typing.Optional[
                         Rectangle
-                    ] = evt.get_bounding_box()
+                    ] = evt.get_previous_layout_box()
                     assert event_bounding_box is not None
                     w: Decimal = event_bounding_box.get_width()
 

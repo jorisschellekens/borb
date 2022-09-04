@@ -3,7 +3,7 @@
         "can-be-optimized": true,
         "claimed-pdfa-type": "PDF/A-1b",
         "conforms-to-claimed-pdfa-type": false,
-        "date": "Sun Aug  7 22:30:39 2022",
+        "date": "Sun Sep  4 21:26:13 2022",
         "errors": [
             "does-not-conform-to-claimed-pdfa-type"
         ],
@@ -28,7 +28,7 @@
         "pdf-major-version": 1,
         "pdf-minor-version": 7,
         "profile": "/home/joris/Downloads/PDF-CHECKER-Lin64/PDF_Checker/CheckerProfiles/iso_32000.json",
-        "size-in-bytes": 5603,
+        "size-in-bytes": 5604,
         "triggered-abort": ""
     },
     "cleanup-results": {

@@ -7,6 +7,7 @@ import matplotlib.pyplot as MatPlotLibPlot
 import pandas as pd
 
 from borb.io.read.types import Decimal
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.image.chart import Chart
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -57,7 +58,6 @@ class TestAddRadarPlot(unittest.TestCase):
         # But we need to repeat the first value to close the circular graph:
         values = df.loc[0].drop("group").values.flatten().tolist()
         values += values[:1]
-        values
 
         # What will be the angle of each axis in the plot? (we divide the plot / number of variable)
         angles = [n / float(N) * 2 * pi for n in range(N)]
@@ -100,7 +100,12 @@ class TestAddRadarPlot(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -124,7 +129,7 @@ class TestAddRadarPlot(unittest.TestCase):
             PDF.dumps(pdf_file_handle, pdf)
 
         # compare visually
-        compare_visually_to_ground_truth(out_file)
+        compare_visually_to_ground_truth(out_file, 0.003)
         check_pdf_using_validator(out_file)
 
 

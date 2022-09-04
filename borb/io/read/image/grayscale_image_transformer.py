@@ -93,7 +93,7 @@ class GrayscaleImageTransformer(Transformer):
         add_base_methods(tmp)
 
         # set parent
-        tmp.set_parent(parent_object)
+        tmp.set_parent(parent_object)   # type: ignore[attr-defined]
 
         # return
         return tmp

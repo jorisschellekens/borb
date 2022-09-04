@@ -34,7 +34,7 @@ class LocationFilter(EventListener):
         # filter ChunkOfTextRenderEvent
         if isinstance(event, ChunkOfTextRenderEvent):
             for glyph_event in event.split_on_glyphs():
-                bb: typing.Optional[Rectangle] = glyph_event.get_bounding_box()
+                bb: typing.Optional[Rectangle] = glyph_event.get_previous_layout_box()
                 assert bb is not None
                 if self._rectangle.x < bb.x < (
                     self._rectangle.x + self._rectangle.width

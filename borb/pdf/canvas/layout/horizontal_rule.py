@@ -9,7 +9,7 @@ from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.text.paragraph import LayoutElement
+from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.page.page import Page
 
 
@@ -34,41 +34,35 @@ class HorizontalRule(LayoutElement):
         self._line_width: Decimal = line_width
         self._line_color: Color = line_color
 
-    def _calculate_layout_box_without_padding(
-        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
-    ) -> Rectangle:
-        layout_box: Rectangle = Rectangle(
-            bounding_box.x,
-            bounding_box.y + bounding_box.height - self._line_width,
-            bounding_box.width,
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - self._line_width,
+            available_space.get_width(),
             self._line_width,
         )
-        self.set_bounding_box(layout_box)
-        return layout_box
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
+    def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
 
         # write l operator
         rgb_color: RGBColor = self._line_color.to_rgb()
         content = " q %f %f %f RG %f %f m %f %f l s Q " % (
-            rgb_color.red,
-            rgb_color.green,
-            rgb_color.blue,
-            bounding_box.get_x(),
-            bounding_box.get_y() + bounding_box.get_height() - self._line_width,
-            bounding_box.get_x() + bounding_box.get_width(),
-            bounding_box.get_y() + bounding_box.get_height() - self._line_width,
+            float(rgb_color.red),
+            float(rgb_color.green),
+            float(rgb_color.blue),
+            float(available_space.get_x()),
+            float(
+                available_space.get_y()
+                + available_space.get_height()
+                - self._line_width
+            ),
+            float(available_space.get_x() + available_space.get_width()),
+            float(
+                available_space.get_y()
+                + available_space.get_height()
+                - self._line_width
+            ),
         )
 
         # modify content stream
-        self._append_to_content_stream(page, content)
-
-        # return
-        return Rectangle(
-            bounding_box.x,
-            bounding_box.y + bounding_box.height - self._line_width,
-            bounding_box.width,
-            self._line_width,
-        )
+        page._append_to_content_stream(content)

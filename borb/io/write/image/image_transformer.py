@@ -37,7 +37,10 @@ class ImageTransformer(Transformer):
             image_out = image_out.convert("RGBA")
         if image_out.mode in ["RGBA", "LA"]:
             fill_color = (255, 255, 255)  # new background color
-            background = PILImage.new(image_out.mode[:-1], image_out.size, fill_color)
+            non_alpha_mode: str = image_out.mode[:-1]
+            background = PILImage.new(non_alpha_mode,           # type: ignore[arg-type]
+                                      image_out.size,
+                                      fill_color)
             background.paste(image_out, image_out.split()[-1])  # omit transparency
             image_out = background
 
@@ -46,7 +49,7 @@ class ImageTransformer(Transformer):
 
         # add methods
         add_base_methods(image_out)
-        image_out.set_reference(image.get_reference())
+        image_out.set_reference(image.get_reference()) # type: ignore[attr-defined]
 
         # return
         return image_out
@@ -97,7 +100,9 @@ class ImageTransformer(Transformer):
         out_value[Name("Bytes")] = contents
 
         # copy reference
-        out_value.set_reference(object_to_transform.get_reference())  # type: ignore [attr-defined]
+        out_value.set_reference(                # type: ignore [attr-defined]
+            object_to_transform.get_reference() # type: ignore [union-attr]
+        )
 
         # start object if needed
         started_object = False

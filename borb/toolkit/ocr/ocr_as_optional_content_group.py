@@ -7,11 +7,14 @@
 """
 # FIX: circular imports (1/2)
 from __future__ import annotations
+
 import datetime
 import typing
 import zlib
 from decimal import Decimal
 from pathlib import Path
+# FIX: circular imports (2/2)
+from typing import TYPE_CHECKING
 
 from borb.datastructure.disjoint_set import disjointset
 from borb.io.read.types import Decimal as bDecimal
@@ -25,9 +28,6 @@ from borb.toolkit.ocr.ocr_image_render_event_listener import (
     OCREvent,
     OCRImageRenderEventListener,
 )
-
-# FIX: circular imports (2/2)
-from typing import TYPE_CHECKING
 
 EndDocumentEvent = type(None)
 if TYPE_CHECKING:
@@ -131,7 +131,7 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
                 ChunkOfText(e.get_text(),
                             e.get_font(),
                             e.get_font_size(),
-                            e.get_font_color()).layout(page, e.get_bounding_box())
+                            e.get_font_color()).paint(page, e.get_bounding_box())
             page["Contents"][Name("DecodedBytes")] += "\nEMC".encode("latin1")
             page["Contents"][Name("Bytes")] = zlib.compress(page["Contents"]["DecodedBytes"], 9)
             page["Contents"][Name("Length")] = bDecimal(len(page["Contents"][Name("Bytes")]))

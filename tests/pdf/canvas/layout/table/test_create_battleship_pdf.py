@@ -33,7 +33,7 @@ class TestCreateBattleshipPDF(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_write_battleship_puzzle(self):
+    def test_create_battleship_puzzle(self):
 
         doc: Document = Document()
         page: Page = Page()
@@ -98,7 +98,11 @@ class TestCreateBattleshipPDF(unittest.TestCase):
                 )
             t.add(
                 TableCell(
-                    Paragraph(str(y_clues[i]), text_alignment=Alignment.CENTERED),
+                    Paragraph(
+                        str(y_clues[i]),
+                        text_alignment=Alignment.CENTERED,
+                        horizontal_alignment=Alignment.CENTERED,
+                    ),
                     preferred_width=Decimal(20),
                     preferred_height=Decimal(20),
                     border_top=False,
@@ -111,7 +115,11 @@ class TestCreateBattleshipPDF(unittest.TestCase):
         for i in range(0, 10):
             t.add(
                 TableCell(
-                    Paragraph(str(x_clues[i]), text_alignment=Alignment.CENTERED),
+                    Paragraph(
+                        str(x_clues[i]),
+                        text_alignment=Alignment.CENTERED,
+                        horizontal_alignment=Alignment.CENTERED,
+                    ),
                     preferred_width=Decimal(20),
                     preferred_height=Decimal(20),
                     border_right=False,

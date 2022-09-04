@@ -4,11 +4,11 @@
 """
 This class converts Markdown to PDF
 """
+
+from markdown_it import MarkdownIt  # type: ignore[import]
+
 from borb.pdf.document.document import Document
-from borb.toolkit.export.markdown_to_pdf.read.any_markdown_transformer import (
-    AnyMarkdownTransformer,
-)
-from borb.toolkit.export.markdown_to_pdf.read.transformer import TransformerState
+from borb.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
 
 
 class MarkdownToPDF:
@@ -21,6 +21,5 @@ class MarkdownToPDF:
         """
         This function converts a Markdown str to a PDF
         """
-        ctx: TransformerState = TransformerState(markdown)
-        AnyMarkdownTransformer()._transform(ctx)
-        return ctx.get_document()
+        html: str = MarkdownIt().enable("table").render(markdown)
+        return HTMLToPDF.convert_html_to_pdf(html)

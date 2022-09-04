@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -13,6 +14,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -48,7 +50,12 @@ class TestAddEmbeddedFile(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -85,6 +92,9 @@ class TestAddEmbeddedFile(unittest.TestCase):
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
 
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
+
     def test_append_binary_file(self):
 
         input_file: Path = self.output_dir / "output_001.pdf"
@@ -104,6 +114,9 @@ class TestAddEmbeddedFile(unittest.TestCase):
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
             PDF.dumps(in_file_handle, doc)
+
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
 
     def test_extract_embedded_file(self):
 

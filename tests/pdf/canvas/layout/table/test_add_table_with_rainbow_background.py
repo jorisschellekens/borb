@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.color.color import HSVColor, X11Color
+from borb.pdf.canvas.color.color import HSVColor, X11Color, HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -51,7 +51,12 @@ class TestAddTableWithRainbowBackground(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -63,12 +68,12 @@ class TestAddTableWithRainbowBackground(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        t = Table(number_of_rows=20, number_of_columns=20, margin_top=Decimal(5))
+        t = Table(number_of_rows=18, number_of_columns=20, margin_top=Decimal(5))
         colors = [
             HSVColor(Decimal(x / 360), Decimal(1), Decimal(1))
             for x in range(0, 360, int(360 / 20))
         ]
-        for i in range(0, 18 * 20):
+        for i in range(0, 16 * 20):
             t.add(
                 TableCell(
                     Paragraph(" ", respect_spaces_in_text=True),

@@ -7,7 +7,7 @@ from borb.pdf.canvas.color.color import HexColor, X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.shape.shape import Shape
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -49,7 +49,12 @@ class TestAddFlowchartLineArt(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -65,7 +70,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
         fixed_bb = Rectangle(Decimal(0), Decimal(0), Decimal(32), Decimal(32))
         t = Table(number_of_rows=10, number_of_columns=6, margin_top=Decimal(12))
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_process(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -74,7 +79,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_decision(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -83,7 +88,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_document(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -92,7 +97,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_predefined_document(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -102,7 +107,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
         )
         t.add(Paragraph(" "))
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_data(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -121,7 +126,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
 
         # second row of shapes
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_predefined_process(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -130,7 +135,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_stored_data(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -139,7 +144,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_internal_storage(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -148,7 +153,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_sequential_data(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -158,7 +163,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
         )
         t.add(Paragraph(" "))
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_manual_input(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -177,7 +182,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
 
         # third row of shapes
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_manual_operation(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -186,7 +191,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_card(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -195,7 +200,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_paper_tape(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -204,7 +209,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_display(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -213,7 +218,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_preparation(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -222,7 +227,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_loop_limit(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -241,7 +246,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
 
         # fourth row of shapes
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_termination(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -250,7 +255,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_collate(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -259,7 +264,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_delay(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -268,7 +273,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_extract(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -277,7 +282,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_merge(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -286,7 +291,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_or(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -305,7 +310,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
 
         # fifth row of shapes
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_sort(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -314,7 +319,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_summing_junction(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -323,7 +328,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_database(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -332,7 +337,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_on_page_reference(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -341,7 +346,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_off_page_reference(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),
@@ -350,7 +355,7 @@ class TestAddFlowchartLineArt(unittest.TestCase):
             )
         )
         t.add(
-            Shape(
+            ConnectedShape(
                 LineArtFactory.flowchart_process_iso_9000(fixed_bb),
                 fill_color=HexColor("f1cd2e"),
                 stroke_color=X11Color("Black"),

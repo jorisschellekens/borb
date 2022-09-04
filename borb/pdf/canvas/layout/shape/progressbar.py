@@ -1,7 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This implementation of LayoutElement represents a basic (no-text) progressbar.
+It displays a rectangular shape of fill_color, overlaid with a (smaller) rectangular shape of
+stroke_color. This implementation of ProgressBar is roughly size 12 font wide.
+"""
 import typing
 from decimal import Decimal
 
-from borb.pdf import HexColor, Color, Page
+from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 
@@ -69,59 +77,57 @@ class ProgressBar(LayoutElement):
         self._stroke_color: Color = stroke_color
         self._fill_color: Color = fill_color
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        h: Decimal = min(available_space.get_height(), Decimal(12 * 1.2))
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - h,
+            available_space.get_width(),
+            h,
+        )
 
-        # determine height
-        h: Decimal = min(bounding_box.get_height(), Decimal(12 * 1.2))
-        bb: Rectangle = Rectangle(bounding_box.get_x(),
-                                  bounding_box.get_y() + bounding_box.get_height() - h,
-                                  bounding_box.get_width(),
-                                  h)
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None: # type: ignore[name-defined]
 
         # draw rectangle background
         fill_rgb = (self._fill_color or HexColor("f0f0f0")).to_rgb()
-        content = " q %f %f %f RG %f %f %f rg" % (
-            Decimal(fill_rgb.red),
-            Decimal(fill_rgb.green),
-            Decimal(fill_rgb.blue),
-            Decimal(fill_rgb.red),
-            Decimal(fill_rgb.green),
-            Decimal(fill_rgb.blue),
+        content = " q %f %f %f RG %f %f %f rg 0.1 w " % (
+            float(fill_rgb.red),
+            float(fill_rgb.green),
+            float(fill_rgb.blue),
+            float(fill_rgb.red),
+            float(fill_rgb.green),
+            float(fill_rgb.blue),
         )
-        content += " %f %f %f %f re B" % (bb.get_x(),
-                                        bb.get_y(),
-                                        bb.get_width(),
-                                        bb.get_height())
+        content += " %f %f %f %f re B" % (
+            float(content_box.get_x()),
+            float(content_box.get_y()),
+            float(content_box.get_width()),
+            float(content_box.get_height()),
+        )
 
         # draw active color background
         if self._percentage != 0:
             stroke_rgb = (self._stroke_color or HexColor("2c99f9")).to_rgb()
             content += " %f %f %f RG  %f %f %f rg" % (
-                Decimal(stroke_rgb.red),
-                Decimal(stroke_rgb.green),
-                Decimal(stroke_rgb.blue),
-                Decimal(stroke_rgb.red),
-                Decimal(stroke_rgb.green),
-                Decimal(stroke_rgb.blue),
+                float(stroke_rgb.red),
+                float(stroke_rgb.green),
+                float(stroke_rgb.blue),
+                float(stroke_rgb.red),
+                float(stroke_rgb.green),
+                float(stroke_rgb.blue),
             )
-            content += " %f %f %f %f re B" % (bb.get_x(),
-                                        bb.get_y(),
-                                        bb.get_width() * Decimal(self._percentage),
-                                        bb.get_height())
+            content += " %f %f %f %f re B" % (
+                float(content_box.get_x()),
+                float(content_box.get_y()),
+                float(content_box.get_width() * Decimal(self._percentage)),
+                float(content_box.get_height()),
+            )
 
         # end stack
         content += " Q"
 
         # append to page
-        self._append_to_content_stream(page, content)
-
-        # set bounding box
-        self.set_bounding_box(bb)
-
-        # return
-        return bb
+        page._append_to_content_stream(content)
 
 
 class ProgressSquare(ProgressBar):
@@ -131,12 +137,11 @@ class ProgressSquare(ProgressBar):
     stroke_color. This implementation of ProgressBar is roughly size 12 font tall AND wide.
     """
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-        h: Decimal = min(bounding_box.get_height(), Decimal(12 * 1.2))
-        return super(ProgressSquare, self)._do_layout_without_padding(page,
-                                                                      Rectangle(bounding_box.get_x(),
-                                                                                bounding_box.get_y() + bounding_box.get_height() - h,
-                                                                                h,
-                                                                                h))
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        h: Decimal = min(available_space.get_height(), Decimal(12 * 1.2))
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - h,
+            h,
+            h,
+        )

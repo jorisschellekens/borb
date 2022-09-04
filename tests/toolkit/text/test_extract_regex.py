@@ -48,7 +48,12 @@ class TestExtractRegularExpression(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -95,7 +100,7 @@ class TestExtractRegularExpression(unittest.TestCase):
 
         bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
         assert 196 <= int(bb.x) <= 198
-        assert 605 <= int(bb.y) <= 607
+        assert 615 <= int(bb.y) <= 617
         assert 74 <= int(bb.width) <= 76
         assert 6 <= int(bb.height) <= 8
 

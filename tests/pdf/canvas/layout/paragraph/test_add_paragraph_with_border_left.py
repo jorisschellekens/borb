@@ -46,7 +46,12 @@ class TestAddParagraphWithBorderLeft(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -65,12 +70,12 @@ class TestAddParagraphWithBorderLeft(unittest.TestCase):
             """,
             font_size=Decimal(10),
             border_left=True,
-            border_color=HexColor("D3D3D3"),
+            border_color=HexColor("56cbf9"),
             padding_top=Decimal(5),
             padding_right=Decimal(5),
             padding_bottom=Decimal(5),
             padding_left=Decimal(5),
-        ).layout(
+        ).paint(
             page,
             bb,
         )

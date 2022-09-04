@@ -48,9 +48,7 @@ class TestAddCheckBox(unittest.TestCase):
 
         # write TextField
         tf: CheckBox = CheckBox()
-        tf.layout(
-            page, Rectangle(Decimal(105), Decimal(764), Decimal(419), Decimal(16))
-        )
+        tf.paint(page, Rectangle(Decimal(105), Decimal(764), Decimal(419), Decimal(16)))
 
         # write
         out_file = self.output_dir / "output_001.pdf"

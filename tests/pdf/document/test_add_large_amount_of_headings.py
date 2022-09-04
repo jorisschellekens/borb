@@ -14,7 +14,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import check_pdf_using_validator
+from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -45,7 +45,12 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -57,7 +62,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        sys.setrecursionlimit(1000)
+        sys.setrecursionlimit(100)
         N: int = 32
         for i in range(0, N):
             # Create empty Page
@@ -74,7 +79,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
                 layout.add(
                     Heading(
                         f"Page {i}, Heading {j}",
-                        font_color=HexColor("13505B"),
+                        font_color=HexColor("56cbf9"),
                         font_size=Decimal(12),
                     )
                 )
@@ -84,8 +89,14 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
 
         # attempt to store PDF
         with self.assertRaises(RecursionError) as context:
+
+            # attempt to open
             with open(out_file, "wb") as in_file_handle:
                 PDF.dumps(in_file_handle, pdf)
+
+            # compare visually
+            compare_visually_to_ground_truth(out_file)
+            check_pdf_using_validator(out_file)
 
     def test_write_document_002(self):
 
@@ -101,7 +112,12 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -130,7 +146,7 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
                 layout.add(
                     Heading(
                         f"Page {i}, Heading {j}",
-                        font_color=HexColor("13505B"),
+                        font_color=HexColor("56cbf9"),
                         font_size=Decimal(12),
                     )
                 )
@@ -143,4 +159,6 @@ class TestAddLargeAmountOfHeadings(unittest.TestCase):
             PDF.dumps(in_file_handle, pdf)
 
         # check
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
         check_pdf_using_validator(out_file)

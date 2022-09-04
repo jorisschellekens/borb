@@ -197,7 +197,33 @@ class ChunkOfText(LayoutElement):
         # default
         return "".join(["(", sOut, ") Tj"])
 
-    def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
+    #
+    # RENDERING METHODS
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        # line height
+        assert self._font_size is not None
+        line_height: Decimal = self._font_size
+        if self._multiplied_leading is not None:
+            line_height *= self._multiplied_leading
+        if self._fixed_leading is not None:
+            line_height += self._fixed_leading
+
+        # width
+        w: Decimal = GlyphLine.from_str(
+            self._text, self._font, self._font_size
+        ).get_width_in_text_space()
+
+        # return
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - line_height,
+            w,
+            line_height,
+        )
+
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
         assert self._font
         rgb_color = self._font_color.to_rgb()
 
@@ -209,6 +235,11 @@ class ChunkOfText(LayoutElement):
         if self._fixed_leading is not None:
             line_height += self._fixed_leading
 
+        # descent
+        # TODO
+        descent: Decimal = (self._font.get_descent() / Decimal(1000)) * self._font_size
+
+        # determine what to write to page
         content = """
             q
             BT
@@ -219,30 +250,20 @@ class ChunkOfText(LayoutElement):
             ET            
             Q
         """ % (
-            Decimal(rgb_color.red),  # rg
-            Decimal(rgb_color.green),  # rg
-            Decimal(rgb_color.blue),  # rg
+            float(rgb_color.red),  # rg
+            float(rgb_color.green),  # rg
+            float(rgb_color.blue),  # rg
             self._get_font_resource_name(self._font, page),  # Tf
-            Decimal(1),  # Tf
+            float(1),  # Tf
             float(self._font_size),  # Tm
             float(self._font_size),  # Tm
-            float(bounding_box.x),  # Tm
-            float(bounding_box.y + bounding_box.height - line_height),  # Tm
+            float(content_box.get_x()),  # Tm
+            float(
+                content_box.get_y()
+                + content_box.get_height()
+                - self._font_size
+                - descent
+            ),  # Tm
             self._write_text_bytes(),  # Tj
         )
-        self._append_to_content_stream(page, content)
-
-        # fmt: off
-        layout_rect = Rectangle(
-            bounding_box.x,
-            bounding_box.y + bounding_box.height - line_height,
-            GlyphLine.from_str(self._text, self._font, self._font_size).get_width_in_text_space(),
-            line_height,
-        )
-        # fmt: on
-
-        # set bounding box
-        self.set_bounding_box(layout_rect)
-
-        # return
-        return layout_rect
+        page._append_to_content_stream(content)

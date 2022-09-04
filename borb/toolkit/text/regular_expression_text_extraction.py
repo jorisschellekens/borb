@@ -117,7 +117,7 @@ class PDFMatch:
         Return a tuple containing all the subgroups of the match, from 1 up to however many groups are in the pattern.
         The default argument is used for groups that did not participate in the match; it defaults to None.
         """
-        return self._re_match.groups(default)
+        return self._re_match.groups(default)   # type: ignore[arg-type]
 
     def groupdict(
         self, default: typing.AnyStr = None
@@ -126,7 +126,7 @@ class PDFMatch:
         Return a dictionary containing all the named subgroups of the match, keyed by the subgroup name.
         The default argument is used for groups that did not participate in the match; it defaults to None.
         """
-        return self._re_match.groupdict(default)
+        return self._re_match.groupdict(default)    # type: ignore[arg-type]
 
     def start(self, __group: typing.Union[int, str] = 0) -> int:
         """
@@ -220,7 +220,7 @@ class RegularExpressionTextExtraction(EventListener):
 
             chunk_of_text_bounding_box: typing.Optional[
                 Rectangle
-            ] = t.get_bounding_box()
+            ] = t.get_previous_layout_box()
             assert chunk_of_text_bounding_box is not None
 
             # add newline if needed
@@ -277,7 +277,7 @@ class RegularExpressionTextExtraction(EventListener):
                 PDFMatch(
                     m,
                     [
-                        x.get_bounding_box()  # type: ignore [misc]
+                        x.get_previous_layout_box()  # type: ignore [misc]
                         for x in tris[tri_start_index : (tri_stop_index + 1)]
                     ],
                     self._current_page,

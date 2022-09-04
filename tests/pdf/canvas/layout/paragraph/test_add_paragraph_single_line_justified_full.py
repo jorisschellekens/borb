@@ -49,7 +49,12 @@ class TestAddParagraphSingleLineJustifiedFull(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -79,7 +84,7 @@ class TestAddParagraphSingleLineJustifiedFull(unittest.TestCase):
         page.add_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
 
         # add the paragraph to the page
-        p.layout(page, r)
+        p.paint(page, r)
 
         # determine output location
         out_file = self.output_dir / "output_001.pdf"
@@ -101,7 +106,12 @@ class TestAddParagraphSingleLineJustifiedFull(unittest.TestCase):
         page_layout_001.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -119,7 +129,9 @@ class TestAddParagraphSingleLineJustifiedFull(unittest.TestCase):
         # mark the top section as off limits
         max_y: Decimal = Decimal(PageSize.A4_PORTRAIT.value[1] - 170)
         page_layout_002._page_height = max_y
-        page_layout_002._previous_element_y = max_y - page_layout_002._vertical_margin
+        page_layout_002._previous_element_y = (
+            max_y - page_layout_002._vertical_margin_top
+        )
 
         p: Paragraph = Paragraph(
             """

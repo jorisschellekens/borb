@@ -8,8 +8,8 @@ import typing
 import zlib
 from decimal import Decimal
 
-from borb.io.read.types import Dictionary, Name, List, String, Stream, Boolean
 from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Dictionary, Name, List, String, Stream, Boolean
 from borb.pdf.canvas.color.color import HexColor, Color
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -35,7 +35,7 @@ class PushButton(FormField):
         border_top: bool = True,
         border_width: Decimal = Decimal(1),
         field_name: typing.Optional[str] = None,
-        font_size: typing.Optional[Decimal] = Decimal(12),
+        font_size: Decimal = Decimal(12),
         font_color: Color = HexColor("000000"),
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
@@ -59,7 +59,7 @@ class PushButton(FormField):
         assert border_width >= 0
         self._border_width = border_width
         self._field_name: typing.Optional[str] = field_name
-        assert font_size is not None and font_size >= 0
+        assert font_size > 0
         self._font_size = font_size
         self._font_color = font_color
         self._horizontal_alignment = horizontal_alignment
@@ -101,7 +101,7 @@ class PushButton(FormField):
         # widget dictionary
         # fmt: off
         self._widget_dictionary = Dictionary()
-        self._widget_dictionary.set_is_unique(True)
+        self._widget_dictionary.set_is_unique(True) # type: ignore [attr-defined]
         self._widget_dictionary[Name("AA")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")][Name("Type")] = Name("Action")
@@ -167,48 +167,47 @@ class PushButton(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:
-
-        # determine layout rectangle
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         assert self._font_size is not None
+        line_of_text: LineOfText = LineOfText(
+            self._text,
+            background_color=self._background_color,
+            font_size=self._font_size,
+            font_color=self._font_color,
+        )
+        return line_of_text.get_layout_box(available_space)
+
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
 
         # init self._widget_dictionary
         self._init_widget_dictionary(page)
 
         # layout text
-        text_layout_box = LineOfText(
+        assert self._font_size is not None
+        line_of_text = LineOfText(
             self._text,
             background_color=self._background_color,
-            border_bottom=self._border_bottom,
-            border_color=self._border_color,
-            border_left=self._border_left,
-            border_right=self._border_right,
-            border_top=self._border_top,
-            border_width=self._border_width,
             font_size=self._font_size,
             font_color=self._font_color,
-            horizontal_alignment=self._horizontal_alignment,
-            margin_bottom=self._margin_bottom,
-            margin_left=self._margin_left,
-            margin_right=self._margin_right,
-            margin_top=self._margin_top,
-            padding_bottom=self._padding_bottom,
-            padding_left=self._padding_left,
-            padding_right=self._padding_right,
-            padding_top=self._padding_top,
-        ).layout(page, layout_box)
+        )
+        line_of_text.paint(page, self._get_content_box(available_space))
+        cbox: typing.Optional[Rectangle] = line_of_text.get_previous_paint_box()
+        assert cbox is not None
+
+        # add our own margins to expand the clickable part
+        cbox.x -= self._padding_left
+        cbox.width += self._padding_left + self._padding_right
+        cbox.y -= self._padding_bottom
+        cbox.height += self._padding_bottom + self._padding_top
 
         # set location
         # fmt: off
         if self._widget_dictionary is not None:
-            self._widget_dictionary["Rect"][0] = bDecimal(text_layout_box.x)                            # ll_x
-            self._widget_dictionary["Rect"][1] = bDecimal(text_layout_box.y)                            # ll_y
-            self._widget_dictionary["Rect"][2] = bDecimal(text_layout_box.x + text_layout_box.width)    # ur_x
-            self._widget_dictionary["Rect"][3] = bDecimal(text_layout_box.y + text_layout_box.height)   # ur_y
+            self._widget_dictionary["Rect"][0] = bDecimal(cbox.get_x())                             # ll_x
+            self._widget_dictionary["Rect"][1] = bDecimal(cbox.get_y())                             # ll_y
+            self._widget_dictionary["Rect"][2] = bDecimal(cbox.get_x() + cbox.get_width())          # ur_x
+            self._widget_dictionary["Rect"][3] = bDecimal(cbox.get_y() + cbox.get_height())         # ur_y
         # fmt: on
-
-        # return Rectangle
-        return text_layout_box
 
 
 class JavaScriptPushButton(PushButton):
@@ -228,13 +227,13 @@ class JavaScriptPushButton(PushButton):
         border_top: bool = True,
         border_width: Decimal = Decimal(1),
         field_name: typing.Optional[str] = None,
-        font_size: typing.Optional[Decimal] = Decimal(12),
+        font_size: Decimal = Decimal(12),
         font_color: Color = HexColor("000000"),
         horizontal_alignment: Alignment = Alignment.LEFT,
-        margin_bottom: typing.Optional[Decimal] = Decimal(0),
-        margin_left: typing.Optional[Decimal] = Decimal(0),
-        margin_right: typing.Optional[Decimal] = Decimal(0),
-        margin_top: typing.Optional[Decimal] = Decimal(0),
+        margin_bottom: Decimal = Decimal(0),
+        margin_left: Decimal = Decimal(0),
+        margin_right: Decimal = Decimal(0),
+        margin_top: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(2),
         padding_left: Decimal = Decimal(6),
         padding_right: Decimal = Decimal(6),

@@ -7,15 +7,12 @@ a width based on their contents. It tries to emulate the behaviour
 of <table> elements in HTML
 """
 import typing
-import zlib
 from decimal import Decimal
-from math import floor
 
-from borb.io.read.types import Name
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.canvas.layout.table.table import Table, TableCell
+from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.page.page import Page
 
@@ -79,12 +76,61 @@ class FlexibleColumnWidthTable(Table):
             vertical_alignment=vertical_alignment,
         )
 
-    def _do_layout_without_padding(
+    def _get_min_column_width(self, col: int) -> Decimal:
+        widths: typing.List[Decimal] = []
+        for table_cell in [
+            x for x in self._get_cells_at_column(col) if x._col_span == 1
+        ]:
+            if table_cell._min_width is None:
+                widths.append(Decimal(0))
+                continue
+            if table_cell._preferred_width is None:
+                assert table_cell._min_width is not None
+                widths.append(table_cell._min_width)
+                continue
+            if table_cell._preferred_width > table_cell._min_width:
+                assert table_cell._preferred_width is not None
+                widths.append(table_cell._preferred_width)
+                continue
+            # default
+            assert table_cell._min_width is not None
+            widths.append(table_cell._min_width)
+
+        # exception
+        if len(widths) == 0:
+            return Decimal(0)
+
+        # return
+        return max(widths)
+
+    def _get_max_column_width(self, col: int) -> Decimal:
+        widths: typing.List[Decimal] = []
+        for table_cell in [
+            x for x in self._get_cells_at_column(col) if x._col_span == 1
+        ]:
+            if table_cell._max_width is None:
+                widths.append(Decimal(2048))
+                continue
+            if table_cell._preferred_width is None:
+                widths.append(table_cell._max_width)
+                continue
+            if table_cell._preferred_width < table_cell._max_width:
+                widths.append(table_cell._preferred_width)
+                continue
+            # default
+            widths.append(table_cell._max_width)
+
+        # exception
+        if len(widths) == 0:
+            return Decimal(2048)
+
+        # return
+        return max(widths)
+
+    def _get_grid_coordinates(
         self,
-        page: "Page",
-        bounding_box: Rectangle,  # type: ignore[name-defined]
-        do_layout: bool = False,
-    ) -> Rectangle:
+        available_space: Rectangle,  # type: ignore[name-defined]
+    ) -> typing.List[typing.List[typing.Tuple[Decimal, Decimal]]]:
         # 1.    Calculate the minimum content width (MCW) of each cell: the formatted content may span any number of lines but may not overflow the cell box.
         #       If the specified 'width' (W) of the cell is greater than MCW, W is the minimum cell width.
         #       A value of 'auto' means that MCW is the minimum cell width.
@@ -92,92 +138,46 @@ class FlexibleColumnWidthTable(Table):
         #       Also, calculate the "maximum" cell width of each cell:
         #       formatting the content without breaking lines other than where explicit line breaks occur.
         for t in self._content:
-            t.calculate_min_and_max_width()
+            t._calculate_min_and_max_layout_box()
 
         # 2.    For each column, determine a maximum and minimum column width from the cells that span only that column.
         #       The minimum is that required by the cell with the largest minimum cell width (or the column 'width', whichever is larger).
         #       The maximum is that required by the cell with the largest maximum cell width (or the column 'width', whichever is larger).
-        min_column_widths: typing.List[Decimal] = []
-        max_column_widths: typing.List[Decimal] = []
-        for i in range(0, self._number_of_columns):
-            column_content: typing.List[TableCell] = [
-                x for x in self._get_cells_at_column(i) if x._col_span == 1
-            ]
-            if len(column_content) == 0:
-                min_column_widths.append(Decimal(0))
-                max_column_widths.append(Decimal(2048))
-            else:
-                # DIFFERENCE WITH CSS : if the column has a preferred width AND the preferred width is larger than or equal to the min width,
-                # the column is assigned its preferred width
-                min_column_widths.append(
-                    max(
-                        [
-                            (
-                                x._preferred_width
-                                if x._preferred_width is not None
-                                and x._min_width is not None
-                                and x._preferred_width >= x._min_width
-                                else x._min_width
-                            )
-                            or Decimal(0)
-                            for x in column_content
-                        ]
-                    )
-                    + Decimal(1)
-                )
-                # DIFFERENCE WITH CSS : if the column has a preferred width AND the preferred width is less than or equal to the max width,
-                # the column is assigned its preferred width
-                max_column_widths.append(
-                    max(
-                        [
-                            (
-                                x._preferred_width
-                                if x._preferred_width is not None
-                                and x._max_width is not None
-                                and x._preferred_width <= x._max_width
-                                else x._max_width
-                            )
-                            or Decimal(0)
-                            for x in column_content
-                        ]
-                    )
-                    + Decimal(1)
-                )
+        min_column_widths: typing.List[Decimal] = [
+            self._get_min_column_width(i) for i in range(0, self._number_of_columns)
+        ]
+        max_column_widths: typing.List[Decimal] = [
+            self._get_max_column_width(i) for i in range(0, self._number_of_columns)
+        ]
 
         # 3.    For each cell that spans more than one column, increase the minimum widths of the columns it spans so that together,
         #       they are at least as wide as the cell. Do the same for the maximum widths.
         #       If possible, widen all spanned columns by approximately the same amount.
-        for t in [x for x in self._content if x._col_span != 1]:
+        for table_cell in self._content:
+            if table_cell._col_span == 1:
+                continue
+            column_indices: typing.Set[int] = set([y for x, y in table_cell._table_coordinates])
+            sum_of_min_col_spans: Decimal = sum([min_column_widths[x] for x in column_indices])
+            if sum_of_min_col_spans < table_cell._min_width:
+                delta: Decimal = table_cell._min_width - sum_of_min_col_spans
+                min_column_widths = [
+                    w + (delta / table_cell._col_span) if i in column_indices else w
+                    for i, w in enumerate(min_column_widths)
+                ]
 
-            cols_in_span: typing.List[int] = [
-                y for y in set([x[1] for x in t._table_coordinates])
-            ]
-            total_col_span_min_width = sum([min_column_widths[x] for x in cols_in_span])
-            assert t._min_width is not None
-            if total_col_span_min_width < t._min_width:
-                col_span_min_width_delta: Decimal = (
-                    t._min_width - total_col_span_min_width
-                )
-                for c in cols_in_span:
-                    min_column_widths[c] += col_span_min_width_delta / Decimal(
-                        len(cols_in_span)
-                    )
-
-            total_col_span_max_width = sum([min_column_widths[x] for x in cols_in_span])
-            assert t._max_width is not None
-            if total_col_span_max_width < t._max_width:
-                col_span_max_width_delta: Decimal = (
-                    t._max_width - total_col_span_max_width
-                )
-                for c in cols_in_span:
-                    max_column_widths[c] += col_span_max_width_delta / Decimal(
-                        len(cols_in_span)
-                    )
+            sum_of_max_col_spans: Decimal = sum(
+                [max_column_widths[x] for x in column_indices]
+            )
+            if sum_of_max_col_spans < table_cell._max_width:
+                delta: Decimal = table_cell._max_width - sum_of_max_col_spans
+                max_column_widths = [
+                    w + (delta / table_cell._col_span) if i in column_indices else w
+                    for i, w in enumerate(max_column_widths)
+                ]
 
         # 4.    For each column group element with a 'width' other than 'auto', increase the minimum widths of the columns it spans,
         #       so that together they are at least as wide as the column group's 'width'.
-        #
-        # This gives a maximum and minimum width for each column.
+        #       This gives a maximum and minimum width for each column.
 
         # 5. calculate column width based on min, max and bounding box
         # start by assigning each column its minimum width
@@ -193,7 +193,8 @@ class FlexibleColumnWidthTable(Table):
             ]
         )
         while (
-            sum(column_widths) + number_of_expandable_columns < bounding_box.get_width()
+            sum(column_widths) + number_of_expandable_columns
+            < available_space.get_width()
             and number_of_expandable_columns > 0
         ):
             for i in range(0, len(column_widths)):
@@ -207,99 +208,91 @@ class FlexibleColumnWidthTable(Table):
                 ]
             )
 
-        # auto fill table
-        empty_cells: int = self._number_of_rows * self._number_of_columns - sum(
+        # convert grid coordinates to page coordinates
+        grid_x_to_page_x: typing.List[Decimal] = [available_space.get_x()]
+        for i in range(1, self._number_of_columns + 1):
+            prev_x: Decimal = grid_x_to_page_x[-1]
+            new_x: Decimal = prev_x + column_widths[i - 1]
+            grid_x_to_page_x.append(new_x)
+
+        grid_y_to_page_y: typing.List[Decimal] = [
+            available_space.get_y() + available_space.get_height()
+        ]
+
+        # calculate bounds of TableCells with row_span == 1
+        for r in range(0, self._number_of_rows):
+            prev_row_lboxes: typing.List[Rectangle] = []
+            for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
+
+                # get coordinates of lower-left corner of this TableCell (in grid space)
+                # table keeps track of things in (row, column) style
+                # hence p[1], rather than p[0]
+                grid_x: int = min([p[1] for p in e._table_coordinates])
+
+                # layout
+                h: Decimal = grid_y_to_page_y[r] - available_space.get_y()
+                prev_row_lboxes.append(
+                    e.get_layout_box(
+                        Rectangle(
+                            grid_x_to_page_x[grid_x],
+                            available_space.get_y(),
+                            grid_x_to_page_x[grid_x + e._col_span]
+                            - grid_x_to_page_x[grid_x],
+                            h,
+                        )
+                    )
+                )
+
+            # keep track of the bottom of the previous (at this point current) row
+            # this makes it easier to lay out the next row
+            new_y: Decimal = min([lbox.get_y() for lbox in prev_row_lboxes])
+            grid_y_to_page_y.append(new_y)
+
+        # return
+        return [[(x, y) for y in grid_y_to_page_y] for x in grid_x_to_page_x]
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+
+        # fill table
+        number_of_cells: int = self._number_of_rows * self._number_of_columns
+        empty_cells: int = number_of_cells - sum(
             [(x._row_span * x._col_span) for x in self._content]
         )
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
 
-        # calculate column bounds
-        column_bounds: typing.List[Decimal] = [bounding_box.get_x()]
-        for cw in column_widths:
-            column_bounds.append(column_bounds[-1] + cw)
-
-        # We are going to store the offset, to ensure we can draw backgrounds and borders later.
-        # We want backgrounds and borders to be drawn first, which requires us to mess around
-        # with the raw content bytes a bit.
-        # This is not exactly an ideal solution, but it is a fast solution.
-        page_content_stream_marker = len(page["Contents"][Name("DecodedBytes")])
-
-        # lay out content
-        row_bounds: typing.List[Decimal] = [
-            Decimal(floor(bounding_box.get_y() + bounding_box.get_height()))
-            for _ in range(0, self._number_of_rows + 1)
-        ]
-        for t in self._content:
-
-            # calculate bounds
-            assert len(t._table_coordinates) > 0
-            x: Decimal = column_bounds[min([p[1] for p in t._table_coordinates])]
-            w: Decimal = (
-                column_bounds[max([p[1] for p in t._table_coordinates]) + 1] - x
-            )
-            y: Decimal = Decimal(0)
-            h: Decimal = row_bounds[min([p[0] for p in t._table_coordinates])]
-
-            # layout
-            t.layout(page, Rectangle(x, y, w, h))
-            tbb: typing.Optional[Rectangle] = t.get_bounding_box()
-            assert tbb is not None
-
-            # update row_bounds
-            preferred_y: Decimal = (
-                (tbb.get_y() + tbb.get_height() - t._preferred_height)
-                if t._preferred_height is not None
-                and t._preferred_height >= tbb.get_height()
-                else tbb.get_y()
-            )
-            max_row = max([p[0] for p in t._table_coordinates]) + 1
-            row_bounds[max_row] = min(row_bounds[max_row], Decimal(floor(preferred_y)))
-
-        # update bounds of content
-        for t in self._content:
-            x = column_bounds[min([p[1] for p in t._table_coordinates])]
-            w = column_bounds[max([p[1] for p in t._table_coordinates]) + 1] - x
-            max_row = max([p[0] for p in t._table_coordinates]) + 1
-            min_row = min([p[0] for p in t._table_coordinates])
-            y = row_bounds[max_row]
-            h = row_bounds[min_row] - y
-            t.bounding_box = Rectangle(x, y, w, h)
-
-        # calculate bounding box
-        # fmt: off
-        bounding_box = Rectangle(
-            min([x.get_bounding_box().get_x() for x in self._content]),     # type: ignore [union-attr]
-            min([x.get_bounding_box().get_y() for x in self._content]),     # type: ignore [union-attr]
-            max([x.get_bounding_box().get_x() + x.get_bounding_box().get_width() for x in self._content]) - min([x.get_bounding_box().get_x() for x in self._content]),     # type: ignore [union-attr]
-            max([x.get_bounding_box().get_y() + x.get_bounding_box().get_height() for x in self._content]) - min([x.get_bounding_box().get_y() for x in self._content]),    # type: ignore [union-attr]
-        )
-        # fmt: on
-
-        # change content stream to put background before rendering of the content
-        table_content_bytes = page["Contents"][Name("DecodedBytes")][
-            page_content_stream_marker:
-        ]
-        page["Contents"][Name("DecodedBytes")] = page["Contents"][Name("DecodedBytes")][
-            0:page_content_stream_marker
-        ]
-
-        # draw backgrounds
-        for t in self._content:
-            assert t.bounding_box is not None
-            t._draw_background_after_layout(page, t.bounding_box)
-
-        # draw borders
-        for t in self._content:
-            assert t.bounding_box is not None
-            t._draw_border_after_layout(page)
-
-        # re-add content
-        page["Contents"][Name("DecodedBytes")] += table_content_bytes
-        page["Contents"][Name("Bytes")] = zlib.compress(
-            page["Contents"][Name("DecodedBytes")], 9
-        )
-        page["Contents"][Name("Length")] = len(page["Contents"][Name("Bytes")])
-
         # return
-        return bounding_box
+        min_y: Decimal = self._get_grid_coordinates(available_space)[-1][-1][1]
+        return Rectangle(
+            available_space.get_x(),
+            min_y,
+            available_space.get_width(),
+            available_space.get_y() + available_space.get_height() - min_y,
+        )
+
+    def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
+
+        # fill table
+        number_of_cells: int = self._number_of_rows * self._number_of_columns
+        empty_cells: int = number_of_cells - sum(
+            [(x._row_span * x._col_span) for x in self._content]
+        )
+        for _ in range(0, empty_cells):
+            self.add(Paragraph(" ", respect_spaces_in_text=True))
+
+        m: typing.List[
+            typing.List[typing.Tuple[Decimal, Decimal]]
+        ] = self._get_grid_coordinates(available_space)
+
+        # paint
+        for e in self._content:
+            grid_x: int = min([p[1] for p in e._table_coordinates])
+            grid_y: int = min([p[0] for p in e._table_coordinates])
+            cbox: Rectangle = Rectangle(
+                m[grid_x][grid_y][0],
+                m[grid_x][grid_y + e._row_span][1],
+                m[grid_x + e._col_span][grid_y][0] - m[grid_x][grid_y][0],
+                m[grid_x][grid_y][1] - m[grid_x][grid_y + e._row_span][1],
+            )
+            e._set_layout_box(cbox)
+            e.paint(page, cbox)

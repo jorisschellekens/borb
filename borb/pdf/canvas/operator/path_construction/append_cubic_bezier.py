@@ -27,14 +27,14 @@ def _bezier(p0, p1, p2, p3) -> typing.List[LineSegment]:
         x = (
             (ONE - t) ** 3 * p0[0]
             + 3 * t * (ONE - t) ** 2 * p1[0]
-            + 3 * t ** 2 * (ONE - t) * p2[0]
-            + t ** 3 * p3[0]
+            + 3 * t**2 * (ONE - t) * p2[0]
+            + t**3 * p3[0]
         )
         y = (
             (ONE - t) ** 3 * p0[1]
             + 3 * t * (ONE - t) ** 2 * p1[1]
-            + 3 * t ** 2 * (ONE - t) * p2[1]
-            + t ** 3 * p3[1]
+            + 3 * t**2 * (ONE - t) * p2[1]
+            + t**3 * p3[1]
         )
         pts.append((x, y))
 

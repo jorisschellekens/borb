@@ -3,6 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -13,7 +14,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import check_pdf_using_validator
+from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -44,13 +45,18 @@ class TestAddOutline(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with a Paragraph object in it. The Paragraph is aligned TOP, LEFT. "
+                    "This test creates a PDF with several Paragraph object in it."
                     "A series of outlines will later be added to this PDF."
                 )
             )
@@ -89,6 +95,7 @@ class TestAddOutline(unittest.TestCase):
 
         # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)
 
     def test_add_outline(self):
 
@@ -118,6 +125,7 @@ class TestAddOutline(unittest.TestCase):
 
         # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)
 
     def test_outline_exists(self):
 

@@ -12,11 +12,11 @@ from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color, HSVColor, RGBColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.shape.disjoint_shape import DisjointShape
+from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.page.page import Page
 
 
-class GradientColoredDisjointShape(DisjointShape):
+class GradientColoredDisjointShape(DisconnectedShape):
     """
     This class represents a generic disjoint shape (specified by a List of lines),
     that will be colored according to a gradient.
@@ -36,7 +36,7 @@ class GradientColoredDisjointShape(DisjointShape):
 
     def __init__(
         self,
-        shape: DisjointShape,
+        shape: DisconnectedShape,
         from_color: Color,
         to_color: Color,
         gradient_type: GradientType = GradientType.RADIAL,
@@ -71,9 +71,12 @@ class GradientColoredDisjointShape(DisjointShape):
         self._to_color: Color = to_color
         self._gradient_type: GradientColoredDisjointShape.GradientType = gradient_type
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        return super(GradientColoredDisjointShape, self)._get_content_box(
+            available_space
+        )
+
+    def _paint_content_box(self, page: Page, bounding_box: Rectangle) -> None:
 
         # scale to fit
         self.scale_to_fit(bounding_box.width, bounding_box.height)
@@ -84,7 +87,7 @@ class GradientColoredDisjointShape(DisjointShape):
         )
 
         # write content
-        content = "q %d w " % (self._line_width,)
+        content = "q %d w " % (float(self._line_width),)
         min_x: Decimal = min([min(l[0][0], l[1][0]) for l in self._lines])
         min_y: Decimal = min([min(l[0][1], l[1][1]) for l in self._lines])
         max_x: Decimal = max([min(l[0][0], l[1][0]) for l in self._lines])
@@ -148,37 +151,23 @@ class GradientColoredDisjointShape(DisjointShape):
 
             # convert to RGB
             stroke_color: RGBColor = HSVColor(h, s, v).to_rgb()
-            r: Decimal = Decimal(stroke_color.red)
-            g: Decimal = Decimal(stroke_color.green)
-            b: Decimal = Decimal(stroke_color.blue)
+            r: float = float(stroke_color.red)
+            g: float = float(stroke_color.green)
+            b: float = float(stroke_color.blue)
 
             # write content
             content += "%f %f %f RG %f %f m %f %f l S " % (
                 r,
                 g,
                 b,
-                l[0][0],
-                l[0][1],
-                l[1][0],
-                l[1][1],
+                float(l[0][0]),
+                float(l[0][1]),
+                float(l[1][0]),
+                float(l[1][1]),
             )
 
         # stroke
         content += " Q"
 
         # append to page
-        self._append_to_content_stream(page, content)
-
-        # calculate bounding box
-        layout_rect = Rectangle(
-            bounding_box.x,
-            bounding_box.y + bounding_box.height - self.get_height(),
-            self.get_width(),
-            self.get_height(),
-        )
-
-        # set bounding box
-        self.set_bounding_box(layout_rect)
-
-        # return
-        return layout_rect
+        page._append_to_content_stream(content)

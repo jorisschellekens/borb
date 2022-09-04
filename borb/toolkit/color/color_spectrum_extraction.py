@@ -50,18 +50,16 @@ class ColorSpectrumExtraction(EventListener):
 
     def _render_text(self, event: ChunkOfTextRenderEvent):
         assert event is not None
-        bb: typing.Optional[Rectangle] = event.get_bounding_box()
+        bb: typing.Optional[Rectangle] = event.get_previous_layout_box()
         s: Decimal = Decimal(0) if bb is None else (bb.width * bb.height)
         c: RGBColor = event._font_color.to_rgb()
         self._register_color(s, c)
 
     def _render_image(self, event: ImageRenderEvent):
-        r = (event.get_width() * event.get_height()) / (
-            event.get_image().width * event.get_image().height
-        )
+        r = (event.get_width() * event.get_height()) / (event.get_image().width * event.get_image().height)     # type: ignore[attr-defined]
         color_count: typing.Dict[RGBColor, Decimal] = {}
-        for i in range(0, event.get_image().width):
-            for j in range(0, event.get_image().height):
+        for i in range(0, event.get_image().width):                                                             # type: ignore [attr-defined]
+            for j in range(0, event.get_image().height):                                                        # type: ignore [attr-defined]
                 c = ColorSpectrumExtraction._get_rgb_from_image(event.get_image(), i, j)
                 if c not in color_count:
                     color_count[c] = Decimal(1)

@@ -14,6 +14,6 @@ class TestHyphenation(unittest.TestCase):
 
     def test_hyphenation_en_gb(self):
         h = Hyphenation("en-gb")
-        assert h.hyphenate("astute", "-") == "astute"
+        assert h.hyphenate("astute", "-") in ["astute", "as-tute"]
         assert h.hyphenate("birmingham", "-") == "birm-ing-ham"
         assert h.hyphenate("crab", "-") == "crab"

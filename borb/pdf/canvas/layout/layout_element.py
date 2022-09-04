@@ -6,12 +6,9 @@ This file contains all the classes needed to perform layout.
 This includes an Alignment Enum type, and the base implementation of LayoutElement
 """
 import typing
-import zlib
 from decimal import Decimal
 from enum import Enum
 
-from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, Name, Stream
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.line_art.blob_factory import BlobFactory
@@ -78,10 +75,18 @@ class LayoutElement:
         self._border_left = border_left
 
         # border radii
-        assert border_radius_top_right >= 0, "border_radius_top_right must be a non-negative integer"
-        assert border_radius_top_left >= 0, "border_radius_top_left must be a non-negative integer"
-        assert border_radius_bottom_left >= 0, "border_radius_bottom_left must be a non-negative integer"
-        assert border_radius_bottom_right >= 0, "border_radius_bottom_right must be a non-negative integer"
+        assert (
+            border_radius_top_right >= 0
+        ), "border_radius_top_right must be a non-negative integer"
+        assert (
+            border_radius_top_left >= 0
+        ), "border_radius_top_left must be a non-negative integer"
+        assert (
+            border_radius_bottom_left >= 0
+        ), "border_radius_bottom_left must be a non-negative integer"
+        assert (
+            border_radius_bottom_right >= 0
+        ), "border_radius_bottom_right must be a non-negative integer"
         self._border_radius_top_left: Decimal = border_radius_top_left
         self._border_radius_top_right: Decimal = border_radius_top_right
         self._border_radius_bottom_right: Decimal = border_radius_bottom_right
@@ -126,11 +131,12 @@ class LayoutElement:
         self._horizontal_alignment = horizontal_alignment
         self._vertical_alignment = vertical_alignment
 
+        # cache
+        self._previous_layout_box: typing.Optional[Rectangle] = None
+        self._previous_paint_box: typing.Optional[Rectangle] = None
+
         # linkage (for lists, tables, etc)
         self._parent = parent
-
-        # layout
-        self.bounding_box: typing.Optional[Rectangle] = None
 
     def get_font_size(self) -> Decimal:
         """
@@ -162,326 +168,206 @@ class LayoutElement:
         """
         return self._margin_left or Decimal(0)
 
-    def set_bounding_box(self, bounding_box: Rectangle) -> "LayoutElement":
+    #
+    # NEW RENDERING LOGIC
+    #
+
+    def get_previous_layout_box(self) -> typing.Optional[Rectangle]:
         """
-        This method sets the bounding box of this LayoutElement
+        This function returns the previous result of layout of this LayoutElement
+        :return:    the Rectangle that was the result of the previous layout operation
         """
-        self.bounding_box = bounding_box
-        return self
+        return self._previous_layout_box
 
-    def get_bounding_box(self) -> typing.Optional[Rectangle]:
+    def get_previous_paint_box(self) -> typing.Optional[Rectangle]:
         """
-        This function returns the bounding box of this LayoutElement
+        This function returns the previous result of painting this LayoutElement
+        :return:    the Rectangle that was the result of the previous paint operation
         """
-        return self.bounding_box
+        return self._previous_paint_box
 
-    def _initialize_page_content_stream(self, page: "Page"):  # type: ignore[name-defined]
+    def get_layout_box(self, available_space: Rectangle):
+        """
+        This function returns the previous result of layout
+        :return:    the Rectangle that was the result of the previous layout operation
+        """
+        horizontal_border_width: Decimal = Decimal(0)
+        if self._border_left:
+            horizontal_border_width += self._border_width
+        if self._border_right:
+            horizontal_border_width += self._border_width
 
-        # build content stream object
-        if "Contents" not in page:
-            content_stream = Stream()
-            content_stream[Name("DecodedBytes")] = b""
-            content_stream[Name("Bytes")] = zlib.compress(
-                content_stream["DecodedBytes"], 9
-            )
-            content_stream[Name("Filter")] = Name("FlateDecode")
-            content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
+        vertical_border_width: Decimal = Decimal(0)
+        if self._border_top:
+            vertical_border_width += self._border_width
+        if self._border_bottom:
+            vertical_border_width += self._border_width
 
-            # set content of page
-            page[Name("Contents")] = content_stream
-
-        # set Resources
-        if "Resources" not in page:
-            page[Name("Resources")] = Dictionary()
-
-    def _append_to_content_stream(self, page: "Page", instructions: str):  # type: ignore[name-defined]
-        self._initialize_page_content_stream(page)
-        content_stream = page["Contents"]
-
-        # prepend whitespace if needed
-        if len(content_stream[Name("DecodedBytes")]) != 0:
-            # fmt: off
-            decoded_bytes_last_char: str = str(content_stream["DecodedBytes"][-1:], encoding="latin1")
-            if decoded_bytes_last_char not in [" ", "\t", "\n"] and instructions[0] not in [" ", "\t", "\n"]:
-                instructions = " " + instructions
-            # fmt: on
-
-        content_stream[Name("DecodedBytes")] += instructions.encode("latin1")
-        content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
-
-    def _calculate_layout_box(self, page: "Page", bounding_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
-
-        # modify bounding box (to take into account padding)
-        modified_layout_box = Rectangle(
-            bounding_box.x + self._padding_left,
-            bounding_box.y + self._padding_bottom,
+        cbox_available_space: Rectangle = Rectangle(
+            available_space.get_x()
+            + self._padding_left
+            + (self._border_width if self._border_left else Decimal(0)),
+            available_space.get_y()
+            + self._padding_bottom
+            + (self._border_width if self._border_bottom else Decimal(0)),
             max(
-                bounding_box.width - self._padding_right - self._padding_left,
                 Decimal(0),
+                available_space.get_width()
+                - self._padding_left
+                - self._padding_right
+                - horizontal_border_width,
             ),
             max(
-                bounding_box.height - self._padding_top - self._padding_bottom,
                 Decimal(0),
+                available_space.get_height()
+                - self._padding_top
+                - self._padding_bottom
+                - vertical_border_width,
             ),
         )
 
-        # delegate
-        returned_layout_box = self._calculate_layout_box_without_padding(
-            page, modified_layout_box
-        )
+        # determine content_box
+        cbox: Rectangle = self._get_content_box(cbox_available_space)
 
-        # modify rectangle (to take into account padding)
-        modified_returned_layout_box = Rectangle(
-            returned_layout_box.x - self._padding_left,
-            returned_layout_box.y - self._padding_bottom,
-            returned_layout_box.width + self._padding_left + self._padding_right,
-            returned_layout_box.height + self._padding_top + self._padding_bottom,
-        )
-
-        # set
-        self.set_bounding_box(modified_returned_layout_box)
-
-        # return
-        return modified_returned_layout_box
-
-    def _calculate_layout_box_without_padding(
-        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
-    ) -> Rectangle:
-
-        # store previous contents
-        if "Contents" not in page:
-            self._initialize_page_content_stream(page)
-        previous_decoded_bytes = page["Contents"]["DecodedBytes"]
-
-        # layout without padding
-        layout_rect = self._do_layout_without_padding(page, bounding_box)
-        assert layout_rect is not None
-
-        # restore
-        content_stream = page["Contents"]
-        content_stream[Name("DecodedBytes")] = previous_decoded_bytes
-        content_stream[Name("Bytes")] = zlib.compress(content_stream["DecodedBytes"], 9)
-        content_stream[Name("Length")] = bDecimal(len(content_stream["Bytes"]))
-
-        # return
-        return layout_rect
-
-    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
-
-        # modify bounding box (to take into account padding)
-        modified_bounding_box = Rectangle(
-            layout_box.x + self._padding_left,
-            layout_box.y + self._padding_bottom,
-            max(
-                layout_box.width - self._padding_right - self._padding_left, Decimal(0)
-            ),
-            max(
-                layout_box.height - self._padding_top - self._padding_bottom, Decimal(0)
-            ),
-        )
-
-        # delegate
-        output_box = self._do_layout_without_padding(page, modified_bounding_box)
-
-        # modify rectangle (to take into account padding)
-        modified_layout_rect = Rectangle(
-            output_box.x - self._padding_left,
-            output_box.y - self._padding_bottom,
-            output_box.width + self._padding_left + self._padding_right,
-            output_box.height + self._padding_top + self._padding_bottom,
-        )
-
-        # draw border
-        self._draw_border(page, modified_layout_rect)
-
-        # return
-        return modified_layout_rect
-
-    def layout(self, page: "Page", bounding_box: Rectangle) -> Rectangle:  # type: ignore[name-defined]
-        """
-        This function calculates the layout box and performs layout for this LayoutElement.
-        e.g. for a Paragraph this might involve taking into account the word hyphenation,
-        and enforcing vertical and horizontal alignment.
-        """
-        return self.calculate_layout_box_and_do_layout(page, bounding_box)
-
-    def calculate_layout_box_and_do_layout(
-        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
-    ) -> Rectangle:
-        """
-        This function calculates the layout box and performs layout for this LayoutElement.
-        e.g. for a Paragraph this might involve taking into account the word hyphenation,
-        and enforcing vertical and horizontal alignment.
-        """
-
-        # calculate initial layout box
-        self._initialize_page_content_stream(page)
-        layout_box = self._calculate_layout_box(page, bounding_box)
-
-        content_stream = page["Contents"]
-        len_decoded_bytes_before = len(content_stream[Name("DecodedBytes")])
-
-        # set the vertical alignment
+        # take into account vertical_alignment
+        delta_x: Decimal = Decimal(0)
+        delta_y: Decimal = Decimal(0)
         if self._vertical_alignment == Alignment.MIDDLE:
-            bounding_box = Rectangle(
-                bounding_box.x,
-                bounding_box.y,
-                bounding_box.width,
-                bounding_box.height
-                - bounding_box.height / Decimal(2)
-                + layout_box.height / Decimal(2),
-            )
+            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(2)
+            cbox.y -= delta_y
         if self._vertical_alignment == Alignment.BOTTOM:
-            bounding_box = Rectangle(
-                bounding_box.x,
-                bounding_box.y,
-                bounding_box.width,
-                layout_box.height,
-            )
+            delta_y = cbox_available_space.get_height() - cbox.get_height()
+            cbox.y -= delta_y
 
-        # set the horizontal alignment
+        # take into account horizontal_alignment
         if self._horizontal_alignment == Alignment.CENTERED:
-            bounding_box = Rectangle(
-                bounding_box.x + (bounding_box.width - layout_box.width) / Decimal(2),
-                bounding_box.y,
-                layout_box.width,
-                bounding_box.height,
-            )
+            delta_x = (cbox_available_space.get_width() - cbox.get_width()) / Decimal(2)
+            cbox.x += delta_x
         if self._horizontal_alignment == Alignment.RIGHT:
-            bounding_box = Rectangle(
-                bounding_box.x + (bounding_box.width - layout_box.width),
-                bounding_box.y,
-                layout_box.width,
-                bounding_box.height,
-            )
+            delta_x = cbox_available_space.get_width() - cbox.get_width()
+            cbox.x += delta_x
 
-        # perform layout
-        final_layout_box = self._do_layout(page, bounding_box)
-        self.set_bounding_box(final_layout_box)
-
-        # add background
-        if self._background_color is not None:
-
-            # change content stream to put background before rendering of the content
-            added_content = content_stream[Name("DecodedBytes")][
-                len_decoded_bytes_before:
-            ]
-            content_stream[Name("DecodedBytes")] = content_stream[Name("DecodedBytes")][
-                0:len_decoded_bytes_before
-            ]
-
-            # add background
-            self._draw_background(page, final_layout_box)
-
-            # re-add content
-            content_stream[Name("DecodedBytes")] += added_content
-            content_stream[Name("Bytes")] = zlib.compress(
-                content_stream[Name("DecodedBytes")], 9
-            )
-            content_stream[Name("Length")] = len(content_stream[Name("Bytes")])
-
-        return final_layout_box
-
-    def _do_layout_without_padding(
-        self, page: "Page", layout_box: Rectangle  # type: ignore[name-defined]
-    ) -> Rectangle:
-        return Rectangle(layout_box.x, layout_box.y, Decimal(0), Decimal(0))
-
-    def _draw_background(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
-        if not self._background_color:
-            return
-        assert self._background_color
-        rgb_color = self._background_color.to_rgb()
-
-        # easy case
-        if (
-            self._border_radius_top_right == 0
-            and self._border_radius_top_left == 0
-            and self._border_radius_bottom_left == 0
-            and self._border_radius_bottom_right == 0
-        ):
-            # fmt: off
-            content = """
-                q %f %f %f rg %f %f m
-                %f %f l
-                %f %f l
-                %f %f l
-                %f %f l
-                f
-                Q
-                """ % (
-                Decimal(rgb_color.red),
-                Decimal(rgb_color.green),
-                Decimal(rgb_color.blue),
-                border_box.get_x(),                             # ul_x
-                border_box.get_y() + border_box.get_height(),   # ul_y
-
-                border_box.get_x() + border_box.get_width(),    # ur_x
-                border_box.get_y() + border_box.get_height(),   # ur_y
-
-                border_box.get_x() + border_box.get_width(),    # lr_x
-                border_box.get_y(),                             # lr_y
-
-                border_box.get_x(),                             # ll_x
-                border_box.get_y(),                             # ll_y
-
-                border_box.get_x(),                             # ul_x
-                border_box.get_y() + border_box.get_height(),  # ul_y
-            )
-            # fmt: on
-            self._append_to_content_stream(page, content)
-            return
-
-        # remember border state
-        before = [
-            self._border_top,
-            self._border_right,
-            self._border_bottom,
-            self._border_left,
-        ]
-
-        # set all borders
-        self._border_top = True
-        self._border_right = True
-        self._border_bottom = True
-        self._border_left = True
-
-        # get outline
-        outline_points = self._get_outline(border_box)
-        assert outline_points[0] is not None
-
-        # restore all borders
-        self._border_top = before[0]
-        self._border_right = before[1]
-        self._border_bottom = before[2]
-        self._border_left = before[3]
-
-        # write
-        content = """
-            q %f %f %f rg %f %f m
-            """ % (
-            Decimal(rgb_color.red),
-            Decimal(rgb_color.green),
-            Decimal(rgb_color.blue),
-            outline_points[0][0],
-            outline_points[0][1],
+        # return
+        # fmt: off
+        self._previous_layout_box = Rectangle(
+            cbox.get_x() - self._padding_left - (self._border_width if self._border_left else Decimal(0)),
+            cbox.get_y() - self._padding_bottom - (self._border_width if self._border_bottom else Decimal(0)),
+            cbox.get_width() + self._padding_left + self._padding_right + horizontal_border_width,
+            cbox.get_height() + self._padding_top + self._padding_bottom + vertical_border_width,
         )
-        for p in outline_points:
-            assert p is not None
-            content += " %f %f l" % (p[0], p[1])
-        content += " f Q"
+        # fmt: on
+        return self._previous_layout_box
 
-        self._append_to_content_stream(page, content)
+    def paint(self, page: "Page", available_space: Rectangle) -> None: # type: ignore[name-defined]
+        """
+        This method paints this LayoutElement on the given Page, in the available space
+        :param page:                the Page on which to paint this LayoutElement
+        :param available_space:     the available space (as a Rectangle) on which to paint this LayoutElement
+        :return:                    None
+        """
+        horizontal_border_width: Decimal = Decimal(0)
+        if self._border_left:
+            horizontal_border_width += self._border_width
+        if self._border_right:
+            horizontal_border_width += self._border_width
 
-    def _get_outline(
+        vertical_border_width: Decimal = Decimal(0)
+        if self._border_top:
+            vertical_border_width += self._border_width
+        if self._border_bottom:
+            vertical_border_width += self._border_width
+
+        cbox_available_space: Rectangle = Rectangle(
+            available_space.get_x()
+            + self._padding_left
+            + (self._border_width if self._border_left else Decimal(0)),
+            available_space.get_y()
+            + self._padding_bottom
+            + (self._border_width if self._border_bottom else Decimal(0)),
+            max(
+                Decimal(0),
+                available_space.get_width()
+                - self._padding_left
+                - self._padding_right
+                - horizontal_border_width,
+            ),
+            max(
+                Decimal(0),
+                available_space.get_height()
+                - self._padding_top
+                - self._padding_bottom
+                - vertical_border_width,
+            ),
+        )
+
+        # determine content_box
+        cbox: Rectangle = self._get_content_box(cbox_available_space)
+
+        # take into account vertical_alignment
+        delta_x: Decimal = Decimal(0)
+        delta_y: Decimal = Decimal(0)
+        if self._vertical_alignment == Alignment.MIDDLE:
+            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(2)
+            cbox.y -= delta_y
+        if self._vertical_alignment == Alignment.BOTTOM:
+            delta_y = cbox_available_space.get_height() - cbox.get_height()
+            cbox.y -= delta_y
+
+        # take into account horizontal_alignment
+        if self._horizontal_alignment == Alignment.CENTERED:
+            delta_x = (cbox_available_space.get_width() - cbox.get_width()) / Decimal(2)
+            cbox.x += delta_x
+        if self._horizontal_alignment == Alignment.RIGHT:
+            delta_x = cbox_available_space.get_width() - cbox.get_width()
+            cbox.x += delta_x
+
+        # paint the background first
+        bgbox: Rectangle = Rectangle(
+            cbox.get_x()
+            - self._padding_left
+            - (self._border_width if self._border_left else Decimal(0)),
+            cbox.get_y()
+            - self._padding_bottom
+            - (self._border_width if self._border_bottom else Decimal(0)),
+            cbox.get_width()
+            + self._padding_left
+            + self._padding_right
+            + horizontal_border_width,
+            cbox.get_height()
+            + self._padding_top
+            + self._padding_bottom
+            + vertical_border_width,
+        )
+        self._paint_background(page, bgbox)
+
+        # paint the borders
+        self._paint_borders(page, bgbox)
+
+        # paint the actual content
+        self._paint_content_box(page, cbox)
+
+        # set bounding box
+        self._previous_paint_box = bgbox
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height(),
+            Decimal(0),
+            Decimal(0),
+        )
+
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None: # type: ignore[name-defined]
+        pass
+
+    def _get_border_outline(
         self, border_box: Rectangle
     ) -> typing.List[typing.Optional[typing.Tuple[Decimal, Decimal]]]:
         n: int = 0
-        xll: Decimal = round(border_box.x, n)
-        yll: Decimal = round(border_box.y, n)
-        xur: Decimal = round(border_box.x + border_box.width, n)
-        yur: Decimal = round(border_box.y + border_box.height, n)
+        xll: Decimal = round(border_box.get_x(), n)
+        yll: Decimal = round(border_box.get_y(), n)
+        xur: Decimal = round(border_box.get_x() + border_box.get_width(), n)
+        yur: Decimal = round(border_box.get_y() + border_box.get_height(), n)
 
         # top left arc
         points: typing.List[typing.Optional[typing.Tuple[Decimal, Decimal]]] = []
@@ -588,7 +474,95 @@ class LayoutElement:
         # return
         return points
 
-    def _draw_border(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
+    def _paint_background(
+        self, page: "Page", background_box: Rectangle  # type: ignore[name-defined]
+    ):
+        if not self._background_color:
+            return
+        assert self._background_color
+        rgb_color = self._background_color.to_rgb()
+
+        # easy case
+        if (
+            self._border_radius_top_right == 0
+            and self._border_radius_top_left == 0
+            and self._border_radius_bottom_left == 0
+            and self._border_radius_bottom_right == 0
+        ):
+
+            # fmt: off
+            content = """
+                q %f %f %f rg %f %f m
+                %f %f l
+                %f %f l
+                %f %f l
+                %f %f l
+                f
+                Q
+                """ % (
+                float(rgb_color.red),
+                float(rgb_color.green),
+                float(rgb_color.blue),
+                background_box.get_x(),                                 # ul_x
+                background_box.get_y() + background_box.get_height(),   # ul_y
+
+                background_box.get_x() + background_box.get_width(),    # ur_x
+                background_box.get_y() + background_box.get_height(),   # ur_y
+
+                background_box.get_x() + background_box.get_width(),    # lr_x
+                background_box.get_y(),                                 # lr_y
+
+                background_box.get_x(),                                 # ll_x
+                background_box.get_y(),                                 # ll_y
+
+                background_box.get_x(),                                 # ul_x
+                background_box.get_y() + background_box.get_height(),   # ul_y
+            )
+            # fmt: on
+            page._append_to_content_stream(content)
+            return
+
+        # remember border state
+        before = [
+            self._border_top,
+            self._border_right,
+            self._border_bottom,
+            self._border_left,
+        ]
+
+        # set all borders
+        self._border_top = True
+        self._border_right = True
+        self._border_bottom = True
+        self._border_left = True
+
+        # get outline
+        outline_points = self._get_border_outline(background_box)
+        assert outline_points[0] is not None
+
+        # restore all borders
+        self._border_top = before[0]
+        self._border_right = before[1]
+        self._border_bottom = before[2]
+        self._border_left = before[3]
+
+        # write
+        content = """
+            q %f %f %f rg %f %f m
+            """ % (
+            float(rgb_color.red),
+            float(rgb_color.green),
+            float(rgb_color.blue),
+            float(outline_points[0][0]),
+            float(outline_points[0][1]),
+        )
+        for p in outline_points:
+            assert p is not None
+            content += " %f %f l" % (float(p[0]), float(p[1]))
+        content += " f Q"
+        page._append_to_content_stream(content)
+
+    def _paint_borders(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
         # border is not wanted on any side
         if (
             self._border_top
@@ -606,24 +580,24 @@ class LayoutElement:
         # draw border(s)
         rgb_color = self._border_color.to_rgb()
         content = "q %f %f %f RG %f w " % (
-            Decimal(rgb_color.red),
-            Decimal(rgb_color.green),
-            Decimal(rgb_color.blue),
-            self._border_width,
+            float(rgb_color.red),
+            float(rgb_color.green),
+            float(rgb_color.blue),
+            float(self._border_width),
         )
 
         # turn points into lines
-        points = self._get_outline(border_box)
+        points = self._get_border_outline(border_box)
         for i, p in enumerate(points[:-1]):
             p0: typing.Optional[typing.Tuple[Decimal, Decimal]] = p
             p1: typing.Optional[typing.Tuple[Decimal, Decimal]] = points[i + 1]
             if p0 is None or p1 is None:
                 continue
             content += " %d %d m %d %d l s" % (
-                p0[0],
-                p0[1],
-                p1[0],
-                p1[1],
+                float(p0[0]),
+                float(p0[1]),
+                float(p1[0]),
+                float(p1[1]),
             )
         content += " Q"
-        self._append_to_content_stream(page, content)
+        page._append_to_content_stream(content)

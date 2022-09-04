@@ -14,8 +14,7 @@ from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.hyphenation.hyphenation import Hyphenation
-from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
-from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.page.page import Page
 
@@ -103,6 +102,11 @@ class Paragraph(LineOfText):
             Alignment.JUSTIFIED,
         ]
         self._text_alignment = text_alignment
+
+        # layout
+        self._previous_content_box: typing.Optional[Rectangle] = None
+        self._previous_attr_hash_for_layout: typing.Optional[int] = None
+        self._previous_lines_of_text: typing.Optional[typing.List[LineOfText]] = None
 
     def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
         # asserts
@@ -225,77 +229,95 @@ class Paragraph(LineOfText):
         # return
         return lines_of_text if len(lines_of_text) > 0 else [""]
 
-    def _do_layout_without_padding(self, page: Page, bounding_box: Rectangle):
-        # easy case
-        if len(self._text) == 0:
-            return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
+    #
+    #  RENDERING LOGIC
+    #
 
-        # other easy cases
-        lines_of_text = self._split_text(bounding_box)
-        if len(lines_of_text) == 0:
-            return Rectangle(bounding_box.x, bounding_box.y, Decimal(0), Decimal(0))
+    def _calculate_attribute_hash_for_content_box(self) -> int:
+        attr: typing.List[typing.Any] = [
+            self._text,
+            self._font,
+            self._font_size,
+            self._vertical_alignment,
+            self._horizontal_alignment,
+            self._font_color,
+            self._border_top,
+            self._border_right,
+            self._border_bottom,
+            self._border_left,
+            self._border_radius_top_left,
+            self._border_radius_top_right,
+            self._border_radius_bottom_right,
+            self._border_radius_bottom_left,
+            self._border_color,
+            self._border_width,
+            self._padding_top,
+            self._padding_right,
+            self._padding_bottom,
+            self._padding_left,
+            self._margin_top,
+            self._margin_right,
+            self._margin_bottom,
+            self._margin_left,
+            self._multiplied_leading,
+            self._fixed_leading,
+            self._background_color,
+        ]
+        attr_hash_for_layout: int = 1927868237
+        for a in attr:
+            h: int = hash(a)
+            attr_hash_for_layout ^= (h ^ (h << 16) ^ 89869747) * 3644798167
+        attr_hash_for_layout = attr_hash_for_layout * 69069 + 907133923
 
-        # separate method for the harder case of Alignment.JUSTIFIED
-        if self._text_alignment == Alignment.JUSTIFIED:
-            return self._do_layout_without_padding_text_alignment_justified(
-                lines_of_text, page, bounding_box
-            )
+        # return
+        return attr_hash_for_layout
 
-        # delegate
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+
+        # compare hash
+        attr_hash_for_layout: int = self._calculate_attribute_hash_for_content_box()
+
+        # check whether we are calculating the available space
+        # using the same (Paragraph) attributes using a previous content box
+        # if so, return the previous content_box
+        # if this Paragraph previously fit in that box, and nothing has changed (e.g. font_size, leading, etc)
+        # then this Paragraph still fits inside that box
+        if (
+            self._previous_content_box is not None
+            and available_space == self._previous_content_box
+            and attr_hash_for_layout == self._previous_attr_hash_for_layout
+        ):
+            return self._previous_content_box
+
+        # if the hash has changed, it implies some attributes that are relevant to layout have changed
+        # we need to recalculate the content_box
+        # otherwise we can just skip this and return the previously calculated content_box
         assert self._font_size is not None
-        min_x: Decimal = Decimal(2048)
-        min_y: Decimal = Decimal(2048)
-        max_x: Decimal = Decimal(0)
-        max_y: Decimal = Decimal(0)
-
-        assert self._font_size is not None
-        line_height: Decimal = self._font_size
-        if self._multiplied_leading is not None:
-            line_height *= self._multiplied_leading
-        if self._fixed_leading is not None:
-            line_height += self._fixed_leading
-
-        for i, l in enumerate(lines_of_text):
-            r = LineOfText(
-                l,
+        self._previous_attr_hash_for_layout = attr_hash_for_layout
+        self._previous_lines_of_text = [
+            LineOfText(
+                x,
                 font=self._font,
                 font_size=self._font_size,
                 font_color=self._font_color,
                 horizontal_alignment=self._text_alignment,
                 multiplied_leading=self._multiplied_leading,
+                text_alignment=self._text_alignment,
                 fixed_leading=self._fixed_leading,
-            ).layout(
-                page,
-                bounding_box=Rectangle(
-                    bounding_box.x,
-                    bounding_box.y
-                    + bounding_box.height
-                    - line_height * i
-                    - self._font_size,
-                    bounding_box.width,
-                    self._font_size,
-                ),
             )
-            min_x = min(r.x, min_x)
-            min_y = min(r.y, min_y)
-            max_x = max(r.x + r.width, max_x)
-            max_y = max(r.y + r.height, max_y)
-        layout_rect = Rectangle(min_x, min_y, max_x - min_x, max_y - min_y)
+            for x in self._split_text(available_space)
+        ]
 
-        # set bounding box
-        self.set_bounding_box(layout_rect)
+        #  When using justification,
+        #  it is customary to treat the last line of a paragraph separately by simply left or right aligning it,
+        #  depending on the language direction.
+        if (
+            self._text_alignment == Alignment.JUSTIFIED
+            and len(self._previous_lines_of_text) > 1
+        ):
+            self._previous_lines_of_text[-1]._text_alignment = Alignment.LEFT
 
-        # return
-        return layout_rect
-
-    def _do_layout_without_padding_text_alignment_justified(
-        self, lines_of_text: typing.List[str], page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-        min_x: Decimal = Decimal(2048)
-        min_y: Decimal = Decimal(2048)
-        max_x: Decimal = Decimal(0)
-        max_y: Decimal = Decimal(0)
-
+        # determine line height
         assert self._font_size is not None
         line_height: Decimal = self._font_size
         if self._multiplied_leading is not None:
@@ -303,84 +325,58 @@ class Paragraph(LineOfText):
         if self._fixed_leading is not None:
             line_height += self._fixed_leading
 
-        for i, line_of_text in enumerate(lines_of_text):
+        # determine content box height
+        h: Decimal = line_height * len(self._previous_lines_of_text)
 
-            #  When using justification,
-            #  it is customary to treat the last line of a paragraph separately by simply left or right aligning it,
-            #  depending on the language direction.
-            if i == len(lines_of_text) - 1 and len(lines_of_text) >= 1:
-                last_line_rectangle: Rectangle = LineOfText(
-                    line_of_text,
-                    font=self._font,
-                    font_size=self._font_size,
-                    font_color=self._font_color,
-                    multiplied_leading=self._multiplied_leading,
-                    fixed_leading=self._fixed_leading,
-                ).layout(
-                    page,
-                    bounding_box=Rectangle(
-                        bounding_box.x,
-                        bounding_box.y + bounding_box.height - line_height * (i + 1),
-                        bounding_box.width,
-                        self._font_size,
-                    ),
+        # determine content box width
+        w: Decimal = Decimal(0)
+        for i, l in enumerate(self._previous_lines_of_text):
+            lbox: Rectangle = l._get_content_box(
+                Rectangle(
+                    available_space.get_x(),
+                    available_space.get_y()
+                    + available_space.get_height()
+                    - (i + 1) * line_height,
+                    available_space.get_width(),
+                    line_height,
                 )
-                min_x = min(last_line_rectangle.x, min_x)
-                min_y = min(last_line_rectangle.y, min_y)
-                max_x = max(last_line_rectangle.x + last_line_rectangle.width, max_x)
-                max_y = max(last_line_rectangle.y + last_line_rectangle.height, max_y)
-                continue
-
-            estimated_width: Decimal = GlyphLine.from_str(
-                line_of_text, self._font, self._font_size
-            ).get_width_in_text_space()
-            remaining_space: Decimal = bounding_box.width - estimated_width
-
-            # calculate the space that needs to be divided among the space-characters
-            number_of_spaces: Decimal = Decimal(
-                sum([1 for x in line_of_text if x == " "])
             )
-            if number_of_spaces > 0:
-                space_per_space: Decimal = remaining_space / number_of_spaces
-            else:
-                space_per_space = Decimal(0)
-            words: typing.List[str] = line_of_text.split(" ")
+            w = max(w, lbox.get_width())
 
-            # perform layout
-            x: Decimal = bounding_box.x
-            for j, w in enumerate(words):
-                s = w + ("" if j == len(words) - 1 else " ")
-                r: Rectangle = ChunkOfText(
-                    s,
-                    font=self._font,
-                    font_size=self._font_size,
-                    font_color=self._font_color,
-                    multiplied_leading=self._multiplied_leading,
-                    fixed_leading=self._fixed_leading,
-                ).layout(
-                    page,
-                    bounding_box=Rectangle(
-                        x,
-                        bounding_box.y + bounding_box.height - line_height * (i + 1),
-                        bounding_box.width,
-                        self._font_size,
-                    ),
-                )
-                min_x = min(r.x, min_x)
-                min_y = min(r.y, min_y)
-                max_x = max(r.x + r.width, max_x)
-                max_y = max(r.y + r.height, max_y)
-
-                # line up our next x
-                word_size = GlyphLine.from_str(
-                    s, self._font, self._font_size
-                ).get_width_in_text_space()
-                x += word_size
-                x += space_per_space
-
-        # set bounding box
-        layout_rect = Rectangle(min_x, min_y, max_x - min_x, max_y - min_y)
-        self.set_bounding_box(layout_rect)
+        # determine content box
+        self._previous_content_box = Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - h,
+            w,
+            h,
+        )
 
         # return
-        return layout_rect
+        return self._previous_content_box
+
+    def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
+
+        # ensure everything is initialized
+        self._get_content_box(available_space)
+
+        # determine line height
+        assert self._font_size is not None
+        line_height: Decimal = self._font_size
+        if self._multiplied_leading is not None:
+            line_height *= self._multiplied_leading
+        if self._fixed_leading is not None:
+            line_height += self._fixed_leading
+
+        # call paint on all LineOfText objects
+        for i, l in enumerate(self._previous_lines_of_text):
+            l.paint(
+                page,
+                Rectangle(
+                    available_space.get_x(),
+                    available_space.get_y()
+                    + available_space.get_height()
+                    - (i + 1) * line_height,
+                    available_space.get_width(),
+                    line_height,
+                ),
+            )

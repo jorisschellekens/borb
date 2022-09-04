@@ -7,7 +7,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.shape.shape import Shape
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -49,7 +49,12 @@ class TestAddLissajoursLineArt(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -70,7 +75,7 @@ class TestAddLissajoursLineArt(unittest.TestCase):
         for i in range(0, N):
             for j in range(0, N):
                 t.add(
-                    Shape(
+                    ConnectedShape(
                         LineArtFactory.lissajours(fixed_bb, i + 1, j + 1),
                         fill_color=fill_colors[(i + j) % len(fill_colors)],
                         stroke_color=stroke_colors[(i + j) % len(stroke_colors)],

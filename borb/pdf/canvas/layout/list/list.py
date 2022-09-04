@@ -67,6 +67,7 @@ class List(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
+        self._bullet_margin: Decimal = Decimal(20)
         self._items: typing.List[LayoutElement] = []
 
     def add(self, element: LayoutElement) -> "List":
@@ -93,77 +94,107 @@ class List(LayoutElement):
             font="Zapfdingbats",
         )
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        previous_layout_box: typing.Optional[Rectangle] = None
+        min_x: typing.Optional[Decimal] = None
+        min_y: typing.Optional[Decimal] = None
+        max_x: typing.Optional[Decimal] = None
+        max_y: typing.Optional[Decimal] = None
+        for index, e in enumerate(self._items):
+            if previous_layout_box is None:
+                previous_layout_box = e.get_layout_box(
+                    Rectangle(
+                        available_space.get_x() + self._bullet_margin,
+                        available_space.get_y(),
+                        available_space.get_width() - self._bullet_margin,
+                        available_space.get_height(),
+                    )
+                )
+            else:
+                previous_layout_box = e.get_layout_box(
+                    Rectangle(
+                        available_space.get_x() + self._bullet_margin,
+                        available_space.get_y(),
+                        available_space.get_width() - self._bullet_margin,
+                        max(
+                            Decimal(0),
+                            previous_layout_box.get_y() - available_space.get_y(),
+                        ),
+                    )
+                )
 
-        # calculate the height of each item
-        bullet_margin: Decimal = Decimal(20)
-        for i in self._items:
-            i._calculate_layout_box(
-                page,
-                bounding_box=Rectangle(
-                    bounding_box.x + i.get_margin_left() + bullet_margin,
-                    bounding_box.y + i.get_margin_bottom(),
-                    bounding_box.width
-                    - bullet_margin
-                    - i.get_margin_right()
-                    - i.get_margin_left(),
-                    bounding_box.height - i.get_margin_top(),
-                ),
+            # update min_x
+            assert previous_layout_box is not None
+            min_x = (
+                previous_layout_box.get_x()
+                if min_x is None
+                else min(min_x, previous_layout_box.get_x())
             )
-
-        for index, item in enumerate(self._items):
-            # item bounding box
-            item_bounding_box: typing.Optional[Rectangle] = item.get_bounding_box()
-            assert item_bounding_box is not None
-
-            # calculate previous (item) bottom
-            # fmt: off
-            previous_item_bottom: Decimal = (bounding_box.y + bounding_box.height - item.get_margin_top())
-            if index > 0:
-                previous_item: LayoutElement = self._items[index - 1]
-                previous_item_bounding_box: typing.Optional[Rectangle] = previous_item.get_bounding_box()
-                assert previous_item_bounding_box is not None
-                previous_item_bottom = previous_item_bounding_box.get_y() - max(previous_item.get_margin_bottom(), item.get_margin_top())
-            item_height: Decimal = item_bounding_box.get_height()
-            # fmt: on
-
-            # bullet character
-            self._get_bullet_layout_element(index, item).layout(
-                page=page,
-                bounding_box=Rectangle(
-                    bounding_box.x,
-                    previous_item_bottom - item_height,
-                    bullet_margin,
-                    item_height,
-                ),
+            min_y = (
+                previous_layout_box.get_y()
+                if min_y is None
+                else min(min_y, previous_layout_box.get_y())
             )
-            # content
-            item.layout(
-                page,
-                bounding_box=Rectangle(
-                    bounding_box.x + bullet_margin + item.get_margin_left(),
-                    previous_item_bottom - item_height,
-                    bounding_box.width
-                    - bullet_margin
-                    - item.get_margin_right()
-                    - item.get_margin_left(),
-                    item_height,
-                ),
+            max_x = (
+                previous_layout_box.get_x() + previous_layout_box.get_width()
+                if max_x is None
+                else max(
+                    max_x, previous_layout_box.get_x() + previous_layout_box.get_width()
+                )
             )
-
-        # fmt: off
-        layout_rect = Rectangle(
-            bounding_box.x,
-            self._items[-1].get_bounding_box().get_y() - self._items[-1].get_margin_bottom(),                                           # type: ignore [union-attr]
-            bounding_box.width,
-            bounding_box.y + bounding_box.height - self._items[-1].get_bounding_box().get_y() + self._items[-1].get_margin_bottom(),    # type: ignore [union-attr]
-        )
-        # fmt: on
-
-        # set bounding box
-        self.set_bounding_box(layout_rect)
+            max_y = (
+                previous_layout_box.get_y() + previous_layout_box.get_height()
+                if max_y is None
+                else max(
+                    max_y,
+                    previous_layout_box.get_y() + previous_layout_box.get_height(),
+                )
+            )
 
         # return
-        return layout_rect
+        assert min_x is not None
+        assert min_y is not None
+        assert max_x is not None
+        assert max_y is not None
+        return Rectangle(
+            min_x - self._bullet_margin,
+            min_y,
+            max_x - min_x + self._bullet_margin,
+            max_y - min_y,
+        )
+
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
+        previous_layout_box: typing.Optional[Rectangle] = None
+        for index, e in enumerate(self._items):
+            if previous_layout_box is None:
+                previous_layout_box = e.get_layout_box(
+                    Rectangle(
+                        available_space.get_x() + self._bullet_margin,
+                        available_space.get_y(),
+                        available_space.get_width() - self._bullet_margin,
+                        available_space.get_height(),
+                    )
+                )
+            else:
+                previous_layout_box = e.get_layout_box(
+                    Rectangle(
+                        available_space.get_x() + self._bullet_margin,
+                        available_space.get_y(),
+                        available_space.get_width() - self._bullet_margin,
+                        previous_layout_box.get_y() - available_space.get_y(),
+                    )
+                )
+            # paint item
+            assert previous_layout_box is not None
+            e.paint(page, previous_layout_box)
+
+            # paint bullet
+            self._get_bullet_layout_element(index, e).paint(
+                page,
+                Rectangle(
+                    available_space.get_x(),
+                    previous_layout_box.get_y(),
+                    self._bullet_margin,
+                    previous_layout_box.get_height(),
+                ),
+            )

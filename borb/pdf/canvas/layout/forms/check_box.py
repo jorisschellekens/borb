@@ -10,8 +10,8 @@ import zlib
 
 from borb.io.read.types import Boolean, Decimal
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import String as bString
 from borb.io.read.types import Dictionary, List, Name, Stream, String
+from borb.io.read.types import String as bString
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -98,12 +98,20 @@ class CheckBox(FormField):
         self._widget_dictionary[Name("F")] = bDecimal(4)
         self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size - 2))
-        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
-        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
+        )
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.x + layout_box.width)
+        )
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.y + layout_box.height)
+        )
         self._widget_dictionary[Name("FT")] = Name("Btn")
         self._widget_dictionary[Name("P")] = catalog
-        self._widget_dictionary[Name("T")] = bString(self._field_name or self._get_auto_generated_field_name(page))
+        self._widget_dictionary[Name("T")] = bString(
+            self._field_name or self._get_auto_generated_field_name(page)
+        )
         self._widget_dictionary[Name("V")] = Name("Yes")
         self._widget_dictionary[Name("DR")] = widget_resources
 
@@ -111,11 +119,11 @@ class CheckBox(FormField):
         self._widget_dictionary[Name("DA")] = String(
             "%f %f %f rg /%s %f Tf"
             % (
-                font_color_rgb.red,
-                font_color_rgb.green,
-                font_color_rgb.blue,
+                float(font_color_rgb.red),
+                float(font_color_rgb.green),
+                float(font_color_rgb.blue),
                 font_resource_name,
-                self._font_size,
+                float(self._font_size),
             )
         )
         self._widget_dictionary[Name("AP")] = widget_appearance_dictionary
@@ -133,7 +141,7 @@ class CheckBox(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _do_layout(self, page: "Page", layout_box: Rectangle) -> Rectangle:
+    def _paint_content_box(self, page: "Page", layout_box: Rectangle) -> None:
 
         # determine layout rectangle
         assert self._font_size is not None
@@ -155,6 +163,3 @@ class CheckBox(FormField):
             self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
             self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
         # fmt: on
-
-        # return Rectangle
-        return layout_rect

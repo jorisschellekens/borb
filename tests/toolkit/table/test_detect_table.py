@@ -182,13 +182,13 @@ class TestDetectTable(unittest.TestCase):
 
             # add annotation around table
             for t in tables:
-                r = t.get_bounding_box().grow(Decimal(5))
+                r = t.get_previous_layout_box().grow(Decimal(5))
                 doc.get_page(0).add_annotation(
                     SquareAnnotation(r, stroke_color=X11Color("Red"))
                 )
 
                 for tc in t._content:
-                    r = tc.get_bounding_box()
+                    r = tc.get_previous_layout_box()
                     r = r.shrink(Decimal(2))
                     doc.get_page(0).add_annotation(
                         SquareAnnotation(

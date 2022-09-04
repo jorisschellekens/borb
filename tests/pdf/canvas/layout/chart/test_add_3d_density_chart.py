@@ -1,3 +1,4 @@
+import random
 import unittest
 from datetime import datetime
 from pathlib import Path
@@ -7,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from borb.io.read.types import Decimal
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.image.chart import Chart
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -17,7 +19,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import check_pdf_using_validator
+from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 
 class TestAdd3DDensityChart(unittest.TestCase):
@@ -39,6 +41,7 @@ class TestAdd3DDensityChart(unittest.TestCase):
 
     def _create_plot(self) -> None:
         # Dataset
+        np.random.seed(1024)
         df = pd.DataFrame(
             {
                 "X": range(1, 101),
@@ -48,9 +51,9 @@ class TestAdd3DDensityChart(unittest.TestCase):
         )
 
         # plot
-        fig = MatPlotLibPlot.figure()
+        fig = MatPlotLibPlot.figure(dpi=600)
         ax = fig.add_subplot(111, projection="3d")
-        ax.scatter(df["X"], df["Y"], df["Z"], c="skyblue", s=60)
+        ax.scatter(df["X"], df["Y"], df["Z"], c="#56cbf9", s=60)
         ax.view_init(30, 185)
 
         return MatPlotLibPlot.gcf()
@@ -73,7 +76,12 @@ class TestAdd3DDensityChart(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -82,6 +90,7 @@ class TestAdd3DDensityChart(unittest.TestCase):
         )
 
         # add chart
+        random.seed(2048)
         layout.add(
             Chart(
                 self._create_plot(),
@@ -95,7 +104,10 @@ class TestAdd3DDensityChart(unittest.TestCase):
         out_file = self.output_dir / "output.pdf"
         with open(out_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
+
+        # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)
 
 
 if __name__ == "__main__":

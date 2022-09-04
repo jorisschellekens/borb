@@ -3,12 +3,12 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf import SingleColumnLayout, PageLayout, HexColor
 from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.page_layout.browser_layout import BrowserLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
+from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
+from borb.pdf.canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -43,18 +43,23 @@ class TestAddEmoji(unittest.TestCase):
         # add page to document
         pdf.add_page(page)
 
-        page_layout: BrowserLayout = BrowserLayout(page)
+        page_layout: PageLayout = SingleColumnLayout(page)
 
         # write test info
         page_layout.add(
-            Table(
+            FixedColumnWidthTable(
                 number_of_columns=2,
                 number_of_rows=3,
                 margin_top=Decimal(5),
                 margin_bottom=Decimal(5),
             )
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -67,14 +72,26 @@ class TestAddEmoji(unittest.TestCase):
         )
 
         page_layout.add(
-            ChunkOfText("It wasn't easy. But borb now offers (basic) support for")
+            HeterogeneousParagraph(
+                [
+                    ChunkOfText(
+                        "It wasn't easy. But borb now offers (basic) support for "
+                    ),
+                    Emojis.SMILEY.value,
+                    ChunkOfText(". "),
+                ]
+            )
         )
-        page_layout.add(Emojis.SMILEY.value)
-        page_layout.add(ChunkOfText(". "))
 
-        page_layout.add(ChunkOfText("Find out more on the"))
-        page_layout.add(Emojis.OCTOCAT.value)
-        page_layout.add(ChunkOfText("-repo."))
+        page_layout.add(
+            HeterogeneousParagraph(
+                [
+                    ChunkOfText("Find out more on the "),
+                    Emojis.OCTOCAT.value,
+                    ChunkOfText("-repo."),
+                ]
+            )
+        )
 
         page_layout.add(
             Paragraph(

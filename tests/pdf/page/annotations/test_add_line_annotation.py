@@ -17,7 +17,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test_util import check_pdf_using_validator
+from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -48,7 +48,12 @@ class TestAddLineAnnotation(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -85,6 +90,7 @@ class TestAddLineAnnotation(unittest.TestCase):
 
         # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)
 
     def test_add_line_annotation(self):
 
@@ -111,3 +117,4 @@ class TestAddLineAnnotation(unittest.TestCase):
 
         # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)

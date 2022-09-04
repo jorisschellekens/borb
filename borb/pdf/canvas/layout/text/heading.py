@@ -115,30 +115,31 @@ class Heading(Paragraph):
         self._outline_level = outline_level
         self._has_added_outline = False
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-        layout_rect = super(Heading, self)._do_layout_without_padding(
-            page, bounding_box
-        )
-        if not self._has_added_outline:
-            self._add_outline(page)
-        return layout_rect
+    def paint(self, page: Page, available_space: Rectangle):
+        """
+        This method paints this LayoutElement on the given Page, in the available space
+        :param page:                the Page on which to paint this LayoutElement
+        :param available_space:     the available space (as a Rectangle) on which to paint this LayoutElement
+        :return:                    None
+        """
 
-    def _add_outline(self, page: Page):
         # fetch document
         p = page.get_root()  # type: ignore[attr-defined]
         assert isinstance(p, Document)
 
         # add outline to document
-        page_nr = page.get_page_info().get_page_number()
-        assert page_nr is not None
-        p.add_outline(
-            text=self._outline_text,
-            level=self._outline_level,
-            destination_type=DestinationType.FIT,
-            page_nr=int(page_nr),
-        )
+        if not self._has_added_outline:
+            page_nr = page.get_page_info().get_page_number()
+            assert page_nr is not None
+            p.add_outline(
+                text=self._outline_text,
+                level=self._outline_level,
+                destination_type=DestinationType.FIT,
+                page_nr=int(page_nr),
+            )
 
         # mark
         self._has_added_outline = True
+
+        # call super
+        super(Heading, self).paint(page, available_space)

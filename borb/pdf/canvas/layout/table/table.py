@@ -5,9 +5,9 @@
 This class represents a common base for all LayoutElement implementations
 that attempt to represent tabular data.
 """
+import copy
 import typing
 from decimal import Decimal
-from math import ceil
 
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -56,7 +56,7 @@ class TableCell(LayoutElement):
             border_top=border_top,
             border_width=border_width,
             font_size=Decimal(12),  # not used
-            horizontal_alignment=Alignment.RIGHT,  # not used
+            horizontal_alignment=Alignment.JUSTIFIED,  # not used
             margin_bottom=Decimal(0),  # not used
             margin_left=Decimal(0),  # not used
             margin_right=Decimal(0),  # not used
@@ -92,95 +92,107 @@ class TableCell(LayoutElement):
         self._max_height: typing.Optional[Decimal] = None
         self._preferred_height: typing.Optional[Decimal] = preferred_height
 
-    def calculate_min_and_max_width(self) -> None:
+        # layout
+        self._forced_layout_box: typing.Optional[Rectangle] = None
+
+    def get_layout_box(self, available_space: Rectangle):
         """
-        This method calculates the minimum and maximum width of the content
-        in this TableCell. It uses an iterative process to gradually hone in on the
-        minimum width, which can be quite labour-intensive.
+        This function returns the previous result of layout
+        :return:    the Rectangle that was the result of the previous layout operation
         """
-        max_bounding_box: Rectangle = self._calculate_layout_box(
-            Page(),
-            Rectangle(Decimal(0), Decimal(0), Decimal(2048), Decimal(2048)),
+        if self._forced_layout_box is not None:
+            return self._forced_layout_box
+        return super(TableCell, self).get_layout_box(available_space)
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        if self._forced_layout_box is not None:
+
+            horizontal_border_width: Decimal = Decimal(0)
+            if self._border_left:
+                horizontal_border_width += self._border_width
+            if self._border_right:
+                horizontal_border_width += self._border_width
+
+            vertical_border_width: Decimal = Decimal(0)
+            if self._border_top:
+                vertical_border_width += self._border_width
+            if self._border_bottom:
+                vertical_border_width += self._border_width
+
+            return Rectangle(
+                self._forced_layout_box.get_x()
+                + self._padding_left
+                + (self._border_width if self._border_left else Decimal(0)),
+                self._forced_layout_box.get_y()
+                + self._padding_bottom
+                + (self._border_width if self._border_bottom else Decimal(0)),
+                max(
+                    Decimal(0),
+                    self._forced_layout_box.get_width()
+                    - self._padding_left
+                    - self._padding_right
+                    - horizontal_border_width,
+                ),
+                max(
+                    Decimal(0),
+                    self._forced_layout_box.get_height()
+                    - self._padding_top
+                    - self._padding_bottom
+                    - vertical_border_width,
+                ),
+            )
+
+        # default
+        return self._layout_element.get_layout_box(available_space)
+
+    def _set_layout_box(self, layout_box: Rectangle) -> "TableCell":
+        self._forced_layout_box = layout_box
+        return self
+
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
+        self._layout_element.paint(page, available_space)
+
+    def _calculate_min_and_max_layout_box(self) -> None:
+        lbox_max: Rectangle = self.get_layout_box(
+            Rectangle(Decimal(0), Decimal(0), Decimal(2048), Decimal(2048))
         )
-        self._max_width = ceil(max_bounding_box.get_width()) + Decimal(1)
-        self._min_height = ceil(max_bounding_box.get_height()) + Decimal(1)
-        min_width_upper_bound: Decimal = self._max_width
-        min_width_lower_bound: Decimal = Decimal(1)
-        while (min_width_upper_bound - min_width_lower_bound) > 1:
-            midpoint: Decimal = (
-                min_width_upper_bound + min_width_lower_bound
-            ) / Decimal(2)
-            midpoint = Decimal(int(midpoint))
+        upper_bound_lbox_min: Rectangle = copy.deepcopy(lbox_max)
+        lower_bound_lbox_min: Rectangle = copy.deepcopy(
+            Rectangle(
+                lbox_max.get_x(), lbox_max.get_y(), Decimal(1), lbox_max.get_height()
+            )
+        )
+        lbox_min: typing.Optional[Rectangle] = None
+        while (
+            abs(upper_bound_lbox_min.get_width() - lower_bound_lbox_min.get_width()) > 1
+        ):
+            midpoint_lbox_min: Rectangle = Rectangle(
+                upper_bound_lbox_min.get_x(),
+                upper_bound_lbox_min.get_y(),
+                (upper_bound_lbox_min.get_width() + lower_bound_lbox_min.get_width())
+                / 2,
+                upper_bound_lbox_min.get_height(),
+            )
             try:
-                # attempt layout
-                self._calculate_layout_box(
-                    Page(),
-                    Rectangle(Decimal(0), Decimal(0), Decimal(midpoint), Decimal(2048)),
-                )
-
-                # check bounding box to see if layout made it
-                bb: typing.Optional[Rectangle] = self.get_bounding_box()
-                assert bb is not None
-                self._max_height = ceil(bb.get_height()) + Decimal(1)
-                if bb.get_width() > midpoint:
-                    min_width_lower_bound = midpoint
+                lbox_tmp: Rectangle = self.get_layout_box(midpoint_lbox_min)
+                lbox_min = lbox_tmp
+                if lbox_tmp.get_width() > midpoint_lbox_min.get_width():
+                    lower_bound_lbox_min = midpoint_lbox_min
                 else:
-                    min_width_upper_bound = midpoint
+                    upper_bound_lbox_min = midpoint_lbox_min
             except:
-                min_width_lower_bound = midpoint
+                lower_bound_lbox_min = midpoint_lbox_min
+                continue
 
-        # copy bounds
-        self._min_width = min_width_upper_bound
-
-    def _calculate_layout_box_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-        return self._layout_element._calculate_layout_box(page, bounding_box)
-
-    def layout(self, page: Page, layout_box: Rectangle) -> Rectangle:
-        """
-        This function calculates the layout box and performs layout for this LayoutElement.
-        TableCell propagates the padding to its inner LayoutElement.
-        """
-        modified_layout_box: Rectangle = Rectangle(
-            layout_box.x + self._padding_left,
-            layout_box.y + self._padding_bottom,
-            layout_box.width - self._padding_left - self._padding_right,
-            layout_box.height - self._padding_top - self._padding_bottom,
-        )
-        returned_layout_box: Rectangle = self._layout_element.layout(
-            page, modified_layout_box
-        )
-
-        modified_returned_layout_box: Rectangle = Rectangle(
-            returned_layout_box.x - self._padding_left,
-            returned_layout_box.y - self._padding_bottom,
-            returned_layout_box.width + self._padding_left + self._padding_right,
-            returned_layout_box.height + self._padding_top + self._padding_bottom,
-        )
-        self.set_bounding_box(modified_returned_layout_box)
+        # set properties
+        if lbox_min is None:
+            lbox_min = lbox_max
+        self._min_height = lbox_max.get_height()
+        self._min_width = lbox_min.get_width()
+        self._max_height = lbox_min.get_height()
+        self._max_width = lbox_max.get_width()
 
         # return
-        return modified_returned_layout_box
-
-    def _draw_border(self, page: Page, border_box: Rectangle):
-        # This method is purposefully blank, to ensure the parent (Table)
-        # is the only element that gets to call the _draw_border_after_layout method
-        # which properly renders the borders.
-        pass
-
-    def _draw_border_after_layout(self, page: Page):
-        assert self.bounding_box is not None
-        super(TableCell, self)._draw_border(page, self.bounding_box)
-
-    def _draw_background(self, page: Page, border_box: Rectangle):
-        # This method is purposefully blank, to ensure the parent (Table)
-        # is the only element that gets to call the _draw_background_after_layout method
-        # which properly renders the background.
-        pass
-
-    def _draw_background_after_layout(self, page: Page, border_box: Rectangle):
-        super(TableCell, self)._draw_background(page, border_box)
 
 
 class Table(LayoutElement):
@@ -205,10 +217,10 @@ class Table(LayoutElement):
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
         horizontal_alignment: Alignment = Alignment.LEFT,
-        margin_bottom: typing.Optional[Decimal] = None,
-        margin_left: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
-        margin_top: typing.Optional[Decimal] = None,
+        margin_bottom: Decimal = Decimal(0),
+        margin_left: Decimal = Decimal(0),
+        margin_right: Decimal = Decimal(0),
+        margin_top: Decimal = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
@@ -229,10 +241,10 @@ class Table(LayoutElement):
             border_width=border_width,
             font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
-            margin_bottom=margin_bottom if margin_bottom is not None else Decimal(5),
-            margin_left=margin_left if margin_left is not None else Decimal(5),
-            margin_right=margin_right if margin_right is not None else Decimal(5),
-            margin_top=margin_top if margin_top is not None else Decimal(5),
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
             padding_bottom=padding_bottom,
             padding_left=padding_left,
             padding_right=padding_right,
@@ -446,7 +458,7 @@ class Table(LayoutElement):
             self._font_size = inner_layout_element.get_font_size()
 
         # determine gridpoints occupied by the new TableCell
-        first_non_complete_row: int = min(
+        first_incomplete_row: int = min(
             [
                 x
                 for x in range(0, self._number_of_rows)
@@ -456,9 +468,9 @@ class Table(LayoutElement):
         )
         # check which columns are already occupied in the current row
         occupied_cols_in_row: typing.List[int] = []
-        for c in self._get_cells_at_row(first_non_complete_row):
+        for c in self._get_cells_at_row(first_incomplete_row):
             occupied_cols_in_row.extend(
-                [x[1] for x in c._table_coordinates if x[0] == first_non_complete_row]
+                [x[1] for x in c._table_coordinates if x[0] == first_incomplete_row]
             )
         # the first empty column is the lowest number that does not appear in occupied_cols_in_row
         first_empty_column: int = min(
@@ -473,7 +485,7 @@ class Table(LayoutElement):
         for i in range(0, layout_element._row_span):
             for j in range(0, layout_element._col_span):
                 layout_element._table_coordinates.append(
-                    (first_non_complete_row + i, first_empty_column + j)
+                    (first_incomplete_row + i, first_empty_column + j)
                 )
 
         # return

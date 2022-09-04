@@ -98,13 +98,14 @@ class LZWDecode:
                 continue
 
             # normal behaviour
+            x: bytearray = bytearray()
             if code < self._table_index:
-                x: bytearray = self._lookup_table[code]
+                x = self._lookup_table[code]
                 bytes_out += x
                 self._add_to_lookup_table(self._lookup_table[prev_code], x[0:1])
                 prev_code = code
             else:
-                x: bytearray = self._lookup_table[prev_code]
+                x = self._lookup_table[prev_code]
                 x = x + x[0:1]
                 bytes_out += x
                 self._add_to_lookup_table(x, bytearray())

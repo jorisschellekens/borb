@@ -70,7 +70,7 @@ class SimpleNonLigatureTextExtraction(SimpleTextExtraction):
         text: str = ""
         if page_nr in self._text_per_page:
             text = self._text_per_page[page_nr]
-            while any([k in text for k, v in self._ligatures_to_replace]):
+            while any([k in text for k, v in self._ligatures_to_replace.items()]):
                 for k, v in self._ligatures_to_replace.items():
                     text = text.replace(k, v)
         return text

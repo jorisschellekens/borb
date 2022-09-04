@@ -9,7 +9,7 @@ from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.shape.shape import Shape
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
@@ -122,7 +122,12 @@ class TestExtractColors(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -146,7 +151,7 @@ class TestExtractColors(unittest.TestCase):
         for c in colors[0:10]:
             t.add(
                 TableCell(
-                    Shape(
+                    ConnectedShape(
                         points=LineArtFactory.droplet(
                             bounding_box=Rectangle(
                                 Decimal(0), Decimal(0), Decimal(32), Decimal(32)

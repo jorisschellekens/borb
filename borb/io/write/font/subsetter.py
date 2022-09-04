@@ -11,10 +11,10 @@ import random
 import typing
 import zlib
 
-from fontTools.subset import Subsetter as fSubsetter
-from fontTools.ttLib import TTFont
+from fontTools.subset import Subsetter as fSubsetter    # type: ignore[import]
+from fontTools.ttLib import TTFont                      # type: ignore[import]
 
-from borb.io.read.types import Decimal as bDecimal, Name, String, Stream
+from borb.io.read.types import Decimal as bDecimal, Name
 from borb.io.write.font.character_set_listener import CharacterSetListener
 from borb.io.write.font.copy_command_operator import CopyCommandOperator
 from borb.io.write.font.subset_show_text_with_glyph_positioning import (

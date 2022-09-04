@@ -120,8 +120,9 @@ class LowLevelTokenizer:
             return Token(self._io_source.tell() - 1, TokenType.END_ARRAY, b"]")
 
         # NAME
+        out_str: bytearray = bytearray()
         if ch == b"/":
-            out_str: bytearray = bytearray(b"/")
+            out_str = bytearray(b"/")
             out_pos = self._io_source.tell() - 1
             while True:
                 ch = self._next_byte()
@@ -144,7 +145,7 @@ class LowLevelTokenizer:
 
         # COMMENT
         if ch == b"%":
-            out_str: bytearray = bytearray([])
+            out_str = bytearray([])
             out_pos = self._io_source.tell() - 1
             while len(ch) != 0 and ch != b"\r" and ch != b"\n":
                 out_str += ch
@@ -167,7 +168,7 @@ class LowLevelTokenizer:
                 return Token(out_pos, TokenType.HEX_STRING, b"<>")
 
             # HEX_STRING
-            out_str: bytearray = bytearray(b"<")
+            out_str = bytearray(b"<")
             out_str += ch
             while True:
                 ch = self._next_byte()
@@ -180,7 +181,7 @@ class LowLevelTokenizer:
 
         # NUMBER
         if self._is_pseudo_digit(ch):
-            out_str: bytearray = bytearray([])
+            out_str = bytearray([])
             out_pos = self._io_source.tell() - 1
             while len(ch) != 0 and self._is_pseudo_digit(ch):
                 out_str += ch
@@ -192,7 +193,7 @@ class LowLevelTokenizer:
         # STRING
         if ch == b"(":
             bracket_nesting_level = 1
-            out_str: bytearray = bytearray(b"(")
+            out_str = bytearray(b"(")
             out_pos = self._io_source.tell() - 1
             while True:
                 ch = self._next_byte()
@@ -216,7 +217,7 @@ class LowLevelTokenizer:
             return Token(out_pos, TokenType.STRING, bytes(out_str))
 
         # OTHER
-        out_str: bytearray = bytearray([])
+        out_str = bytearray([])
         out_pos = self._io_source.tell() - 1
         while len(ch) != 0 and not self._is_delimiter(ch):
             out_str += ch

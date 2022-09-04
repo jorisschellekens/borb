@@ -1,3 +1,4 @@
+import random
 import typing
 import unittest
 from pathlib import Path
@@ -14,7 +15,7 @@ from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.shape.shape import Shape
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
 from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
@@ -52,7 +53,7 @@ class TestCreateFlyer(unittest.TestCase):
         """
         ps: typing.Tuple[Decimal, Decimal] = PageSize.A4_PORTRAIT.value
         # square
-        Shape(
+        ConnectedShape(
             points=[
                 (ps[0] - 32, 40),
                 (ps[0], 40),
@@ -61,9 +62,9 @@ class TestCreateFlyer(unittest.TestCase):
             ],
             stroke_color=HexColor("d53067"),
             fill_color=HexColor("d53067"),
-        ).layout(page, Rectangle(ps[0] - 32, 40, 32, 32))
+        ).paint(page, Rectangle(ps[0] - 32, 40, 32, 32))
         # square
-        Shape(
+        ConnectedShape(
             points=[
                 (ps[0] - 64, 40),
                 (ps[0] - 32, 40),
@@ -72,9 +73,9 @@ class TestCreateFlyer(unittest.TestCase):
             ],
             stroke_color=HexColor("eb3f79"),
             fill_color=HexColor("eb3f79"),
-        ).layout(page, Rectangle(ps[0] - 64, 40, 32, 32))
+        ).paint(page, Rectangle(ps[0] - 64, 40, 32, 32))
         # triangle
-        Shape(
+        ConnectedShape(
             points=[
                 (ps[0] - 96, 40),
                 (ps[0] - 64, 40),
@@ -82,14 +83,14 @@ class TestCreateFlyer(unittest.TestCase):
             ],
             stroke_color=HexColor("e01b84"),
             fill_color=HexColor("e01b84"),
-        ).layout(page, Rectangle(ps[0] - 96, 40, 32, 32))
+        ).paint(page, Rectangle(ps[0] - 96, 40, 32, 32))
         # line
         r: Rectangle = Rectangle(Decimal(0), Decimal(32), ps[0], Decimal(8))
-        Shape(
+        ConnectedShape(
             points=LineArtFactory.rectangle(r),
             stroke_color=HexColor("283592"),
             fill_color=HexColor("283592"),
-        ).layout(page, r)
+        ).paint(page, r)
 
     def add_gray_artwork_upper_right_corner(self, page: Page) -> None:
         """
@@ -111,12 +112,12 @@ class TestCreateFlyer(unittest.TestCase):
             x: Decimal = ps[0] - N * M + i * M
             y: Decimal = ps[1] - (i + 1) * M
             rg: HexColor = grays[i % len(grays)]
-            Shape(
+            ConnectedShape(
                 points=[(x + M, y), (x + M, y + M), (x, y + M)],
                 stroke_color=rg,
                 fill_color=rg,
                 auto_close_shape=True,
-            ).layout(page, Rectangle(x, y, M, M))
+            ).paint(page, Rectangle(x, y, M, M))
         for i in range(0, N - 1):
             for j in range(0, N - 1):
                 if j > i:
@@ -124,12 +125,12 @@ class TestCreateFlyer(unittest.TestCase):
                 x: Decimal = ps[0] - (N - 1) * M + i * M
                 y: Decimal = ps[1] - (j + 1) * M
                 rg: HexColor = grays[(i * 3 + j * 5) % len(grays)]
-                Shape(
+                ConnectedShape(
                     points=[(x, y), (x + M, y), (x + M, y + M), (x, y + M)],
                     stroke_color=rg,
                     fill_color=rg,
                     auto_close_shape=True,
-                ).layout(page, Rectangle(x, y, M, M))
+                ).paint(page, Rectangle(x, y, M, M))
 
     def test_create_flyer(self):
 
@@ -146,6 +147,7 @@ class TestCreateFlyer(unittest.TestCase):
         layout: PageLayout = SingleColumnLayout(page)
 
         # add artwork
+        random.seed(2048)
         self.add_gray_artwork_upper_right_corner(page)
 
         # contact information
@@ -180,7 +182,7 @@ class TestCreateFlyer(unittest.TestCase):
         )
         page.add_annotation(
             RemoteGoToAnnotation(
-                qr_code.get_bounding_box(), uri="https://www.borbpdf.com"
+                qr_code.get_previous_paint_box(), uri="https://www.borbpdf.com"
             )
         )
 

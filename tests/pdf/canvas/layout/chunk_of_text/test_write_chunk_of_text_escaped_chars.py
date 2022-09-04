@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -16,7 +17,7 @@ from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
-class TestWriteChunkOfTextEscapedChars(unittest.TestCase):
+class TestAddChunkOfTextEscapedChars(unittest.TestCase):
     """
     This test creates a PDF with a ChunkOfText in it,
     containing the characters that ought to be escaped in PDF syntax.
@@ -49,7 +50,12 @@ class TestWriteChunkOfTextEscapedChars(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -64,7 +70,7 @@ class TestWriteChunkOfTextEscapedChars(unittest.TestCase):
         ChunkOfText(
             "(one)\tTwo\nThree\bFour\fFive",
             font_size=Decimal(24),
-        ).layout(page, Rectangle(Decimal(59), Decimal(550), Decimal(100), Decimal(100)))
+        ).paint(page, Rectangle(Decimal(59), Decimal(550), Decimal(100), Decimal(100)))
 
         # determine output location
         out_file = self.output_dir / "output.pdf"

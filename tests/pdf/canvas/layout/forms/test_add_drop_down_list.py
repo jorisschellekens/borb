@@ -55,9 +55,7 @@ class TestAddDropDownList(unittest.TestCase):
                 "Andorra",
             ]
         )
-        tf.layout(
-            page, Rectangle(Decimal(105), Decimal(764), Decimal(419), Decimal(15))
-        )
+        tf.paint(page, Rectangle(Decimal(105), Decimal(764), Decimal(419), Decimal(15)))
 
         # write
         out_file = self.output_dir / "output_001.pdf"

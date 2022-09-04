@@ -374,7 +374,7 @@ class Document(Dictionary):
         This method returns all embedded files, as a dictionary of names unto bytes
         """
         return {
-            k: v["EF"]["F"]["DecodedBytes"]
+            str(k): v["EF"]["F"]["DecodedBytes"]
             for k, v in NameTree(self, Name("EmbeddedFiles")).items()
         }
 

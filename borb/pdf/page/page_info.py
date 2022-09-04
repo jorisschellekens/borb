@@ -59,6 +59,8 @@ class PageInfo(Dictionary):
         w, h = self.get_width(), self.get_height()
         if w is None or h is None:
             return None
+        assert w is not None
+        assert h is not None
         for p in PageSize:
             if abs(w - p.value[1]) <= 1 and abs(h - p.value[1]):
                 return p

@@ -180,14 +180,14 @@ class Transformer:
         """
         is_unique: bool = False
         try:
-            is_unique = object.is_unique()
+            is_unique = object.is_unique()              # type: ignore[union-attr]
         except:
             pass
         obj_id = id(object)
         if (not is_unique) and obj_id in context.indirect_objects_by_id:
             cached_indirect_object: AnyPDFType = context.indirect_objects_by_id[obj_id]
             assert not isinstance(cached_indirect_object, Reference)
-            return cached_indirect_object.get_reference()  # type: ignore [union-attr]
+            return cached_indirect_object.get_reference()  # type: ignore[union-attr]
 
         # look through existing indirect object hashes
         obj_hash: int = self._hash(object)

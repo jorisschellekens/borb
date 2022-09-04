@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.color.color import X11Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -49,7 +49,12 @@ class TestWriteChunkOfTextInRainbowColors(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -71,7 +76,7 @@ class TestWriteChunkOfTextInRainbowColors(unittest.TestCase):
                 X11Color("Purple"),
             ]
         ):
-            ChunkOfText("Lorem Ipsum", font_size=Decimal(24), font_color=c).layout(
+            ChunkOfText("Lorem Ipsum", font_size=Decimal(24), font_color=c).paint(
                 page,
                 Rectangle(
                     Decimal(59 + i * 30),

@@ -84,11 +84,11 @@ class Image(LayoutElement):
             vertical_alignment=vertical_alignment,
         )
         add_base_methods(image)
-        self._image: PILImage = image
+        self._image: PILImage = image   # type: ignore[valid-type]
         self._width = width or Decimal(self._image.width)
         self._height = height or Decimal(self._image.height)
 
-    def _get_image_resource_name(self, image: PILImage, page: Page):
+    def _get_image_resource_name(self, image: PILImage, page: Page):    # type: ignore[valid-type]
         # create resources if needed
         if "Resources" not in page:
             page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
@@ -106,23 +106,15 @@ class Image(LayoutElement):
             page["Resources"]["XObject"][Name("Im%d" % image_index)] = image
             return Name("Im%d" % image_index)
 
-    def _calculate_layout_box_without_padding(
-        self, page: "Page", bounding_box: Rectangle  # type: ignore[name-defined]
-    ) -> Rectangle:
-
-        # return
-        layout_box: Rectangle = Rectangle(
-            bounding_box.x,
-            bounding_box.y + bounding_box.get_height() - self._height,
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - self._height,
             self._width,
             self._height,
         )
-        self.set_bounding_box(layout_box)
-        return layout_box
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
+    def _paint_content_box(self, page: Page, bounding_box: Rectangle):
 
         # add image to resources
         image_resource_name = self._get_image_resource_name(self._image, page)
@@ -132,20 +124,12 @@ class Image(LayoutElement):
 
         # write Do operator
         content = " q %f 0 0 %f %f %f cm /%s Do Q " % (
-            self._width,
-            self._height,
-            bounding_box.get_x(),
-            bounding_box.get_y() + bounding_box.get_height() - self._height,
+            float(self._width),
+            float(self._height),
+            float(bounding_box.get_x()),
+            float(bounding_box.get_y() + bounding_box.get_height() - self._height),
             image_resource_name,
         )
 
         # write content
-        self._append_to_content_stream(page, content)
-
-        # return
-        return Rectangle(
-            bounding_box.x,
-            bounding_box.y + bounding_box.get_height() - self._height,
-            self._width,
-            self._height,
-        )
+        page._append_to_content_stream(content)

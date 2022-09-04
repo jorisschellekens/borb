@@ -105,12 +105,13 @@ class PDFToMP3(SimpleParagraphExtraction):
 
         # position
         if self._include_position:
-            assert paragraph.bounding_box is not None
+            lbox: typing.Optional[Rectangle] = paragraph.get_previous_layout_box()
+            assert lbox is not None
             text_to_speak_for_paragraph += "Page %d, paragraph %d, %s %s." % (
                 page_number + 1,
                 paragraph_number + 1,
-                self._get_text_for_y(paragraph.bounding_box),
-                self._get_text_for_x(paragraph.bounding_box),
+                self._get_text_for_y(lbox),
+                self._get_text_for_x(lbox),
             )
         # text of paragraph
         text_to_speak_for_paragraph += paragraph._text

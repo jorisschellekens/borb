@@ -6,8 +6,9 @@ This implementation of FormField represents a text area.
 """
 import typing
 import zlib
+from decimal import Decimal
 
-from borb.io.read.types import Boolean, Decimal
+from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
@@ -106,7 +107,7 @@ class TextArea(FormField):
         # widget dictionary
         # fmt: off
         self._widget_dictionary = Dictionary()
-        self._widget_dictionary.set_is_unique(True)
+        self._widget_dictionary.set_is_unique(True)                         # type: ignore [attr-defined]
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)
@@ -151,35 +152,34 @@ class TextArea(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _do_layout_without_padding(
-        self, page: "Page", layout_box: Rectangle
-    ) -> Rectangle:
-
-        # determine layout rectangle
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         assert self._font_size is not None
-        assert layout_box.height > self._font_size
-        layout_rect = Rectangle(
-            layout_box.x,
-            layout_box.y
-            + layout_box.height
-            - (self._font_size + 1) * self._number_of_lines,
-            max(layout_box.width, Decimal(64)),
-            self._font_size,
+        line_height: Decimal = self._font_size * Decimal(1.2)
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y()
+            + available_space.get_height()
+            - line_height * self._number_of_lines,
+            max(available_space.get_width(), Decimal(64)),
+            line_height * self._number_of_lines,
         )
 
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
+
+        # determine layout rectangle
+        cbox: Rectangle = self._get_content_box(available_space)
+
         # init self._widget_dictionary
-        self._init_widget_dictionary(page, layout_rect)
+        self._init_widget_dictionary(page, cbox)
 
         # set location
         # fmt: off
+        assert self._font_size is not None
         if self._widget_dictionary is not None:
-            self._widget_dictionary["AP"]["N"]["BBox"][2] = bDecimal(layout_box.width)
-            self._widget_dictionary["AP"]["N"]["BBox"][3] = bDecimal(self._font_size * self._number_of_lines)
-            self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
-            self._widget_dictionary["Rect"][1] = bDecimal(layout_box.y + layout_box.height - (self._font_size + 1) * self._number_of_lines)
-            self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
-            self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
+            self._widget_dictionary["AP"]["N"]["BBox"][2] = bDecimal(cbox.get_width())
+            self._widget_dictionary["AP"]["N"]["BBox"][3] = bDecimal(self._font_size)
+            self._widget_dictionary["Rect"][0] = bDecimal(cbox.get_x())
+            self._widget_dictionary["Rect"][1] = bDecimal(cbox.get_y())
+            self._widget_dictionary["Rect"][2] = bDecimal(cbox.get_x() + cbox.get_width())
+            self._widget_dictionary["Rect"][3] = bDecimal(cbox.get_y() + cbox.get_height())
         # fmt: on
-
-        # return Rectangle
-        return layout_rect

@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -13,7 +14,7 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import check_pdf_using_validator
+from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 
 class TestWriteChunkOfText(unittest.TestCase):
@@ -49,7 +50,12 @@ class TestWriteChunkOfText(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -57,7 +63,7 @@ class TestWriteChunkOfText(unittest.TestCase):
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        ChunkOfText("Lorem Ipsum", font_size=Decimal(18.2)).layout(
+        ChunkOfText("Lorem Ipsum", font_size=Decimal(18.2)).paint(
             page, Rectangle(Decimal(59), Decimal(550), Decimal(100), Decimal(100))
         )
 
@@ -74,3 +80,4 @@ class TestWriteChunkOfText(unittest.TestCase):
 
         # check
         check_pdf_using_validator(out_file)
+        compare_visually_to_ground_truth(out_file)

@@ -67,7 +67,7 @@ class TestAddSoundAnnotation(unittest.TestCase):
         # add sound annotation
         page.add_annotation(
             SoundAnnotation(
-                img.get_bounding_box(), "/home/joris/Downloads/audioclip.mp3"
+                img.get_previous_paint_box(), "/home/joris/Downloads/audioclip.mp3"
             )
         )
 
@@ -114,7 +114,7 @@ class TestAddSoundAnnotation(unittest.TestCase):
         # add sound annotation
         page.add_annotation(
             SoundAnnotation(
-                img.get_bounding_box(),
+                img.get_previous_paint_box(),
                 "https://commons.wikimedia.org/wiki/File:Variations_for_flute_and_piano.mp3",
             )
         )

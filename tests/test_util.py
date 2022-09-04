@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def compare_visually_to_ground_truth(
-    pdf_path: Path, maximum_normalized_difference: float = 0.004
+    pdf_path: Path, maximum_normalized_difference: float = 0.0005
 ) -> object:
 
     assert pdf_path.exists()
@@ -39,7 +39,7 @@ def compare_visually_to_ground_truth(
     W: int = min(im1.width, im2.width)
     H: int = min(im1.height, im2.height)
     progress_raw: float = 0
-    prev_percentage_displayed: int = 0
+    prev_progress_int: int = 0
     diff: float = 0
     for i in range(0, W):
         for j in range(0, H):
@@ -49,12 +49,9 @@ def compare_visually_to_ground_truth(
             progress_int = int(progress_raw * 100)
 
             # display progress
-            if progress_int != prev_percentage_displayed:
-                print(
-                    "compare_visually_to_ground_truth %s %d"
-                    % (pdf_path.name, progress_int)
-                )
-                prev_percentage_displayed = progress_int
+            if progress_int != prev_progress_int:
+                print("comparing visually: %d%% complete" % progress_int)
+                prev_progress_int = progress_int
 
             # green screen
             if p2 == (0, 255, 0):
@@ -67,11 +64,12 @@ def compare_visually_to_ground_truth(
             if d > 0.01:
                 diff += 1
 
-    # delete output file
-    os.remove(png_path_001)
-
     # normalize diff
     diff /= W * H
+
+    # delete output file
+    if diff <= maximum_normalized_difference:
+        os.remove(png_path_001)
 
     # assert
     assert (

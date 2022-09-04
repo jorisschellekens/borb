@@ -50,17 +50,26 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
                 ):
                     continue
 
-                if l0.bounding_box.width == 0 or l1.bounding_box.width == 0:
+                if (
+                    l0.get_previous_layout_box().get_width() == 0
+                    or l1.get_previous_layout_box().get_width() == 0
+                ):
                     continue
 
                 # determine overlap
                 overlap_percentage = self._overlap(
-                    l0.bounding_box, l1.bounding_box
-                ) / min(l0.bounding_box.width, l1.bounding_box.width)
+                    l0.get_previous_layout_box(), l1.get_previous_layout_box()
+                ) / min(
+                    l0.get_previous_layout_box().width,
+                    l1.get_previous_layout_box().width,
+                )
 
                 # determine leading
-                leading = abs(l0.bounding_box.y - l1.bounding_box.y) / min(
-                    l0.bounding_box.height, l1.bounding_box.height
+                leading = abs(
+                    l0.get_previous_layout_box().y - l1.get_previous_layout_box().y
+                ) / min(
+                    l0.get_previous_layout_box().height,
+                    l1.get_previous_layout_box().height,
                 )
 
                 if (
@@ -84,22 +93,26 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
                 font=lines_of_text[0]._font,
                 font_color=lines_of_text[0]._font_color,
                 font_size=lines_of_text[0]._font_size,
-            ).set_bounding_box(
-                Rectangle(
-                    min([l.bounding_box.x for l in lines_of_text]),
-                    min([l.bounding_box.y for l in lines_of_text]),
-                    max(
-                        [l.bounding_box.x + l.bounding_box.width for l in lines_of_text]
-                    )
-                    - min([l.bounding_box.x for l in lines_of_text]),
-                    max(
-                        [
-                            l.bounding_box.y + l.bounding_box.height
-                            for l in lines_of_text
-                        ]
-                    )
-                    - min([l.bounding_box.y for l in lines_of_text]),
+            )
+            p._previous_layout_box = Rectangle(
+                min([l.get_previous_layout_box().x for l in lines_of_text]),
+                min([l.get_previous_layout_box().y for l in lines_of_text]),
+                max(
+                    [
+                        l.get_previous_layout_box().x
+                        + l.get_previous_layout_box().width
+                        for l in lines_of_text
+                    ]
                 )
+                - min([l.get_previous_layout_box().x for l in lines_of_text]),
+                max(
+                    [
+                        l.get_previous_layout_box().y
+                        + l.get_previous_layout_box().height
+                        for l in lines_of_text
+                    ]
+                )
+                - min([l.get_previous_layout_box().y for l in lines_of_text]),
             )
             assert isinstance(p, Paragraph)
             paragraphs.append(p)

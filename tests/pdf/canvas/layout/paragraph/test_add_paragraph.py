@@ -49,14 +49,19 @@ class TestAddParagraph(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
                     "This test creates a PDF with a Paragraph object in it. "
-                    "The Paragraph is aligned TOP, LEFT. The yellow box is the bounding box given to the layout algorithm."
+                    "The Paragraph is aligned TOP, LEFT. The (colored) box is the bounding box given to the layout algorithm."
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
@@ -77,7 +82,7 @@ class TestAddParagraph(unittest.TestCase):
             padding_right=Decimal(5),
             padding_bottom=Decimal(5),
             padding_left=Decimal(5),
-        ).layout(
+        ).paint(
             page,
             bb,
         )

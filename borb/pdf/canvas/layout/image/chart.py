@@ -11,9 +11,9 @@ from typing import Optional
 
 from PIL import Image as PILImage  # type: ignore [import]
 
+from borb.pdf.canvas.color.color import HexColor, Color
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.canvas.color.color import HexColor, Color, X11Color
 
 
 class Chart(Image):

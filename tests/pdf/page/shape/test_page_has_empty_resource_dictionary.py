@@ -5,7 +5,7 @@ from pathlib import Path
 from borb.io.read.types import Dictionary
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.shape.shape import Shape
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -42,11 +42,11 @@ class TestPageHasEmptyResourceDictionary(unittest.TestCase):
         bounding_box: Rectangle = Rectangle(
             left_x, bottom_y, Decimal(200), Decimal(200)
         )
-        Shape(
+        ConnectedShape(
             LineArtFactory.regular_n_gon(bounding_box, 5),
             stroke_color=HexColor("56cbf9"),
             fill_color=HexColor("56cbf9"),
-        ).layout(page, bounding_box)
+        ).paint(page, bounding_box)
 
         # attempt to store PDF
         out_file: Path = self.output_dir / "output_001.pdf"

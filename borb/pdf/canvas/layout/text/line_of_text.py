@@ -21,6 +21,8 @@ from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
+from borb.pdf.canvas.font.glyph_line import GlyphLine
+from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
@@ -71,6 +73,7 @@ class LineOfText(ChunkOfText):
         background_color: typing.Optional[Color] = None,
         fixed_leading: typing.Optional[Decimal] = None,
         multiplied_leading: typing.Optional[Decimal] = None,
+        text_alignment: Alignment = Alignment.LEFT,
     ):
         super().__init__(
             text=text,
@@ -101,3 +104,92 @@ class LineOfText(ChunkOfText):
             multiplied_leading=multiplied_leading,
             fixed_leading=fixed_leading,
         )
+        # alignment
+        assert text_alignment in [
+            Alignment.LEFT,
+            Alignment.CENTERED,
+            Alignment.RIGHT,
+            Alignment.JUSTIFIED,
+        ]
+        self._text_alignment = text_alignment
+
+    #
+    # RENDERING LOGIC
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+
+        # for text_alignment == JUSTIFIED we handle it ourselves
+        # otherwise we delegate to super
+        if self._text_alignment == Alignment.JUSTIFIED:
+
+            # determine line height
+            assert self._font_size is not None
+            line_height: Decimal = self._font_size
+            if self._multiplied_leading is not None:
+                line_height *= self._multiplied_leading
+            if self._fixed_leading is not None:
+                line_height += self._fixed_leading
+
+            # return
+            return Rectangle(
+                available_space.get_x(),
+                available_space.get_y() + available_space.get_height() - line_height,
+                available_space.get_width(),
+                line_height,
+            )
+        else:
+            return super(LineOfText, self)._get_content_box(available_space)
+
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None: # type: ignore[name-defined]
+
+        # if the text_alignment is not JUSTIFIED, we delegate the call to our super
+        if self._text_alignment != Alignment.JUSTIFIED:
+            super(LineOfText, self)._paint_content_box(page, available_space)
+            return
+
+        assert self._font_size is not None
+        line_height: Decimal = self._font_size
+        if self._multiplied_leading is not None:
+            line_height *= self._multiplied_leading
+        if self._fixed_leading is not None:
+            line_height += self._fixed_leading
+
+        # start calculating the remaining space per whitespace
+        text_width: Decimal = GlyphLine.from_str(
+            self._text, self._font, self._font_size
+        ).get_width_in_text_space()
+        remaining_space: Decimal = available_space.get_width() - text_width
+
+        # calculate how much "extra space" we have for every whitespace character
+        remaining_space_per_whitespace: Decimal = Decimal(0)
+        number_of_whitespaces: int = sum([1 for x in self._text if x == " "])
+        if number_of_whitespaces > 0:
+            remaining_space_per_whitespace = remaining_space / number_of_whitespaces
+
+        # build ChunkOfText objects
+        chunks_of_text: typing.List[ChunkOfText] = [
+            ChunkOfText(
+                x + " ",
+                font=self._font,
+                font_size=self._font_size,
+                font_color=self._font_color,
+                multiplied_leading=self._multiplied_leading,
+                fixed_leading=self._fixed_leading,
+            )
+            for x in self._text.split(" ")
+        ]
+        chunks_of_text[-1]._text = chunks_of_text[-1]._text[:-1]
+
+        # paint
+        prev_x: Decimal = available_space.get_x()
+        for c in chunks_of_text:
+            cbox: Rectangle = Rectangle(
+                prev_x,
+                available_space.get_y(),
+                available_space.get_width(),
+                line_height,
+            )
+            c.paint(page, cbox)
+            prev_x += c._get_content_box(available_space).get_width()
+            prev_x += remaining_space_per_whitespace

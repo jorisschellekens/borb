@@ -73,40 +73,26 @@ class Emoji(Image):
         self._height = self._font_size
         return self
 
-    def _do_layout_without_padding(
-        self, page: Page, bounding_box: Rectangle
-    ) -> Rectangle:
-
-        # determine leading
-        leading: Decimal = Decimal(0)
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        # determine line_height
         assert self._font_size is not None
         assert self._multiplied_leading is not None or self._fixed_leading is not None
+        line_height: Decimal = self._font_size
         if self._multiplied_leading is not None:
-            leading = self._font_size * (self._multiplied_leading - Decimal(1))
+            line_height *= self._multiplied_leading
         if self._fixed_leading is not None:
-            leading = self._fixed_leading
+            line_height += self._fixed_leading
 
-        # delegate to Image
-        # modify bounding box (remove leading, since the default for Image is to add itself to the top of the bouding_box)
-        layout_rectangle: Rectangle = super(Emoji, self)._do_layout_without_padding(
-            page,
-            Rectangle(
-                bounding_box.get_x(),
-                bounding_box.get_y(),
-                bounding_box.get_width(),
-                bounding_box.get_height() - leading,
-            ),
-        )
-
-        # update bounding box (re-add leading)
-        layout_rectangle = Rectangle(
-            layout_rectangle.get_x(),
-            layout_rectangle.get_y(),
-            layout_rectangle.get_width(),
-            layout_rectangle.get_height() + leading,
-        )
         # return
-        return layout_rectangle
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - line_height,
+            line_height,
+            line_height,
+        )
+
+    def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
+        super(Emoji, self)._paint_content_box(page, available_space)
 
 
 class Emojis(enum.Enum):
