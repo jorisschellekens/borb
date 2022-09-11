@@ -11,8 +11,8 @@ import random
 import typing
 import zlib
 
-from fontTools.subset import Subsetter as fSubsetter    # type: ignore[import]
-from fontTools.ttLib import TTFont                      # type: ignore[import]
+from fontTools.subset import Subsetter as fSubsetter  # type: ignore[import]
+from fontTools.ttLib import TTFont  # type: ignore[import]
 
 from borb.io.read.types import Decimal as bDecimal, Name
 from borb.io.write.font.character_set_listener import CharacterSetListener

@@ -136,8 +136,8 @@ class OCRImageRenderEventListener(EventListener):
                 output_type=Output.DICT,
             )
 
-            width_ratio: Decimal = event.get_width() / event.get_image().width      # type: ignore[attr-defined]
-            height_ratio: Decimal = event.get_height() / event.get_image().height   # type: ignore[attr-defined]
+            width_ratio: Decimal = event.get_width() / event.get_image().width  # type: ignore[attr-defined]
+            height_ratio: Decimal = event.get_height() / event.get_image().height  # type: ignore[attr-defined]
 
             number_of_boxes: int = len(data["level"])
             for i in range(0, number_of_boxes):
@@ -147,7 +147,7 @@ class OCRImageRenderEventListener(EventListener):
                 # PDF prefers (LEFT, BOTTOM)
                 # the following code fixes the mismatch
                 y: Decimal = (
-                    Decimal(event.get_image().height)   # type: ignore [attr-defined]
+                    Decimal(event.get_image().height)  # type: ignore [attr-defined]
                     - Decimal(data["top"][i])
                     - Decimal(data["height"][i])
                 )
@@ -242,12 +242,12 @@ class OCRImageRenderEventListener(EventListener):
     def _get_font_color(
         self,
         text: str,
-        image: PILImage,    # type: ignore[valid-type]
+        image: PILImage,  # type: ignore[valid-type]
         image_bounding_box: Rectangle,
     ) -> RGBColor:
 
         # build empty PILImage
-        text_image: PILImage = PILImage.new(    # type: ignore[valid-type]
+        text_image: PILImage = PILImage.new(  # type: ignore[valid-type]
             "RGB",
             (int(image_bounding_box.get_width()), int(image_bounding_box.get_height())),
             color=(255, 255, 255),
@@ -272,9 +272,9 @@ class OCRImageRenderEventListener(EventListener):
             percentage_of_text_pixels: Decimal = Decimal(0)
             max_x: int = 0
             max_y: int = 0
-            for i in range(0, text_image.width):                    # type: ignore[attr-defined]
-                for j in range(0, text_image.height):               # type: ignore[attr-defined]
-                    if text_image.getpixel((i, j)) == (0, 0, 0):    # type: ignore[attr-defined]
+            for i in range(0, text_image.width):  # type: ignore[attr-defined]
+                for j in range(0, text_image.height):  # type: ignore[attr-defined]
+                    if text_image.getpixel((i, j)) == (0, 0, 0):  # type: ignore[attr-defined]
                         percentage_of_text_pixels += Decimal(1)
                         max_x = max(max_x, i)
                         max_y = max(max_y, j)
@@ -286,12 +286,12 @@ class OCRImageRenderEventListener(EventListener):
             return HexColor("000000")
 
         # crop image
-        cropped_image = image.crop(                                                 # type: ignore[attr-defined]
+        cropped_image = image.crop(  # type: ignore[attr-defined]
             (
                 image_bounding_box.x,
-                image.height - image_bounding_box.y - image_bounding_box.height,    # type: ignore[attr-defined]
-                image_bounding_box.x + image_bounding_box.width,                    # type: ignore[attr-defined]
-                image.height - image_bounding_box.y,                                # type: ignore[attr-defined]
+                image.height - image_bounding_box.y - image_bounding_box.height,  # type: ignore[attr-defined]
+                image_bounding_box.x + image_bounding_box.width,  # type: ignore[attr-defined]
+                image.height - image_bounding_box.y,  # type: ignore[attr-defined]
             )
         )
 

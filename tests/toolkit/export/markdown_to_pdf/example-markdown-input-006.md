@@ -7,28 +7,25 @@ To create an unordered list, add dashes (\-), asterisks (\*), or plus signs (\+)
 - First item
 - Second item
 - Third item
-- Fourth item
 
+## Unordered Lists (2)
 
 * First item
 * Second item
 * Third item
-* Fourth item
 
+## Unordered Lists (3)
 
 + First item
 + Second item
 + Third item
-+ Fourth item
 
+## Unordered Lists (4)
 
 - First item
 - Second item
+    - Indented item
 - Third item
-    - Indented item
-    - Indented item
-- Fourth item
-
 
 ### Unordered List Best Practices
 Markdown applications don’t agree on how to handle different delimiters in the same list. For compatibility, don’t mix and match delimiters in the same list — pick one and stick with it.

@@ -79,6 +79,7 @@ class TestAdd2ScatterPlots(unittest.TestCase):
         z = z * z
 
         # scatter plot 1
+        MatPlotLibPlot.figure(figsize=(8, 8), dpi=600)
         MatPlotLibPlot.scatter(
             x,
             y,

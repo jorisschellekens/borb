@@ -67,16 +67,15 @@ class TextField(FormField):
 
         # init page and font resources
         assert self._font_size is not None
-        font_resource_name: Name = self._get_font_resource_name(
-            StandardType1Font("Helvetica"), page
-        )
+        font_resource_name: Name = self._get_font_resource_name(StandardType1Font("Helvetica"), page)
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary()
+        widget_resources: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # widget normal appearance
-        widget_normal_appearance: Stream = Stream()
+        # fmt: off
+        widget_normal_appearance: Stream = Stream().set_is_unique(True)     # type: ignore [attr-defined]
         widget_normal_appearance[Name("Type")] = Name("XObject")
         widget_normal_appearance[Name("Subtype")] = Name("Form")
         widget_normal_appearance[Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
@@ -85,7 +84,6 @@ class TextField(FormField):
         widget_normal_appearance["BBox"].append(bDecimal(layout_box.width))
         widget_normal_appearance["BBox"].append(bDecimal(self._font_size))
         widget_normal_appearance[Name("Resources")] = widget_resources
-        # fmt: off
         widget_normal_appearance[Name("DecodedBytes")] = b"/Tx BMC EMC"
         widget_normal_appearance[Name("Bytes")] = zlib.compress(widget_normal_appearance[Name("DecodedBytes")], 9)
         widget_normal_appearance[Name("Filter")] = Name("FlateDecode")
@@ -93,17 +91,17 @@ class TextField(FormField):
         # fmt: on
 
         # widget appearance dictionary
-        widget_appearance_dictionary: Dictionary = Dictionary()
-        widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
+        # fmt: off
+        widget_appearance_dictionary: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
+        # fmt: on
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
+        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]                # type: ignore [attr-defined]
 
         # widget dictionary
         # fmt: off
-        self._widget_dictionary = Dictionary()
-        self._widget_dictionary.set_is_unique(True)                         # type: ignore [attr-defined]
+        self._widget_dictionary = Dictionary().set_is_unique(True)                      # type: ignore [attr-defined]
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)

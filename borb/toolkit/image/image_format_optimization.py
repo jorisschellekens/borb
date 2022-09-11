@@ -33,15 +33,15 @@ class ImageFormatOptimization(EventListener):
             self._render_image(event)
 
     def _render_image(self, image_render_event: "ImageRenderEvent"):
-        source_image: PILImage = image_render_event.get_image() # type: ignore[valid-type]
+        source_image: PILImage = image_render_event.get_image()  # type: ignore[valid-type]
 
         # get desired width/height
-        w0: int = int(image_render_event.get_width())   # type: ignore [attr-defined]
+        w0: int = int(image_render_event.get_width())  # type: ignore [attr-defined]
         h0: int = int(image_render_event.get_height())  # type: ignore [attr-defined]
 
         # get current width/height
-        w1: int = source_image.width                    # type: ignore[attr-defined]
-        h1: int = source_image.height                   # type: ignore[attr-defined]
+        w1: int = source_image.width  # type: ignore[attr-defined]
+        h1: int = source_image.height  # type: ignore[attr-defined]
 
         # get image resource name
         assert self._current_page is not None
@@ -59,7 +59,7 @@ class ImageFormatOptimization(EventListener):
 
         # resize
         if (w0 * h0) < (w1 * h1):
-            resized_image: PILImage = source_image.resize((w0, h0))                             # type: ignore[attr-defined, valid-type]
+            resized_image: PILImage = source_image.resize((w0, h0))  # type: ignore[attr-defined, valid-type]
             add_base_methods(resized_image)
             self._current_page["Resources"]["XObject"][resource_name] = resized_image
-            resized_image.set_parent(self._current_page["Resources"]["XObject"][resource_name]) # type: ignore[attr-defined]
+            resized_image.set_parent(self._current_page["Resources"]["XObject"][resource_name])  # type: ignore[attr-defined]

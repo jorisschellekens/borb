@@ -56,10 +56,10 @@ class ColorSpectrumExtraction(EventListener):
         self._register_color(s, c)
 
     def _render_image(self, event: ImageRenderEvent):
-        r = (event.get_width() * event.get_height()) / (event.get_image().width * event.get_image().height)     # type: ignore[attr-defined]
+        r = (event.get_width() * event.get_height()) / (event.get_image().width * event.get_image().height)  # type: ignore[attr-defined]
         color_count: typing.Dict[RGBColor, Decimal] = {}
-        for i in range(0, event.get_image().width):                                                             # type: ignore [attr-defined]
-            for j in range(0, event.get_image().height):                                                        # type: ignore [attr-defined]
+        for i in range(0, event.get_image().width):  # type: ignore [attr-defined]
+            for j in range(0, event.get_image().height):  # type: ignore [attr-defined]
                 c = ColorSpectrumExtraction._get_rgb_from_image(event.get_image(), i, j)
                 if c not in color_count:
                     color_count[c] = Decimal(1)

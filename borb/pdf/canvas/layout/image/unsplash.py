@@ -53,7 +53,10 @@ class Unsplash:
         # fetch json
         min_delta: typing.Optional[Decimal] = None
         min_image: typing.Optional[dict] = None
-        url: str = ("https://api.unsplash.com/search/photos?page=1&query=%s&client_id=%s" % (keyword_str, unsplash_access_key))
+        url: str = (
+            "https://api.unsplash.com/search/photos?page=1&query=%s&client_id=%s"
+            % (keyword_str, unsplash_access_key)
+        )
         with urllib.request.urlopen(url) as response:
             for result in json.loads(response.read().decode())["results"]:
                 if "width" not in result:

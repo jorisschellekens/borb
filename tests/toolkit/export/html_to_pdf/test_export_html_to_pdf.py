@@ -1,7 +1,10 @@
 import unittest
 from pathlib import Path
 
+from borb.io.read.types import Decimal
+from borb.pdf import Page, SingleColumnLayout, PageLayout
 from borb.pdf.document.document import Document
+from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.html_to_pdf.html_to_pdf import HTMLToPDF
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
@@ -76,7 +79,15 @@ class TestExportHTMLToPDF(unittest.TestCase):
             txt = json_file_handle.read()
 
         # convert
-        document: Document = HTMLToPDF.convert_html_to_pdf(txt)
+        document: Document = Document()
+        page: Page = Page(width=PageSize.A4_PORTRAIT.value[0],
+                          height=PageSize.A4_PORTRAIT.value[1])
+        document.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page,
+                                                vertical_margin=Decimal(0),
+                                                horizontal_margin=Decimal(12))
+        layout.add(HTMLToPDF.convert_html_to_layout_element(txt))
+
 
         # store
         out_file = self.output_dir / (file_to_convert.replace(".html", ".pdf"))

@@ -1,12 +1,9 @@
-# :mega: borb release 2.1.0
+# :mega: borb release 2.1.1
 
 This release is a feature release:
-- The `LayoutElement` framework has had a major upgrade
-  - Each `LayoutElement` now offers a `get_layout_box` method which tells you how much space a `LayoutElement` takes up
-  - Each `LayoutElement` now offers a `paint` method which renders the `LayoutElement` on a `Page` 
-  - `LayoutElement` only adds its own content to the `Page` (previously it would change the order of page content to ensure backgrounds get drawn first)
-- As a result of these changes, layout is a bit faster in this release, compared to previous releases
-- All tests have been checked and changed to take into account the new behaviour
-- Tests that perform visual comparison ignore `HexColor("00ff00")`, which allows me to add the date of the test in the output, and still compare only the relevant pixels
-- `MarkdownToPDF` has been refactored to convert `Markdown` to `HTML`
-- `HTMLToPDF` still needs work to produce PDF documents
+- `HTMLToPDF` has been updated to ensure even more HTML syntax is supported
+  - `HTMLToPDF` allows you to specify a `typing.List[Font]` of fallback fonts
+  - This allows you to use non-western characters in HTML and markdown
+- `MarkdownToPDF` now uses `HTMLToPDF` (making it easier for me to maintain the code)
+- Added `BlockFlow` and `InlineFlow` elements
+- Added `SingleColumnLayoutWithOverflow` to enable certain `LayoutElement` implementations to be split across multiple `Page` objects. Currently only splitting of `Table` is supported.

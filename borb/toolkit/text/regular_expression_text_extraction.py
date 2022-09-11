@@ -117,7 +117,7 @@ class PDFMatch:
         Return a tuple containing all the subgroups of the match, from 1 up to however many groups are in the pattern.
         The default argument is used for groups that did not participate in the match; it defaults to None.
         """
-        return self._re_match.groups(default)   # type: ignore[arg-type]
+        return self._re_match.groups(default)  # type: ignore[arg-type]
 
     def groupdict(
         self, default: typing.AnyStr = None
@@ -126,7 +126,7 @@ class PDFMatch:
         Return a dictionary containing all the named subgroups of the match, keyed by the subgroup name.
         The default argument is used for groups that did not participate in the match; it defaults to None.
         """
-        return self._re_match.groupdict(default)    # type: ignore[arg-type]
+        return self._re_match.groupdict(default)  # type: ignore[arg-type]
 
     def start(self, __group: typing.Union[int, str] = 0) -> int:
         """

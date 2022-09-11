@@ -6,6 +6,7 @@ This class represents a Table with columns that will assume
 a width based on their contents. It tries to emulate the behaviour
 of <table> elements in HTML
 """
+import math
 import typing
 from decimal import Decimal
 
@@ -156,8 +157,12 @@ class FlexibleColumnWidthTable(Table):
         for table_cell in self._content:
             if table_cell._col_span == 1:
                 continue
-            column_indices: typing.Set[int] = set([y for x, y in table_cell._table_coordinates])
-            sum_of_min_col_spans: Decimal = sum([min_column_widths[x] for x in column_indices])
+            column_indices: typing.Set[int] = set(
+                [y for x, y in table_cell._table_coordinates]
+            )
+            sum_of_min_col_spans: Decimal = sum(
+                [min_column_widths[x] for x in column_indices]
+            )
             if sum_of_min_col_spans < table_cell._min_width:
                 delta: Decimal = table_cell._min_width - sum_of_min_col_spans
                 min_column_widths = [
@@ -215,9 +220,7 @@ class FlexibleColumnWidthTable(Table):
             new_x: Decimal = prev_x + column_widths[i - 1]
             grid_x_to_page_x.append(new_x)
 
-        grid_y_to_page_y: typing.List[Decimal] = [
-            available_space.get_y() + available_space.get_height()
-        ]
+        grid_y_to_page_y: typing.List[Decimal] = [available_space.get_y() + available_space.get_height()]
 
         # calculate bounds of TableCells with row_span == 1
         for r in range(0, self._number_of_rows):
@@ -236,8 +239,7 @@ class FlexibleColumnWidthTable(Table):
                         Rectangle(
                             grid_x_to_page_x[grid_x],
                             available_space.get_y(),
-                            grid_x_to_page_x[grid_x + e._col_span]
-                            - grid_x_to_page_x[grid_x],
+                            grid_x_to_page_x[grid_x + e._col_span] - grid_x_to_page_x[grid_x],
                             h,
                         )
                     )
@@ -262,37 +264,36 @@ class FlexibleColumnWidthTable(Table):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
 
         # return
-        min_y: Decimal = self._get_grid_coordinates(available_space)[-1][-1][1]
+        m = self._get_grid_coordinates(available_space)
+        min_x: Decimal = m[0][0][0]
+        max_x: Decimal = m[-1][-1][0]
+        min_y: Decimal = m[-1][-1][1]
+        max_y: Decimal = m[0][0][1]
         return Rectangle(
             available_space.get_x(),
             min_y,
-            available_space.get_width(),
-            available_space.get_y() + available_space.get_height() - min_y,
+            Decimal(math.ceil(max_x - min_x)),
+            max_y - min_y,
         )
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
 
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
-        empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
-        )
+        empty_cells: int = number_of_cells - sum([(x._row_span * x._col_span) for x in self._content])
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
 
-        m: typing.List[
-            typing.List[typing.Tuple[Decimal, Decimal]]
-        ] = self._get_grid_coordinates(available_space)
+        m: typing.List[typing.List[typing.Tuple[Decimal, Decimal]]] = self._get_grid_coordinates(available_space)
 
         # paint
         for e in self._content:
             grid_x: int = min([p[1] for p in e._table_coordinates])
             grid_y: int = min([p[0] for p in e._table_coordinates])
-            cbox: Rectangle = Rectangle(
-                m[grid_x][grid_y][0],
-                m[grid_x][grid_y + e._row_span][1],
-                m[grid_x + e._col_span][grid_y][0] - m[grid_x][grid_y][0],
-                m[grid_x][grid_y][1] - m[grid_x][grid_y + e._row_span][1],
-            )
+            x: Decimal = m[grid_x][grid_y][0]
+            y: Decimal = m[grid_x][grid_y + e._row_span][1]
+            w: Decimal = m[grid_x + e._col_span][grid_y][0] - x
+            h: Decimal = m[grid_x][grid_y][1] - y
+            cbox: Rectangle = Rectangle(x, y, w, h)
             e._set_layout_box(cbox)
             e.paint(page, cbox)

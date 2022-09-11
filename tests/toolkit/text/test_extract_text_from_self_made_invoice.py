@@ -324,7 +324,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         r: Rectangle = matches[0].get_bounding_boxes()[0]
 
         assert 298 <= r.get_x() <= 301
-        assert 603 <= r.get_y() <= 605
+        assert 598 <= r.get_y() <= 601
 
     def test_match_regular_expression_use_location(self):
 

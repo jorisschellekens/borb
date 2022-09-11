@@ -84,11 +84,11 @@ class Image(LayoutElement):
             vertical_alignment=vertical_alignment,
         )
         add_base_methods(image)
-        self._image: PILImage = image   # type: ignore[valid-type]
+        self._image: PILImage = image  # type: ignore[valid-type]
         self._width = width or Decimal(self._image.width)
         self._height = height or Decimal(self._image.height)
 
-    def _get_image_resource_name(self, image: PILImage, page: Page):    # type: ignore[valid-type]
+    def _get_image_resource_name(self, image: PILImage, page: Page):  # type: ignore[valid-type]
         # create resources if needed
         if "Resources" not in page:
             page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]

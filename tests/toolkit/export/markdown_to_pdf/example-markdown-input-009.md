@@ -11,14 +11,3 @@
 | :stuck_out_tongue_winking_eye: `:stuck_out_tongue_winking_eye:` | :stuck_out_tongue_closed_eyes: `:stuck_out_tongue_closed_eyes:` | :grinning: `:grinning:` |
 | :kissing: `:kissing:` | :kissing_smiling_eyes: `:kissing_smiling_eyes:` | :stuck_out_tongue: `:stuck_out_tongue:` |
 | :sleeping: `:sleeping:` | :worried: `:worried:` | :frowning: `:frowning:` |
-| :anguished: `:anguished:` | :open_mouth: `:open_mouth:` | :grimacing: `:grimacing:` |
-| :confused: `:confused:` | :hushed: `:hushed:` | :expressionless: `:expressionless:` |
-| :unamused: `:unamused:` | :sweat_smile: `:sweat_smile:` | :sweat: `:sweat:` |
-| :disappointed_relieved: `:disappointed_relieved:` | :weary: `:weary:` | :pensive: `:pensive:` |
-| :disappointed: `:disappointed:` | :confounded: `:confounded:` | :fearful: `:fearful:` |
-| :cold_sweat: `:cold_sweat:` | :persevere: `:persevere:` | :cry: `:cry:` |
-| :sob: `:sob:` | :joy: `:joy:` | :astonished: `:astonished:` |
-| :scream: `:scream:` | :neckbeard: `:neckbeard:` | :tired_face: `:tired_face:` |
-| :angry: `:angry:` | :rage: `:rage:` | :triumph: `:triumph:` |
-| :sleepy: `:sleepy:` | :yum: `:yum:` | :mask: `:mask:` |
-| :sunglasses: `:sunglasses:` | :dizzy_face: `:dizzy_face:` | :imp: `:imp:` |

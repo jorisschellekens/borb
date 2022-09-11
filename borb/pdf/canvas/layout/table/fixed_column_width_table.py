@@ -116,7 +116,10 @@ class FixedColumnWidthTable(Table):
                             available_space.get_y(),
                             grid_x_to_page_x[grid_x + e._col_span]
                             - grid_x_to_page_x[grid_x],
-                            max(Decimal(0), grid_y_to_page_y[r] - available_space.get_y()),
+                            max(
+                                Decimal(0),
+                                grid_y_to_page_y[r] - available_space.get_y(),
+                            ),
                         )
                     )
                 )

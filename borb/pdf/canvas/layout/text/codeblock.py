@@ -22,7 +22,8 @@ from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 
 try:
-    import black    # type: ignore[import]
+    import black  # type: ignore[import]
+
     able_to_import_black = True
 except ImportError:
     able_to_import_black = False

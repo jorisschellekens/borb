@@ -25,6 +25,7 @@ class LineBreakChunk(ChunkOfText):
     This implementation of ChunkOfText represents a linebreak.
     This can be used in the HeterogeneousParagraph to force lines to be split
     """
+
     def __init__(self):
         super(LineBreakChunk, self).__init__(text="\n")
 
@@ -38,7 +39,9 @@ class HeterogeneousParagraph(Paragraph):
 
     def __init__(
         self,
-        chunks_of_text: typing.List[typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]] = [],
+        chunks_of_text: typing.List[
+            typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]
+        ] = [],
         vertical_alignment: Alignment = Alignment.TOP,
         horizontal_alignment: Alignment = Alignment.LEFT,
         text_alignment: Alignment = Alignment.LEFT,
@@ -100,7 +103,9 @@ class HeterogeneousParagraph(Paragraph):
     ) -> typing.List[typing.List[typing.Union[ChunkOfText, Emoji, Image]]]:
 
         # build list
-        initial_chunks_of_text: typing.List[typing.Union[ChunkOfText, Emoji, Image]] = []
+        initial_chunks_of_text: typing.List[
+            typing.Union[ChunkOfText, Emoji, Image]
+        ] = []
         for e in self._chunks_of_text:
             if isinstance(e, str):
                 initial_chunks_of_text.append(
@@ -187,10 +192,14 @@ class HeterogeneousParagraph(Paragraph):
         # update ys
         prev_y: Decimal = available_space.get_y() + available_space.get_height()
         for line in lines:
-            line_height: Decimal = max([x.get_previous_layout_box().get_height() for x in line])
+            line_height: Decimal = max(
+                [x.get_previous_layout_box().get_height() for x in line]
+            )
             y: Decimal = prev_y - line_height
             for e in line:
-                delta_height: Decimal = (line_height - e.get_previous_layout_box().get_height())
+                delta_height: Decimal = (
+                    line_height - e.get_previous_layout_box().get_height()
+                )
                 e.get_layout_box(
                     Rectangle(
                         e.get_previous_layout_box().get_x(),
@@ -207,8 +216,11 @@ class HeterogeneousParagraph(Paragraph):
         cbox_max_x: Decimal = Decimal(0)
         if self._text_alignment == Alignment.CENTERED:
             for line in lines:
-                line_max_x = (line[-1].get_previous_layout_box().get_x() + line[-1].get_previous_layout_box().get_width())
-                cbox_max_x = (available_space.get_x() + available_space.get_width())
+                line_max_x = (
+                    line[-1].get_previous_layout_box().get_x()
+                    + line[-1].get_previous_layout_box().get_width()
+                )
+                cbox_max_x = available_space.get_x() + available_space.get_width()
                 delta_x = (cbox_max_x - line_max_x) / 2
                 for e in line:
                     e._previous_layout_box.x += delta_x
@@ -216,8 +228,11 @@ class HeterogeneousParagraph(Paragraph):
         # update xs (text_alignment == LEFT)
         if self._text_alignment == Alignment.RIGHT:
             for line in lines:
-                line_max_x = (line[-1].get_previous_layout_box().get_x() + line[-1].get_previous_layout_box().get_width())
-                cbox_max_x = (available_space.get_x() + available_space.get_width())
+                line_max_x = (
+                    line[-1].get_previous_layout_box().get_x()
+                    + line[-1].get_previous_layout_box().get_width()
+                )
+                cbox_max_x = available_space.get_x() + available_space.get_width()
                 delta_x = cbox_max_x - line_max_x
                 for e in line:
                     e._previous_layout_box.x += delta_x
@@ -225,8 +240,11 @@ class HeterogeneousParagraph(Paragraph):
         # update xs (text_alignment == JUSTIFIED)
         if self._text_alignment == Alignment.JUSTIFIED:
             for line in lines:
-                line_max_x = (line[-1].get_previous_layout_box().get_x() + line[-1].get_previous_layout_box().get_width())
-                cbox_max_x = (available_space.get_x() + available_space.get_width())
+                line_max_x = (
+                    line[-1].get_previous_layout_box().get_x()
+                    + line[-1].get_previous_layout_box().get_width()
+                )
+                cbox_max_x = available_space.get_x() + available_space.get_width()
                 delta_x = (cbox_max_x - line_max_x) / (len(line) - 1)
                 for e in line:
                     e._previous_layout_box.x += delta_x
@@ -270,7 +288,9 @@ class HeterogeneousParagraph(Paragraph):
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
 
         # lines of text
-        lines_of_text: typing.List[typing.List[ChunkOfText]] = self._split_to_lines_of_chunks_of_text(available_space)
+        lines_of_text: typing.List[
+            typing.List[ChunkOfText]
+        ] = self._split_to_lines_of_chunks_of_text(available_space)
 
         for line in lines_of_text:
             for e in line:

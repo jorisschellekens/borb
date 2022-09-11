@@ -141,7 +141,7 @@ class LineOfText(ChunkOfText):
         else:
             return super(LineOfText, self)._get_content_box(available_space)
 
-    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None: # type: ignore[name-defined]
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:  # type: ignore[name-defined]
 
         # if the text_alignment is not JUSTIFIED, we delegate the call to our super
         if self._text_alignment != Alignment.JUSTIFIED:

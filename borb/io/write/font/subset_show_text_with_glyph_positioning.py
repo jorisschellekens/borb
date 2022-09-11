@@ -8,7 +8,13 @@ element of array shall be either a string or a number.
 import typing
 from typing import List
 
-from borb.io.read.types import AnyPDFType, Name, String, HexadecimalString, Decimal as bDecimal
+from borb.io.read.types import (
+    AnyPDFType,
+    Name,
+    String,
+    HexadecimalString,
+    Decimal as bDecimal,
+)
 from borb.io.write.font.copy_command_operator import CopyCommandOperator
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import (

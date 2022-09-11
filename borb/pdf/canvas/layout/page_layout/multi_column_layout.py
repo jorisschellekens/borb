@@ -6,6 +6,7 @@ This module contains various implementations of `PageLayout`.
 `PageLayout` can be used to add `LayoutElement` objects to a `Page` without
 having to specify coordinates.
 """
+import copy
 import typing
 from decimal import Decimal
 
@@ -140,9 +141,8 @@ class MultiColumnLayout(PageLayout):
         previous_element_margin_bottom: Decimal = Decimal(0)
         previous_element_y = self._page_height - self._vertical_margin_top
         if self._previous_element is not None:
-            previous_element_y = (
-                self._previous_element.get_previous_layout_box().get_y()
-            )
+            previous_element_y = self._previous_element.get_previous_layout_box().get_y()
+            previous_element_margin_bottom = self._previous_element.get_margin_bottom()
 
         # calculate next available rectangle
         available_height: Decimal = (

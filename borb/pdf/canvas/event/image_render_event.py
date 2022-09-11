@@ -17,8 +17,8 @@ class ImageRenderEvent(Event):
     This implementation of Event is triggered when an Image has been processed using a Do instruction
     """
 
-    def __init__(self, graphics_state: CanvasGraphicsState, image: PILImage):   # type: ignore[valid-type]
-        self._image: PILImage = image                                           # type: ignore[valid-type]
+    def __init__(self, graphics_state: CanvasGraphicsState, image: PILImage):  # type: ignore[valid-type]
+        self._image: PILImage = image  # type: ignore[valid-type]
 
         # calculate position
         v = graphics_state.ctm.cross(Decimal(0), Decimal(0), Decimal(1))
@@ -30,7 +30,7 @@ class ImageRenderEvent(Event):
         self._width: Decimal = max(abs(v[0]), Decimal(1))
         self._height: Decimal = max(abs(v[1]), Decimal(1))
 
-    def get_image(self) -> PILImage:    # type: ignore[valid-type]
+    def get_image(self) -> PILImage:  # type: ignore[valid-type]
         """
         Get the (source) Image
         This Image may have different dimensions than

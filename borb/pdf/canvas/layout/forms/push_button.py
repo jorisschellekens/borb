@@ -87,12 +87,10 @@ class PushButton(FormField):
 
         # init page and font resources
         assert self._font_size is not None
-        font_resource_name: Name = self._get_font_resource_name(
-            StandardType1Font("Helvetica"), page
-        )
+        font_resource_name: Name = self._get_font_resource_name(StandardType1Font("Helvetica"), page)
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary()
+        widget_resources: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # get Catalog
@@ -100,7 +98,7 @@ class PushButton(FormField):
 
         # widget dictionary
         # fmt: off
-        self._widget_dictionary = Dictionary()
+        self._widget_dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
         self._widget_dictionary.set_is_unique(True) # type: ignore [attr-defined]
         self._widget_dictionary[Name("AA")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")] = Dictionary()
@@ -110,7 +108,7 @@ class PushButton(FormField):
 
         # create normal appearance
         # fmt: off
-        self._widget_dictionary[Name("AP")] = Dictionary()
+        self._widget_dictionary[Name("AP")] = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
         self._widget_dictionary[Name("AP")][Name("N")] = Stream()
         self._widget_dictionary[Name("AP")][Name("N")][Name("Type")] = Name("XObject")
         self._widget_dictionary[Name("AP")][Name("N")][Name("Subtype")] = Name("Form")
@@ -131,7 +129,7 @@ class PushButton(FormField):
 
         # create default appearance
         # fmt: off
-        self._widget_dictionary[Name("DA")] = String("0.23921 0.23921 0.23921 rg /%s %f Tf" % (font_resource_name, self._font_size))
+        self._widget_dictionary[Name("DA")] = String("0.23921 0.23921 0.23921 rg /%s %f Tf" % (font_resource_name, float(self._font_size)))
         self._widget_dictionary[Name("DR")] = widget_resources
         # fmt: on
 
@@ -270,7 +268,7 @@ class JavaScriptPushButton(PushButton):
 
         # build JavaScript stream object
         # fmt: off
-        javascript_stream = Stream()
+        javascript_stream = Stream().set_is_unique(True)     # type: ignore [attr-defined]
         javascript_stream[Name("Type")] = Name("JavaScript")
         javascript_stream[Name("DecodedBytes")] = bytes(self._javascript, "latin1")
         javascript_stream[Name("Bytes")] = zlib.compress(javascript_stream[Name("DecodedBytes")], 9)
@@ -279,10 +277,8 @@ class JavaScriptPushButton(PushButton):
         # fmt: on
 
         # modify action dictionary of PushButton (super)
+        # fmt: off
         if self._widget_dictionary is not None:
-            self._widget_dictionary[Name("AA")][Name("D")][Name("S")] = Name(
-                "JavaScript"
-            )
-            self._widget_dictionary[Name("AA")][Name("D")][
-                Name("JS")
-            ] = javascript_stream
+            self._widget_dictionary[Name("AA")][Name("D")][Name("S")] = Name("JavaScript")
+            self._widget_dictionary[Name("AA")][Name("D")][Name("JS")] = javascript_stream
+        # fmt: on

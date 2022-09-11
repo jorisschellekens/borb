@@ -62,7 +62,7 @@ class disjointset:
         """
         Remove an element from this disjointset
         """
-        return self
+        raise NotImplementedError()
 
     def sets(self) -> List[List[Any]]:
         """

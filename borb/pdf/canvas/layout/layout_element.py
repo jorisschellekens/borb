@@ -233,7 +233,9 @@ class LayoutElement:
         delta_x: Decimal = Decimal(0)
         delta_y: Decimal = Decimal(0)
         if self._vertical_alignment == Alignment.MIDDLE:
-            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(2)
+            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(
+                2
+            )
             cbox.y -= delta_y
         if self._vertical_alignment == Alignment.BOTTOM:
             delta_y = cbox_available_space.get_height() - cbox.get_height()
@@ -258,7 +260,7 @@ class LayoutElement:
         # fmt: on
         return self._previous_layout_box
 
-    def paint(self, page: "Page", available_space: Rectangle) -> None: # type: ignore[name-defined]
+    def paint(self, page: "Page", available_space: Rectangle) -> None:  # type: ignore[name-defined]
         """
         This method paints this LayoutElement on the given Page, in the available space
         :param page:                the Page on which to paint this LayoutElement
@@ -307,7 +309,9 @@ class LayoutElement:
         delta_x: Decimal = Decimal(0)
         delta_y: Decimal = Decimal(0)
         if self._vertical_alignment == Alignment.MIDDLE:
-            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(2)
+            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(
+                2
+            )
             cbox.y -= delta_y
         if self._vertical_alignment == Alignment.BOTTOM:
             delta_y = cbox_available_space.get_height() - cbox.get_height()
@@ -357,7 +361,7 @@ class LayoutElement:
             Decimal(0),
         )
 
-    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None: # type: ignore[name-defined]
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore[name-defined]
         pass
 
     def _get_border_outline(
