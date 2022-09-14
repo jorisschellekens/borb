@@ -1,4 +1,4 @@
-# :mega: borb release 2.1.2
+# :mega: borb release 2.1.3
 
 This release is a minor bugfix release:
 - Following the large refactor of `LayoutElement`, some minor classes still needed to be updated to work with the new framework. 
