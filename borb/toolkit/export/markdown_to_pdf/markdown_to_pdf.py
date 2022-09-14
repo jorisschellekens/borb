@@ -116,8 +116,12 @@ class MarkdownToPDF:
         markdown: str,
         fallback_fonts_regular: typing.List[Font] = [StandardType1Font("Helvetica")],
         fallback_fonts_bold: typing.List[Font] = [StandardType1Font("Helvetica-Bold")],
-        fallback_fonts_italic: typing.List[Font] = [StandardType1Font("Helvetica-Oblique")],
-        fallback_fonts_bold_italic: typing.List[Font] = [StandardType1Font("Helvetica-Bold-Oblique")],
+        fallback_fonts_italic: typing.List[Font] = [
+            StandardType1Font("Helvetica-Oblique")
+        ],
+        fallback_fonts_bold_italic: typing.List[Font] = [
+            StandardType1Font("Helvetica-Bold-Oblique")
+        ],
     ) -> LayoutElement:
         """
         This function converts a markdown str to a LayoutElement

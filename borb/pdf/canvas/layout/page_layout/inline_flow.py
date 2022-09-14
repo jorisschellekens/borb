@@ -9,7 +9,6 @@ into the next line.
 import typing
 from decimal import Decimal
 
-from borb.pdf import TableCell
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 
@@ -50,6 +49,8 @@ class InlineFlow(LayoutElement):
 
     @staticmethod
     def _get_min_content_box(e: LayoutElement) -> Rectangle:
+        from borb.pdf import TableCell
+
         c: TableCell = TableCell(e)
         c._calculate_min_and_max_layout_box()
         return Rectangle(Decimal(0), Decimal(0), c._min_width, c._max_height)

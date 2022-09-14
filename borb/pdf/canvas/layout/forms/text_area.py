@@ -70,21 +70,25 @@ class TextArea(FormField):
 
         # init page and font resources
         assert self._font_size is not None
-        font_resource_name: Name = self._get_font_resource_name(StandardType1Font("Helvetica"), page)
+        font_resource_name: Name = self._get_font_resource_name(
+            StandardType1Font("Helvetica"), page
+        )
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_resources: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # widget normal appearance
-        widget_normal_appearance: Stream = Stream().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_normal_appearance: Stream = Stream().set_is_unique(True)  # type: ignore [attr-defined]
         widget_normal_appearance[Name("Type")] = Name("XObject")
         widget_normal_appearance[Name("Subtype")] = Name("Form")
         widget_normal_appearance[Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         widget_normal_appearance["BBox"].append(bDecimal(0))
         widget_normal_appearance["BBox"].append(bDecimal(0))
         widget_normal_appearance["BBox"].append(bDecimal(layout_box.width))
-        widget_normal_appearance["BBox"].append(bDecimal((self._font_size + 1) * self._number_of_lines))
+        widget_normal_appearance["BBox"].append(
+            bDecimal((self._font_size + 1) * self._number_of_lines)
+        )
         widget_normal_appearance[Name("Resources")] = widget_resources
         bts = b"/Tx BMC EMC"
         widget_normal_appearance[Name("DecodedBytes")] = bts
@@ -93,7 +97,7 @@ class TextArea(FormField):
         widget_normal_appearance[Name("Length")] = bDecimal(len(bts))
 
         # widget appearance dictionary
-        widget_appearance_dictionary: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_appearance_dictionary: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 

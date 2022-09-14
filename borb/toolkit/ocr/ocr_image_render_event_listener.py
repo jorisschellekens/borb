@@ -176,8 +176,11 @@ class OCRImageRenderEventListener(EventListener):
 
                 # delegate call
                 assert self._page is not None
-                font_size: Decimal = self._get_font_size(
-                    text_in_bounding_box, pdf_bounding_box.get_width()
+                font_size: Decimal = round(
+                    self._get_font_size(
+                        text_in_bounding_box, pdf_bounding_box.get_width()
+                    ),
+                    0,
                 )
                 font_color: RGBColor = self._get_font_color(
                     text_in_bounding_box, event.get_image(), image_bounding_box
@@ -194,7 +197,7 @@ class OCRImageRenderEventListener(EventListener):
                     )
                 )
 
-    def _get_text_size(self, font_size: Decimal, text: str):
+    def _get_text_width(self, font_size: Decimal, text: str):
         w: Decimal = Decimal(0)
         ZERO: Decimal = Decimal(0)
         for c in text:
@@ -229,7 +232,7 @@ class OCRImageRenderEventListener(EventListener):
                 estimated_font_size_upperbound + estimated_font_size_lowerbound
             ) / Decimal(2)
             midpoint = Decimal(int(midpoint))
-            estimated_width: Decimal = self._get_text_size(midpoint, text)
+            estimated_width: Decimal = self._get_text_width(midpoint, text)
             iteration_count += 1
             if estimated_width > bounding_box_width:
                 estimated_font_size_upperbound = midpoint

@@ -9,7 +9,7 @@ from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.canvas.layout.shape.gradient_colored_disjoint_shape import (
-    GradientColoredDisjointShape,
+    GradientColoredDisconnectedShape,
 )
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
@@ -42,14 +42,14 @@ class TestAddGradientRectangularMaze(unittest.TestCase):
         self,
         page: Page,
         layout: SingleColumnLayout,
-        gradient_type: GradientColoredDisjointShape.GradientType,
+        gradient_type: GradientColoredDisconnectedShape.GradientType,
     ):
         w = page.get_page_info().get_width()
         h = page.get_page_info().get_height() - Decimal(200)
         assert w is not None
         assert h is not None
         layout.add(
-            GradientColoredDisjointShape(
+            GradientColoredDisconnectedShape(
                 DisconnectedShape(
                     RectangularMazeFactory.rectangular_maze(30, 30),
                     horizontal_alignment=Alignment.CENTERED,
@@ -92,7 +92,7 @@ class TestAddGradientRectangularMaze(unittest.TestCase):
 
         random.seed(2048)
         self._write_maze(
-            page, layout, GradientColoredDisjointShape.GradientType.DIAGONAL
+            page, layout, GradientColoredDisconnectedShape.GradientType.DIAGONAL
         )
 
         # determine output location
@@ -137,7 +137,9 @@ class TestAddGradientRectangularMaze(unittest.TestCase):
         )
 
         random.seed(2048)
-        self._write_maze(page, layout, GradientColoredDisjointShape.GradientType.RADIAL)
+        self._write_maze(
+            page, layout, GradientColoredDisconnectedShape.GradientType.RADIAL
+        )
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"
@@ -182,7 +184,7 @@ class TestAddGradientRectangularMaze(unittest.TestCase):
 
         random.seed(2048)
         self._write_maze(
-            page, layout, GradientColoredDisjointShape.GradientType.VERTICAL
+            page, layout, GradientColoredDisconnectedShape.GradientType.VERTICAL
         )
 
         # determine output location

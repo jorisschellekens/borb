@@ -5,9 +5,12 @@ from pathlib import Path
 from borb.io.read.types import Decimal
 from borb.pdf import PageLayout
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.layout.page_layout.single_column_layout_with_overflow import SingleColumnLayoutWithOverflow
+from borb.pdf.canvas.layout.page_layout.single_column_layout_with_overflow import (
+    SingleColumnLayoutWithOverflow,
+)
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table, FixedColumnWidthTable,
+    FixedColumnWidthTable as Table,
+    FixedColumnWidthTable,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
@@ -67,7 +70,7 @@ class TestAddTableWithOverflow(unittest.TestCase):
         # build Table
         n: int = 30
         t: Table = FixedColumnWidthTable(number_of_rows=n, number_of_columns=2)
-        for i in range(1, n+1):
+        for i in range(1, n + 1):
             t.add(Paragraph("row %d, col 0" % i))
             t.add(Paragraph("row %d, col 1" % i))
         t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))

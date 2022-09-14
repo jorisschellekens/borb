@@ -65,11 +65,11 @@ class DropDownList(FormField):
         )
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_resources: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # widget normal appearance
-        widget_normal_appearance: Stream = Stream().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_normal_appearance: Stream = Stream().set_is_unique(True)  # type: ignore [attr-defined]
         widget_normal_appearance[Name("Type")] = Name("XObject")
         widget_normal_appearance[Name("Subtype")] = Name("Form")
         widget_normal_appearance[Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
@@ -89,7 +89,7 @@ class DropDownList(FormField):
         widget_normal_appearance[Name("Length")] = bDecimal(len(bts))
 
         # widget appearance dictionary
-        widget_appearance_dictionary: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_appearance_dictionary: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 
@@ -97,23 +97,31 @@ class DropDownList(FormField):
         catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
-        self._widget_dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        self._widget_dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         self._widget_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)
         self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size - 2))
-        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
-        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
+        )
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.x + layout_box.width)
+        )
+        self._widget_dictionary["Rect"].append(
+            bDecimal(layout_box.y + layout_box.height)
+        )
         self._widget_dictionary[Name("FT")] = Name("Ch")
         self._widget_dictionary[Name("P")] = catalog
         self._widget_dictionary[Name("Opt")] = List()
         for x in self._possible_values:
             self._widget_dictionary["Opt"].append(String(x))
         self._widget_dictionary[Name("Ff")] = bDecimal(131072)
-        self._widget_dictionary[Name("T")] = String(self._field_name or self._get_auto_generated_field_name(page))
+        self._widget_dictionary[Name("T")] = String(
+            self._field_name or self._get_auto_generated_field_name(page)
+        )
         self._widget_dictionary[Name("V")] = String(self._value)
         self._widget_dictionary[Name("DV")] = String(self._default_value)
         self._widget_dictionary[Name("DR")] = widget_resources

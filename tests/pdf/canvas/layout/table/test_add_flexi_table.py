@@ -512,7 +512,6 @@ class TestAddFlexiTable(unittest.TestCase):
         compare_visually_to_ground_truth(out_file)
         check_pdf_using_validator(out_file)
 
-
     def test_write_document_006(self):
 
         # create document
@@ -580,7 +579,7 @@ class TestAddFlexiTable(unittest.TestCase):
 
         t.add(Paragraph("Java"))
         t.add(Paragraph("1,752,877"))
-        #t.internal_borders()
+        # t.internal_borders()
         t.even_odd_row_colors(HexColor("FFFFFF"), HexColor("d3d3d3"))
         t.set_border_width_on_all_cells(Decimal(0.2))
         t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))

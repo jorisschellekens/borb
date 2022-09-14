@@ -28,9 +28,9 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         horizontal_margin: typing.Optional[Decimal] = None,
         vertical_margin: typing.Optional[Decimal] = None,
     ):
-        super(SingleColumnLayoutWithOverflow, self).__init__(page,
-                                                             horizontal_margin,
-                                                             vertical_margin)
+        super(SingleColumnLayoutWithOverflow, self).__init__(
+            page, horizontal_margin, vertical_margin
+        )
 
     def add(self, layout_element: LayoutElement) -> "PageLayout":
         """
@@ -38,7 +38,10 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         """
 
         # anything that isn't a Table gets added as expected
-        if layout_element.__class__.__name__ not in ["FlexibleColumnWidthTable", "FixedColumnWidthTable"]:
+        if layout_element.__class__.__name__ not in [
+            "FlexibleColumnWidthTable",
+            "FixedColumnWidthTable",
+        ]:
             return super(SingleColumnLayout, self).add(layout_element)
 
         # previous element is used to determine the paragraph spacing
@@ -47,7 +50,9 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         previous_element_margin_bottom: Decimal = Decimal(0)
         previous_element_y = self._page_height - self._vertical_margin_top
         if self._previous_element is not None:
-            previous_element_y = self._previous_element.get_previous_layout_box().get_y()
+            previous_element_y = (
+                self._previous_element.get_previous_layout_box().get_y()
+            )
             previous_element_margin_bottom = self._previous_element.get_margin_bottom()
 
         # calculate next available height
@@ -66,12 +71,16 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
             return self.add(layout_element)
 
         # ask LayoutElement to fit
-        lbox: Rectangle = layout_element.get_layout_box(Rectangle(
-            self._horizontal_margin + layout_element.get_margin_left(),
-            Decimal(0),
-            self._column_width - layout_element.get_margin_right() - layout_element.get_margin_left(),
-            available_height
-        ))
+        lbox: Rectangle = layout_element.get_layout_box(
+            Rectangle(
+                self._horizontal_margin + layout_element.get_margin_left(),
+                Decimal(0),
+                self._column_width
+                - layout_element.get_margin_right()
+                - layout_element.get_margin_left(),
+                available_height,
+            )
+        )
         if lbox.get_height() <= available_height:
             return super(SingleColumnLayout, self).add(layout_element)
 
@@ -82,16 +91,18 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         # return
         return self
 
-    def _split_table(self,
-                     layout_element: LayoutElement,
-                     available_height: Decimal) -> typing.List[LayoutElement]:
+    def _split_table(
+        self, layout_element: LayoutElement, available_height: Decimal
+    ) -> typing.List[LayoutElement]:
 
         # find out at which row we ought to split the Table
         best_row_for_split: typing.Optional[int] = None
         for i in range(0, layout_element._number_of_rows):
             if any([x._row_span != 1 for x in layout_element._get_cells_at_row(i)]):
                 continue
-            y: Decimal = layout_element._get_cells_at_row(i)[0].get_previous_layout_box().get_y()
+            y: Decimal = (
+                layout_element._get_cells_at_row(i)[0].get_previous_layout_box().get_y()
+            )
             if y < 0:
                 continue
             if y < available_height:
@@ -99,20 +110,33 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
 
         # unable to split
         if best_row_for_split is None:
-            assert False, ("%s is too tall to fit inside column / page." % layout_element.__class__.__name__)
+            assert False, (
+                "%s is too tall to fit inside column / page."
+                % layout_element.__class__.__name__
+            )
 
         # first half of split
         t0 = copy.deepcopy(layout_element)
-        t0._number_of_rows = (best_row_for_split + 1)
-        t0._content = [x for x in t0._content if all([y[0] <= best_row_for_split for y in x._table_coordinates])]
+        t0._number_of_rows = best_row_for_split + 1
+        t0._content = [
+            x
+            for x in t0._content
+            if all([y[0] <= best_row_for_split for y in x._table_coordinates])
+        ]
         SingleColumnLayoutWithOverflow._prepare_table_for_relayout(t0)
 
         # second half of split
         t1 = copy.deepcopy(layout_element)
         t1._number_of_rows = layout_element._number_of_rows - best_row_for_split - 1
-        t1._content = [x for x in t1._content if all([y[0] > best_row_for_split for y in x._table_coordinates])]
+        t1._content = [
+            x
+            for x in t1._content
+            if all([y[0] > best_row_for_split for y in x._table_coordinates])
+        ]
         for tc in t1._content:
-            tc._table_coordinates = [(y - best_row_for_split - 1, x) for y,x in tc._table_coordinates]
+            tc._table_coordinates = [
+                (y - best_row_for_split - 1, x) for y, x in tc._table_coordinates
+            ]
         SingleColumnLayoutWithOverflow._prepare_table_for_relayout(t1)
 
         # return
@@ -128,4 +152,3 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
             tc._forced_layout_box = None
             tc._layout_element._previous_layout_box = None
             tc._layout_element._previous_paint_box = None
-

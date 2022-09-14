@@ -220,7 +220,9 @@ class FlexibleColumnWidthTable(Table):
             new_x: Decimal = prev_x + column_widths[i - 1]
             grid_x_to_page_x.append(new_x)
 
-        grid_y_to_page_y: typing.List[Decimal] = [available_space.get_y() + available_space.get_height()]
+        grid_y_to_page_y: typing.List[Decimal] = [
+            available_space.get_y() + available_space.get_height()
+        ]
 
         # calculate bounds of TableCells with row_span == 1
         for r in range(0, self._number_of_rows):
@@ -239,7 +241,8 @@ class FlexibleColumnWidthTable(Table):
                         Rectangle(
                             grid_x_to_page_x[grid_x],
                             available_space.get_y(),
-                            grid_x_to_page_x[grid_x + e._col_span] - grid_x_to_page_x[grid_x],
+                            grid_x_to_page_x[grid_x + e._col_span]
+                            - grid_x_to_page_x[grid_x],
                             h,
                         )
                     )
@@ -280,11 +283,15 @@ class FlexibleColumnWidthTable(Table):
 
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
-        empty_cells: int = number_of_cells - sum([(x._row_span * x._col_span) for x in self._content])
+        empty_cells: int = number_of_cells - sum(
+            [(x._row_span * x._col_span) for x in self._content]
+        )
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
 
-        m: typing.List[typing.List[typing.Tuple[Decimal, Decimal]]] = self._get_grid_coordinates(available_space)
+        m: typing.List[
+            typing.List[typing.Tuple[Decimal, Decimal]]
+        ] = self._get_grid_coordinates(available_space)
 
         # paint
         for e in self._content:

@@ -140,7 +140,8 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
 
     def _event_occurred(self, event: Event) -> None:
         super(OCRAsOptionalContentGroup, self)._event_occurred(event)
-        if isinstance(event, EndDocumentEvent):
+        # TODO: find a better way to solve this
+        if event.__class__.__name__ == "EndDocumentEvent":
             self._end_document()
 
     def _end_document(self):

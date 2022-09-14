@@ -91,6 +91,7 @@ class CheckBox(FormField):
         catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
+        # fmt: off
         self._widget_dictionary = Dictionary()
         self._widget_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         self._widget_dictionary[Name("Type")] = Name("Annot")
@@ -98,22 +99,15 @@ class CheckBox(FormField):
         self._widget_dictionary[Name("F")] = bDecimal(4)
         self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
-        )
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.x + layout_box.width)
-        )
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height)
-        )
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size - 2))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
         self._widget_dictionary[Name("FT")] = Name("Btn")
         self._widget_dictionary[Name("P")] = catalog
-        self._widget_dictionary[Name("T")] = bString(
-            self._field_name or self._get_auto_generated_field_name(page)
-        )
+        self._widget_dictionary[Name("T")] = bString(self._field_name or self._get_auto_generated_field_name(page))
         self._widget_dictionary[Name("V")] = Name("Yes")
         self._widget_dictionary[Name("DR")] = widget_resources
+        # fmt: on
 
         font_color_rgb: RGBColor = self._font_color.to_rgb()
         self._widget_dictionary[Name("DA")] = String(
@@ -141,25 +135,26 @@ class CheckBox(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _paint_content_box(self, page: "Page", layout_box: Rectangle) -> None:
-
-        # determine layout rectangle
-        assert self._font_size is not None
-        layout_rect = Rectangle(
-            layout_box.x,
-            layout_box.y + layout_box.height - self._font_size,
-            max(layout_box.width, Decimal(64)),
-            self._font_size + Decimal(10),
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        line_height: Decimal = self._font_size * Decimal(1.2)
+        return Rectangle(
+            available_space.x,
+            available_space.y + available_space.height - line_height,
+            min(available_space.get_width(), self._font_size),
+            line_height,
         )
 
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
+
         # init self._widget_dictionary
-        self._init_widget_dictionary(page, layout_rect)
+        self._init_widget_dictionary(page, content_box)
 
         # set location
         # fmt: off
+        line_height: Decimal = self._font_size * Decimal(1.2)
         if self._widget_dictionary is not None:
-            self._widget_dictionary["Rect"][0] = bDecimal(layout_box.x)
-            self._widget_dictionary["Rect"][1] = bDecimal(layout_box.y + layout_box.height - self._font_size)
-            self._widget_dictionary["Rect"][2] = bDecimal(layout_box.x + layout_box.width)
-            self._widget_dictionary["Rect"][3] = bDecimal(layout_box.y + layout_box.height)
+            self._widget_dictionary["Rect"][0] = bDecimal(content_box.get_x())
+            self._widget_dictionary["Rect"][1] = bDecimal(content_box.get_y() + content_box.height - line_height)
+            self._widget_dictionary["Rect"][2] = bDecimal(content_box.get_x() + content_box.width)
+            self._widget_dictionary["Rect"][3] = bDecimal(content_box.get_y() + line_height)
         # fmt: on

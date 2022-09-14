@@ -80,14 +80,14 @@ class TestExportHTMLToPDF(unittest.TestCase):
 
         # convert
         document: Document = Document()
-        page: Page = Page(width=PageSize.A4_PORTRAIT.value[0],
-                          height=PageSize.A4_PORTRAIT.value[1])
+        page: Page = Page(
+            width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
+        )
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayout(page,
-                                                vertical_margin=Decimal(0),
-                                                horizontal_margin=Decimal(12))
+        layout: PageLayout = SingleColumnLayout(
+            page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
+        )
         layout.add(HTMLToPDF.convert_html_to_layout_element(txt))
-
 
         # store
         out_file = self.output_dir / (file_to_convert.replace(".html", ".pdf"))

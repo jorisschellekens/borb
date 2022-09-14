@@ -32,8 +32,8 @@ from borb.pdf.canvas.layout.text.heterogeneous_paragraph import LineBreakChunk
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
-from borb.toolkit.export.html_to_pdf.block_flow import BlockFlow
-from borb.toolkit.export.html_to_pdf.inline_flow import InlineFlow
+from borb.pdf.canvas.layout.page_layout.block_flow import BlockFlow
+from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
 
 logger = logging.getLogger(__name__)
 
@@ -726,8 +726,12 @@ class HTMLToPDF:
         html: typing.Union[str, ET.Element],
         fallback_fonts_regular: typing.List[Font] = [StandardType1Font("Helvetica")],
         fallback_fonts_bold: typing.List[Font] = [StandardType1Font("Helvetica-Bold")],
-        fallback_fonts_italic: typing.List[Font] = [StandardType1Font("Helvetica-Oblique")],
-        fallback_fonts_bold_italic: typing.List[Font] = [StandardType1Font("Helvetica-Bold-Oblique")],
+        fallback_fonts_italic: typing.List[Font] = [
+            StandardType1Font("Helvetica-Oblique")
+        ],
+        fallback_fonts_bold_italic: typing.List[Font] = [
+            StandardType1Font("Helvetica-Bold-Oblique")
+        ],
         fallback_fonts_monospaced: typing.List[Font] = [StandardType1Font("Courier")],
     ) -> LayoutElement:
         """
@@ -764,8 +768,12 @@ class HTMLToPDF:
         html: typing.Union[str, ET.Element],
         fallback_fonts_regular: typing.List[Font] = [StandardType1Font("Helvetica")],
         fallback_fonts_bold: typing.List[Font] = [StandardType1Font("Helvetica-Bold")],
-        fallback_fonts_italic: typing.List[Font] = [StandardType1Font("Helvetica-Oblique")],
-        fallback_fonts_bold_italic: typing.List[Font] = [StandardType1Font("Helvetica-Bold-Oblique")],
+        fallback_fonts_italic: typing.List[Font] = [
+            StandardType1Font("Helvetica-Oblique")
+        ],
+        fallback_fonts_bold_italic: typing.List[Font] = [
+            StandardType1Font("Helvetica-Bold-Oblique")
+        ],
         fallback_fonts_monospaced: typing.List[Font] = [StandardType1Font("Courier")],
     ) -> Document:
         """

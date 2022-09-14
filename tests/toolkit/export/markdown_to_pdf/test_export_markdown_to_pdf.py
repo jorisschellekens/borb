@@ -37,12 +37,13 @@ class TestExportMarkdownToPDF(unittest.TestCase):
 
         # convert
         document: Document = Document()
-        page: Page = Page(width=PageSize.A4_PORTRAIT.value[0],
-                          height=PageSize.A4_PORTRAIT.value[1])
+        page: Page = Page(
+            width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
+        )
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayout(page,
-                                                vertical_margin=Decimal(0),
-                                                horizontal_margin=Decimal(12))
+        layout: PageLayout = SingleColumnLayout(
+            page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
+        )
 
         # path to _font
         font_path: Path = Path(__file__).parent / "SimHei.ttf"
@@ -52,9 +53,11 @@ class TestExportMarkdownToPDF(unittest.TestCase):
         ttf = TrueTypeFont.true_type_font_from_file(font_path)
 
         # convert
-        layout.add(MarkdownToPDF.convert_markdown_to_layout_element(txt,
-                                                                    fallback_fonts_regular=[StandardType1Font("Helvetica"), ttf]))
-
+        layout.add(
+            MarkdownToPDF.convert_markdown_to_layout_element(
+                txt, fallback_fonts_regular=[StandardType1Font("Helvetica"), ttf]
+            )
+        )
 
         # store
         out_file = self.output_dir / (file_to_convert + ".pdf")
@@ -102,12 +105,13 @@ class TestExportMarkdownToPDF(unittest.TestCase):
 
         # convert
         document: Document = Document()
-        page: Page = Page(width=PageSize.A4_PORTRAIT.value[0],
-                          height=PageSize.A4_PORTRAIT.value[1])
+        page: Page = Page(
+            width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
+        )
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayout(page,
-                                                vertical_margin=Decimal(0),
-                                                horizontal_margin=Decimal(12))
+        layout: PageLayout = SingleColumnLayout(
+            page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
+        )
         layout.add(MarkdownToPDF.convert_markdown_to_layout_element(txt))
 
         # store
@@ -117,6 +121,7 @@ class TestExportMarkdownToPDF(unittest.TestCase):
 
         check_pdf_using_validator(out_file)
         compare_visually_to_ground_truth(out_file)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -5,13 +5,21 @@ from pathlib import Path
 import typing
 
 from borb.io.read.types import Decimal
-from borb.pdf import Document, Page, SingleColumnLayout, PageLayout, PDF, FixedColumnWidthTable, Paragraph, HexColor
+from borb.pdf import (
+    Document,
+    Page,
+    SingleColumnLayout,
+    PageLayout,
+    PDF,
+    FixedColumnWidthTable,
+    Paragraph,
+    HexColor,
+)
 from borb.pdf.canvas.layout.forms.text_field import TextField
 from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
 
 
 class TestAdd2TextFieldsOn2Pages(unittest.TestCase):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -52,9 +60,14 @@ class TestAdd2TextFieldsOn2Pages(unittest.TestCase):
                     .add(Paragraph("Test", font="Helvetica-Bold"))
                     .add(Paragraph(Path(__file__).stem))
                     .add(Paragraph("Description", font="Helvetica-Bold"))
-                    .add(Paragraph(
-                        "This test creates a 2-page PDF, each Page containing a TextField"))
-                    .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+                    .add(
+                        Paragraph(
+                            "This test creates a 2-page PDF, each Page containing a TextField"
+                        )
+                    )
+                    .set_padding_on_all_cells(
+                        Decimal(2), Decimal(2), Decimal(2), Decimal(2)
+                    )
                 )
 
             # add TextField

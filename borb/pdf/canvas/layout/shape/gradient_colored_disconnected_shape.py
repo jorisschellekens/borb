@@ -16,9 +16,9 @@ from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.page.page import Page
 
 
-class GradientColoredDisjointShape(DisconnectedShape):
+class GradientColoredDisconnectedShape(DisconnectedShape):
     """
-    This class represents a generic disjoint shape (specified by a List of lines),
+    This class represents a generic disconnected shape (specified by a List of lines),
     that will be colored according to a gradient.
     It has convenience methods to calculate width and height, perform scaling, etc
     """
@@ -41,7 +41,7 @@ class GradientColoredDisjointShape(DisconnectedShape):
         to_color: Color,
         gradient_type: GradientType = GradientType.RADIAL,
     ):
-        super(GradientColoredDisjointShape, self).__init__(
+        super(GradientColoredDisconnectedShape, self).__init__(
             lines=shape._lines,
             stroke_color=shape._stroke_color,
             line_width=shape._line_width,
@@ -69,10 +69,12 @@ class GradientColoredDisjointShape(DisconnectedShape):
         )
         self._from_color: Color = from_color
         self._to_color: Color = to_color
-        self._gradient_type: GradientColoredDisjointShape.GradientType = gradient_type
+        self._gradient_type: GradientColoredDisconnectedShape.GradientType = (
+            gradient_type
+        )
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        return super(GradientColoredDisjointShape, self)._get_content_box(
+        return super(GradientColoredDisconnectedShape, self)._get_content_box(
             available_space
         )
 
@@ -97,15 +99,21 @@ class GradientColoredDisjointShape(DisconnectedShape):
         n: Decimal = Decimal(1)
 
         # DIAGONAL
-        if self._gradient_type == GradientColoredDisjointShape.GradientType.DIAGONAL:
+        if (
+            self._gradient_type
+            == GradientColoredDisconnectedShape.GradientType.DIAGONAL
+        ):
             n = Decimal(math.sqrt((min_x - max_x) ** 2 + (min_y - max_y) ** 2))
 
         # HORIZONTAL
-        if self._gradient_type == GradientColoredDisjointShape.GradientType.HORIZONTAL:
+        if (
+            self._gradient_type
+            == GradientColoredDisconnectedShape.GradientType.HORIZONTAL
+        ):
             n = max_x - min_x
 
         # RADIAL
-        if self._gradient_type == GradientColoredDisjointShape.GradientType.RADIAL:
+        if self._gradient_type == GradientColoredDisconnectedShape.GradientType.RADIAL:
             mid_x = (max_x - min_x) / 2 + min_x
             mid_y = (max_y - min_y) / 2 + min_y
             n = Decimal(
@@ -118,7 +126,10 @@ class GradientColoredDisjointShape(DisconnectedShape):
             )
 
         # VERTICAL
-        if self._gradient_type == GradientColoredDisjointShape.GradientType.VERTICAL:
+        if (
+            self._gradient_type
+            == GradientColoredDisconnectedShape.GradientType.VERTICAL
+        ):
             n = max_y - min_y
 
         # convert to Decimal to be sure
@@ -132,13 +143,13 @@ class GradientColoredDisjointShape(DisconnectedShape):
         for l in self._lines:
             d: Decimal = Decimal(0)
             # fmt: off
-            if self._gradient_type == GradientColoredDisjointShape.GradientType.DIAGONAL:
+            if self._gradient_type == GradientColoredDisconnectedShape.GradientType.DIAGONAL:
                 d = Decimal(math.sqrt((l[0][0] - min_x) ** 2 + (l[0][1] - min_y) ** 2))
-            if self._gradient_type == GradientColoredDisjointShape.GradientType.HORIZONTAL:
+            if self._gradient_type == GradientColoredDisconnectedShape.GradientType.HORIZONTAL:
                 d = Decimal(l[0][0] - min_x)
-            if self._gradient_type == GradientColoredDisjointShape.GradientType.RADIAL:
+            if self._gradient_type == GradientColoredDisconnectedShape.GradientType.RADIAL:
                 d = Decimal(math.sqrt((l[0][0] - mid_x) ** 2 + (l[0][1] - mid_y) ** 2))
-            if self._gradient_type == GradientColoredDisjointShape.GradientType.VERTICAL:
+            if self._gradient_type == GradientColoredDisconnectedShape.GradientType.VERTICAL:
                 d = Decimal(l[0][1] - min_y)
             # fmt: on
 

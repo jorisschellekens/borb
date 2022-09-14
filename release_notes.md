@@ -1,9 +1,15 @@
-# :mega: borb release 2.1.1
+# :mega: borb release 2.1.2
 
-This release is a feature release:
-- `HTMLToPDF` has been updated to ensure even more HTML syntax is supported
-  - `HTMLToPDF` allows you to specify a `typing.List[Font]` of fallback fonts
-  - This allows you to use non-western characters in HTML and markdown
-- `MarkdownToPDF` now uses `HTMLToPDF` (making it easier for me to maintain the code)
-- Added `BlockFlow` and `InlineFlow` elements
-- Added `SingleColumnLayoutWithOverflow` to enable certain `LayoutElement` implementations to be split across multiple `Page` objects. Currently only splitting of `Table` is supported.
+This release is a minor bugfix release:
+- Following the large refactor of `LayoutElement`, some minor classes still needed to be updated to work with the new framework. 
+  Most notable among these is HTMLToPDF`.
+
+- `GradientColoredDisjointShape` has become `GradientColoredDisconnectedShape` to follow suit with the rename of `DisjointShape` to `DisconnectedShape`.
+
+- `InlineFlow` and `BlockFlow` have been moved to `page_layout`. Easy imports have been provided for them.
+
+- More convenient imports have been made possible for `FormField` elements.
+
+- The documentation of `borb` (to be found in the examples repository) has been given a major check. 
+There is also a script that will automatically attempt to run each example code snippet. 
+This should make it easier to detect when a new release breaks something in the examples repository. 

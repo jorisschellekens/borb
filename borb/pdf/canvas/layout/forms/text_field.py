@@ -67,10 +67,12 @@ class TextField(FormField):
 
         # init page and font resources
         assert self._font_size is not None
-        font_resource_name: Name = self._get_font_resource_name(StandardType1Font("Helvetica"), page)
+        font_resource_name: Name = self._get_font_resource_name(
+            StandardType1Font("Helvetica"), page
+        )
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        widget_resources: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # widget normal appearance
@@ -97,7 +99,7 @@ class TextField(FormField):
         # fmt: on
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]                # type: ignore [attr-defined]
+        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
         # fmt: off

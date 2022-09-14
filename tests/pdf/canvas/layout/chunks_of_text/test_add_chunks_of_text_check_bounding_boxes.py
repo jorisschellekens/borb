@@ -51,7 +51,12 @@ class TestAddChunksOfTextCheckBoundingBoxes(unittest.TestCase):
         layout.add(
             Table(number_of_columns=2, number_of_rows=3)
             .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S"), font_color=HexColor("00ff00")))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
@@ -80,7 +85,7 @@ class TestAddChunksOfTextCheckBoundingBoxes(unittest.TestCase):
         ]
 
         bb = Rectangle(Decimal(59), Decimal(500), Decimal(476), Decimal(124))
-        hp:HeterogeneousParagraph =  HeterogeneousParagraph(chunks_of_text)
+        hp: HeterogeneousParagraph = HeterogeneousParagraph(chunks_of_text)
         hp.paint(page, bb)
         chunks_of_text = []
         for l in hp._split_to_lines_of_chunks_of_text(hp.get_previous_paint_box()):
