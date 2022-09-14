@@ -10,7 +10,7 @@ import copy
 import typing
 from decimal import Decimal
 
-from borb.pdf import SingleColumnLayout, Page
+from borb.pdf import SingleColumnLayout
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 
@@ -24,7 +24,7 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
 
     def __init__(
         self,
-        page: Page,
+        page: "Page",
         horizontal_margin: typing.Optional[Decimal] = None,
         vertical_margin: typing.Optional[Decimal] = None,
     ):
