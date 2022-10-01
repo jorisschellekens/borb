@@ -330,7 +330,8 @@ class Dictionary(dict):
         super(Dictionary, self).__setitem__(key, value)
 
     def __deepcopy__(self, memodict={}):
-        out = Dictionary()
+        out = type(self).__new__(type(self))
+        Dictionary.__init__(out)
         for k, v in self.items():
             out[copy.deepcopy(k, memodict)] = copy.deepcopy(v, memodict)
         return out

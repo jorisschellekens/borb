@@ -367,6 +367,12 @@ class Paragraph(LineOfText):
         if self._fixed_leading is not None:
             line_height += self._fixed_leading
 
+        # if the Paragraph needs to be tagged, insert (STARTING) tagging operators
+        # TODO
+        if self._needs_to_be_tagged(page):
+            next_mcid: int = 0
+            page.append_to_content_stream("\n/Standard <</MCID %d>>\nBDC\n" % next_mcid)
+
         # call paint on all LineOfText objects
         for i, l in enumerate(self._previous_lines_of_text):
             l.paint(
@@ -380,3 +386,7 @@ class Paragraph(LineOfText):
                     line_height,
                 ),
             )
+
+        # if the Paragraph needs to be tagged, insert (CLOSING) tagging operators
+        if self._needs_to_be_tagged(page):
+            page.append_to_content_stream("\nEMC\n")

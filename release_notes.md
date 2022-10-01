@@ -1,15 +1,11 @@
-# :mega: borb release 2.1.2
+# :mega: borb release 2.1.4
 
-This release is a minor bugfix release:
-- Following the large refactor of `LayoutElement`, some minor classes still needed to be updated to work with the new framework. 
-  Most notable among these is HTMLToPDF`.
-
-- `GradientColoredDisjointShape` has become `GradientColoredDisconnectedShape` to follow suit with the rename of `DisjointShape` to `DisconnectedShape`.
-
-- `InlineFlow` and `BlockFlow` have been moved to `page_layout`. Easy imports have been provided for them.
-
-- More convenient imports have been made possible for `FormField` elements.
-
-- The documentation of `borb` (to be found in the examples repository) has been given a major check. 
-There is also a script that will automatically attempt to run each example code snippet. 
-This should make it easier to detect when a new release breaks something in the examples repository. 
+This release is a maintenance/feature release.
+- Fixed inconsistent function names in `borb.toolkit`
+  - Updated examples repository
+- Fixed issue with `deepcopy` on `borb` objects
+  - Added tests for `deepcopy`
+- Added more random text generators so users can pick a flavor
+- Added `SmartArt` to allow document designers to easily create beautiful charts and illustrations
+  - Added tests for `SmartArt`
+  - More `SmartArt` to come in future releases

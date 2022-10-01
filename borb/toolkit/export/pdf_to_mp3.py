@@ -4,6 +4,7 @@
 """
 This implementation of EventListener exports a Page as an mp3 file, essentially reading the text on the Page
 """
+import io
 import tempfile
 import typing
 from decimal import Decimal
@@ -11,31 +12,47 @@ from pathlib import Path
 
 from gtts import gTTS  # type: ignore [import]
 
+from borb.pdf import Document
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
+from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
+from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.page.page import Page
-from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_paragraph_extraction import SimpleParagraphExtraction
 
 
 class PDFToMP3(SimpleParagraphExtraction):
     """
-    This implementation of EventListener exports a Page as an mp3 file, essentially reading the text on the Page
+    This implementation of EventListener exports a Page as an mp3 file (returned as bytes), essentially reading the text on the Page
     """
 
     @staticmethod
-    def convert_pdf_to_mp3(file: Path, page_number: int) -> Path:
+    def convert_pdf_to_mp3(pdf: Document) -> typing.Dict[int, bytes]:
         """
         This function converts a PDF to an MP3 file, returning its Path
         """
-        l: "PDFToMP3" = PDFToMP3()
-        with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
-        temporary_file: Path = Path(
-            tempfile.NamedTemporaryFile(prefix="pdf_to_mp3", suffix=".mp3").name
-        )
-        l.get_audio_for_page(page_number, str(temporary_file))
-        return temporary_file
+        sound_bytes_of_each_page: typing.Dict[int, bytes] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+
+            # register EventListener
+            cse: "PDFToMP3" = PDFToMP3()
+
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
+
+            # set in page
+            sound_bytes_of_each_page[page_nr] = cse.convert_to_mp3()[0]
+
+        # return
+        return sound_bytes_of_each_page
 
     def __init__(
         self,
@@ -123,12 +140,30 @@ class PDFToMP3(SimpleParagraphExtraction):
         # return
         return text_to_speak_for_paragraph
 
-    def get_audio_for_page(self, page_number: int, path: str):
+    def convert_to_mp3(self) -> typing.Dict[int, bytes]:
         """
         This function creates and then returns the audio-file for the text spoken at the given page
         """
-        sound = gTTS(
-            text=self._text_to_speak_for_page[page_number], lang=self._language
-        )
-        sound.save(path)
-        return path
+        sound_bytes_per_page: typing.Dict[int, bytes] = {}
+        number_of_pages: int = len(self._text_to_speak_for_page.keys())
+        for page_nr in range(0, number_of_pages):
+            sound_for_page = gTTS(
+                text=self._text_to_speak_for_page[page_nr], lang=self._language
+            )
+
+            # store in temporary location
+            tmp_path: Path = Path(tempfile.NamedTemporaryFile().name)
+            sound_for_page.save(tmp_path)
+
+            # read bytes
+            sound_bytes: typing.Optional[bytes] = None
+            with open(tmp_path, "rb") as tmp_file_handle:
+                sound_bytes = tmp_file_handle.read()
+            assert sound_bytes is not None
+            tmp_path.unlink(missing_ok=True)
+
+            # insert into dict
+            sound_bytes_per_page[page_nr] = sound_bytes
+
+        # return
+        return sound_bytes_per_page

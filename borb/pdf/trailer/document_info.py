@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-    This class represents the meta-information belonging to a PDF document
+This class represents the meta-information belonging to a PDF document
 """
 import typing
 from decimal import Decimal
 from typing import List, Optional
 
 from borb.io.read.types import Name
+from borb.io.write.conformance_level import ConformanceLevel
 
 
 class DocumentInfo:
@@ -19,6 +20,16 @@ class DocumentInfo:
     def __init__(self, document: "Document"):  # type: ignore [name-defined]
         super().__init__()
         self._document: "Document" = document  # type: ignore [name-defined]
+
+    def get_write_conformance_level(self) -> typing.Optional[ConformanceLevel]:
+        """
+        This function returns the ConformanceLevel that was
+        set for writing operations
+        :return:    the ConformanceLevel to be used when writing the PDF
+        """
+        if "ConformanceLevel" in self._document:
+            return ConformanceLevel[self._document["ConformanceLevel"]]
+        return None
 
     def has_signatures(self) -> bool:
         """

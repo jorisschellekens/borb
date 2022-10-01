@@ -237,7 +237,9 @@ class PostScriptEval:
                     assert len(stk) >= 1, "Unable to apply operator exp, stack underflow"
                     # fmt: on
                     x = stk[-1]
-                    assert isinstance(x, Decimal)
+                    assert isinstance(
+                        x, Decimal
+                    ), "Unable to apply operator exp, unexpected type"
                     stk.pop(len(stk) - 1)
                     stk.append(Decimal(exp(x)))
                     continue
@@ -251,7 +253,9 @@ class PostScriptEval:
                     assert len(stk) >= 1, "Unable to apply operator floor, stack underflow"
                     # fmt: on
                     x = stk[-1]
-                    assert isinstance(x, Decimal)
+                    assert isinstance(
+                        x, Decimal
+                    ), "Unable to apply operator floor, unexpected type"
                     stk.pop(len(stk) - 1)
                     stk.append(Decimal(floor(x)))
                     continue
@@ -260,8 +264,12 @@ class PostScriptEval:
                     assert len(stk) >= 2, "Unable to apply operator ge, stack underflow"
                     x = stk[-1]
                     y = stk[-2]
-                    assert isinstance(x, Decimal)
-                    assert isinstance(y, Decimal)
+                    assert isinstance(
+                        x, Decimal
+                    ), "Unable to apply operator ge, unexpected type"
+                    assert isinstance(
+                        y, Decimal
+                    ), "Unable to apply operator ge, unexpected type"
                     stk.pop(len(stk) - 1)
                     stk.pop(len(stk) - 1)
                     stk.append(y >= x)

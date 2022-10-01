@@ -138,6 +138,22 @@ class LayoutElement:
         # linkage (for lists, tables, etc)
         self._parent = parent
 
+    def _needs_to_be_tagged(self, p: "Page") -> bool:
+        """
+        This function returns whether this LayoutElement needs to be tagged
+        :param p:   the Page on which this LayoutElement is to be painted
+        :return:    true if this LayoutElement needs to be tagged, False otherwise
+        """
+        document: typing.Optional["Document"] = p.get_document()
+        if document is None:
+            return False
+        conformance_level: typing.Optional[
+            "ConformanceLevel"
+        ] = document.get_document_info().get_write_conformance_level()
+        if conformance_level is None:
+            return False
+        return conformance_level.get_conformance_level() in ["A", "U"]
+
     def get_font_size(self) -> Decimal:
         """
         This function returns the font size of this LayoutElement
@@ -267,12 +283,15 @@ class LayoutElement:
         :param available_space:     the available space (as a Rectangle) on which to paint this LayoutElement
         :return:                    None
         """
+
+        # calculate horizontal_border_width
         horizontal_border_width: Decimal = Decimal(0)
         if self._border_left:
             horizontal_border_width += self._border_width
         if self._border_right:
             horizontal_border_width += self._border_width
 
+        # calculate vertical_border_width
         vertical_border_width: Decimal = Decimal(0)
         if self._border_top:
             vertical_border_width += self._border_width
@@ -523,7 +542,7 @@ class LayoutElement:
                 background_box.get_y() + background_box.get_height(),   # ul_y
             )
             # fmt: on
-            page._append_to_content_stream(content)
+            page.append_to_content_stream(content)
             return
 
         # remember border state
@@ -564,7 +583,7 @@ class LayoutElement:
             assert p is not None
             content += " %f %f l" % (float(p[0]), float(p[1]))
         content += " f Q"
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)
 
     def _paint_borders(self, page: "Page", border_box: Rectangle):  # type: ignore[name-defined]
         # border is not wanted on any side
@@ -604,4 +623,4 @@ class LayoutElement:
                 float(p1[1]),
             )
         content += " Q"
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)

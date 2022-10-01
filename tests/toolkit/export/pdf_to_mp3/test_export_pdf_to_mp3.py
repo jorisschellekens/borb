@@ -27,7 +27,8 @@ class TestExportPDFToMP3(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             l = PDFToMP3()
             doc = PDF.loads(pdf_file_handle, [l])
-            l.get_audio_for_page(0, self.output_dir / "output.mp3")
+            with open(self.output_dir / "output.mp3", "wb") as mp3_file_handle:
+                mp3_file_handle.write(l.convert_to_mp3()[0])
 
 
 if __name__ == "__main__":

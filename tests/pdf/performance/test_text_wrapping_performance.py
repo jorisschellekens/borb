@@ -8,6 +8,8 @@ from pathlib import Path
 
 import requests
 from borb.pdf import Document, Page, SingleColumnLayout, PageLayout, Paragraph, PDF
+from borb.pdf.canvas.font.font import Font
+from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -32,6 +34,9 @@ class TestTextWrappingPerformance(unittest.TestCase):
         # do this for the first 10Kb
         timing_information: typing.Dict[int, typing.List[float]] = {}
 
+        # load the font once
+        helvetica: Font = StandardType1Font("Helvetica")
+
         for i in range(1024, min(len(text), 1024 * 10), 1024):
             for _ in range(0, 5):
                 # create Document
@@ -50,7 +55,7 @@ class TestTextWrappingPerformance(unittest.TestCase):
                 for l in lines:
                     if l == "":
                         l = ":"
-                    layout.add(Paragraph(l))
+                    layout.add(Paragraph(l, font=helvetica))
                 t0 = time.time() - t0
 
                 # append

@@ -1,9 +1,9 @@
 {
     "analysis-summary": {
         "can-be-optimized": true,
-        "claimed-pdfa-type": "PDF/A-1b",
+        "claimed-pdfa-type": "PDF/A-1a",
         "conforms-to-claimed-pdfa-type": false,
-        "date": "Wed Sep 14 23:25:33 2022",
+        "date": "Sat Oct  1 19:47:35 2022",
         "errors": [
             "does-not-conform-to-claimed-pdfa-type"
         ],
@@ -28,7 +28,7 @@
         "pdf-major-version": 1,
         "pdf-minor-version": 7,
         "profile": "/home/joris/Downloads/PDF-CHECKER-Lin64/PDF_Checker/CheckerProfiles/iso_32000.json",
-        "size-in-bytes": 5604,
+        "size-in-bytes": 5632,
         "triggered-abort": ""
     },
     "cleanup-results": {
@@ -92,7 +92,7 @@
         },
         "how-to-optimize": {
             "does-not-conform-to-claimed-pdfa-type": [
-                "Document claims to be PDF/A-1b conformant, but it is not, try using PDF Optimizer to convert to a compliant PDF/A document. (1 instance)"
+                "Document claims to be PDF/A-1a conformant, but it is not, try using PDF Optimizer to convert to a compliant PDF/A document. (1 instance)"
             ]
         },
         "information": {

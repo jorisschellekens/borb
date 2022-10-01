@@ -132,4 +132,4 @@ class Image(LayoutElement):
         )
 
         # write content
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)

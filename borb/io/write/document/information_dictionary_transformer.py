@@ -269,14 +269,17 @@ class InformationDictionaryTransformer(Transformer):
                                    and "Trailer" in document["XRef"]                        \
                                    and "Root" in document["XRef"]["Trailer"]                \
                                    and "Metadata" in document["XRef"]["Trailer"]["Root"]
-        needs_xmp_metadata = has_xmp_metadata or (context is not None and context.conformance_level is not None)
+        needs_xmp_metadata = has_xmp_metadata or (document.get_document_info().get_write_conformance_level() is not None)
         # fmt: on
 
         if needs_xmp_metadata:
+            conformance_level: ConformanceLevel = (
+                document.get_document_info().get_write_conformance_level()
+            )
 
             # write XMP /Metadata
             xmp_metadata_stream: Stream = self._write_xmp_metadata_stream(
-                new_info_dictionary, context.conformance_level
+                new_info_dictionary, conformance_level
             )
             assert context is not None
             document["XRef"]["Trailer"]["Root"][Name("Metadata")] = self.get_reference(

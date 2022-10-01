@@ -10,6 +10,7 @@ which will do the actual rendering.
 import typing
 from decimal import Decimal
 
+from borb.pdf import ChunkOfText
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
 from borb.pdf.page.page import Page
@@ -24,20 +25,18 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
     """
 
     def __init__(
+        # fmt: off
         self,
         page: Page,
         number_of_columns: int = 2,
         horizontal_margin: typing.Optional[Decimal] = None,
         vertical_margin: typing.Optional[Decimal] = None,
-        header_callable: typing.Optional[
-            typing.Callable[[Page, Rectangle], None]
-        ] = None,
+        header_callable: typing.Optional[typing.Callable[[Page, Rectangle], None]] = None,
         header_height: Decimal = Decimal(12 * 3 * 1.2),
         footer_height: Decimal = Decimal(12 * 3 * 1.2),
-        footer_callable: typing.Optional[
-            typing.Callable[[Page, Rectangle], None]
-        ] = None,
+        footer_callable: typing.Optional[typing.Callable[[Page, Rectangle], None]] = None,
         inter_column_margin: typing.Optional[Decimal] = None,
+        # fmt: on
     ):
         super(HeaderFooterMultiColumnLayout, self).__init__(
             page,
@@ -58,12 +57,6 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
         if self._footer_callable is None:
             self._footer_height = Decimal(0)
 
-        # size of Page is updated to ensure the layout algorithm does not attempt
-        # to fill the Page entirely
-        assert self._page_height is not None
-        self._page_height -= self._header_height
-        self._page_height -= self._footer_height
-
         # modify margins
         self._vertical_margin_bottom += self._footer_height
         self._vertical_margin_top += self._header_height
@@ -81,7 +74,7 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
                 self.get_page(),
                 Rectangle(
                     self._horizontal_margin,
-                    self._page_height - self._vertical_margin_top,
+                    self._page_height - self._vertical_margin_top - self._header_height,
                     self._page_width - self._horizontal_margin * Decimal(2),
                     self._header_height,
                 ),
@@ -99,6 +92,18 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
                     self._footer_height,
                 ),
             )
+
+        # previous LayoutElement
+        self._previous_element = ChunkOfText("")
+        self._previous_element._previous_paint_box = Rectangle(
+            self._horizontal_margin,
+            self._page_height - self._vertical_margin_top - self._header_height,
+            self._page_width - self._horizontal_margin * Decimal(2),
+            self._header_height,
+        )
+        self._previous_element._previous_layout_box = (
+            self._previous_element._previous_paint_box
+        )
 
     def switch_to_next_page(self) -> "PageLayout":  # type: ignore[name-defined]
         """

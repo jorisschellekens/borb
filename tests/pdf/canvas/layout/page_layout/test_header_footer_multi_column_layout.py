@@ -43,6 +43,8 @@ class TestMarginAndPadding(unittest.TestCase):
             font_size=Decimal(10),
             font_color=HexColor("D3D3D3"),
             respect_newlines_in_text=True,
+            border_bottom=True,
+            border_width=Decimal(2),
         ).paint(page, rectangle)
 
     def _add_footer(self, page: Page, rectangle: Rectangle) -> None:

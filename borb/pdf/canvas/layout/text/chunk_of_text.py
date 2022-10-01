@@ -77,7 +77,8 @@ class ChunkOfText(LayoutElement):
             horizontal_alignment=horizontal_alignment,
             background_color=background_color,
         )
-        self._text = text
+        self._text: str = text
+        self._is_tagged: bool = False
 
         # font information
         if isinstance(font, str):
@@ -224,6 +225,8 @@ class ChunkOfText(LayoutElement):
         )
 
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
+
+        # color
         assert self._font
         rgb_color = self._font_color.to_rgb()
 
@@ -240,16 +243,7 @@ class ChunkOfText(LayoutElement):
         descent: Decimal = (self._font.get_descent() / Decimal(1000)) * self._font_size
 
         # determine what to write to page
-        content = """
-            q
-            BT
-            %f %f %f rg
-            /%s %f Tf            
-            %f 0 0 %f %f %f Tm            
-            %s
-            ET            
-            Q
-        """ % (
+        content = """q\nBT\n%f %f %f rg\n/%s %f Tf\n%f 0 0 %f %f %f Tm\n%s\nET\nQ""" % (
             float(rgb_color.red),  # rg
             float(rgb_color.green),  # rg
             float(rgb_color.blue),  # rg
@@ -266,4 +260,4 @@ class ChunkOfText(LayoutElement):
             ),  # Tm
             self._write_text_bytes(),  # Tj
         )
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)

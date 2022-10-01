@@ -13,9 +13,13 @@ from pathlib import Path
 
 from PIL import Image as PILImage  # type: ignore [import]
 
+from borb.pdf import Document
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
+from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.page.page import Page
@@ -29,14 +33,30 @@ class PDFToSVG(EventListener):
     """
 
     @staticmethod
-    def convert_pdf_to_svg(file: Path, page_number: int) -> ET.Element:
+    def convert_pdf_to_svg(pdf: Document) -> typing.Dict[int, ET.Element]:
         """
         This function converts a PDF to an SVG ET.Element
         """
-        l: "PDFToSVG" = PDFToSVG()
-        with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
-        return l.get_image_for_page(page_number)
+        image_of_each_page: typing.Dict[int, ET.Element] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+
+            # register EventListener
+            cse: "PDFToSVG" = PDFToSVG()
+
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
+
+            # set in page
+            image_of_each_page[page_nr] = cse.convert_to_svg()[0]
+
+        # return
+        return image_of_each_page
 
     def __init__(
         self,
@@ -206,9 +226,8 @@ class PDFToSVG(EventListener):
         assert self._svg_per_page[int(page_nr)] is not None
         self._svg_per_page[int(page_nr)].append(image_element)
 
-    def get_image_for_page(self, page_nr: int) -> ET.Element:
+    def convert_to_svg(self) -> typing.Dict[int, ET.Element]:
         """
         This function returns the ET.Element for a given page_nr
         """
-        assert page_nr in self._svg_per_page
-        return self._svg_per_page[page_nr]
+        return self._svg_per_page

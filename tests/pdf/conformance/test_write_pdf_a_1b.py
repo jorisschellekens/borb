@@ -31,7 +31,7 @@ class TestWritePDFA1B(unittest.TestCase):
     def test_write_pdf_a_1b(self):
 
         # create empty Document
-        pdf = Document()
+        pdf = Document(ConformanceLevel.PDFA_1A)
 
         # create empty Page
         page = Page()
@@ -43,6 +43,7 @@ class TestWritePDFA1B(unittest.TestCase):
         layout: PageLayout = SingleColumnLayout(page)
 
         # add Paragraph
+        layout.add(Paragraph("Hello World!"))
         layout.add(Paragraph("Hello World!"))
 
         info_dictionary: Dictionary = Dictionary()
@@ -56,7 +57,7 @@ class TestWritePDFA1B(unittest.TestCase):
         # attempt to store PDF
         out_file = self.output_dir / "output_001.pdf"
         with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf, ConformanceLevel.PDFA_1B)
+            PDF.dumps(in_file_handle, pdf)
 
         # compare visually
         compare_visually_to_ground_truth(out_file)
@@ -87,7 +88,7 @@ class TestWritePDFA1B(unittest.TestCase):
         # attempt to store PDF
         out_file = self.output_dir / "output_002.pdf"
         with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf, ConformanceLevel.PDFA_1B)
+            PDF.dumps(in_file_handle, pdf)
 
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:

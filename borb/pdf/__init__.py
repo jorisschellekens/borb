@@ -83,6 +83,7 @@ from .canvas.layout.page_layout.block_flow import BlockFlow
 # Shape
 from .canvas.layout.shape.connected_shape import ConnectedShape
 from .canvas.layout.shape.disconnected_shape import DisconnectedShape
+from .canvas.layout.smart_art.smart_art import SmartArt
 
 # Table
 from .canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
@@ -105,6 +106,7 @@ from .canvas.layout.text.paragraph import Paragraph
 from .canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from .canvas.layout.text.heading import Heading
 from .canvas.layout.text.chunk_of_text import ChunkOfText
+from .canvas.lipsum.lipsum import Lipsum
 
 # Document, Page, PDF
 from .document.document import Document

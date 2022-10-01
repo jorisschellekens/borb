@@ -127,7 +127,7 @@ class ProgressBar(LayoutElement):
         content += " Q"
 
         # append to page
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)
 
 
 class ProgressSquare(ProgressBar):

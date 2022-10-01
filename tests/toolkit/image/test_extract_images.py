@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from borb.pdf.pdf import PDF
-from borb.toolkit.image.simple_image_extraction import SimpleImageExtraction
+from borb.toolkit.image.image_extraction import ImageExtraction
 
 
 class TestExtractImages(unittest.TestCase):
@@ -21,10 +21,10 @@ class TestExtractImages(unittest.TestCase):
 
         input_file: Path = Path(__file__).parent / "input_001.pdf"
         with open(input_file, "rb") as pdf_file_handle:
-            l = SimpleImageExtraction()
+            l = ImageExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
 
-            for i, img in enumerate(l.get_images_for_page(0)):
+            for i, img in enumerate(l.extract_images()[0]):
                 with open(
                     self.output_dir / ("image_%d.jpg" % i), "wb"
                 ) as image_file_handle:

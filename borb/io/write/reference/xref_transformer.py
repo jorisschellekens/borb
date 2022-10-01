@@ -45,41 +45,41 @@ class XREFTransformer(Transformer):
         trailer_out = Dictionary()
 
         # /Root
-        trailer_out[Name("Root")] = self.get_reference(
-            object_to_transform["Trailer"]["Root"], context
-        )
+        # fmt: off
+        trailer_out[Name("Root")] = self.get_reference(object_to_transform["Trailer"]["Root"], context)
+        # fmt: on
 
         # /Info
+        # fmt: off
         if "Info" in object_to_transform["Trailer"]:
-            trailer_out[Name("Info")] = self.get_reference(
-                object_to_transform["Trailer"]["Info"], context
-            )
+            trailer_out[Name("Info")] = self.get_reference(object_to_transform["Trailer"]["Info"], context)
+        # fmt: on
 
         # /Size
-        if (
-            "Trailer" in object_to_transform
-            and "Size" in object_to_transform["Trailer"]
-        ):
+        # fmt: off
+        if ("Trailer" in object_to_transform and "Size" in object_to_transform["Trailer"]):
             trailer_out[Name("Size")] = object_to_transform["Trailer"]["Size"]
         else:
-            trailer_out[Name("Size")] = Decimal(
-                0
-            )  # we'll recalculate this later anyway
+            trailer_out[Name("Size")] = Decimal(0)  # we'll recalculate this later anyway
+        # fmt: on
 
         # /ID
         if "ID" in object_to_transform["Trailer"]:
             trailer_out[Name("ID")] = object_to_transform["Trailer"]["ID"]
 
         # write /Info object
+        # fmt: off
         if "Info" in object_to_transform["Trailer"]:
-            self.get_root_transformer().transform(
-                object_to_transform["Trailer"]["Info"], context
-            )
+            self.get_root_transformer().transform(object_to_transform["Trailer"]["Info"], context)
+        # fmt: on
+
+        # write /Root /StructTreeRoot
+        # TODO
 
         # write /Root object
-        self.get_root_transformer().transform(
-            object_to_transform["Trailer"]["Root"], context
-        )
+        # fmt: off
+        self.get_root_transformer().transform(object_to_transform["Trailer"]["Root"], context)
+        # fmt: on
 
         # write /XREF
         start_of_xref = context.destination.tell()

@@ -181,4 +181,4 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
         content += " Q"
 
         # append to page
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)

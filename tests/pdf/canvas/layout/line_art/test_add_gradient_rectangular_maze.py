@@ -8,7 +8,7 @@ from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
-from borb.pdf.canvas.layout.shape.gradient_colored_disjoint_shape import (
+from borb.pdf.canvas.layout.shape.gradient_colored_disconnected_shape import (
     GradientColoredDisconnectedShape,
 )
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (

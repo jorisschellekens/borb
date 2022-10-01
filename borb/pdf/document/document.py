@@ -10,6 +10,7 @@ from decimal import Decimal
 
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
+from borb.io.write.conformance_level import ConformanceLevel
 from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType
 from borb.pdf.document.name_tree import NameTree
 from borb.pdf.page.page import Page
@@ -21,6 +22,11 @@ class Document(Dictionary):
     """
     This class represents a PDF document
     """
+
+    def __init__(self, conformance_level: typing.Optional[ConformanceLevel] = None):
+        super(Document, self).__init__()
+        if conformance_level is not None:
+            self[Name("ConformanceLevel")] = String(conformance_level.name)
 
     def get_document_info(self) -> DocumentInfo:
         """

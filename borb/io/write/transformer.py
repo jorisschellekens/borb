@@ -27,7 +27,6 @@ class WriteTransformerState:
         self,
         destination: Optional[typing.Union[io.BufferedIOBase, io.RawIOBase]] = None,
         root_object: Optional[AnyPDFType] = None,
-        conformance_level: typing.Optional[ConformanceLevel] = None,
     ):
         # fmt: off
         self.destination = destination                                                      # this is the destination to write to (file, byte-buffer, etc)
@@ -36,7 +35,6 @@ class WriteTransformerState:
         self.indirect_objects_by_hash: typing.Dict[int, typing.List[AnyPDFType]] = {}       # these are the indirect objects (by hash)
         self.resolved_references: typing.List[Reference] = []                               # these references have already been written
         self.compression_level: int = 9                                                     # default compression level
-        self.conformance_level: typing.Optional[ConformanceLevel] = conformance_level       # default conformance level
         self.apply_font_subsetting: bool = False                                            # whether to apply Font subsetting or not
         # fmt: on
 

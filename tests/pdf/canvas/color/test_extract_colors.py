@@ -19,7 +19,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from borb.toolkit.color.color_spectrum_extraction import ColorSpectrumExtraction
+from borb.toolkit.color.color_spectrum_extraction import ColorExtraction
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None
@@ -105,10 +105,9 @@ class TestExtractColors(unittest.TestCase):
 
         colors: typing.List[typing.Tuple[RGBColor, int]] = []
         with open(input_file, "rb") as pdf_file_handle:
-            l = ColorSpectrumExtraction()
+            l = ColorExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
-            for t in l.get_colors_for_page(0, limit=32):
-                colors.append(t)
+            colors = [(k.to_rgb(), int(v)) for k, v in l.extract_color()[0].items()]
 
         # create document
         pdf = Document()
@@ -140,8 +139,9 @@ class TestExtractColors(unittest.TestCase):
         )
         layout.add(Paragraph(" "))
 
-        t: Table = Table(number_of_rows=11, number_of_columns=3)
+        t: Table = Table(number_of_rows=11, number_of_columns=4)
         t.add(Paragraph("Color Swatch", font="Helvetica-Bold"))
+        t.add(Paragraph("HEX", font="Helvetica-Bold"))
         t.add(Paragraph("% of Page", font="Helvetica-Bold"))
         t.add(Paragraph("Most Similar X11 Color", font="Helvetica-Bold"))
         number_of_pixels: Decimal = (
@@ -164,7 +164,8 @@ class TestExtractColors(unittest.TestCase):
                     )
                 )
             )
-            p: int = round(100 * c[1] / number_of_pixels)
+            t.add(Paragraph(c[0].to_hex_string()))
+            p: int = round(100 * c[1] / number_of_pixels, 2)
             t.add(Paragraph(str(p)))
             t.add(Paragraph(X11Color.find_nearest_x11_color(c[0]).get_name()))
         t.set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))

@@ -63,10 +63,11 @@ class XREFTransformer(Transformer):
         """
 
         # update context
-        assert context is not None
+        assert context is not None, "context must be defined to read XREF objects"
         assert isinstance(object_to_transform, io.BufferedIOBase) or isinstance(
             object_to_transform, io.RawIOBase
         )
+
         context.root_object = Document()
         context.source = object_to_transform
         context.tokenizer = HighLevelTokenizer(context.source)

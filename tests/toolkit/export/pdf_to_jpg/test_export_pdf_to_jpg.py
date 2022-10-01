@@ -1,6 +1,8 @@
+import typing
 import unittest
 from pathlib import Path
 
+from borb.pdf import Document
 from borb.pdf.pdf import PDF
 from borb.toolkit.export.pdf_to_jpg import PDFToJPG
 
@@ -21,22 +23,23 @@ class TestExportPDFToJPG(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_convert_pdf_to_jpg_001(self):
-
+    def test_convert_pdf_to_jpg_as_eventlistener(self):
         input_file: Path = Path(__file__).parent / "input_001.pdf"
         with open(input_file, "rb") as pdf_file_handle:
             l = PDFToJPG()
             doc = PDF.loads(pdf_file_handle, [l])
-            im = l.get_image_for_page(0)
+            im = l.convert_to_jpg()[0]
             im.save(self.output_dir / "output_001.jpg")
 
         return True
 
-    def test_convert_pdf_to_jpg_002(self):
+    def test_convert_pdf_to_jpg_as_static_method(self):
         input_file: Path = Path(__file__).parent / "input_001.pdf"
-        PDFToJPG.convert_pdf_to_jpg(input_file, 0).save(
-            self.output_dir / "output_002.jpg"
-        )
+        doc: typing.Optional[Document] = None
+        with open(input_file, "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle)
+        assert doc is not None
+        PDFToJPG.convert_pdf_to_jpg(doc)[0].save(self.output_dir / "output_002.jpg")
 
 
 if __name__ == "__main__":

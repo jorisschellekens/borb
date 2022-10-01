@@ -67,6 +67,9 @@ class TestExportHTMLToPDF(unittest.TestCase):
     def test_example_014(self):
         self._test_convert_document("example_html_input_014.html")
 
+    def test_example_015(self):
+        self._test_convert_document("example_html_input_015.html")
+
     def _test_convert_document(self, file_to_convert: str):
 
         # create output directory if it does not exist yet

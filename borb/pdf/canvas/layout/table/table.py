@@ -67,15 +67,11 @@ class TableCell(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=Alignment.TOP,  # not used
         )
+        # fmt: off
         self._layout_element = layout_element
         assert row_span >= 1
         assert col_span >= 1
-        assert not isinstance(
-            layout_element, TableCell
-        ), "TableCell should not contain other TableCell LayoutElement(s)."
-        assert not isinstance(
-            layout_element, Table
-        ), "TableCell should not contain Table LayoutElement(s)."
+        # fmt: on
 
         # grid coordinates taken up by the TableCell
         self._row_span = row_span

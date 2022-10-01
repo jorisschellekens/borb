@@ -4,6 +4,7 @@
 """
     This implementation of EventListener renders a PDF to a PIL Image
 """
+import io
 import platform
 import typing
 from decimal import Decimal
@@ -12,9 +13,13 @@ from pathlib import Path
 from PIL import Image as PILImage  # type: ignore [import]
 from PIL import ImageDraw, ImageFont
 
+from borb.pdf import Page
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
+from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.page.page_size import PageSize
-from borb.pdf.pdf import PDF
 from borb.toolkit.export.pdf_to_svg import PDFToSVG
 
 
@@ -24,14 +29,30 @@ class PDFToJPG(PDFToSVG):
     """
 
     @staticmethod
-    def convert_pdf_to_jpg(file: Path, page_number: int) -> PILImage:  # type: ignore[valid-type]
+    def convert_pdf_to_jpg(pdf: "Document") -> typing.Dict[int, PILImage.Image]:  # type: ignore[valid-type]
         """
-        This function converts a PDF to an PIL.Image
+        This function converts a PDF to an PIL.Image.Image
         """
-        l: "PDFToJPG" = PDFToJPG()
-        with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
-        return l.get_image_for_page(page_number)
+        image_of_each_page: typing.Dict[int, PILImage.Image] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+
+            # register EventListener
+            cse: "PDFToJPG" = PDFToJPG()
+
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
+
+            # set in page
+            image_of_each_page[page_nr] = cse.convert_to_jpg()[0]
+
+        # return
+        return image_of_each_page
 
     def __init__(
         self,
@@ -172,9 +193,8 @@ class PDFToJPG(PDFToSVG):
         # paste
         page_image.paste(image, (int(x), int(page_height - y - image_height)))
 
-    def get_image_for_page(self, page_nr: int) -> PILImage:  # type: ignore[valid-type]
+    def convert_to_jpg(self) -> typing.Dict[int, PILImage.Image]:  # type: ignore[valid-type]
         """
         This function returns the PIL.Image for a given page_nr
         """
-        assert page_nr in self._jpg_image_per_page
-        return self._jpg_image_per_page[page_nr]
+        return self._jpg_image_per_page

@@ -62,10 +62,7 @@ class TestAddParagraphsUsingLipsum(unittest.TestCase):
 
         random.seed(2048)
         for pt in [
-            Lipsum.generate_lipsum_text(
-                random.choice([5, 6, 7]), start_with_lorem_ipsum=(i == 0)
-            )
-            for i in range(0, 5)
+            Lipsum.generate_lipsum_text(random.choice([5, 6, 7])) for _ in range(0, 5)
         ]:
             layout.add(Paragraph(pt))
 
@@ -113,12 +110,62 @@ class TestAddParagraphsUsingLipsum(unittest.TestCase):
 
         random.seed(2048)
         for pt in [
-            Lipsum.generate_bob_ross_text(random.choice([5, 6, 7])) for _ in range(0, 5)
+            Lipsum.generate_agatha_christie_text(random.choice([5, 6, 7]))
+            for _ in range(0, 5)
         ]:
             layout.add(Paragraph(pt))
 
         # determine output location
         out_file = self.output_dir / "output_002.pdf"
+
+        # attempt to store PDF
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
+
+    def test_write_document_003(self):
+
+        # create document
+        pdf = Document()
+
+        # add page
+        page = Page()
+        pdf.add_page(page)
+
+        # add test information
+        layout = SingleColumnLayout(page)
+        layout.add(
+            Table(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with a few Paragraph objects in it, containing lorem ipsum text."
+                )
+            )
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+
+        random.seed(2048)
+        for pt in [
+            Lipsum.generate_lewis_carroll_text(random.choice([5, 6, 7]))
+            for _ in range(0, 5)
+        ]:
+            layout.add(Paragraph(pt))
+
+        # determine output location
+        out_file = self.output_dir / "output_003.pdf"
 
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:

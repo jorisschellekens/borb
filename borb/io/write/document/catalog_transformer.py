@@ -20,6 +20,7 @@ from borb.io.read.types import (
 )
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.transformer import WriteTransformerState
+from borb.pdf import Document
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +91,10 @@ class CatalogTransformer(DictionaryTransformer):
 
         # /OutputIntents
         # fmt: off
-        needs_outputintents: bool = (context is not None and context.conformance_level is not None)
+
+        needs_outputintents: bool = (context is not None
+                                     and isinstance(context.root_object, Document)
+                                     and context.root_object.get_document_info().get_write_conformance_level() is not None)
         if needs_outputintents:
             self._build_rgb_outputintent_dictionary(object_to_transform)
         # fmt: on

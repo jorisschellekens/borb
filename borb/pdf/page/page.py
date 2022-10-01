@@ -45,7 +45,8 @@ class Page(Dictionary):
         """
         This function returns the Document from which this Page came
         """
-        return self.get_root()  # type: ignore [attr-defined]
+        d: typing.Any = self.get_root()  # type: ignore [attr-defined]
+        return d if d.__class__.__name__ == "Document" else None
 
     #
     # FORMS
@@ -296,7 +297,12 @@ class Page(Dictionary):
         # return
         return self
 
-    def _append_to_content_stream(self, s: str) -> "Page":  # type: ignore[name-defined]
+    def append_to_content_stream(self, s: str) -> "Page":  # type: ignore[name-defined]
+        """
+        This function appends a string of postfix operators to the content stream of this Page
+        :param s:   the str of postfix operators to be added
+        :return:    self
+        """
         self._initialize_page_content_stream()
         content_stream = self["Contents"]
 
@@ -305,7 +311,7 @@ class Page(Dictionary):
             # fmt: off
             decoded_bytes_last_char: str = str(content_stream["DecodedBytes"][-1:], encoding="latin1")
             if decoded_bytes_last_char not in [" ", "\t", "\n"] and s[0] not in [" ", "\t", "\n"]:
-                instructions = " " + s
+                content_stream[Name("DecodedBytes")] += " ".encode("latin1")
             # fmt: on
 
         content_stream[Name("DecodedBytes")] += s.encode("latin1")

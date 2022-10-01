@@ -65,4 +65,4 @@ class HorizontalRule(LayoutElement):
         )
 
         # modify content stream
-        page._append_to_content_stream(content)
+        page.append_to_content_stream(content)
