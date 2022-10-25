@@ -18,6 +18,7 @@ from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.object.stream_transformer import StreamTransformer
 from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.license.version import Version
 from borb.pdf.document.document import Document
 from borb.pdf.trailer.document_info import XMPDocumentInfo
 
@@ -113,7 +114,9 @@ class InformationDictionaryTransformer(Transformer):
         )
 
         # set Producer
-        info_dictionary[Name("Producer")] = String("borb")
+        info_dictionary[Name("Producer")] = String(
+            Version.get_producer() + " " + Version.get_version()
+        )
 
         return info_dictionary
 
@@ -269,12 +272,12 @@ class InformationDictionaryTransformer(Transformer):
                                    and "Trailer" in document["XRef"]                        \
                                    and "Root" in document["XRef"]["Trailer"]                \
                                    and "Metadata" in document["XRef"]["Trailer"]["Root"]
-        needs_xmp_metadata = has_xmp_metadata or (document.get_document_info().get_write_conformance_level() is not None)
+        needs_xmp_metadata = has_xmp_metadata or (document.get_document_info().get_conformance_level_upon_create() is not None)
         # fmt: on
 
         if needs_xmp_metadata:
             conformance_level: ConformanceLevel = (
-                document.get_document_info().get_write_conformance_level()
+                document.get_document_info().get_conformance_level_upon_create()
             )
 
             # write XMP /Metadata

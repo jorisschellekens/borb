@@ -5,7 +5,6 @@ from pathlib import Path
 from decimal import Decimal
 
 from borb.pdf import HexColor
-from borb.pdf.canvas.layout.image.unsplash import Unsplash
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
@@ -33,6 +32,7 @@ class TestAddUnsplashImage(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
+    @unittest.skip
     def test_write_document(self):
 
         # create empty document
@@ -65,6 +65,8 @@ class TestAddUnsplashImage(unittest.TestCase):
         )
 
         # add image
+        from borb.pdf.canvas.layout.image.unsplash import Unsplash
+
         layout.add(
             Unsplash.get_image(["cherry", "blossom"], Decimal(400), Decimal(300))
         )

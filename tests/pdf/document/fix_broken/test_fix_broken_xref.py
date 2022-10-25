@@ -15,7 +15,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 
-class TestRemovePage(unittest.TestCase):
+class TestFixBrokenXRef(unittest.TestCase):
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -106,7 +106,7 @@ class TestRemovePage(unittest.TestCase):
             doc = PDF.loads(pdf_in_file_handle, [l])
 
         # read info properties
-        assert doc.get_document_info().get_producer() == "borb"
+        assert "borb" in str(doc.get_document_info().get_producer())
 
         # check number of pages
         assert doc.get_document_info().get_number_of_pages() == 1

@@ -60,7 +60,7 @@ class TestDocumentFileSize(unittest.TestCase):
         # check file_size
         s: typing.Optional[Decimal] = document.get_document_info().get_file_size()
         assert s is not None
-        assert 1000 <= s <= 1100
+        assert 1000 <= s <= 1200
 
     def test_check_file_size_002(self):
 

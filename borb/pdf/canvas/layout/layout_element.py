@@ -147,12 +147,12 @@ class LayoutElement:
         document: typing.Optional["Document"] = p.get_document()
         if document is None:
             return False
-        conformance_level: typing.Optional[
-            "ConformanceLevel"
-        ] = document.get_document_info().get_write_conformance_level()
+        # fmt: off
+        conformance_level: typing.Optional["ConformanceLevel"] = document.get_document_info().get_conformance_level_upon_create()
         if conformance_level is None:
             return False
         return conformance_level.get_conformance_level() in ["A", "U"]
+        # fmt: on
 
     def get_font_size(self) -> Decimal:
         """

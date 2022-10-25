@@ -94,7 +94,7 @@ class CatalogTransformer(DictionaryTransformer):
 
         needs_outputintents: bool = (context is not None
                                      and isinstance(context.root_object, Document)
-                                     and context.root_object.get_document_info().get_write_conformance_level() is not None)
+                                     and context.root_object.get_document_info().get_conformance_level_upon_create() is not None)
         if needs_outputintents:
             self._build_rgb_outputintent_dictionary(object_to_transform)
         # fmt: on

@@ -6,6 +6,7 @@ This implementation of FormField represents a drop down list that is pre-filled 
 """
 import typing
 
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.layout.forms.drop_down_list import DropDownList
@@ -216,25 +217,50 @@ class CountryDropDownList(DropDownList):
 
     def __init__(
         self,
+        # background_color: typing.Optional[Color] = None,
+        border_bottom: bool = True,
+        border_color: Color = HexColor("808080"),
+        border_left: bool = True,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = True,
+        border_top: bool = True,
+        border_width: Decimal = Decimal(1),
         default_value: str = "",
         field_name: typing.Optional[str] = None,
         font_color: Color = HexColor("000000"),
-        font_size: Decimal = Decimal(12),
-        margin_bottom: typing.Optional[Decimal] = None,
-        margin_left: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
-        margin_top: typing.Optional[Decimal] = None,
+        font_size: typing.Optional[Decimal] = Decimal(12),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
         value: str = "",
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(CountryDropDownList, self).__init__(
+            # background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
             default_value=default_value,
             field_name=field_name,
             font_color=font_color,
             font_size=font_size,
+            horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
             margin_left=margin_left,
             margin_right=margin_right,
@@ -244,5 +270,6 @@ class CountryDropDownList(DropDownList):
             padding_right=padding_right,
             padding_top=padding_top,
             possible_values=CountryDropDownList.COUNTRIES,
+            vertical_alignment=vertical_alignment,
             value=value,
         )

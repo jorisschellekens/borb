@@ -174,5 +174,17 @@ class TestAddAllLineArtAnnotations(unittest.TestCase):
             doc = PDF.loads(in_file_handle)
 
         # compare visually
-        compare_visually_to_ground_truth(self.output_dir / "output.pdf")
+        count_asserts: int = 0
+        try:
+            compare_visually_to_ground_truth(pdf_path=self.output_dir / "output.pdf")
+        except:
+            count_asserts += 1
+        try:
+            compare_visually_to_ground_truth(
+                pdf_path=self.output_dir / "output.pdf",
+                ground_truth_file_name="output_ground_truth_old_gs.png",
+            )
+        except:
+            count_asserts += 1
+        assert count_asserts == 0 or count_asserts == 1
         check_pdf_using_validator(out_file)

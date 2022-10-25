@@ -11,6 +11,7 @@ from decimal import Decimal
 from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -25,33 +26,58 @@ class TextArea(FormField):
 
     def __init__(
         self,
-        font_size: Decimal = Decimal(12),
-        font_color: Color = HexColor("000000"),
-        value: str = "",
+        # background_color: typing.Optional[Color] = None,
+        border_bottom: bool = True,
+        border_color: Color = HexColor("808080"),
+        border_left: bool = True,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = True,
+        border_top: bool = True,
+        border_width: Decimal = Decimal(1),
         default_value: str = "",
-        number_of_lines: int = 5,
         field_name: typing.Optional[str] = None,
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
+        font_color: Color = HexColor("000000"),
+        font_size: typing.Optional[Decimal] = Decimal(12),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
+        number_of_lines: int = 5,
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
-        margin_top: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
-        margin_bottom: typing.Optional[Decimal] = None,
-        margin_left: typing.Optional[Decimal] = None,
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        value: str = "",
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(TextArea, self).__init__(
-            padding_top=padding_top,
-            padding_right=padding_right,
-            padding_bottom=padding_bottom,
-            padding_left=padding_left,
-            margin_top=margin_top,
-            margin_right=margin_right,
+            # background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            font_size=font_size,
+            horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
             margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
+            vertical_alignment=vertical_alignment,
         )
-        assert font_size >= 0
-        self._font_size = font_size
         self._font_color = font_color
         self._value: str = value
         self._default_value: str = default_value

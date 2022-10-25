@@ -7,7 +7,6 @@ from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -335,16 +334,15 @@ class TestWriteWithTrueTypeFont(unittest.TestCase):
 
         # add paragraph
         p: Paragraph = Paragraph(
-            "ABC", font=TrueTypeFont.true_type_font_from_file(font_path)
+            "ABC",
+            font=TrueTypeFont.true_type_font_from_file(font_path),
+            border_top=True,
+            border_right=True,
+            border_bottom=True,
+            border_left=True,
+            border_color=HexColor("ff0000"),
         )
         layout.add(p)
-
-        # add box
-        page.add_annotation(
-            SquareAnnotation(
-                p.get_previous_layout_box(), stroke_color=HexColor("ff0000")
-            )
-        )
 
         # determine output location
         out_file = self.output_dir / "output_004.pdf"

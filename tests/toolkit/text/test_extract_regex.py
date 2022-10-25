@@ -3,14 +3,15 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf import ConnectedShape
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
@@ -105,12 +106,11 @@ class TestExtractRegularExpression(unittest.TestCase):
         assert 6 <= int(bb.height) <= 8
 
         bb = bb.grow(Decimal(2))
-        doc.get_page(0).add_annotation(
-            SquareAnnotation(
-                bb,
-                stroke_color=HexColor("DE6449"),
-            )
-        )
+        ConnectedShape(
+            LineArtFactory.rectangle(bb),
+            stroke_color=HexColor("DE6449"),
+            fill_color=None,
+        ).paint(doc.get_page(0), bb)
 
         # attempt to store PDF
         out_file: Path = self.output_dir / "output_002.pdf"

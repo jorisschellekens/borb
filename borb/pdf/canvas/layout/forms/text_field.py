@@ -33,6 +33,11 @@ class TextField(FormField):
         margin_left: typing.Optional[Decimal] = None,
         margin_right: typing.Optional[Decimal] = None,
         margin_top: typing.Optional[Decimal] = None,
+        border_top: bool = True,
+        border_right: bool = True,
+        border_bottom: bool = True,
+        border_left: bool = True,
+        border_color: Color = HexColor("808080"),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
@@ -48,6 +53,11 @@ class TextField(FormField):
             margin_right=margin_right,
             margin_bottom=margin_bottom,
             margin_left=margin_left,
+            border_top=border_top,
+            border_right=border_right,
+            border_bottom=border_bottom,
+            border_left=border_left,
+            border_color=border_color,
         )
         assert font_size >= 0
         self._font_size = font_size

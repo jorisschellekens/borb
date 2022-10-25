@@ -25,8 +25,9 @@ class Document(Dictionary):
 
     def __init__(self, conformance_level: typing.Optional[ConformanceLevel] = None):
         super(Document, self).__init__()
-        if conformance_level is not None:
-            self[Name("ConformanceLevel")] = String(conformance_level.name)
+        self._conformance_level_upon_create: typing.Optional[
+            ConformanceLevel
+        ] = conformance_level
 
     def get_document_info(self) -> DocumentInfo:
         """

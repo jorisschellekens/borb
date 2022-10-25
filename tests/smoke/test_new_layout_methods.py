@@ -12,7 +12,6 @@ from borb.pdf import (
     PageLayout,
     Image,
     UnorderedList,
-    Heading,
     Barcode,
     BarcodeType,
     ConnectedShape,
@@ -23,7 +22,6 @@ from borb.pdf import (
 )
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.emoji.emoji import Emojis
-from borb.pdf.canvas.layout.image.unsplash import Unsplash
 from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.canvas.layout.shape.progressbar import ProgressSquare
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
@@ -184,28 +182,38 @@ class TestNewLayoutMethods(unittest.TestCase):
             )
         )
         t.add(
-            Unsplash.get_image(
-                ["team", "building"], width=Decimal(64), height=Decimal(64)
+            Image(
+                "https://images.unsplash.com/photo-1557804506-669a67965ba0",
+                width=Decimal(64),
+                height=Decimal(64),
             )
         )
         t.add(
-            Unsplash.get_image(
-                ["laptop", "code"], width=Decimal(64), height=Decimal(64)
+            Image(
+                "https://images.unsplash.com/photo-1523800503107-5bc3ba2a6f81",
+                width=Decimal(64),
+                height=Decimal(64),
             )
         )
         t.add(
-            Unsplash.get_image(
-                ["office", "building"], width=Decimal(64), height=Decimal(64)
+            Image(
+                "https://images.unsplash.com/photo-1544141310-d3b5a03ac5a8",
+                width=Decimal(64),
+                height=Decimal(64),
             )
         )
         t.add(
-            Unsplash.get_image(
-                ["nature", "building"], width=Decimal(64), height=Decimal(64)
+            Image(
+                "https://images.unsplash.com/photo-1583190298857-df3010faeb95",
+                width=Decimal(64),
+                height=Decimal(64),
             )
         )
         t.add(
-            Unsplash.get_image(
-                ["water", "nature"], width=Decimal(64), height=Decimal(64)
+            Image(
+                "https://images.unsplash.com/photo-1512138664757-360e0aad5132",
+                width=Decimal(64),
+                height=Decimal(64),
             )
         )
 

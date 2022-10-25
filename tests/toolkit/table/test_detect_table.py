@@ -4,8 +4,8 @@ import unittest
 from decimal import Decimal
 from pathlib import Path
 
+from borb.pdf import ConnectedShape
 from borb.pdf.canvas.color.color import X11Color
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -15,6 +15,7 @@ from borb.pdf.canvas.layout.table.flexible_column_width_table import (
 )
 from borb.pdf.canvas.layout.table.table import Table, TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
@@ -183,20 +184,20 @@ class TestDetectTable(unittest.TestCase):
             # add annotation around table
             for t in tables:
                 r = t.get_previous_layout_box().grow(Decimal(5))
-                doc.get_page(0).add_annotation(
-                    SquareAnnotation(r, stroke_color=X11Color("Red"))
-                )
+                ConnectedShape(
+                    LineArtFactory.rectangle(r),
+                    stroke_color=X11Color("Red"),
+                    fill_color=None,
+                ).paint(doc.get_page(0), r)
 
                 for tc in t._content:
                     r = tc.get_previous_layout_box()
                     r = r.shrink(Decimal(2))
-                    doc.get_page(0).add_annotation(
-                        SquareAnnotation(
-                            r,
-                            stroke_color=X11Color("Green"),
-                            fill_color=X11Color("Green"),
-                        )
-                    )
+                    ConnectedShape(
+                        LineArtFactory.rectangle(r),
+                        stroke_color=X11Color("Green"),
+                        fill_color=X11Color("Green"),
+                    ).paint(doc.get_page(0), r)
 
             # determine output name
             output_file: Path = input_file.parent / input_file.name.replace(

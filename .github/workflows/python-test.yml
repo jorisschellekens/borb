@@ -1,0 +1,58 @@
+name: Test Against Multiple Python Versions
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install test dependencies (gs)
+        run: |
+          sudo apt-get -y install ghostscript
+      - name: Install test dependencies (gTTS)
+        run: |
+          pip install gTTS
+      - name: Install test dependencies (lxml)
+        run: |
+          pip install lxml
+      - name: Install test dependencies (markdown-it-py)
+        run: |
+          pip install markdown-it-py
+      - name: Install test dependencies (matplotlib)
+        run: |
+          pip install matplotlib==3.5.3
+      - name: Install test dependencies (nltk)
+        run: |
+          pip install nltk
+      - name: Install test dependencies (opencv-python)
+        run: |
+          pip install opencv-python
+      - name: Install test dependencies (pandas)
+        run: |
+          pip install pandas
+      - name: Install test dependencies (textblob)
+        run: |
+          pip install textblob
+      - name: Test with pytest
+        run: |
+          pytest
+      - uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: test-artifacts
+          path: tests/output/

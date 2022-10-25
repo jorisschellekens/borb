@@ -3,7 +3,7 @@
         "can-be-optimized": true,
         "claimed-pdfa-type": "PDF/A-1a",
         "conforms-to-claimed-pdfa-type": false,
-        "date": "Sat Oct  1 19:47:35 2022",
+        "date": "Wed Oct  5 23:49:21 2022",
         "errors": [
             "does-not-conform-to-claimed-pdfa-type"
         ],

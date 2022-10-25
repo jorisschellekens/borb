@@ -8,6 +8,7 @@ import typing
 import zlib
 from decimal import Decimal
 
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
@@ -20,30 +21,65 @@ from borb.pdf.page.page import Page
 
 class DropDownList(FormField):
     """
-    This implementation of FormField represents a drop down list.
+    This implementation of FormField represents a dropdown list.
     """
 
     def __init__(
         self,
+        # background_color: typing.Optional[Color] = None,
+        border_bottom: bool = True,
+        border_color: Color = HexColor("808080"),
+        border_left: bool = True,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
+        border_right: bool = True,
+        border_top: bool = True,
+        border_width: Decimal = Decimal(1),
         default_value: str = "",
         field_name: typing.Optional[str] = None,
         font_color: Color = HexColor("000000"),
-        font_size: Decimal = Decimal(12),
-        margin_bottom: typing.Optional[Decimal] = None,
-        margin_left: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
-        margin_top: typing.Optional[Decimal] = None,
+        font_size: typing.Optional[Decimal] = Decimal(12),
+        horizontal_alignment: Alignment = Alignment.LEFT,
+        margin_bottom: typing.Optional[Decimal] = Decimal(0),
+        margin_left: typing.Optional[Decimal] = Decimal(0),
+        margin_right: typing.Optional[Decimal] = Decimal(0),
+        margin_top: typing.Optional[Decimal] = Decimal(0),
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
         possible_values: typing.List[str] = [],
         value: str = "",
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
-        super(DropDownList, self).__init__()
-        assert font_size >= 0
-        self._font_size = font_size
-        self._font_color = font_color
+        super(DropDownList, self).__init__(
+            # background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            font_size=font_size,
+            horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
+            vertical_alignment=vertical_alignment,
+        )
+        assert (font_size is None) or (font_size >= 0)
+        self._font_color: Color = font_color
         self._value: str = value
         self._possible_values: typing.List[str] = possible_values
         self._default_value: str = default_value
@@ -97,6 +133,7 @@ class DropDownList(FormField):
         catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
+        # fmt: off
         self._widget_dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
         self._widget_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
         self._widget_dictionary[Name("Type")] = Name("Annot")
@@ -104,27 +141,20 @@ class DropDownList(FormField):
         self._widget_dictionary[Name("F")] = bDecimal(4)
         self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height - self._font_size - 2)
-        )
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.x + layout_box.width)
-        )
-        self._widget_dictionary["Rect"].append(
-            bDecimal(layout_box.y + layout_box.height)
-        )
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size - 2))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
+        self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height))
         self._widget_dictionary[Name("FT")] = Name("Ch")
         self._widget_dictionary[Name("P")] = catalog
         self._widget_dictionary[Name("Opt")] = List()
         for x in self._possible_values:
             self._widget_dictionary["Opt"].append(String(x))
         self._widget_dictionary[Name("Ff")] = bDecimal(131072)
-        self._widget_dictionary[Name("T")] = String(
-            self._field_name or self._get_auto_generated_field_name(page)
-        )
+        self._widget_dictionary[Name("T")] = String(self._field_name or self._get_auto_generated_field_name(page))
         self._widget_dictionary[Name("V")] = String(self._value)
         self._widget_dictionary[Name("DV")] = String(self._default_value)
         self._widget_dictionary[Name("DR")] = widget_resources
+        # fmt: on
 
         # rendering instructions
         font_color_rgb: RGBColor = self._font_color.to_rgb()

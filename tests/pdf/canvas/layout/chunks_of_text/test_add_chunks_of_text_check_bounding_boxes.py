@@ -5,9 +5,9 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf import ConnectedShape
 from borb.pdf.canvas.color.color import HexColor, Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
@@ -15,6 +15,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
@@ -95,13 +96,11 @@ class TestAddChunksOfTextCheckBoundingBoxes(unittest.TestCase):
         for i, c in enumerate(chunks_of_text):
             r: Rectangle = copy.deepcopy(chunks_of_text[i].get_previous_layout_box())
             r.y -= (i + 1) * Decimal(10)
-            page.add_annotation(
-                SquareAnnotation(
-                    stroke_color=colors[i],
-                    fill_color=colors[i],
-                    bounding_box=r,
-                )
-            )
+            ConnectedShape(
+                LineArtFactory.rectangle(r),
+                stroke_color=colors[i],
+                fill_color=colors[i],
+            ).paint(page, r)
 
         # determine output location
         out_file = self.output_dir / "output.pdf"

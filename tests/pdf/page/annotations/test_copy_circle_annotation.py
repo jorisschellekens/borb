@@ -72,7 +72,7 @@ class TestCopyCircleAnnotation(unittest.TestCase):
                     Decimal(64),
                     Decimal(64),
                 ),
-                stroke_color=HexColor("0B3954"),
+                stroke_color=HexColor("f1cd2e"),
                 fill_color=HexColor("f1cd2e"),
             )
         )

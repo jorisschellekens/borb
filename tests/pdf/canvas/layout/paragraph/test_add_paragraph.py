@@ -3,9 +3,9 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf import ConnectedShape
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -13,6 +13,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
@@ -88,7 +89,11 @@ class TestAddParagraph(unittest.TestCase):
         )
 
         # add rectangle annotation
-        page.add_annotation(SquareAnnotation(bb, stroke_color=HexColor("f1cd2e")))
+        ConnectedShape(
+            LineArtFactory.rectangle(bb),
+            stroke_color=HexColor("f1cd2e"),
+            fill_color=None,
+        ).paint(page, bb)
 
         # determine output location
         out_file = self.output_dir / "output.pdf"

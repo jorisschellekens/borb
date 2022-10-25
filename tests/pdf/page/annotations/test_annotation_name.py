@@ -88,10 +88,6 @@ class TestAnnotationName(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
-        # compare visually
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
-
     def test_annotation_names(self):
 
         # attempt to re-open PDF

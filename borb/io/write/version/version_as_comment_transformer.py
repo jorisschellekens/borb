@@ -4,16 +4,17 @@
 """
 This implementation of WriteBaseTransformer is responsible for writing ASCII art in every PDF
 """
-from pathlib import Path
+import typing
 from typing import Optional
 
 from borb.io.read.types import AnyPDFType, Stream
 from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.license.version import Version
 
 
-class ASCIIArtTransformer(Transformer):
+class VersionAsCommentTransformer(Transformer):
     """
-    This implementation of WriteBaseTransformer is responsible for writing ASCII art in every PDF
+    This implementation of WriteBaseTransformer is responsible for writing the borb version in every PDF
     """
 
     def __init__(self):
@@ -41,19 +42,19 @@ class ASCIIArtTransformer(Transformer):
         assert isinstance(object_to_transform, Stream)
         # fmt: on
 
-        f = Path(__file__).parent / "ascii_logo.txt"
-        with open(f, "r") as logo_file_handle:
-            ascii_logo = logo_file_handle.readlines()
-
-        # append newline (if needed)
-        if ascii_logo[-1][-1] != "\n":
-            ascii_logo[-1] += "\n"
+        # build
+        version_as_comment_str: typing.List[str] = [
+            Version.get_producer() + " " + Version.get_version(),
+            Version.get_author(),
+        ]
 
         # convert to latin1
-        ascii_logo_bytes = [bytes("%    " + x, "utf8") for x in ascii_logo]
+        version_as_comment_bytes = [
+            bytes("% " + x + "\n", "utf8") for x in version_as_comment_str
+        ]
 
         self._has_been_used = True
-        for x in ascii_logo_bytes:
+        for x in version_as_comment_bytes:
             context.destination.write(x)
         context.destination.write(bytes("\n", "utf8"))
 

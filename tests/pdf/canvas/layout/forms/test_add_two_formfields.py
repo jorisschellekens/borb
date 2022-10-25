@@ -28,7 +28,7 @@ class TestAddTwoFormFields(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_write_two_textfields(self):
+    def test_add_two_textfields(self):
 
         # create Document
         d: Document = Document()
@@ -69,7 +69,7 @@ class TestAddTwoFormFields(unittest.TestCase):
         # check whether each /AP is unique
         assert len(aps) == len(set(aps))
 
-    def test_write_two_textareas(self):
+    def test_add_two_textareas(self):
 
         # create Document
         d: Document = Document()
@@ -110,7 +110,7 @@ class TestAddTwoFormFields(unittest.TestCase):
         # check whether each /AP is unique
         assert len(aps) == len(set(aps))
 
-    def test_write_two_checkboxes(self):
+    def test_add_two_checkboxes(self):
 
         # create Document
         d: Document = Document()
@@ -165,7 +165,7 @@ class TestAddTwoFormFields(unittest.TestCase):
 
         # add
         for _ in range(0, 2):
-            l.add(DropDownList())
+            l.add(DropDownList(possible_values=["Lorem", "Ipsum", "Sit", "Amet"]))
 
         # store
         out_file: Path = self.output_dir / "output_004.pdf"

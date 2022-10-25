@@ -19,8 +19,8 @@ from borb.io.read.transformer import ReadTransformerState
 from borb.io.write.any_object_transformer import (
     AnyObjectTransformer as WriteAnyObjectTransformer,
 )
-from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.transformer import WriteTransformerState
+from borb.license.usage_statistics import UsageStatistics
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.document.document import Document
 
@@ -51,6 +51,7 @@ class PDF:
         This function reads a byte-stream input (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         and returns a Document.
         """
+        UsageStatistics.send_usage_statistics("PDF.loads")
         return ReadAnyObjectTransformer().transform(
             file,
             parent_object=None,
@@ -66,6 +67,7 @@ class PDF:
         """
         This function writes a Document to a byte-stream output (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         """
+        UsageStatistics.send_usage_statistics("PDF.dumps")
         WriteAnyObjectTransformer().transform(
             object_to_transform=document,
             context=WriteTransformerState(

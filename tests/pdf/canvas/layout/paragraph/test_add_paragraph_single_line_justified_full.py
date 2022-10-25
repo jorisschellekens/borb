@@ -3,9 +3,9 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
+from borb.pdf import ConnectedShape
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.annotation.square_annotation import SquareAnnotation
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import (
     SingleColumnLayout,
@@ -16,6 +16,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.page.page_size import PageSize
@@ -81,7 +82,11 @@ class TestAddParagraphSingleLineJustifiedFull(unittest.TestCase):
         # fmt: on
 
         # this is a quick and dirty way to draw a rectangle on the page
-        page.add_annotation(SquareAnnotation(r, stroke_color=HexColor("f1cd2e")))
+        ConnectedShape(
+            LineArtFactory.rectangle(r),
+            stroke_color=HexColor("f1cd2e"),
+            fill_color=None,
+        ).paint(page, r)
 
         # add the paragraph to the page
         p.paint(page, r)

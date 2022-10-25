@@ -479,3 +479,40 @@ class TestAddSmartArt(unittest.TestCase):
         # compare visually
         compare_visually_to_ground_truth(out_file)
         check_pdf_using_validator(out_file)
+
+    def test_add_closed_chevron_process(self):
+        d: Document = Document()
+        p: Page = Page()
+        d.add_page(p)
+        l: PageLayout = SingleColumnLayout(p)
+        l.add(
+            FixedColumnWidthTable(number_of_columns=2, number_of_rows=3)
+            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(
+                Paragraph(
+                    datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    font_color=HexColor("00ff00"),
+                )
+            )
+            .add(Paragraph("Test", font="Helvetica-Bold"))
+            .add(Paragraph(Path(__file__).stem))
+            .add(Paragraph("Description", font="Helvetica-Bold"))
+            .add(Paragraph("This test creates a PDF with a SmartArt object in it."))
+            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+        )
+        l.add(
+            SmartArt.closed_chevron_process(
+                ["One", "Two", "Three", "Four"],
+            )
+        )
+
+        # determine output location
+        out_file = self.output_dir / "output_013.pdf"
+
+        # attempt to store PDF
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, d)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

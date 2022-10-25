@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 def compare_visually_to_ground_truth(
-    pdf_path: Path, maximum_normalized_difference: float = 0.0005
+    pdf_path: Path,
+    maximum_normalized_difference: float = 0.0005,
+    ground_truth_file_name: typing.Optional[str] = None,
 ) -> object:
 
     assert pdf_path.exists()
@@ -25,9 +27,12 @@ def compare_visually_to_ground_truth(
     os.system(command)
 
     # if ground_truth is present, compare
-    png_path_002: Path = png_path_001.parent / png_path_001.name.replace(
-        ".png", "_ground_truth.png"
-    )
+    if ground_truth_file_name is None:
+        png_path_002: Path = png_path_001.parent / png_path_001.name.replace(
+            ".png", "_ground_truth.png"
+        )
+    else:
+        png_path_002: Path = png_path_001.parent / ground_truth_file_name
     if not png_path_002.exists():
         return None
 

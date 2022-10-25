@@ -160,8 +160,11 @@ class PDFToMP3(SimpleParagraphExtraction):
             with open(tmp_path, "rb") as tmp_file_handle:
                 sound_bytes = tmp_file_handle.read()
             assert sound_bytes is not None
-            tmp_path.unlink(missing_ok=True)
-
+            try:
+                if tmp_path.exists():
+                    tmp_path.unlink()
+            except:
+                pass
             # insert into dict
             sound_bytes_per_page[page_nr] = sound_bytes
 

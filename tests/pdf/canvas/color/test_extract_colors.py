@@ -19,7 +19,7 @@ from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from borb.toolkit.color.color_spectrum_extraction import ColorExtraction
+from borb.toolkit.color.color_extraction import ColorExtraction
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 unittest.TestLoader.sortTestMethodsUsing = None

@@ -16,7 +16,9 @@ from decimal import Decimal
 
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.layout.table.table import Table, TableCell
-from borb.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
+from borb.pdf.canvas.layout.table.flexible_column_width_table import (
+    FlexibleColumnWidthTable,
+)
 from borb.pdf.canvas.layout.list.list import List
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.color.color import HexColor, Color
@@ -1041,7 +1043,19 @@ class SmartArt:
         background_color: Color = HexColor("#8BBD8B"),
         font_color: Color = HexColor("#FFFFFF"),
     ) -> LayoutElement:
-
+        """
+        A vertical bullet list is used to show non-sequential information or grouped data, yet it will not affect the outcome of the other data.
+        The first block on the top is related to the second block as well as the third block but the process of the
+        second block is not dependent on how the process on the first block is implemented.
+        Apart from this, each block of information has the same emphasis, and it does not connote any direction.
+        :param text_level_1:        the typing.List[str] to be used as level 1 text
+        :param text_level_2         the typing.List[typing.List[str]] to be used as level 2 text
+        :param font_size:           the font_size to be used
+        :param foreground_color:    the Color to be used in the foreground
+        :param background_color:    the color to be used in the background
+        :param font_color:          the Color to be used for text
+        :return:                    a LayoutElement
+        """
         assert len(text_level_1) > 0
         assert len(text_level_2) > 0
         assert all([len(x) > 0 for x in text_level_2])
@@ -1089,6 +1103,128 @@ class SmartArt:
                     padding_left=font_size,
                 )
             )
+
+        # return
+        return table
+
+    @staticmethod
+    def closed_chevron_process(
+        text: typing.List[str],
+        font_size: Decimal = Decimal(12),
+        foreground_color: Color = HexColor("#6CAE75"),
+        background_color: Color = HexColor("#8BBD8B"),
+        font_color: Color = HexColor("#FFFFFF"),
+    ) -> LayoutElement:
+        """
+        Use to show a progression, a timeline, or sequential steps in a task, process, or workflow, or to emphasize movement or direction.
+        Can be used to emphasize information in the starting shape. Works best with Level 1 text only.
+        :param text:
+        :param font_size:
+        :param foreground_color:
+        :param background_color:
+        :param font_color:
+        :return:
+        """
+        assert font_size > 0
+        N = len(text)
+        table = FlexibleColumnWidthTable(number_of_columns=N * 2 + 1, number_of_rows=2)
+
+        #
+        # 1st row
+        #
+
+        # add triangle shape
+        Z: Decimal = Decimal(0)
+        H: Decimal = Decimal(50)
+        table.add(
+            TableCell(
+                ConnectedShape(
+                    [(Z, H), (H, H), (H, Z)],
+                    fill_color=foreground_color,
+                    stroke_color=foreground_color,
+                )
+            )
+        )
+
+        for i, li in enumerate(text):
+            if i % 2 == 0:
+                c0: Color = foreground_color
+                c1: Color = background_color
+            else:
+                c0: Color = background_color
+                c1: Color = foreground_color
+
+            # add text
+            table.add(
+                TableCell(
+                    Paragraph(li, font_size=font_size, font_color=font_color),
+                    background_color=c0,
+                    row_span=2,
+                    padding_left=font_size,
+                    padding_right=font_size,
+                    padding_top=font_size,
+                    padding_bottom=font_size,
+                )
+            )
+            if i != N - 1:
+                table.add(
+                    TableCell(
+                        ConnectedShape(
+                            [(Z, Z), (Z, H), (H, Z)], fill_color=c0, stroke_color=c0
+                        ),
+                        background_color=c1,
+                    )
+                )
+            else:
+                table.add(
+                    TableCell(
+                        ConnectedShape(
+                            [(Z, Z), (Z, H), (H, Z)], fill_color=c0, stroke_color=c0
+                        )
+                    )
+                )
+
+        #
+        # 2nd row
+        #
+
+        # add triangle shape
+        table.add(
+            TableCell(
+                ConnectedShape(
+                    [(Z, Z), (H, H), (H, Z)],
+                    fill_color=foreground_color,
+                    stroke_color=foreground_color,
+                )
+            )
+        )
+        for i in range(0, N):
+            if i % 2 == 0:
+                c0: Color = foreground_color
+                c1: Color = background_color
+            else:
+                c0: Color = background_color
+                c1: Color = foreground_color
+
+            # add triangle shape
+            if i != N - 1:
+                table.add(
+                    TableCell(
+                        ConnectedShape(
+                            [(Z, Z), (Z, H), (H, H)], fill_color=c0, stroke_color=c0
+                        ),
+                        background_color=c1,
+                    )
+                )
+            else:
+                table.add(
+                    TableCell(
+                        ConnectedShape(
+                            [(Z, Z), (Z, H), (H, H)], fill_color=c0, stroke_color=c0
+                        )
+                    )
+                )
+        table.no_borders()
 
         # return
         return table

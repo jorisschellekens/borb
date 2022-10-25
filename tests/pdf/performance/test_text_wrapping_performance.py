@@ -1,6 +1,3 @@
-import cProfile as profile
-import pstats
-
 import time
 import typing
 import unittest

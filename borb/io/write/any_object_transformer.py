@@ -9,7 +9,9 @@ import io
 from typing import Optional, Union
 
 from borb.io.read.types import AnyPDFType
-from borb.io.write.ascii_art.ascii_art_transformer import ASCIIArtTransformer
+from borb.io.write.version.version_as_comment_transformer import (
+    VersionAsCommentTransformer,
+)
 from borb.io.write.document.catalog_transformer import CatalogTransformer
 from borb.io.write.document.document_transformer import DocumentTransformer
 from borb.io.write.document.information_dictionary_transformer import (
@@ -40,7 +42,7 @@ class AnyObjectTransformer(Transformer):
     def __init__(self):
         super().__init__()
         # fun
-        self.add_child_transformer(ASCIIArtTransformer())
+        self.add_child_transformer(VersionAsCommentTransformer())
         # special object types
         self.add_child_transformer(DocumentTransformer())
         self.add_child_transformer(CatalogTransformer())

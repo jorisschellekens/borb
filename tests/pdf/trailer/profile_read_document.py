@@ -14,4 +14,4 @@ def read_document():
 
 if __name__ == "__main__":
     cProfile.run("read_document()", "profiler_output.pstats")
-    # joris@dell:~$ sudo /root/.local/bin/gprof2dot -f pstats /home/joris/PycharmProjects/borb/tests/pdf/trailer/profiler_output.pstats | dot -Tpng -o /home/joris/output.png
+    # joris@dell:~$ sudo /root/.local/bin/gprof2dot -f pstats /home/joris/PycharmProjects/borb/tests/pdf/trailer/profiler_output.pstats | dot -Tpng -o /home/joris/output_ground_truth.png

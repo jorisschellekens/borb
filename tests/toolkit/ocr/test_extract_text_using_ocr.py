@@ -3,7 +3,6 @@ import unittest
 from pathlib import Path
 
 from borb.pdf.pdf import PDF
-from borb.toolkit.ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
 unittest.TestLoader.sortTestMethodsUsing = None
@@ -21,16 +20,21 @@ class TestExtractTextUsingOCR(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
+    @unittest.skip
     def test_write_ocr_as_optional_content_group(self):
+        from borb.toolkit.ocr.ocr_as_optional_content_group import (
+            OCRAsOptionalContentGroup,
+        )
+
         input_file: Path = Path(__file__).parent / "input_001.pdf"
+        tesseract_data_dir: Path = Path.home() / Path("Downloads/tessdata-main/")
         with open(input_file, "rb") as pdf_file_handle:
-            l = OCRAsOptionalContentGroup(
-                Path("/home/joris/Downloads/tessdata-master/")
-            )
+            l = OCRAsOptionalContentGroup(tesseract_data_dir)
             doc = PDF.loads(pdf_file_handle, [l])
         with open(self.output_dir / "output_001.pdf", "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
 
+    @unittest.skip
     def test_read_enhanced_document(self):
 
         # extract text from document

@@ -21,15 +21,17 @@ class DocumentInfo:
         super().__init__()
         self._document: "Document" = document  # type: ignore [name-defined]
 
-    def get_write_conformance_level(self) -> typing.Optional[ConformanceLevel]:
+    def get_conformance_level_upon_create(self) -> typing.Optional[ConformanceLevel]:
         """
         This function returns the ConformanceLevel that was
-        set for writing operations
+        set for writing operations upon creating the Document instance.
+        This allows the user to specify whether they want to enable things like tagging.
+        A document that was already tagged, and read by borb will of course remain tagged.
+        A document that was not tagged, will similarly not magically be provided with tags.
+        This ConformanceLevel only applies to Document instances that were created by borb.
         :return:    the ConformanceLevel to be used when writing the PDF
         """
-        if "ConformanceLevel" in self._document:
-            return ConformanceLevel[self._document["ConformanceLevel"]]
-        return None
+        return self._document._conformance_level_upon_create
 
     def has_signatures(self) -> bool:
         """
