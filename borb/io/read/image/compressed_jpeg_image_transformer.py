@@ -69,8 +69,8 @@ class CompressedJPEGImageTransformer(Transformer):
         # re-apply filter
         filters.append(Name("DCTDecode"))
 
-        # use PIL to read image bytes
-        raw_byte_array = object_to_transform["Bytes"]
+        # use PIL to read decoded image bytes
+        raw_byte_array = object_to_transform["DecodedBytes"]
 
         try:
             tmp = Image.open(io.BytesIO(raw_byte_array))
