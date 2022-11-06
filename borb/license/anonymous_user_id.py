@@ -16,6 +16,7 @@ class AnonymousUserID:
     """
 
     USER_ID_FILE_NAME: str = "anonymous_user_id"
+    USER_ID: typing.Optional[str] = None
 
     @staticmethod
     def _get_borb_installation_dir() -> typing.Optional[Path]:
@@ -54,12 +55,13 @@ class AnonymousUserID:
             AnonymousUserID._get_borb_installation_dir() is not None
             and AnonymousUserID._get_borb_installation_dir().exists()
         ):
-            with open(
-                AnonymousUserID._get_borb_installation_dir()
-                / AnonymousUserID.USER_ID_FILE_NAME,
-                "w",
-            ) as fh:
-                fh.write("")
+            try:
+                # fmt: off
+                with open(AnonymousUserID._get_borb_installation_dir() / AnonymousUserID.USER_ID_FILE_NAME, "w") as fh:
+                    fh.write("")
+                # fmt: on
+            except:
+                pass
 
     @staticmethod
     def enable() -> None:
@@ -73,7 +75,10 @@ class AnonymousUserID:
             AnonymousUserID._get_user_id_file_from_borb_dir() is not None
             and AnonymousUserID._get_user_id_file_from_borb_dir().exists()
         ):
-            AnonymousUserID._get_user_id_file_from_borb_dir().unlink()
+            try:
+                AnonymousUserID._get_user_id_file_from_borb_dir().unlink()
+            except:
+                pass
         AnonymousUserID.get()
 
     @staticmethod
@@ -93,14 +98,15 @@ class AnonymousUserID:
                 or not AnonymousUserID._get_user_id_file_from_borb_dir().exists()
             )
         ):
-            uuid: str = UUID.get()
-            with open(
-                AnonymousUserID._get_borb_installation_dir()
-                / AnonymousUserID.USER_ID_FILE_NAME,
-                "w",
-            ) as fh:
-                fh.write(uuid)
-            return uuid
+            try:
+                # fmt: off
+                uuid: str = UUID.get()
+                with open(AnonymousUserID._get_borb_installation_dir() / AnonymousUserID.USER_ID_FILE_NAME, "w") as fh:
+                    fh.write(uuid)
+                return uuid
+                # fmt: on
+            except:
+                pass
 
         # IF the borb installation directory exists, and the user_id file exists
         # THEN read the user_id file, and return its content

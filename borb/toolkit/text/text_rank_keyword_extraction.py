@@ -20,13 +20,6 @@ from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
 
-try:
-    from textblob import TextBlob  # type: ignore [import]
-except:
-    assert (
-        "TextBlob needs to be installed for TextRankKeywordExtraction to work properly."
-    )
-
 
 class TextRankKeywordExtraction(SimpleTextExtraction):
     """
@@ -66,21 +59,20 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
         lines = [x for x in re.split("\n*[.?!]+\n*", txt) if len(x) != 0]
         for line in lines:
 
-            # POS tagging
-            tags_and_tokens: typing.List[typing.Tuple[str, str]] = TextBlob(line).tags
-
-            # select only NOUN, ADJ
-            toks = [x[0] for x in tags_and_tokens if x[1] in ["NN", "JJ"]]
+            # split
+            tokens: typing.List[str] = [
+                x for x in re.split("[^A-Z]+", line.upper()) if len(x) > 3
+            ]
 
             # build transfer matrix
-            for i0 in range(0, len(toks)):
-                w0: str = toks[i0].upper()
+            for i0 in range(0, len(tokens)):
+                w0: str = tokens[i0].upper()
                 if w0 not in mtx:
                     mtx[w0] = {}
                 for i1 in range(-3, 3):
-                    if i0 + i1 < 0 or i0 + i1 >= len(toks) or i1 == 0:
+                    if i0 + i1 < 0 or i0 + i1 >= len(tokens) or i1 == 0:
                         continue
-                    w1: str = toks[i0 + i1].upper()
+                    w1: str = tokens[i0 + i1].upper()
                     mtx[w0][w1] = mtx[w0].get(w1, 0) + 1
 
         # run eigenvalue algorithm
@@ -107,12 +99,10 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
             eigenvalues_002 = {x: 0 for x, _ in mtx.items()}
 
         # store keywords
-        self._keywords_per_page[self._current_page] = [
-            (x, f) for x, f in eigenvalues_001.items()
-        ]
-        self._keywords_per_page[self._current_page].sort(
-            key=lambda x: x[1], reverse=True
-        )
+        # fmt: off
+        self._keywords_per_page[self._current_page] = [(x, f) for x, f in eigenvalues_001.items()]
+        self._keywords_per_page[self._current_page].sort(key=lambda x: x[1], reverse=True)
+        # fmt: on
 
     def get_keywords_for_page(self, page_number: int) -> typing.List[typing.Any]:
         """

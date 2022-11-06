@@ -47,7 +47,7 @@ class TestAddImageAlignedCenter(unittest.TestCase):
         # add page to document
         pdf.add_page(page)
 
-        # add Image
+        # set PageLayout
         layout = SingleColumnLayout(page)
 
         # add test information

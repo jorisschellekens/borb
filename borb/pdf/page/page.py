@@ -62,7 +62,8 @@ class Page(Dictionary):
                 [
                     x
                     for x in self.get("Annots", [])
-                    if "Type" in x
+                    if x is not None
+                    and "Type" in x
                     and x["Type"] == "Annot"
                     and "Subtype" in x
                     and x["Subtype"] == "Widget"
@@ -85,7 +86,8 @@ class Page(Dictionary):
                 [
                     x
                     for x in self.get("Annots", [])
-                    if "Type" in x
+                    if x is not None
+                    and "Type" in x
                     and x["Type"] == "Annot"
                     and "Subtype" in x
                     and x["Subtype"] == "Widget"
@@ -109,7 +111,8 @@ class Page(Dictionary):
         field_dictionaries: typing.List[Dictionary] = [
             x
             for x in self.get("Annots", [])
-            if "Type" in x
+            if x is not None
+            and "Type" in x
             and x["Type"] == "Annot"
             and "Subtype" in x
             and x["Subtype"] == "Widget"
@@ -133,7 +136,8 @@ class Page(Dictionary):
         field_dictionaries: typing.List[Dictionary] = [
             x
             for x in self.get("Annots", [])
-            if "Type" in x
+            if x is not None
+            and "Type" in x
             and x["Type"] == "Annot"
             and "Subtype" in x
             and x["Subtype"] == "Widget"

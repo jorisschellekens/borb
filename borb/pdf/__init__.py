@@ -81,6 +81,7 @@ from .canvas.layout.page_layout.inline_flow import InlineFlow
 from .canvas.layout.page_layout.block_flow import BlockFlow
 
 # Shape
+from .canvas.line_art.line_art_factory import LineArtFactory
 from .canvas.layout.shape.connected_shape import ConnectedShape
 from .canvas.layout.shape.disconnected_shape import DisconnectedShape
 from .canvas.layout.smart_art.smart_art import SmartArt

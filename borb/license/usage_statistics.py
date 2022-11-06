@@ -68,6 +68,8 @@ class UsageStatistics:
             "country_code": GeoInformation.get_country_code(),
             "country_name": GeoInformation.get_country_name(),
             "event": event,
+            "latitude": GeoInformation.get_latitude(),
+            "longitude": GeoInformation.get_longitude(),
             "state": GeoInformation.get_state(),
             "sys_platform": sys.platform,
             "utc_time_in_ms": int(datetime.now(timezone.utc).timestamp() * 1000),

@@ -86,10 +86,14 @@ from .text.simple_non_ligature_text_extraction import SimpleNonLigatureTextExtra
 # text (structure)
 from .text.simple_paragraph_extraction import SimpleParagraphExtraction
 from .text.simple_line_of_text_extraction import SimpleLineOfTextExtraction
-from .text.regular_expression_text_extraction import RegularExpressionTextExtraction
+from .text.regular_expression_text_extraction import (
+    RegularExpressionTextExtraction,
+    PDFMatch,
+)
 
 # text (filter)
 from .text.font_color_filter import FontColorFilter
+from .text.font_extraction import FontExtraction
 from .text.font_name_filter import FontNameFilter
 
 # text (keywords, NLP)
@@ -98,3 +102,4 @@ try:
 except:
     pass
 from .text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
+from .text.stop_words import FRENCH_STOP_WORDS, ENGLISH_STOP_WORDS

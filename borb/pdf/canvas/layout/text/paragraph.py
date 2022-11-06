@@ -214,11 +214,16 @@ class Paragraph(LineOfText):
                     lines_of_text.append(w)
                     continue
 
-                # break the text according to the hyphenation
                 # fmt: off
-                if len(lines_of_text[-1]) > 0 and not self._respect_spaces_in_text:
-                    lines_of_text[-1] += " "
-                lines_of_text[-1] += "".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-"
+                # break the text according to the hyphenation
+                # IF there is a previous line of text, we can append it to that line
+                if len(lines_of_text) > 0:
+                    if len(lines_of_text[-1]) > 0 and not self._respect_spaces_in_text:
+                        lines_of_text[-1] += " "
+                    lines_of_text[-1] += "".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-"
+                # ELSE the hyphenated word is added (in parts) to lines_of_text
+                else:
+                    lines_of_text.append("".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-")
                 lines_of_text.append("".join([x for x in hyphenated_word_parts[hyphenation_split_index:]]))
                 # fmt: on
 
