@@ -4,11 +4,15 @@
 """
     This implementation of EventListener extracts all lines of text from a PDF Document
 """
+import io
 import typing
 from functools import cmp_to_key
 
 from borb.datastructure.disjoint_set import disjointset
 from borb.io.read.types import Decimal
+from borb.pdf.document.document import Document
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import (
     ChunkOfTextRenderEvent,
@@ -27,6 +31,32 @@ class SimpleLineOfTextExtraction(EventListener):
     This implementation of EventListener extracts all lines of text from a PDF Document
     """
 
+    @staticmethod
+    def get_lines_of_text_from_pdf(
+        pdf: Document,
+    ) -> typing.Dict[int, typing.List[LineOfText]]:
+        """
+        This function returns the LineOfText objects for a given PDF (per page)
+        :param pdf:     the PDF to be analyzed
+        :return:        the LineOfText objects per page (represented by typing.Dict[int, typing.List[LineOfText]])
+        """
+        lines_of_text_per_page: typing.Dict[int, typing.List[LineOfText]] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+            # register EventListener
+            l: "SimpleLineOfTextExtraction" = SimpleLineOfTextExtraction()
+            # process Page
+            l._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
+            l._event_occurred(EndPageEvent(page))
+            # add to output dictionary
+            lines_of_text_per_page[page_nr] = l.get_lines_of_text()[0]
+        # return
+        return lines_of_text_per_page
+
     def __init__(self):
         self._chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
         self._current_page_number: int = -1
@@ -43,11 +73,11 @@ class SimpleLineOfTextExtraction(EventListener):
         if isinstance(event, EndPageEvent):
             self._end_page(event.get_page())
 
-    def get_lines_of_text_for_page(self, page: int) -> typing.List[LineOfText]:
+    def get_lines_of_text(self) -> typing.Dict[int, typing.List[LineOfText]]:
         """
-        This function returns the lines of text on a given page
+        This function returns the lines of text on a given PDF
         """
-        return self._lines_of_text_per_page.get(page, [])
+        return self._lines_of_text_per_page
 
     def _end_page(self, page: Page):
 

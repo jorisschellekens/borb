@@ -112,7 +112,7 @@ class TestFixBrokenXRef(unittest.TestCase):
         assert doc.get_document_info().get_number_of_pages() == 1
 
         # check text
-        txt: str = l.get_text_for_page(0)
+        txt: str = l.get_text()[0]
         while "\n" in txt:
             txt = txt.replace("\n", " ")
         while "  " in txt:

@@ -10,7 +10,7 @@ from typing import List
 
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.pdf import Document
+from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -26,7 +26,7 @@ class ImageExtraction(EventListener):
     """
 
     @staticmethod
-    def extract_images_from_pdf(
+    def get_images_from_pdf(
         pdf: Document,
     ) -> typing.Dict[int, typing.List[PILImage.Image]]:
         """
@@ -50,7 +50,7 @@ class ImageExtraction(EventListener):
             cse._event_occurred(EndPageEvent(page))
 
             # set in page
-            images_of_each_page[page_nr] = cse.extract_images()[0]
+            images_of_each_page[page_nr] = cse.get_images()[0]
 
         # return
         return images_of_each_page
@@ -68,7 +68,7 @@ class ImageExtraction(EventListener):
         if isinstance(event, ImageRenderEvent):
             self._render_image(event)
 
-    def extract_images(self) -> typing.Dict[int, List[PILImage.Image]]:
+    def get_images(self) -> typing.Dict[int, List[PILImage.Image]]:
         """
         This function returns a typing.List[Image] on a given page
         """

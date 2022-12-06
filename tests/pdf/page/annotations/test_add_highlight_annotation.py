@@ -93,7 +93,7 @@ class TestAddHighlightAnnotation(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        for m in l.get_matches_for_page(0):
+        for m in l.get_matches()[0]:
             for bb in m.get_bounding_boxes():
                 doc.get_page(0).add_annotation(HighlightAnnotation(bb))
 

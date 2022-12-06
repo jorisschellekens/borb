@@ -20,7 +20,7 @@ from borb.io.read.types import (
 )
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.transformer import WriteTransformerState
-from borb.pdf import Document
+from borb.pdf.document.document import Document
 
 logger = logging.getLogger(__name__)
 

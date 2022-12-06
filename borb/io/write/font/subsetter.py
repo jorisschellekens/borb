@@ -20,7 +20,7 @@ from borb.io.write.font.copy_command_operator import CopyCommandOperator
 from borb.io.write.font.subset_show_text_with_glyph_positioning import (
     SubSetShowTextWithGlyphPositioning,
 )
-from borb.pdf import Page
+from borb.pdf.page.page import Page
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.font.composite_font.font_type_0 import Type0Font

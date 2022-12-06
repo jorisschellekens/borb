@@ -94,6 +94,6 @@ class TestAddParagraphWithAccentedLetters(unittest.TestCase):
             PDF.loads(in_file_handle, [l])
 
         # verify that the words are in the extracted text
-        s: str = l.get_text_for_page(0)
+        s: str = l.get_text()[0]
         for w in accented_words:
             assert w in s, "Missing word %s in extracted text" % w

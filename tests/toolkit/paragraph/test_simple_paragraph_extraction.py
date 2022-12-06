@@ -101,7 +101,7 @@ class TestSimpleParagraphExtraction(unittest.TestCase):
         assert doc is not None
 
         # add SquareAnnotation(s)
-        for p in l.get_paragraphs_for_page(0):
+        for p in l.get_paragraphs()[0]:
             ConnectedShape(
                 LineArtFactory.rectangle(p.get_previous_layout_box()),
                 stroke_color=HexColor("f1cd2e"),

@@ -179,7 +179,7 @@ class TestDetectTable(unittest.TestCase):
 
             assert doc is not None
 
-            tables: typing.List[Table] = l.get_tables_for_page(0)
+            tables: typing.List[Table] = l.get_tables()[0]
 
             # add annotation around table
             for t in tables:

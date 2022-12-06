@@ -105,7 +105,7 @@ class TestExtractRedText(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as file_handle:
             doc = PDF.loads(file_handle, [l0])
 
-        page_content: str = l1.get_text_for_page(0)
+        page_content: str = l1.get_text()[0]
         print(page_content)
 
         ground_truth: str = """

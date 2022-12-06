@@ -55,7 +55,8 @@ class Image(LayoutElement):
                 requests.get(
                     image,
                     stream=True,
-                ).raw
+                    headers={"Accept-Encoding": "",}
+                ).raw,
             )
         if isinstance(image, Path):
             image = PILImage.open(image)

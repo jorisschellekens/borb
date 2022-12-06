@@ -49,23 +49,22 @@ class FontExtraction(EventListener):
         for _, f in page["Resources"]["Font"].items():
             self._fonts_per_page[self._current_page].append(f)
 
-    def get_fonts_for_page(self, page_number: int) -> List[Font]:
+    def get_fonts(self) -> typing.Dict[int, List[Font]]:
         """
-        This function returns all fonts used on a given page
+        This function returns all fonts used on a given PDF
         """
-        return (
-            self._fonts_per_page[page_number]
-            if page_number in self._fonts_per_page
-            else []
-        )
+        return self._fonts_per_page
 
-    def get_font_names_for_page(self, page_number: int) -> List[str]:
+    def get_font_names(self) -> typing.Dict[int, typing.List[str]]:
         """
-        This function returns all font names used on a given page
+        This function returns all font names used in the PDF
         """
-        out: typing.List[str] = []
-        for x in self.get_fonts_for_page(page_number):
-            font_name: typing.Optional[str] = x.get_font_name()
-            if font_name is not None:
-                out.append(font_name)
+        out: typing.Dict[int, typing.List[str]] = {}
+        for k, v in self._fonts_per_page.items():
+            if k not in out:
+                out[k] = []
+            for i in v:
+                font_name: typing.Optional[str] = i.get_font_name()
+                if font_name is not None:
+                    out[k].append(font_name)
         return out

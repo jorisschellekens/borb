@@ -4,12 +4,17 @@
 """
     This implementation of EventListener allows you to search for regular expressions in a PDF Document
 """
+import io
 import re
 import typing
 from decimal import Decimal
 from functools import cmp_to_key
 from typing import List
 
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.document.document import Document
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import (
     ChunkOfTextRenderEvent,
@@ -32,11 +37,15 @@ class PDFMatch:
         self,
         re_match: re.Match,
         glyph_bounding_boxes: typing.List["Rectangle"],
+        font_color: Color,
+        font_size: Decimal,
         page_nr: int,
     ):
         super(PDFMatch, self).__init__()
         assert page_nr >= 0
         self._page_nr: int = page_nr
+        self._font_color: Color = font_color
+        self._font_size: Decimal = font_size
         self._glyph_bounding_boxes: typing.List["Rectangle"] = glyph_bounding_boxes
         self._re_match: re.Match = re_match
         # these fields are kept public to align with the existing python re.Match object
@@ -45,6 +54,20 @@ class PDFMatch:
         self.lastindex = self._re_match.lastindex
         self.lastgroup = self._re_match.lastgroup
         self.string = self._re_match.string
+
+    def get_font_color(self) -> Color:
+        """
+        This function returns the Color in which the text was written that matched the regular expression
+        :return:    the font_color in which the text was written
+        """
+        return self._font_color
+
+    def get_font_size(self) -> Decimal:
+        """
+        This function returns the font_size in which the text was written that matched the regular expression
+        :return:    the font_size in which the text was written
+        """
+        return self._font_size
 
     def get_bounding_boxes(self) -> typing.List["Rectangle"]:
         """
@@ -280,20 +303,47 @@ class RegularExpressionTextExtraction(EventListener):
                         x.get_previous_layout_box()  # type: ignore [misc]
                         for x in tris[tri_start_index : (tri_stop_index + 1)]
                     ],
+                    tris[tri_start_index].get_font_color(),
+                    tris[tri_start_index].get_font_size(),
                     self._current_page,
                 )
             )
 
-    def get_matches_for_page(self, page_number: int) -> List[PDFMatch]:
+    @staticmethod
+    def get_matches_for_pdf(
+        pattern: str, pdf: Document
+    ) -> typing.Dict[int, typing.List[PDFMatch]]:
         """
-        This function returns a typing.List[PDFMatch] matching the regular expression, on a given page
+        This function returns a typing.Dict[int, typing.List[PDFMatch]] matching the regular expression, on a given PDF
+        :param pattern: the regular expression to match
+        :param pdf:     the PDF on which to perform matching
+        :return:        all matches (represented as typing.Dict[int, typing.List[PDFMatch]])
         """
-        if page_number not in self._matches_per_page:
-            return []
-        return self._matches_per_page[page_number]
+        out: typing.Dict[int, typing.List[PDFMatch]] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
 
-    def get_text_for_page(self, page_nr: int) -> str:
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+
+            # register EventListener
+            cse: "RegularExpressionTextExtraction" = RegularExpressionTextExtraction(
+                pattern
+            )
+
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
+
+            # store output
+            out[page_nr] = cse.get_matches().get(0, [])
+        # return
+        return out
+
+    def get_matches(self) -> typing.Dict[int, typing.List[PDFMatch]]:
         """
-        This function returns all text on a given page
+        This function returns a typing.List[PDFMatch] matching the regular expression
         """
-        return self._text_per_page[page_nr] if page_nr in self._text_per_page else ""
+        return self._matches_per_page

@@ -97,7 +97,7 @@ class TestAddFreeTextAnnotation(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
+        bb = l.get_matches()[0][0].get_bounding_boxes()[0]
         doc.get_page(0).add_annotation(
             FreeTextAnnotation(
                 bounding_box=Rectangle(

@@ -101,7 +101,7 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
 
         for l in ls:
             # fmt: off
-            for m in l.get_matches_for_page(0):
+            for m in l.get_matches()[0]:
                 for bb in m.get_bounding_boxes():
                     doc.get_page(0).add_annotation(RedactAnnotation(bb, stroke_color=X11Color("Black"), fill_color=X11Color("Black")))
             # fmt: on

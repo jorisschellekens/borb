@@ -99,7 +99,7 @@ class TestExtractFontNames(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
             l = FontExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
-            for fn in l.get_font_names_for_page(0):
+            for fn in l.get_font_names()[0]:
                 font_names.append(str(fn))
 
         # create document

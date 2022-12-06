@@ -107,7 +107,7 @@ class TestExtractColors(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             l = ColorExtraction()
             doc = PDF.loads(pdf_file_handle, [l])
-            colors = [(k.to_rgb(), int(v)) for k, v in l.extract_color()[0].items()]
+            colors = [(k.to_rgb(), int(v)) for k, v in l.get_color()[0].items()]
 
         # create document
         pdf = Document()

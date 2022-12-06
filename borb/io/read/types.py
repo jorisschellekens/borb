@@ -385,6 +385,18 @@ class Name:
     def __str__(self):
         return self._text
 
+    def __gt__(self, other):
+        return self._text > other._text
+
+    def __lt__(self, other):
+        return self._text < other._text
+
+    def __ge__(self, other):
+        return self._text >= other._text
+
+    def __le__(self, other):
+        return self._text <= other._text
+
 
 class Stream(Dictionary):
     """

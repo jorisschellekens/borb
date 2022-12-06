@@ -10,7 +10,7 @@ which will do the actual rendering.
 import typing
 from decimal import Decimal
 
-from borb.pdf import ChunkOfText
+from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
 from borb.pdf.page.page import Page

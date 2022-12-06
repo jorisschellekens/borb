@@ -18,7 +18,7 @@ class Version:
         This function returns the current borb version
         :return:    the current borb version
         """
-        return "2.1.6"
+        return "2.1.7"
 
     @staticmethod
     def get_author() -> str:

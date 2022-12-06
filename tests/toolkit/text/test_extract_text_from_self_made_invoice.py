@@ -302,7 +302,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         assert d is not None
 
         # check text
-        txt: str = l1.get_text_for_page(0)
+        txt: str = l1.get_text()[0]
         assert (
             txt
             == "SHIP TO\n[Recipient Name]\n[Company Name]\n[Street Address]\n[City, State, ZIP Code]\n[Phone]"
@@ -318,7 +318,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         # check whether document could be read without issues
         assert d is not None
 
-        matches: typing.List[PDFMatch] = l.get_matches_for_page(0)
+        matches: typing.List[PDFMatch] = l.get_matches()[0]
         assert len(matches) == 1
 
         r: Rectangle = matches[0].get_bounding_boxes()[0]
@@ -337,7 +337,7 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         with open(self.output_dir / "output.pdf", "rb") as pdf_file_handle:
             d = PDF.loads(pdf_file_handle, [l0])
 
-        matches: typing.List[PDFMatch] = l0.get_matches_for_page(0)
+        matches: typing.List[PDFMatch] = l0.get_matches()[0]
         assert len(matches) == 1
 
         ship_to_rectangle: Rectangle = matches[0].get_bounding_boxes()[0]
@@ -361,4 +361,4 @@ class TestExtractTextFromSelfMadeInvoice(unittest.TestCase):
         with open(self.output_dir / "output.pdf", "rb") as pdf_file_handle:
             d = PDF.loads(pdf_file_handle, [l1])
 
-        print(l2.get_text_for_page(0))
+        print(l2.get_text()[0])

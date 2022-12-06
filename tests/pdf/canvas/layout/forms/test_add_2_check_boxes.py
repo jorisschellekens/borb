@@ -1,4 +1,5 @@
 import datetime
+import typing
 import unittest
 from pathlib import Path
 
@@ -29,7 +30,7 @@ class TestAdd2Checkboxes(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-    def test_add_2_text_fields(self):
+    def test_add_2_checkboxes(self):
 
         doc: Document = Document()
 
@@ -52,7 +53,7 @@ class TestAdd2Checkboxes(unittest.TestCase):
         # fmt: on
 
         # add Checkboxes
-        n: int = 1
+        n: int = 2
         t: FixedColumnWidthTable = FixedColumnWidthTable(
             number_of_columns=2, number_of_rows=n, padding_top=Decimal(12)
         )
@@ -70,3 +71,21 @@ class TestAdd2Checkboxes(unittest.TestCase):
         # check
         check_pdf_using_validator(out_file)
         compare_visually_to_ground_truth(out_file)
+
+    def test_names_of_checkboxes(self):
+
+        # read
+        doc: typing.Optional[Document] = None
+        with open(self.output_dir / "output.pdf", "rb") as pdf_file_handle:
+            doc = PDF.loads(pdf_file_handle)
+
+        # assert we have read something
+        assert doc is not None
+
+        # assert on length
+        fields = doc["XRef"]["Trailer"]["Root"]["AcroForm"]["Fields"]
+        assert len(fields) == 2
+
+        # assert on names
+        assert fields[0]["T"] == "field-000"
+        assert fields[1]["T"] == "field-001"

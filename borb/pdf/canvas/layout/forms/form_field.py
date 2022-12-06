@@ -5,8 +5,9 @@
 This implementation of LayoutElement acts as a common base class to form fields.
 """
 import typing
+import zlib
 
-from borb.io.read.types import Dictionary, List, Name
+from borb.io.read.types import Dictionary, List as bList, Name
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.page.page import Page
@@ -22,7 +23,7 @@ class FormField(LayoutElement):
         acroform_dict: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"].get(  # type: ignore [attr-defined]
             "AcroForm", Dictionary()
         )
-        stk: typing.List[typing.Union[Dictionary, List]] = [acroform_dict]
+        stk: typing.List[typing.Union[Dictionary, bList]] = [acroform_dict]
         exp: typing.List[int] = []
         while len(stk) > 0:
             d = stk.pop()
@@ -35,9 +36,9 @@ class FormField(LayoutElement):
                 for k, v in d.items():
                     if isinstance(v, Dictionary):
                         stk.append(v)
-                    if isinstance(v, List):
+                    if isinstance(v, bList):
                         stk.append(v)
-            if isinstance(d, List):
+            if isinstance(d, bList):
                 for c in d:
                     stk.append(c)
         return number_of_fields

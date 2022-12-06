@@ -10,7 +10,7 @@ import copy
 import typing
 from decimal import Decimal
 
-from borb.pdf import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 

@@ -49,7 +49,7 @@ class InlineFlow(LayoutElement):
 
     @staticmethod
     def _get_min_content_box(e: LayoutElement) -> Rectangle:
-        from borb.pdf import TableCell
+        from borb.pdf.canvas.layout.table.table import TableCell
 
         c: TableCell = TableCell(e)
         c._calculate_min_and_max_layout_box()

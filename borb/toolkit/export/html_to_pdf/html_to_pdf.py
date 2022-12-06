@@ -12,7 +12,7 @@ from pathlib import Path
 from lxml.etree import HTMLParser, _Comment  # type: ignore [import]
 
 from borb.io.read.types import Decimal, Name, String, Dictionary
-from borb.pdf import Image
+from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font

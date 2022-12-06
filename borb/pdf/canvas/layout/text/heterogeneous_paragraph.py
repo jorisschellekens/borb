@@ -9,7 +9,7 @@ import copy
 import typing
 from decimal import Decimal
 
-from borb.pdf import Image
+from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.emoji.emoji import Emoji

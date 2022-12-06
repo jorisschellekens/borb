@@ -13,7 +13,7 @@ from pathlib import Path
 from PIL import Image as PILImage  # type: ignore [import]
 from PIL import ImageDraw, ImageFont
 
-from borb.pdf import Page
+from borb.pdf.page.page import Page
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.color.color import Color

@@ -99,7 +99,7 @@ class TestExtractRegularExpression(unittest.TestCase):
         with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
 
-        bb = l.get_matches_for_page(0)[0].get_bounding_boxes()[0]
+        bb = l.get_matches()[0][0].get_bounding_boxes()[0]
         assert 196 <= int(bb.x) <= 198
         assert 615 <= int(bb.y) <= 617
         assert 74 <= int(bb.width) <= 76

@@ -57,7 +57,9 @@ class DictionaryTransformer(Transformer):
 
         # objects to turn into reference
         queue: typing.List[AnyPDFType] = []
-        for k, v in object_to_transform.items():
+        sorted_keys: typing.List[typing.Any] = sorted(object_to_transform)
+        for k in sorted_keys:
+            v = object_to_transform[k]
             if (
                 isinstance(v, Dictionary)
                 or isinstance(v, List)

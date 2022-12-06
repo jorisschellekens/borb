@@ -21,10 +21,16 @@
     One of the simplest ranking functions is computed by summing the tf–idf for each query term;
     many more sophisticated ranking functions are variants of this simple model.
 """
+import io
 import re
 import typing
 from math import log
 
+from borb.pdf.document.document import Document
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
+from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
+from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
@@ -51,6 +57,32 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
     many more sophisticated ranking functions are variants of this simple model.
     """
 
+    @staticmethod
+    def get_keywords_from_pdf(
+        pdf: Document,
+    ) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
+        """
+        This function returns the keywords for a given PDF (per page)
+        :param pdf:     the PDF to be analyzed
+        :return:        the keywords per page (represented by typing.Dict[int, typing.List[typing.Tuple[str, float]]])
+        """
+        keywords_per_page: typing.Dict[int, typing.List[typing.Tuple[str, float]]] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+            # register EventListener
+            l: "TFIDFKeywordExtraction" = TFIDFKeywordExtraction()
+            # process Page
+            l._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
+            l._event_occurred(EndPageEvent(page))
+            # add to output dictionary
+            keywords_per_page[page_nr] = l.get_keywords()[0]
+        # return
+        return keywords_per_page
+
     def __init__(
         self, stopwords: typing.List[str] = [], minimum_term_frequency: int = 3
     ):
@@ -71,7 +103,7 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         # get words
         words_on_page: typing.List[str] = [
             x.upper()
-            for x in re.split("[^a-zA-Z]+", self.get_text_for_page(self._current_page))
+            for x in re.split("[^a-zA-Z]+", self.get_text()[self._current_page])
             if x.upper() not in self._stopwords
         ]
 
@@ -87,32 +119,33 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         for w in set(words_on_page):
             self._inverse_page_frequency[w] = self._inverse_page_frequency.get(w, 0) + 1
 
-    def get_keywords_for_page(
-        self, page_number: int
-    ) -> typing.List[typing.Tuple[str, float]]:
+    def get_keywords(self) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
         """
         This function returns a typing.List[typing.Tuple[str, float]] for a given page
         """
-        out: typing.List[typing.Tuple[str, float]] = []
-        for w, tf in self._term_frequency_per_page[page_number].items():
+        out: typing.Dict[int, typing.List[typing.Tuple[str, float]]] = {}
+        for k, v in self._term_frequency_per_page.items():
+            if k not in out:
+                out[k] = []
+            for w, tf in v.items():
 
-            # check minimum_term_frequency
-            if tf < self._minimum_term_frequency:
-                continue
+                # check minimum_term_frequency
+                if tf < self._minimum_term_frequency:
+                    continue
 
-            # normalize tf, idf
-            tf /= self._number_of_words_per_page[page_number]
-            idf = log(self._number_of_pages / self._inverse_page_frequency[w])
+                # normalize tf, idf
+                tf /= self._number_of_words_per_page[k]
+                idf = log(self._number_of_pages / self._inverse_page_frequency[w])
 
-            # avoid multiply by zero
-            tf += 0.0001
-            idf += 0.0001
+                # avoid multiply by zero
+                tf += 0.0001
+                idf += 0.0001
 
-            # calculate tf-idf score
-            out.append((w, tf * idf))
+                # calculate tf-idf score
+                out[k].append((w, tf * idf))
 
-        # sort
-        out.sort(key=lambda x: x[1], reverse=True)
+            # sort
+            out[k].sort(key=lambda x: x[1], reverse=True)
 
         # return
         return out

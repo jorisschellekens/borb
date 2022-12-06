@@ -82,6 +82,7 @@ from .table.table_detection_by_lines import TableDetectionByLines
 # text
 from .text.simple_text_extraction import SimpleTextExtraction
 from .text.simple_non_ligature_text_extraction import SimpleNonLigatureTextExtraction
+from .text.simple_find_replace import SimpleFindReplace
 
 # text (structure)
 from .text.simple_paragraph_extraction import SimpleParagraphExtraction

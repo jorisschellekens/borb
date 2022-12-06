@@ -4,10 +4,16 @@
 """
     This implementation of EventListener extracts all paragraphs of text from a PDF Document
 """
+import io
 import typing
 from decimal import Decimal
 
 from borb.datastructure.disjoint_set import disjointset
+from borb.pdf.document.document import Document
+from borb.pdf.canvas.canvas import Canvas
+from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
+from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
+from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
@@ -19,6 +25,32 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
     """
     This implementation of EventListener extracts all paragraphs of text from a PDF Document
     """
+
+    @staticmethod
+    def get_paragraphs_from_pdf(
+        pdf: Document,
+    ) -> typing.Dict[int, typing.List[Paragraph]]:
+        """
+        This function returns the Paragraph objects for a given PDF (per page)
+        :param pdf:     the PDF to be analyzed
+        :return:        the Paragraph objects per page (represented by typing.Dict[int, typing.List[Paragraph]])
+        """
+        paragraphs_per_page: typing.Dict[int, typing.List[Paragraph]] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+            # register EventListener
+            l: "SimpleParagraphExtraction" = SimpleParagraphExtraction()
+            # process Page
+            l._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
+            l._event_occurred(EndPageEvent(page))
+            # add to output dictionary
+            paragraphs_per_page[page_nr] = l.get_paragraphs()[0]
+        # return
+        return paragraphs_per_page
 
     def __init__(
         self,
@@ -120,11 +152,11 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
         # add to dict
         self._paragraphs_per_page[self._current_page_number] = paragraphs
 
-    def get_paragraphs_for_page(self, page: int) -> typing.List[Paragraph]:
+    def get_paragraphs(self) -> typing.Dict[int, typing.List[Paragraph]]:
         """
-        This function returns the paragraphs on a given page
+        This function returns the paragraphs on a given PDF
         """
-        return self._paragraphs_per_page.get(page, [])
+        return self._paragraphs_per_page
 
     def _overlap(self, r0: Rectangle, r1: Rectangle) -> Decimal:
         # rectangles do not overlap (r0 is on the left side)

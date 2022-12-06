@@ -12,7 +12,7 @@ from pathlib import Path
 
 from gtts import gTTS  # type: ignore [import]
 
-from borb.pdf import Document
+from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent

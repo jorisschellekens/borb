@@ -7,11 +7,10 @@
 import io
 import typing
 from decimal import Decimal
-from functools import singledispatch
 
 from PIL.Image import Image  # type: ignore [import]
 
-from borb.pdf import Document
+from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.color.color import RGBColor, Color, HSVColor
@@ -30,7 +29,7 @@ class ColorExtraction(EventListener):
     """
 
     @staticmethod
-    def extract_color_from_pdf(
+    def get_color_from_pdf(
         pdf: Document,
         max_number_of_colors_to_return: int = 32,
         max_number_of_colors_to_register: int = 32,
@@ -58,7 +57,7 @@ class ColorExtraction(EventListener):
             CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
             cse._event_occurred(EndPageEvent(page))
             # add to output dictionary
-            colors_per_page[page_nr] = cse.extract_color()[0]
+            colors_per_page[page_nr] = cse.get_color()[0]
         # return
         return colors_per_page
 
@@ -192,7 +191,7 @@ class ColorExtraction(EventListener):
                 c1 = c2
         return c1
 
-    def extract_color(
+    def get_color(
         self,
     ) -> typing.Dict[int, typing.Dict[Color, Decimal]]:
         """

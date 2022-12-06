@@ -47,25 +47,26 @@ class TableDetectionByLines(EventListener):
     def _dist(x0: Decimal, y0: Decimal, x1: Decimal, y1: Decimal) -> Decimal:
         return Decimal(math.sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2))
 
-    def get_table_bounding_boxes_for_page(
-        self, page_number: int
-    ) -> typing.List[Rectangle]:
+    def get_table_bounding_boxes(self) -> typing.Dict[int, typing.List[Rectangle]]:
         """
         This function returns the bounding boxes (as Rectangle objects) of each Table
         that was recognized on the given page.
         """
         ZERO: Decimal = Decimal(0)
-        return [
-            x.get_previous_layout_box() or Rectangle(ZERO, ZERO, ZERO, ZERO)
-            for x in self._tables_per_page.get(page_number, [])
-            if x.get_previous_layout_box() is not None
-        ]
+        return {
+            k: [
+                x.get_previous_layout_box() or Rectangle(ZERO, ZERO, ZERO, ZERO)
+                for x in self._tables_per_page.get(k, [])
+                if x.get_previous_layout_box() is not None
+            ]
+            for k in self._tables_per_page.keys()
+        }
 
-    def get_tables_for_page(self, page_number: int) -> typing.List[Table]:
+    def get_tables(self) -> typing.Dict[int, typing.List[Table]]:
         """
         This function returns each Table that was recognized on the given page.
         """
-        return self._tables_per_page.get(page_number, [])
+        return self._tables_per_page
 
     def _event_occurred(self, event: Event) -> None:
 
