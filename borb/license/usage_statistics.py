@@ -26,6 +26,10 @@ class UsageStatistics:
     where development effort needs to be spent, etc
     """
 
+    _ENDPOINT_URL: str = (
+        "https://cztmincfqq4fobtt6c7ect7gli0isbwx.lambda-url.us-east-1.on.aws/"
+    )
+
     @staticmethod
     def disable() -> None:
         """
@@ -43,23 +47,45 @@ class UsageStatistics:
         AnonymousUserID.enable()
 
     @staticmethod
-    def send_usage_statistics(event: str) -> None:
+    def send_usage_statistics(
+        event: str, document: typing.Optional["Document"] = None
+    ) -> None:
         """
         This method sends the usage statistics to the borb license server
-        :param event:   the event that is to be registered
+        :param event:       the event that is to be registered
+        :param document     the Document being processed
         :return:        None
         """
-        threading.Thread(
-            target=UsageStatistics._send_usage_statistics_for_event, args=(event,)
-        ).start()
+        try:
+            threading.Thread(
+                target=UsageStatistics._send_usage_statistics_for_event,
+                args=(
+                    event,
+                    document,
+                ),
+            ).start()
+        except:
+            pass
 
     @staticmethod
-    def _send_usage_statistics_for_event(event: str) -> None:
+    def _send_usage_statistics_for_event(
+        event: str, document: typing.Optional["Document"] = None
+    ) -> None:
 
         # get anonymous_user_id
         anonymous_user_id: str = AnonymousUserID.get()
         if anonymous_user_id is None or len(anonymous_user_id) < 16:
             return
+
+        # get number_of_pages
+        number_of_pages: int = 0
+        try:
+            if document is not None:
+                number_of_pages = int(
+                    document.get_document_info().get_number_of_pages()
+                )
+        except:
+            pass
 
         # set payload
         json_payload: typing.Dict[str, typing.Any] = {
@@ -70,6 +96,7 @@ class UsageStatistics:
             "event": event,
             "latitude": GeoInformation.get_latitude(),
             "longitude": GeoInformation.get_longitude(),
+            "number_of_pages": number_of_pages,
             "state": GeoInformation.get_state(),
             "sys_platform": sys.platform,
             "utc_time_in_ms": int(datetime.now(timezone.utc).timestamp() * 1000),
@@ -81,7 +108,7 @@ class UsageStatistics:
 
         # perform request
         requests.post(
-            "https://zc2flwo4m32hwbavbur7n2mwlq0uayjy.lambda-url.us-east-2.on.aws/",
+            UsageStatistics._ENDPOINT_URL,
             headers=headers,
             data=json.dumps(json_payload),
         )

@@ -1,6 +1,6 @@
 """
-    This file is part of the borb (R) project.
-    Copyright (c) 2020-2040 borb Group NV
+    This file is part of the borb (TM) project.
+    Copyright (c) 2020-2040 borb (EZ)
     Authors: Joris Schellekens, et al.
 
     This program is free software; you can redistribute it and/or modify

@@ -55,7 +55,9 @@ class Image(LayoutElement):
                 requests.get(
                     image,
                     stream=True,
-                    headers={"Accept-Encoding": "",}
+                    headers={
+                        "Accept-Encoding": "",
+                    },
                 ).raw,
             )
         if isinstance(image, Path):

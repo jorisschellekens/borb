@@ -235,7 +235,9 @@ class FlexibleColumnWidthTable(Table):
                 grid_x: int = min([p[1] for p in e._table_coordinates])
 
                 # layout
-                h: Decimal = grid_y_to_page_y[r] - available_space.get_y()
+                h: Decimal = max(
+                    grid_y_to_page_y[r] - available_space.get_y(), Decimal(0)
+                )
                 prev_row_lboxes.append(
                     e.get_layout_box(
                         Rectangle(

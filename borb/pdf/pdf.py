@@ -51,13 +51,14 @@ class PDF:
         This function reads a byte-stream input (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         and returns a Document.
         """
-        UsageStatistics.send_usage_statistics("PDF.loads")
-        return ReadAnyObjectTransformer().transform(
+        document: Document = ReadAnyObjectTransformer().transform(
             file,
             parent_object=None,
             context=ReadTransformerState(password=password),
             event_listeners=event_listeners,
         )
+        UsageStatistics.send_usage_statistics("PDF.loads", document)
+        return document
 
     @staticmethod
     def dumps(
@@ -67,7 +68,7 @@ class PDF:
         """
         This function writes a Document to a byte-stream output (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         """
-        UsageStatistics.send_usage_statistics("PDF.dumps")
+        UsageStatistics.send_usage_statistics("PDF.dumps", document)
         WriteAnyObjectTransformer().transform(
             object_to_transform=document,
             context=WriteTransformerState(

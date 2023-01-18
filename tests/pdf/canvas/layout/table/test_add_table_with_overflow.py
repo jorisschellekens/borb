@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf import PageLayout
+from borb.pdf import PageLayout, FlexibleColumnWidthTable
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.page_layout.single_column_layout_with_overflow import (
     SingleColumnLayoutWithOverflow,
@@ -15,6 +15,7 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import (
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
+from borb.pdf.page.page_size import PageSize
 from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
@@ -79,7 +80,7 @@ class TestAddTableWithOverflow(unittest.TestCase):
         layout.add(t)
 
         # determine output location
-        out_file = self.output_dir / ("output.pdf")
+        out_file = self.output_dir / ("output_001.pdf")
 
         # attempt to store PDF
         with open(out_file, "wb") as in_file_handle:
@@ -88,6 +89,36 @@ class TestAddTableWithOverflow(unittest.TestCase):
         # attempt to re-open PDF
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
+
+        # compare visually
+        compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)
+
+    def test_add_table_with_overflow_001(self):
+
+        # create empty PDF
+        pdf = Document()
+
+        # add Page
+        page = Page(PageSize.A4_LANDSCAPE.value[0], PageSize.A4_LANDSCAPE.value[1])
+        pdf.add_page(page)
+
+        # set PageLayout
+        layout = SingleColumnLayoutWithOverflow(page, horizontal_margin=Decimal(5), vertical_margin=Decimal(5))
+
+        # add FlexibleColumnWidthTable
+        table = FlexibleColumnWidthTable(
+            number_of_columns=3,
+            number_of_rows=72
+        )
+        layout.add(table)
+
+        # determine output location
+        out_file = self.output_dir / ("output_002.pdf")
+
+        # attempt to store PDF
+        with open(out_file, "wb") as in_file_handle:
+            PDF.dumps(in_file_handle, pdf)
 
         # compare visually
         compare_visually_to_ground_truth(out_file)
