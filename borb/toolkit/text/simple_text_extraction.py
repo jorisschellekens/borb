@@ -27,29 +27,9 @@ class SimpleTextExtraction(EventListener):
     This implementation of EventListener extracts all text from a PDF Document
     """
 
-    @staticmethod
-    def get_text_from_pdf(pdf: Document) -> typing.Dict[int, str]:
-        """
-        This function returns the text for a given PDF (per page)
-        :param pdf:     the PDF to be analyzed
-        :return:        the text per page (represented by typing.Dict[int, str])
-        """
-        text_per_page: typing.Dict[int, str] = {}
-        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
-        for page_nr in range(0, number_of_pages):
-            # get Page object
-            page: Page = pdf.get_page(page_nr)
-            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
-            # register EventListener
-            l: "SimpleTextExtraction" = SimpleTextExtraction()
-            # process Page
-            l._event_occurred(BeginPageEvent(page))
-            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
-            l._event_occurred(EndPageEvent(page))
-            # add to output dictionary
-            text_per_page[page_nr] = l.get_text()[0]
-        # return
-        return text_per_page
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(self):
         self._text_render_info_per_page: typing.Dict[
@@ -58,28 +38,9 @@ class SimpleTextExtraction(EventListener):
         self._text_per_page: typing.Dict[int, str] = {}
         self._current_page: int = -1
 
-    def _event_occurred(self, event: Event) -> None:
-        if isinstance(event, ChunkOfTextRenderEvent):
-            self._render_text(event)
-        if isinstance(event, BeginPageEvent):
-            self._begin_page(event.get_page())
-        if isinstance(event, EndPageEvent):
-            self._end_page(event.get_page())
-
-    def get_text(self) -> typing.Dict[int, str]:
-        """
-        This function returns all text on a given page
-        """
-        return self._text_per_page
-
-    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
-
-        # init if needed
-        if self._current_page not in self._text_render_info_per_page:
-            self._text_render_info_per_page[self._current_page] = []
-
-        # append TextRenderInfo
-        self._text_render_info_per_page[self._current_page].append(text_render_info)
+    #
+    # PRIVATE
+    #
 
     def _begin_page(self, page: Page):
         self._current_page += 1
@@ -138,3 +99,54 @@ class SimpleTextExtraction(EventListener):
 
         # store text
         self._text_per_page[self._current_page] = text
+
+    def _event_occurred(self, event: Event) -> None:
+        if isinstance(event, ChunkOfTextRenderEvent):
+            self._render_text(event)
+        if isinstance(event, BeginPageEvent):
+            self._begin_page(event.get_page())
+        if isinstance(event, EndPageEvent):
+            self._end_page(event.get_page())
+
+    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
+
+        # init if needed
+        if self._current_page not in self._text_render_info_per_page:
+            self._text_render_info_per_page[self._current_page] = []
+
+        # append TextRenderInfo
+        self._text_render_info_per_page[self._current_page].append(text_render_info)
+
+    #
+    # PUBLIC
+    #
+
+    def get_text(self) -> typing.Dict[int, str]:
+        """
+        This function returns all text on a given page
+        """
+        return self._text_per_page
+
+    @staticmethod
+    def get_text_from_pdf(pdf: Document) -> typing.Dict[int, str]:
+        """
+        This function returns the text for a given PDF (per page)
+        :param pdf:     the PDF to be analyzed
+        :return:        the text per page (represented by typing.Dict[int, str])
+        """
+        text_per_page: typing.Dict[int, str] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+            # register EventListener
+            l: "SimpleTextExtraction" = SimpleTextExtraction()
+            # process Page
+            l._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
+            l._event_occurred(EndPageEvent(page))
+            # add to output dictionary
+            text_per_page[page_nr] = l.get_text()[0]
+        # return
+        return text_per_page

@@ -15,6 +15,18 @@ class BooleanTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing booleans
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a Boolean object

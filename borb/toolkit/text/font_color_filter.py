@@ -19,18 +19,19 @@ class FontColorFilter(EventListener):
     It only allows ChunkOfTextRenderEvent to pass if their corresponding color matches.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, color: Color, maximum_normalized_rgb_distance: Decimal):
         self._color: RGBColor = color.to_rgb()
         assert Decimal(0) <= maximum_normalized_rgb_distance <= Decimal(1)
         self._maximum_normalized_rgb_distance = maximum_normalized_rgb_distance
         self._listeners: typing.List[EventListener] = []
 
-    def add_listener(self, listener: "EventListener") -> "FontColorFilter":
-        """
-        This methods add an EventListener to this (meta)-EventListener
-        """
-        self._listeners.append(listener)
-        return self
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: "Event") -> None:
         # filter ChunkOfTextRenderEvent
@@ -49,3 +50,14 @@ class FontColorFilter(EventListener):
         # default
         for l in self._listeners:
             l._event_occurred(event)
+
+    #
+    # PUBLIC
+    #
+
+    def add_listener(self, listener: "EventListener") -> "FontColorFilter":
+        """
+        This methods add an EventListener to this (meta)-EventListener
+        """
+        self._listeners.append(listener)
+        return self

@@ -12,13 +12,17 @@ class Version:
     within the borb project
     """
 
-    @staticmethod
-    def get_version() -> str:
-        """
-        This function returns the current borb version
-        :return:    the current borb version
-        """
-        return "2.1.8"
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def get_author() -> str:
@@ -35,3 +39,11 @@ class Version:
         :return:    the PDF producer
         """
         return "borb"
+
+    @staticmethod
+    def get_version() -> str:
+        """
+        This function returns the current borb version
+        :return:    the current borb version
+        """
+        return "2.1.10"

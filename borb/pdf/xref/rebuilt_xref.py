@@ -27,6 +27,18 @@ class RebuiltXREF(PlainTextXREF):
     This implementation will then loop over the entire PDF file to find obj declaration statements.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def read(
         self,
         src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],

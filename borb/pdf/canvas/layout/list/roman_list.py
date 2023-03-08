@@ -18,6 +18,23 @@ class RomanNumeralOrderedList(OrderedList):
     For this list, roman numerals are used.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    def _get_bullet_layout_element(
+        self, item_index: int, item: LayoutElement
+    ) -> LayoutElement:
+        return ChunkOfText(
+            text=self._int_to_roman(item_index + 1) + ".",
+            font_size=self.get_font_size(),
+            font_color=X11Color("Black"),
+        )
+
     @staticmethod
     def _int_to_roman(value: int) -> str:
         """Convert an integer to a Roman numeral."""
@@ -32,11 +49,6 @@ class RomanNumeralOrderedList(OrderedList):
             value -= ints[i] * count
         return "".join(result)
 
-    def _get_bullet_layout_element(
-        self, item_index: int, item: LayoutElement
-    ) -> LayoutElement:
-        return ChunkOfText(
-            text=self._int_to_roman(item_index + 1) + ".",
-            font_size=self.get_font_size(),
-            font_color=X11Color("Black"),
-        )
+    #
+    # PUBLIC
+    #

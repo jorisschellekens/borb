@@ -25,6 +25,10 @@ class FlexibleColumnWidthTable(Table):
     of <table> elements in HTML
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         number_of_rows: int,
@@ -77,56 +81,32 @@ class FlexibleColumnWidthTable(Table):
             vertical_alignment=vertical_alignment,
         )
 
-    def _get_min_column_width(self, col: int) -> Decimal:
-        widths: typing.List[Decimal] = []
-        for table_cell in [
-            x for x in self._get_cells_at_column(col) if x._col_span == 1
-        ]:
-            if table_cell._min_width is None:
-                widths.append(Decimal(0))
-                continue
-            if table_cell._preferred_width is None:
-                assert table_cell._min_width is not None
-                widths.append(table_cell._min_width)
-                continue
-            if table_cell._preferred_width > table_cell._min_width:
-                assert table_cell._preferred_width is not None
-                widths.append(table_cell._preferred_width)
-                continue
-            # default
-            assert table_cell._min_width is not None
-            widths.append(table_cell._min_width)
+    #
+    # PRIVATE
+    #
 
-        # exception
-        if len(widths) == 0:
-            return Decimal(0)
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+
+        # fill table
+        number_of_cells: int = self._number_of_rows * self._number_of_columns
+        empty_cells: int = number_of_cells - sum(
+            [(x._row_span * x._col_span) for x in self._content]
+        )
+        for _ in range(0, empty_cells):
+            self.add(Paragraph(" ", respect_spaces_in_text=True))
 
         # return
-        return max(widths)
-
-    def _get_max_column_width(self, col: int) -> Decimal:
-        widths: typing.List[Decimal] = []
-        for table_cell in [
-            x for x in self._get_cells_at_column(col) if x._col_span == 1
-        ]:
-            if table_cell._max_width is None:
-                widths.append(Decimal(2048))
-                continue
-            if table_cell._preferred_width is None:
-                widths.append(table_cell._max_width)
-                continue
-            if table_cell._preferred_width < table_cell._max_width:
-                widths.append(table_cell._preferred_width)
-                continue
-            # default
-            widths.append(table_cell._max_width)
-
-        # exception
-        if len(widths) == 0:
-            return Decimal(2048)
-
-        # return
-        return max(widths)
+        m = self._get_grid_coordinates(available_space)
+        min_x: Decimal = m[0][0][0]
+        max_x: Decimal = m[-1][-1][0]
+        min_y: Decimal = m[-1][-1][1]
+        max_y: Decimal = m[0][0][1]
+        return Rectangle(
+            available_space.get_x(),
+            min_y,
+            Decimal(math.ceil(max_x - min_x)),
+            max_y - min_y,
+        )
 
     def _get_grid_coordinates(
         self,
@@ -160,9 +140,10 @@ class FlexibleColumnWidthTable(Table):
             column_indices: typing.Set[int] = set(
                 [y for x, y in table_cell._table_coordinates]
             )
-            sum_of_min_col_spans: Decimal = sum(
-                [min_column_widths[x] for x in column_indices]
+            sum_of_min_col_spans: Decimal = Decimal(
+                sum([min_column_widths[x] for x in column_indices])
             )
+            assert table_cell._min_width is not None
             if sum_of_min_col_spans < table_cell._min_width:
                 delta: Decimal = table_cell._min_width - sum_of_min_col_spans
                 min_column_widths = [
@@ -170,11 +151,12 @@ class FlexibleColumnWidthTable(Table):
                     for i, w in enumerate(min_column_widths)
                 ]
 
-            sum_of_max_col_spans: Decimal = sum(
-                [max_column_widths[x] for x in column_indices]
+            sum_of_max_col_spans: Decimal = Decimal(
+                sum([max_column_widths[x] for x in column_indices])
             )
+            assert table_cell._max_width is not None
             if sum_of_max_col_spans < table_cell._max_width:
-                delta: Decimal = table_cell._max_width - sum_of_max_col_spans
+                delta = table_cell._max_width - sum_of_max_col_spans
                 max_column_widths = [
                     w + (delta / table_cell._col_span) if i in column_indices else w
                     for i, w in enumerate(max_column_widths)
@@ -258,28 +240,56 @@ class FlexibleColumnWidthTable(Table):
         # return
         return [[(x, y) for y in grid_y_to_page_y] for x in grid_x_to_page_x]
 
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+    def _get_max_column_width(self, col: int) -> Decimal:
+        widths: typing.List[Decimal] = []
+        for table_cell in [
+            x for x in self._get_cells_at_column(col) if x._col_span == 1
+        ]:
+            if table_cell._max_width is None:
+                widths.append(Decimal(2048))
+                continue
+            if table_cell._preferred_width is None:
+                widths.append(table_cell._max_width)
+                continue
+            if table_cell._preferred_width < table_cell._max_width:
+                widths.append(table_cell._preferred_width)
+                continue
+            # default
+            widths.append(table_cell._max_width)
 
-        # fill table
-        number_of_cells: int = self._number_of_rows * self._number_of_columns
-        empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
-        )
-        for _ in range(0, empty_cells):
-            self.add(Paragraph(" ", respect_spaces_in_text=True))
+        # exception
+        if len(widths) == 0:
+            return Decimal(2048)
 
         # return
-        m = self._get_grid_coordinates(available_space)
-        min_x: Decimal = m[0][0][0]
-        max_x: Decimal = m[-1][-1][0]
-        min_y: Decimal = m[-1][-1][1]
-        max_y: Decimal = m[0][0][1]
-        return Rectangle(
-            available_space.get_x(),
-            min_y,
-            Decimal(math.ceil(max_x - min_x)),
-            max_y - min_y,
-        )
+        return max(widths)
+
+    def _get_min_column_width(self, col: int) -> Decimal:
+        widths: typing.List[Decimal] = []
+        for table_cell in [
+            x for x in self._get_cells_at_column(col) if x._col_span == 1
+        ]:
+            if table_cell._min_width is None:
+                widths.append(Decimal(0))
+                continue
+            if table_cell._preferred_width is None:
+                assert table_cell._min_width is not None
+                widths.append(table_cell._min_width)
+                continue
+            if table_cell._preferred_width > table_cell._min_width:
+                assert table_cell._preferred_width is not None
+                widths.append(table_cell._preferred_width)
+                continue
+            # default
+            assert table_cell._min_width is not None
+            widths.append(table_cell._min_width)
+
+        # exception
+        if len(widths) == 0:
+            return Decimal(0)
+
+        # return
+        return max(widths)
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
 
@@ -306,3 +316,7 @@ class FlexibleColumnWidthTable(Table):
             cbox: Rectangle = Rectangle(x, y, w, h)
             e._set_layout_box(cbox)
             e.paint(page, cbox)
+
+    #
+    # PUBLIC
+    #

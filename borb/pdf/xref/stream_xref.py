@@ -27,9 +27,21 @@ class StreamXREF(XREF):
      (see 7.5.4, "Cross-Reference Table") and trailer (see 7.5.5, "File Trailer") for one cross-reference section.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, initial_offset: Optional[int] = None):
         super().__init__()
         self._initial_offset = initial_offset
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def read(
         self,

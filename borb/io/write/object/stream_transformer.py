@@ -22,6 +22,18 @@ class StreamTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing Stream objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a Stream object
@@ -43,7 +55,7 @@ class StreamTransformer(Transformer):
         # fmt: on
 
         # avoid resolving objects twice
-        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()  # type: ignore [attr-defined]
+        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()
         if object_ref is not None and object_ref in context.resolved_references:
             assert object_ref is not None
             assert object_ref.object_number is not None
@@ -74,7 +86,7 @@ class StreamTransformer(Transformer):
                 isinstance(v, Dictionary)
                 or isinstance(v, List)
                 or isinstance(v, Stream)
-            ) and not v.is_inline():  # type: ignore [union-attr]
+            ) and not v.is_inline():
                 stream_dictionary[k] = self.get_reference(v, context)
                 queue.append(v)
             else:

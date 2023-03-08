@@ -15,15 +15,27 @@ class bitarray:
     and retrieve individual bits (as integers)
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, input: bytes):
         self._src: bytes = input
         self._pos: int = -1
         self._buffer: typing.List[int] = []
         self._default_to_return: int = 256
 
+    #
+    # PRIVATE
+    #
+
     def _read_next_byte(self):
         self._pos += 1
         self._buffer += [int(x) for x in "{0:08b}".format(self._src[self._pos])]
+
+    #
+    # PUBLIC
+    #
 
     def next(self, n) -> int:
         """
@@ -48,15 +60,18 @@ class LZWDecode:
     text or binary data.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._lookup_table: typing.Dict[int, bytearray] = {}
         self._table_index: int = 0
         self._bits_to_read: int = 9
 
-    def _init_lookup_table(self):
-        self._lookup_table = {i: i.to_bytes(1, "big") for i in range(0, 256)}
-        self._table_index = 258
-        self._bits_to_read = 9
+    #
+    # PRIVATE
+    #
 
     def _add_to_lookup_table(self, prev_bytes: bytearray, new_bytes: bytes):
         self._lookup_table[self._table_index] = prev_bytes + new_bytes
@@ -67,6 +82,15 @@ class LZWDecode:
             self._bits_to_read = 11
         elif self._table_index == 2047:
             self._bits_to_read = 12
+
+    def _init_lookup_table(self):
+        self._lookup_table = {i: i.to_bytes(1, "big") for i in range(0, 256)}
+        self._table_index = 258
+        self._bits_to_read = 9
+
+    #
+    # PUBLIC
+    #
 
     def decode(self, input: bytes):
         """

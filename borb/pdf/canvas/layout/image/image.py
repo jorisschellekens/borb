@@ -12,7 +12,8 @@ from typing import Optional
 import requests
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.io.read.types import Dictionary, Name, add_base_methods
+from borb.io.read.pdf_object import PDFObject
+from borb.io.read.types import Dictionary, Name
 from borb.pdf.canvas.color.color import HexColor, Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
@@ -23,6 +24,10 @@ class Image(LayoutElement):
     """
     This implementation of LayoutElement represents an Image
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -50,18 +55,6 @@ class Image(LayoutElement):
         vertical_alignment: Alignment = Alignment.TOP,
         width: Optional[Decimal] = None,
     ):
-        if isinstance(image, str):
-            image = PILImage.open(
-                requests.get(
-                    image,
-                    stream=True,
-                    headers={
-                        "Accept-Encoding": "",
-                    },
-                ).raw,
-            )
-        if isinstance(image, Path):
-            image = PILImage.open(image)
         super(Image, self).__init__(
             background_color=None,
             border_bottom=border_bottom,
@@ -86,10 +79,24 @@ class Image(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        add_base_methods(image)
-        self._image: PILImage = image  # type: ignore[valid-type]
-        self._width = width or Decimal(self._image.width)
-        self._height = height or Decimal(self._image.height)
+        self._image: typing.Union[str, Path, PILImage.Image] = image
+        self._width: typing.Optional[Decimal] = width
+        self._height: typing.Optional[Decimal] = height
+
+    #
+    # PRIVATE
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        self.force_load_image()
+        assert self._width is not None
+        assert self._height is not None
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height() - self._height,
+            self._width,
+            self._height,
+        )
 
     def _get_image_resource_name(self, image: PILImage, page: Page):  # type: ignore[valid-type]
         # create resources if needed
@@ -98,28 +105,23 @@ class Image(LayoutElement):
         if "XObject" not in page["Resources"]:
             page["Resources"][Name("XObject")] = Dictionary()
 
-        # insert font into resources
-        image_resource_name = [
-            k for k, v in page["Resources"]["XObject"].items() if v == image
-        ]
-        if len(image_resource_name) > 0:
-            return image_resource_name[0]
+        # insert Image into resources
+        self.force_load_image()
+        image_resource_name: typing.Optional[Name] = next(
+            iter([k for k, v in page["Resources"]["XObject"].items() if v == image]),
+            None,
+        )
+        if image_resource_name is not None:
+            return image_resource_name
         else:
             image_index = len(page["Resources"]["XObject"]) + 1
             page["Resources"]["XObject"][Name("Im%d" % image_index)] = image
             return Name("Im%d" % image_index)
 
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        return Rectangle(
-            available_space.get_x(),
-            available_space.get_y() + available_space.get_height() - self._height,
-            self._width,
-            self._height,
-        )
-
     def _paint_content_box(self, page: Page, bounding_box: Rectangle):
 
         # add image to resources
+        self.force_load_image()
         image_resource_name = self._get_image_resource_name(self._image, page)
 
         assert self._width is not None
@@ -136,3 +138,40 @@ class Image(LayoutElement):
 
         # write content
         page.append_to_content_stream(content)
+
+    #
+    # PUBLIC
+    #
+
+    def force_load_image(self) -> None:
+        """
+        This function forces the underlying PIL Image to load.
+        Images can be specified by providing a Path, str, or PIL Image.
+        The underyling image is only loaded when needed (such as when performing layout)
+        :return:    None
+        """
+        # load Image from URL
+        if isinstance(self._image, str):
+            self._image = PILImage.open(
+                requests.get(
+                    self._image,
+                    stream=True,
+                    headers={
+                        "Accept-Encoding": "",
+                    },
+                ).raw,
+            )
+
+        # load image from Path
+        if isinstance(self._image, Path):
+            self._image = PILImage.open(self._image)
+
+        # self._image should be a PIL Image by now
+        assert isinstance(self._image, PILImage.Image)
+        PDFObject.add_pdf_object_methods(self._image)
+
+        # set width / height
+        if self._width is None:
+            self._width = Decimal(self._image.width)
+        if self._height is None:
+            self._height = Decimal(self._image.height)

@@ -13,6 +13,14 @@ class MachineID:
     This class is responsible for getting the machine GUID
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
     @staticmethod
     def _run(cmd) -> typing.Optional[str]:
         try:
@@ -21,6 +29,10 @@ class MachineID:
             ).stdout.strip()
         except:
             return None
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def get() -> typing.Optional[str]:

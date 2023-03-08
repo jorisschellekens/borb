@@ -20,40 +20,17 @@ class InlineFlow(LayoutElement):
     into the next line.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(InlineFlow, self).__init__()
         self._content: typing.List[LayoutElement] = []
 
-    def add(self, e: LayoutElement) -> "InlineFlow":
-        """
-        This function adds a LayoutElement to this InlineFlow
-        :param e:   the LayoutElement to be added
-        :return:    self
-        """
-        if isinstance(e, InlineFlow):
-            for child_e in e._content:
-                self.add(child_e)
-        else:
-            self._content.append(e)
-        return self
-
-    def extend(self, es: typing.List[LayoutElement]) -> "InlineFlow":
-        """
-        This function adds a typing.List of LayoutElement(s) to this InlineFlow
-        :param es:   the LayoutElements to be added
-        :return:    self
-        """
-        for e in es:
-            self.add(e)
-        return self
-
-    @staticmethod
-    def _get_min_content_box(e: LayoutElement) -> Rectangle:
-        from borb.pdf.canvas.layout.table.table import TableCell
-
-        c: TableCell = TableCell(e)
-        c._calculate_min_and_max_layout_box()
-        return Rectangle(Decimal(0), Decimal(0), c._min_width, c._max_height)
+    #
+    # PRIVATE
+    #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
 
@@ -91,6 +68,7 @@ class InlineFlow(LayoutElement):
         for i, line in enumerate(layout_lines):
             y -= layout_lines_height[i]
             for e in line:
+                assert e._previous_layout_box is not None
                 e._previous_layout_box = Rectangle(
                     e._previous_layout_box.get_x(),
                     y,
@@ -105,9 +83,48 @@ class InlineFlow(LayoutElement):
             + available_space.get_height()
             - sum(layout_lines_height),
             available_space.get_width(),
-            sum(layout_lines_height),
+            Decimal(sum(layout_lines_height)),
         )
 
-    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
+    @staticmethod
+    def _get_min_content_box(e: LayoutElement) -> Rectangle:
+        from borb.pdf.canvas.layout.table.table import TableCell
+
+        c: TableCell = TableCell(e)
+        c._calculate_min_and_max_layout_box()
+        assert c._min_width is not None
+        assert c._max_height is not None
+        return Rectangle(Decimal(0), Decimal(0), c._min_width, c._max_height)
+
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore [name-defined]
         for e in self._content:
-            e.paint(page, e.get_previous_layout_box())
+            prev_layout_box: typing.Optional[Rectangle] = e.get_previous_layout_box()
+            assert prev_layout_box is not None
+            e.paint(page, prev_layout_box)
+
+    #
+    # PUBLIC
+    #
+
+    def add(self, e: LayoutElement) -> "InlineFlow":
+        """
+        This function adds a LayoutElement to this InlineFlow
+        :param e:   the LayoutElement to be added
+        :return:    self
+        """
+        if isinstance(e, InlineFlow):
+            for child_e in e._content:
+                self.add(child_e)
+        else:
+            self._content.append(e)
+        return self
+
+    def extend(self, es: typing.List[LayoutElement]) -> "InlineFlow":
+        """
+        This function adds a typing.List of LayoutElement(s) to this InlineFlow
+        :param es:   the LayoutElements to be added
+        :return:    self
+        """
+        for e in es:
+            self.add(e)
+        return self

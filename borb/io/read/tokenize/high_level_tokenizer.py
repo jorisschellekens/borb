@@ -35,6 +35,18 @@ class HighLevelTokenizer(LowLevelTokenizer):
     and so forth.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def read_array(self) -> List:
         """
         This function processes the next tokens and returns a List.

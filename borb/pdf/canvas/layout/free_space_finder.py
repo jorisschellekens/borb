@@ -40,20 +40,6 @@ class FreeSpaceFinder(EventListener):
                 for _ in range(0, ceil(self._page_height / self._resolution))
             ]
 
-        def _mark_as_unavailable(self, rectangle: Rectangle) -> "FreeSpaceFinder.Grid":
-            x_grid = int(int(rectangle.x) / self._resolution)
-            y_grid = int(int(rectangle.y) / self._resolution)
-            w = int(int(rectangle.width) / self._resolution)
-            h = int(int(rectangle.height) / self._resolution)
-            for i in range(x_grid - 1, x_grid + w + 1):
-                for j in range(y_grid - 1, y_grid + h + 1):
-                    if i < 0 or i >= len(self._availability):
-                        continue
-                    if j < 0 or j >= len(self._availability[i]):
-                        continue
-                    self._availability[i][j] = False
-            return self
-
         def _get_free_space(
             self, desired_rectangle: Rectangle
         ) -> typing.Optional[Rectangle]:
@@ -104,37 +90,31 @@ class FreeSpaceFinder(EventListener):
                 desired_rectangle.height,
             )
 
+        def _mark_as_unavailable(self, rectangle: Rectangle) -> "FreeSpaceFinder.Grid":
+            x_grid = int(int(rectangle.x) / self._resolution)
+            y_grid = int(int(rectangle.y) / self._resolution)
+            w = int(int(rectangle.width) / self._resolution)
+            h = int(int(rectangle.height) / self._resolution)
+            for i in range(x_grid - 1, x_grid + w + 1):
+                for j in range(y_grid - 1, y_grid + h + 1):
+                    if i < 0 or i >= len(self._availability):
+                        continue
+                    if j < 0 or j >= len(self._availability[i]):
+                        continue
+                    self._availability[i][j] = False
+            return self
+
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._page_number: int = -1
         self._grid_per_page: typing.Dict[int, FreeSpaceFinder.Grid] = {}
 
-    @staticmethod
-    def find_free_space_for_page(
-        file: Path, page_number: int, desired_rectangle: Rectangle
-    ) -> typing.Optional[Rectangle]:
-        """
-        This function returns the nearest (euclidean distance)
-        empty Rectangle that is at least as wide and tall as the
-        desired Rectangle.
-        If no such Rectangle exists, this method returns None.
-        """
-        l: FreeSpaceFinder = FreeSpaceFinder()
-        with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
-        return l.get_free_space_for_page(page_number, desired_rectangle)
-
-    def get_free_space_for_page(
-        self, page_number: int, desired_rectangle: Rectangle
-    ) -> typing.Optional[Rectangle]:
-        """
-        This function returns the nearest (euclidean distance)
-        empty Rectangle that is at least as wide and tall as the
-        desired Rectangle.
-        If no such Rectangle exists, this method returns None.
-        """
-        if page_number in self._grid_per_page:
-            return self._grid_per_page[page_number]._get_free_space(desired_rectangle)
-        return None
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: Event) -> None:
 
@@ -168,3 +148,35 @@ class FreeSpaceFinder(EventListener):
                 self._grid_per_page[self._page_number]._mark_as_unavailable(
                     bounding_box_002
                 )
+
+    #
+    # PUBLIC
+    #
+
+    @staticmethod
+    def find_free_space_for_page(
+        file: Path, page_number: int, desired_rectangle: Rectangle
+    ) -> typing.Optional[Rectangle]:
+        """
+        This function returns the nearest (euclidean distance)
+        empty Rectangle that is at least as wide and tall as the
+        desired Rectangle.
+        If no such Rectangle exists, this method returns None.
+        """
+        l: FreeSpaceFinder = FreeSpaceFinder()
+        with open(file, "rb") as pdf_file_handle:
+            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
+        return l.get_free_space_for_page(page_number, desired_rectangle)
+
+    def get_free_space_for_page(
+        self, page_number: int, desired_rectangle: Rectangle
+    ) -> typing.Optional[Rectangle]:
+        """
+        This function returns the nearest (euclidean distance)
+        empty Rectangle that is at least as wide and tall as the
+        desired Rectangle.
+        If no such Rectangle exists, this method returns None.
+        """
+        if page_number in self._grid_per_page:
+            return self._grid_per_page[page_number]._get_free_space(desired_rectangle)
+        return None

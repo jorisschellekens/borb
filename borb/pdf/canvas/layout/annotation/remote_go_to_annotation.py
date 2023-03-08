@@ -20,6 +20,10 @@ class RemoteGoToAnnotation(Annotation):
     This method adds a link annotation with an action that opens a remote URI.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, bounding_box: Rectangle, uri: str):
         super(RemoteGoToAnnotation, self).__init__(bounding_box)
 
@@ -48,3 +52,11 @@ class RemoteGoToAnnotation(Annotation):
         self["A"][Name("Type")] = Name("Action")
         self["A"][Name("S")] = Name("URI")
         self["A"][Name("URI")] = String(uri)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

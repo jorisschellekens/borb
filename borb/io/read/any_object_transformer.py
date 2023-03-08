@@ -42,6 +42,10 @@ class AnyObjectTransformer(Transformer):
     of ReadBaseTransformer
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__()
         self.add_child_transformer(XREFTransformer())
@@ -69,6 +73,14 @@ class AnyObjectTransformer(Transformer):
         # objects
         self.add_child_transformer(DictionaryTransformer())
         self.add_child_transformer(ArrayTransformer())
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]

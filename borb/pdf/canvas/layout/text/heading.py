@@ -25,19 +25,6 @@ class Heading(Paragraph):
     It also adds an outline in the document outline tree.
     """
 
-    @staticmethod
-    def _get_margin_for_outline_level(
-        outline_level: int = 0, font_size: Decimal = Decimal(12)
-    ) -> Decimal:
-        return {
-            1: Decimal(0.335),
-            2: Decimal(0.553),
-            3: Decimal(0.855),
-            4: Decimal(1.333),
-            5: Decimal(2.012),
-            6: Decimal(3.477),
-        }.get(outline_level + 1, Decimal(1)) * font_size
-
     def __init__(
         self,
         text: str,
@@ -114,6 +101,27 @@ class Heading(Paragraph):
         self._outline_text = outline_text or text
         self._outline_level = outline_level
         self._has_added_outline = False
+
+    #
+    # PRIVATE
+    #
+
+    @staticmethod
+    def _get_margin_for_outline_level(
+        outline_level: int = 0, font_size: Decimal = Decimal(12)
+    ) -> Decimal:
+        return {
+            1: Decimal(0.335),
+            2: Decimal(0.553),
+            3: Decimal(0.855),
+            4: Decimal(1.333),
+            5: Decimal(2.012),
+            6: Decimal(3.477),
+        }.get(outline_level + 1, Decimal(1)) * font_size
+
+    #
+    # PUBLIC
+    #
 
     def paint(self, page: Page, available_space: Rectangle):
         """

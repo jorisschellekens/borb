@@ -24,12 +24,9 @@ class SoundAnnotation(Annotation):
     specific to this type of annotation. Sound objects are discussed in 13.3, “Sounds.”
     """
 
-    @staticmethod
-    def _make_canonical_file_path(p: str) -> str:
-        try:
-            return Path(p).as_uri()
-        except:
-            return p
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -79,3 +76,18 @@ class SoundAnnotation(Annotation):
         self[Name("A")][Name("R")][Name("P")] = Dictionary()
         self[Name("A")][Name("R")][Name("P")][Name("BE")] = Dictionary()
         self[Name("A")][Name("R")][Name("P")][Name("BE")][Name("C")] = Boolean(True)
+
+    #
+    # PRIVATE
+    #
+
+    @staticmethod
+    def _make_canonical_file_path(p: str) -> str:
+        try:
+            return Path(p).as_uri()
+        except:
+            return p
+
+    #
+    # PUBLIC
+    #

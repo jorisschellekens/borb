@@ -103,7 +103,7 @@ class TestAddEmbeddedFile(unittest.TestCase):
 
         info_dict = doc["XRef"]["Trailer"]["Info"]
         info_dict_bytes: bytes = json.dumps(
-            info_dict.to_json_serializable(), indent=4
+            {str(k): str(v) for k, v in info_dict.items()}, indent=4
         ).encode("latin1")
 
         doc.add_embedded_file("embedded_data.json", info_dict_bytes)
@@ -124,8 +124,7 @@ class TestAddEmbeddedFile(unittest.TestCase):
         with open(input_file, "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
 
-        info_dict = doc["XRef"]["Trailer"]["Info"]
-        info_dict_json = info_dict.to_json_serializable()
+        info_dict = {str(k): str(v) for k, v in doc["XRef"]["Trailer"]["Info"].items()}
 
         input_file: Path = self.output_dir / "output_002.pdf"
         with open(input_file, "rb") as in_file_handle:
@@ -133,6 +132,6 @@ class TestAddEmbeddedFile(unittest.TestCase):
 
         info_dict_json_2 = json.loads(doc.get_embedded_file("embedded_data.json"))
 
-        for k, v in info_dict_json.items():
+        for k, v in info_dict.items():
             assert k in info_dict_json_2
             assert v == info_dict_json_2[k]

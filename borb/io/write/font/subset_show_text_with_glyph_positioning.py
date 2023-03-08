@@ -37,6 +37,10 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
     effect of passing offsets to TJ.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self, old_fonts: typing.List[Font], new_fonts: typing.List[Font], s: bytearray
     ):
@@ -47,11 +51,19 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
         self._new_fonts: typing.List[Font] = new_fonts
         self._s: bytearray = s
 
+    #
+    # PRIVATE
+    #
+
     def _to_hex(self, i: int) -> str:
         s: str = hex(int(i))[2:]
         while len(s) < 2:
             s = "0" + s
         return s
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,
@@ -96,13 +108,19 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
 
             # display string
             if isinstance(obj, String):
-                old_char: str = old_font.character_identifier_to_unicode(
-                    int(str(obj), 16)
+                str_in_prev_font: typing.Optional[
+                    str
+                ] = old_font.character_identifier_to_unicode(int(str(obj), 16))
+                assert str_in_prev_font is not None
+
+                char_id_in_new_font: typing.Optional[
+                    int
+                ] = new_font.unicode_to_character_identifier(str_in_prev_font)
+                assert char_id_in_new_font is not None
+
+                operands_out.append(
+                    HexadecimalString(self._to_hex(char_id_in_new_font))
                 )
-                new_code: str = self._to_hex(
-                    new_font.unicode_to_character_identifier(old_char)
-                )
-                operands_out.append(HexadecimalString(new_code))
 
         # delegate
         return super(SubSetShowTextWithGlyphPositioning, self).invoke(

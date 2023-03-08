@@ -28,31 +28,9 @@ class PDFToMP3(SimpleParagraphExtraction):
     This implementation of EventListener exports a Page as an mp3 file (returned as bytes), essentially reading the text on the Page
     """
 
-    @staticmethod
-    def convert_pdf_to_mp3(pdf: Document) -> typing.Dict[int, bytes]:
-        """
-        This function converts a PDF to an MP3 file, returning its Path
-        """
-        sound_bytes_of_each_page: typing.Dict[int, bytes] = {}
-        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
-        for page_nr in range(0, number_of_pages):
-            # get Page object
-            page: Page = pdf.get_page(page_nr)
-            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
-
-            # register EventListener
-            cse: "PDFToMP3" = PDFToMP3()
-
-            # process Page
-            cse._event_occurred(BeginPageEvent(page))
-            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
-            cse._event_occurred(EndPageEvent(page))
-
-            # set in page
-            sound_bytes_of_each_page[page_nr] = cse.convert_to_mp3()[0]
-
-        # return
-        return sound_bytes_of_each_page
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -73,6 +51,10 @@ class PDFToMP3(SimpleParagraphExtraction):
         # page info
         self._text_to_speak_for_page: typing.Dict[int, str] = {}
 
+    #
+    # PRIVATE
+    #
+
     def _end_page(self, page: Page):
         super(PDFToMP3, self)._end_page(page)
         self._text_to_speak_for_page[self._current_page_number] = "".join(
@@ -83,6 +65,33 @@ class PDFToMP3(SimpleParagraphExtraction):
                 )
             ]
         )
+
+    def _get_text_for_paragraph(
+        self, paragraph: Paragraph, paragraph_number: int, page_number: int
+    ):
+
+        # text to speak
+        text_to_speak_for_paragraph = ""
+
+        # position
+        if self._include_position:
+            lbox: typing.Optional[Rectangle] = paragraph.get_previous_layout_box()
+            assert lbox is not None
+            text_to_speak_for_paragraph += "Page %d, paragraph %d, %s %s." % (
+                page_number + 1,
+                paragraph_number + 1,
+                self._get_text_for_y(lbox),
+                self._get_text_for_x(lbox),
+            )
+        # text of paragraph
+        text_to_speak_for_paragraph += paragraph._text
+
+        # force period if needed
+        if text_to_speak_for_paragraph[-1] not in ["?", "!", "."]:
+            text_to_speak_for_paragraph += ". "
+
+        # return
+        return text_to_speak_for_paragraph
 
     def _get_text_for_x(self, bounding_box: Rectangle) -> str:
         assert self._current_page
@@ -113,32 +122,35 @@ class PDFToMP3(SimpleParagraphExtraction):
             return "bottom"
         return ""
 
-    def _get_text_for_paragraph(
-        self, paragraph: Paragraph, paragraph_number: int, page_number: int
-    ):
+    #
+    # PUBLIC
+    #
 
-        # text to speak
-        text_to_speak_for_paragraph = ""
+    @staticmethod
+    def convert_pdf_to_mp3(pdf: Document) -> typing.Dict[int, bytes]:
+        """
+        This function converts a PDF to an MP3 file, returning its Path
+        """
+        sound_bytes_of_each_page: typing.Dict[int, bytes] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
 
-        # position
-        if self._include_position:
-            lbox: typing.Optional[Rectangle] = paragraph.get_previous_layout_box()
-            assert lbox is not None
-            text_to_speak_for_paragraph += "Page %d, paragraph %d, %s %s." % (
-                page_number + 1,
-                paragraph_number + 1,
-                self._get_text_for_y(lbox),
-                self._get_text_for_x(lbox),
-            )
-        # text of paragraph
-        text_to_speak_for_paragraph += paragraph._text
+            # register EventListener
+            cse: "PDFToMP3" = PDFToMP3()
 
-        # force period if needed
-        if text_to_speak_for_paragraph[-1] not in ["?", "!", "."]:
-            text_to_speak_for_paragraph += ". "
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
+
+            # set in page
+            sound_bytes_of_each_page[page_nr] = cse.convert_to_mp3()[0]
 
         # return
-        return text_to_speak_for_paragraph
+        return sound_bytes_of_each_page
 
     def convert_to_mp3(self) -> typing.Dict[int, bytes]:
         """

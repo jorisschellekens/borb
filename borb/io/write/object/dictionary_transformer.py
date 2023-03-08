@@ -21,6 +21,18 @@ class DictionaryTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing Dictionary objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents an Dictionary object
@@ -42,7 +54,7 @@ class DictionaryTransformer(Transformer):
         # fmt: on
 
         # avoid resolving objects twice
-        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()  # type: ignore [attr-defined]
+        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()
         if object_ref is not None and object_ref in context.resolved_references:
             assert object_ref is not None
             assert object_ref.object_number is not None
@@ -59,14 +71,14 @@ class DictionaryTransformer(Transformer):
         queue: typing.List[AnyPDFType] = []
         sorted_keys: typing.List[typing.Any] = sorted(object_to_transform)
         for k in sorted_keys:
-            v = object_to_transform[k]
+            v: AnyPDFType = object_to_transform[k]
             if (
                 isinstance(v, Dictionary)
                 or isinstance(v, List)
                 or isinstance(v, Stream)
                 or isinstance(v, Image)
                 or isinstance(v, Element)
-            ) and not v.is_inline():  # type: ignore [union-attr]
+            ) and not v.is_inline():
                 out_value[k] = self.get_reference(v, context)
                 queue.append(v)
             else:
@@ -92,7 +104,7 @@ class DictionaryTransformer(Transformer):
                 context.destination.write(bytes(" ", "latin1"))
 
         # write newline if the object is not inline
-        if object_to_transform.is_inline():  # type: ignore [attr-defined]
+        if object_to_transform.is_inline():
             context.destination.write(bytes(">>", "latin1"))
         else:
             context.destination.write(bytes(">>\n", "latin1"))

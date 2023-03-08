@@ -38,6 +38,10 @@ class LinkAnnotation(Annotation):
     entries specific to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -63,7 +67,8 @@ class LinkAnnotation(Annotation):
         # (Optional; not permitted if an A entry is present) A destination that shall
         # be displayed when the annotation is activated (see 12.3.2,
         # “Destinations”).
-        destination = List().set_is_inline(True)  # type: ignore [attr-defined]
+        destination = List()
+        destination.set_is_inline(True)  # type: ignore [attr-defined]
         destination.append(bDecimal(page))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:
@@ -145,3 +150,11 @@ class LinkAnnotation(Annotation):
         if highlighting_mode is not None:
             assert highlighting_mode in ["N", "I", "O", "P"]
             self[Name("H")] = String(highlighting_mode)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

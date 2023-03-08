@@ -16,6 +16,18 @@ class MovieAnnotation(Annotation):
     annotation dictionary entries specific to this type of annotation. Movies are discussed in 13.4, “Movies.”
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(MovieAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

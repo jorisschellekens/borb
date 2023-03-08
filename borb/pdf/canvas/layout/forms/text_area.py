@@ -8,6 +8,7 @@ import typing
 import zlib
 from decimal import Decimal
 
+from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List, Name, Stream, String
@@ -24,9 +25,13 @@ class TextArea(FormField):
     This implementation of FormField represents a text area.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
-        # background_color: typing.Optional[Color] = None,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = True,
         border_color: Color = HexColor("808080"),
         border_left: bool = True,
@@ -55,7 +60,7 @@ class TextArea(FormField):
         vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(TextArea, self).__init__(
-            # background_color=background_color,
+            background_color=background_color,
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
@@ -78,20 +83,39 @@ class TextArea(FormField):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
+        assert number_of_lines > 0
         self._font_color = font_color
         self._value: str = value
         self._default_value: str = default_value
-        assert number_of_lines > 0
         self._number_of_lines: int = number_of_lines
         self._field_name: typing.Optional[str] = field_name
         self._widget_dictionary: typing.Optional[Dictionary] = None
+
+    #
+    # PRIVATE
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        assert self._font_size is not None
+        line_height: Decimal = self._font_size * Decimal(1.2)
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y()
+            + available_space.get_height()
+            - line_height * self._number_of_lines,
+            max(available_space.get_width(), Decimal(64)),
+            line_height * self._number_of_lines,
+        )
 
     def _init_widget_dictionary(self, page: Page, layout_box: Rectangle) -> None:
 
         if self._widget_dictionary is not None:
             return
 
-        if "XRef" not in page.get_root():  # type: ignore [attr-defined]
+        root: typing.Optional[PDFObject] = page.get_root()
+        assert root is not None
+        assert isinstance(root, Dictionary)
+        if "XRef" not in root:
             return
 
         # init page and font resources
@@ -101,11 +125,13 @@ class TextArea(FormField):
         )
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
+        widget_resources: Dictionary = Dictionary()
+        widget_resources.set_is_unique(True)
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # widget normal appearance
-        widget_normal_appearance: Stream = Stream().set_is_unique(True)  # type: ignore [attr-defined]
+        widget_normal_appearance: Stream = Stream()
+        widget_normal_appearance.set_is_unique(True)  # type: ignore [attr-defined]
         widget_normal_appearance[Name("Type")] = Name("XObject")
         widget_normal_appearance[Name("Subtype")] = Name("Form")
         widget_normal_appearance[Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
@@ -123,17 +149,17 @@ class TextArea(FormField):
         widget_normal_appearance[Name("Length")] = bDecimal(len(bts))
 
         # widget appearance dictionary
-        widget_appearance_dictionary: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
-        widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
+        widget_appearance_dictionary: Dictionary = Dictionary()
+        widget_appearance_dictionary.set_is_unique(True)
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
+        catalog: Dictionary = root["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # widget dictionary
         # fmt: off
-        self._widget_dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
-        self._widget_dictionary.set_is_unique(True)                         # type: ignore [attr-defined]
+        self._widget_dictionary = Dictionary()
+        self._widget_dictionary.set_is_unique(True)
         self._widget_dictionary[Name("Type")] = Name("Annot")
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
         self._widget_dictionary[Name("F")] = bDecimal(4)
@@ -178,18 +204,6 @@ class TextArea(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        assert self._font_size is not None
-        line_height: Decimal = self._font_size * Decimal(1.2)
-        return Rectangle(
-            available_space.get_x(),
-            available_space.get_y()
-            + available_space.get_height()
-            - line_height * self._number_of_lines,
-            max(available_space.get_width(), Decimal(64)),
-            line_height * self._number_of_lines,
-        )
-
     def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
 
         # determine layout rectangle
@@ -209,3 +223,7 @@ class TextArea(FormField):
             self._widget_dictionary["Rect"][2] = bDecimal(cbox.get_x() + cbox.get_width())
             self._widget_dictionary["Rect"][3] = bDecimal(cbox.get_y() + cbox.get_height())
         # fmt: on
+
+    #
+    # PUBLIC
+    #

@@ -41,6 +41,10 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
     This enables the user to have a searchable PDF, whilst being able to turn on/off OCR features.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self, tesseract_data_dir: Path, minimal_confidence: Decimal = Decimal(0.75)
     ):
@@ -49,13 +53,9 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
         )
         self._ocr_events: typing.List[OCREvent] = []
 
-    def _overlaps_vertically(self, r0: Rectangle, r1: Rectangle) -> bool:
-        """
-        This function returns True iff two Rectangle objects overlap vertically, False otherwise.
-        """
-        return (
-            int(r0.get_y()) <= int(r1.get_y()) <= int(r0.get_y() + r0.get_height())
-        ) or (int(r1.get_y()) <= int(r0.get_y()) <= int(r1.get_y() + r1.get_height()))
+    #
+    # PRIVATE
+    #
 
     def _add_ocr_optional_content_group(self, document: Document) -> None:
         # add OCProperties to Document (if needed)
@@ -138,17 +138,29 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
             page["Contents"][Name("Length")] = bDecimal(len(page["Contents"][Name("Bytes")]))
             # fmt: on
 
-    def _event_occurred(self, event: Event) -> None:
-        super(OCRAsOptionalContentGroup, self)._event_occurred(event)
-        # TODO: find a better way to solve this
-        if event.__class__.__name__ == "EndDocumentEvent":
-            self._end_document()
-
     def _end_document(self):
         if len(self._ocr_events) == 0:
             return
         document: Document = self._ocr_events[0].get_page().get_document()
         self._add_ocr_optional_content_group(document)
 
+    def _event_occurred(self, event: Event) -> None:
+        super(OCRAsOptionalContentGroup, self)._event_occurred(event)
+        # TODO: find a better way to solve this
+        if event.__class__.__name__ == "EndDocumentEvent":
+            self._end_document()
+
     def _ocr_text_occurred(self, event: OCREvent):
         self._ocr_events.append(event)
+
+    def _overlaps_vertically(self, r0: Rectangle, r1: Rectangle) -> bool:
+        """
+        This function returns True iff two Rectangle objects overlap vertically, False otherwise.
+        """
+        return (
+            int(r0.get_y()) <= int(r1.get_y()) <= int(r0.get_y() + r0.get_height())
+        ) or (int(r1.get_y()) <= int(r0.get_y()) <= int(r1.get_y() + r1.get_height()))
+
+    #
+    # PUBLIC
+    #

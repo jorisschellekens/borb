@@ -47,6 +47,16 @@ SYMBOL_ENCODING_LOOKUP = [
 # fmt: on
 
 
+def symbol_decode(byte_input: bytes) -> str:
+    """
+    This function decodes bytes using SymbolEncoding
+    """
+    s: str = ""
+    for b in byte_input:
+        s += chr(SYMBOL_ENCODING_LOOKUP[b])
+    return s
+
+
 def symbol_encode(str_input: str) -> bytes:
     """
     This function encodes a str using SymbolEncoding
@@ -61,16 +71,6 @@ def symbol_encode(str_input: str) -> bytes:
         if char_index != -1:
             b.append(char_index)
     return b
-
-
-def symbol_decode(byte_input: bytes) -> str:
-    """
-    This function decodes bytes using SymbolEncoding
-    """
-    s: str = ""
-    for b in byte_input:
-        s += chr(SYMBOL_ENCODING_LOOKUP[b])
-    return s
 
 
 # fmt: off
@@ -111,6 +111,16 @@ ZAPFDINGBATS_ENCODING_LOOKUP = [
 # fmt: on
 
 
+def zapfdingbats_decode(byte_input: bytes) -> str:
+    """
+    This function decodes bytes using ZapfDingbats
+    """
+    s: str = ""
+    for b in byte_input:
+        s += chr(ZAPFDINGBATS_ENCODING_LOOKUP[b])
+    return s
+
+
 def zapfdingbats_encode(str_input: str) -> bytes:
     """
     This function encodes a str using ZapfDingbats
@@ -125,13 +135,3 @@ def zapfdingbats_encode(str_input: str) -> bytes:
         if char_index != -1:
             b.append(char_index)
     return b
-
-
-def zapfdingbats_decode(byte_input: bytes) -> str:
-    """
-    This function decodes bytes using ZapfDingbats
-    """
-    s: str = ""
-    for b in byte_input:
-        s += chr(ZAPFDINGBATS_ENCODING_LOOKUP[b])
-    return s

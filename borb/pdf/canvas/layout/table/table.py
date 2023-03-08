@@ -20,6 +20,10 @@ class TableCell(LayoutElement):
     This class represents a single cell of a table
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         layout_element: LayoutElement,
@@ -91,62 +95,9 @@ class TableCell(LayoutElement):
         # layout
         self._forced_layout_box: typing.Optional[Rectangle] = None
 
-    def get_layout_box(self, available_space: Rectangle):
-        """
-        This function returns the previous result of layout
-        :return:    the Rectangle that was the result of the previous layout operation
-        """
-        if self._forced_layout_box is not None:
-            return self._forced_layout_box
-        return super(TableCell, self).get_layout_box(available_space)
-
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        if self._forced_layout_box is not None:
-
-            horizontal_border_width: Decimal = Decimal(0)
-            if self._border_left:
-                horizontal_border_width += self._border_width
-            if self._border_right:
-                horizontal_border_width += self._border_width
-
-            vertical_border_width: Decimal = Decimal(0)
-            if self._border_top:
-                vertical_border_width += self._border_width
-            if self._border_bottom:
-                vertical_border_width += self._border_width
-
-            return Rectangle(
-                self._forced_layout_box.get_x()
-                + self._padding_left
-                + (self._border_width if self._border_left else Decimal(0)),
-                self._forced_layout_box.get_y()
-                + self._padding_bottom
-                + (self._border_width if self._border_bottom else Decimal(0)),
-                max(
-                    Decimal(0),
-                    self._forced_layout_box.get_width()
-                    - self._padding_left
-                    - self._padding_right
-                    - horizontal_border_width,
-                ),
-                max(
-                    Decimal(0),
-                    self._forced_layout_box.get_height()
-                    - self._padding_top
-                    - self._padding_bottom
-                    - vertical_border_width,
-                ),
-            )
-
-        # default
-        return self._layout_element.get_layout_box(available_space)
-
-    def _set_layout_box(self, layout_box: Rectangle) -> "TableCell":
-        self._forced_layout_box = layout_box
-        return self
-
-    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
-        self._layout_element.paint(page, available_space)
+    #
+    # PRIVATE
+    #
 
     def _calculate_min_and_max_layout_box(self) -> None:
         lbox_max: Rectangle = self.get_layout_box(
@@ -190,12 +141,77 @@ class TableCell(LayoutElement):
 
         # return
 
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        if self._forced_layout_box is not None:
+
+            horizontal_border_width: Decimal = Decimal(0)
+            if self._border_left:
+                horizontal_border_width += self._border_width
+            if self._border_right:
+                horizontal_border_width += self._border_width
+
+            vertical_border_width: Decimal = Decimal(0)
+            if self._border_top:
+                vertical_border_width += self._border_width
+            if self._border_bottom:
+                vertical_border_width += self._border_width
+
+            return Rectangle(
+                self._forced_layout_box.get_x()
+                + self._padding_left
+                + (self._border_width if self._border_left else Decimal(0)),
+                self._forced_layout_box.get_y()
+                + self._padding_bottom
+                + (self._border_width if self._border_bottom else Decimal(0)),
+                max(
+                    Decimal(0),
+                    self._forced_layout_box.get_width()
+                    - self._padding_left
+                    - self._padding_right
+                    - horizontal_border_width,
+                ),
+                max(
+                    Decimal(0),
+                    self._forced_layout_box.get_height()
+                    - self._padding_top
+                    - self._padding_bottom
+                    - vertical_border_width,
+                ),
+            )
+
+        # default
+        return self._layout_element.get_layout_box(available_space)
+
+    def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
+        self._layout_element.paint(page, available_space)
+
+    def _set_layout_box(self, layout_box: Rectangle) -> "TableCell":
+        self._forced_layout_box = layout_box
+        return self
+
+    #
+    # PUBLIC
+    #
+
+    def get_layout_box(self, available_space: Rectangle):
+        """
+        This function returns the previous result of layout
+        :return:    the Rectangle that was the result of the previous layout operation
+        """
+        if self._forced_layout_box is not None:
+            return self._forced_layout_box
+        return super(TableCell, self).get_layout_box(available_space)
+
 
 class Table(LayoutElement):
     """
     This class represents a common base for all LayoutElement implementations
     that attempt to represent tabular data.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -253,164 +269,9 @@ class Table(LayoutElement):
         self._number_of_columns = number_of_columns
         self._content: typing.List[TableCell] = []
 
-    def set_background_color_on_all_cells(self, background_color: Color) -> "Table":
-        """
-        This method sets the background Color on all TableCell objects in this Table
-        """
-        for e in self._content:
-            e._background_color = background_color
-        return self
-
-    def set_border_width_on_all_cells(self, border_width: Decimal) -> "Table":
-        """
-        This method sets the border width on all TableCell objects in this Table
-        """
-        assert border_width >= 0
-        for e in self._content:
-            e._border_width = border_width
-        return self
-
-    def set_border_color_on_all_cells(self, border_color: Color) -> "Table":
-        """
-        This method sets the border color on all TableCell objects in this Table
-        """
-        for e in self._content:
-            e._border_color = border_color
-        return self
-
-    def set_padding_on_all_cells(
-        self,
-        padding_top: Decimal,
-        padding_right: Decimal,
-        padding_bottom: Decimal,
-        padding_left: Decimal,
-    ) -> "Table":
-        """
-        This method sets the padding on all TableCell objects in this Table
-        """
-        for e in self._content:
-            e._padding_top = padding_top
-            e._padding_right = padding_right
-            e._padding_bottom = padding_bottom
-            e._padding_left = padding_left
-        return self
-
-    def set_borders_on_all_cells(
-        self,
-        border_top: bool,
-        border_right: bool,
-        border_bottom: bool,
-        border_left: bool,
-    ) -> "Table":
-        """
-        This method sets the border(s) on all TableCell objects in this Table
-        """
-        for e in self._content:
-            e._border_top = border_top
-            e._border_right = border_right
-            e._border_bottom = border_bottom
-            e._border_left = border_left
-        return self
-
-    def no_borders(self) -> "Table":
-        """
-        This method unsets the border(s) on all TableCell objects in this Table
-        """
-        self.set_borders_on_all_cells(False, False, False, False)
-        return self
-
-    def outer_borders(self) -> "Table":
-        """
-        This method unsets the border(s) on all TableCell objects in this Table
-        except for the borders that form the outside edge of the Table
-        """
-        self.no_borders()
-        for c in self._get_cells_at_row(0):
-            c._border_top = True
-        for c in self._get_cells_at_row(self._number_of_rows - 1):
-            c._border_bottom = True
-        for c in self._get_cells_at_column(0):
-            c._border_left = True
-        for c in self._get_cells_at_column(self._number_of_columns - 1):
-            c._border_right = True
-        return self
-
-    def internal_borders(self) -> "Table":
-        """
-        This method sets the border(s) on all TableCell objects in this Table
-        except for the borders that form the outside edge of the Table
-        """
-        for tc in self._content:
-            tc._border_top = True
-            tc._border_right = True
-            tc._border_bottom = True
-            tc._border_left = True
-        for c in self._get_cells_at_row(0):
-            c._border_top = False
-        for c in self._get_cells_at_row(self._number_of_rows - 1):
-            c._border_bottom = False
-        for c in self._get_cells_at_column(0):
-            c._border_left = False
-        for c in self._get_cells_at_column(self._number_of_columns - 1):
-            c._border_right = False
-        return self
-
-    def outer_borders_rounded(self, border_radius: Decimal = Decimal(20)) -> "Table":
-        """
-        This function sets rounded borders on the outside of this Table
-        :param border_radius:   the desired border radius
-        :return:                self
-        """
-        # upper left
-        ul: typing.Optional[TableCell] = self._get_cells_at(0, 0)
-        if ul is not None:
-            ul._border_radius_top_left = border_radius
-        # upper right
-        ur: typing.Optional[TableCell] = self._get_cells_at(
-            0, self._number_of_columns - 1
-        )
-        if ur is not None:
-            ur._border_radius_top_right = border_radius
-        # lower right
-        lr: typing.Optional[TableCell] = self._get_cells_at(
-            self._number_of_rows - 1, self._number_of_columns - 1
-        )
-        if lr is not None:
-            lr._border_radius_bottom_right = border_radius
-        # lower left
-        ll: typing.Optional[TableCell] = self._get_cells_at(self._number_of_rows - 1, 0)
-        if ll is not None:
-            ll._border_radius_bottom_left = border_radius
-        # return
-        return self
-
-    def even_odd_row_colors(
-        self,
-        even_row_color: Color,
-        odd_row_color: Color,
-        header_row_color: typing.Optional[Color] = None,
-    ) -> "Table":
-        """
-        This function colors the Table with the classic "zebra stripes"
-        e.a. one color for all even rows, and a contrasting color for the odd rows.
-        :param even_row_color:      the Color to be used for even rows
-        :param odd_row_color:       the Color to be used for odd rows
-        :param header_row_color:    the Color to be used for the header row, if None is specified the even_row_color will be used
-        This function returns self.
-        """
-        if header_row_color is None:
-            header_row_color = even_row_color
-        assert header_row_color is not None
-        for r in range(0, self._number_of_rows):
-            for tc in self._get_cells_at_row(r):
-                if r == 0:
-                    tc._background_color = header_row_color
-                else:
-                    if r % 2 == 0:
-                        tc._background_color = even_row_color
-                    else:
-                        tc._background_color = odd_row_color
-        return self
+    #
+    # PRIVATE
+    #
 
     def _get_cells_at(self, row: int, column: int) -> typing.Optional[TableCell]:
         for t in self._content:
@@ -434,6 +295,10 @@ class Table(LayoutElement):
             if len([p for p in t._table_coordinates if p[0] == row]) > 0:
                 out.append(t)
         return out
+
+    #
+    # PUBLIC
+    #
 
     def add(self, layout_element: LayoutElement) -> "Table":
         """
@@ -485,4 +350,163 @@ class Table(LayoutElement):
                 )
 
         # return
+        return self
+
+    def even_odd_row_colors(
+        self,
+        even_row_color: Color,
+        odd_row_color: Color,
+        header_row_color: typing.Optional[Color] = None,
+    ) -> "Table":
+        """
+        This function colors the Table with the classic "zebra stripes"
+        e.a. one color for all even rows, and a contrasting color for the odd rows.
+        :param even_row_color:      the Color to be used for even rows
+        :param odd_row_color:       the Color to be used for odd rows
+        :param header_row_color:    the Color to be used for the header row, if None is specified the even_row_color will be used
+        This function returns self.
+        """
+        if header_row_color is None:
+            header_row_color = even_row_color
+        assert header_row_color is not None
+        for r in range(0, self._number_of_rows):
+            for tc in self._get_cells_at_row(r):
+                if r == 0:
+                    tc._background_color = header_row_color
+                else:
+                    if r % 2 == 0:
+                        tc._background_color = even_row_color
+                    else:
+                        tc._background_color = odd_row_color
+        return self
+
+    def internal_borders(self) -> "Table":
+        """
+        This method sets the border(s) on all TableCell objects in this Table
+        except for the borders that form the outside edge of the Table
+        """
+        for tc in self._content:
+            tc._border_top = True
+            tc._border_right = True
+            tc._border_bottom = True
+            tc._border_left = True
+        for c in self._get_cells_at_row(0):
+            c._border_top = False
+        for c in self._get_cells_at_row(self._number_of_rows - 1):
+            c._border_bottom = False
+        for c in self._get_cells_at_column(0):
+            c._border_left = False
+        for c in self._get_cells_at_column(self._number_of_columns - 1):
+            c._border_right = False
+        return self
+
+    def no_borders(self) -> "Table":
+        """
+        This method unsets the border(s) on all TableCell objects in this Table
+        """
+        self.set_borders_on_all_cells(False, False, False, False)
+        return self
+
+    def outer_borders(self) -> "Table":
+        """
+        This method unsets the border(s) on all TableCell objects in this Table
+        except for the borders that form the outside edge of the Table
+        """
+        self.no_borders()
+        for c in self._get_cells_at_row(0):
+            c._border_top = True
+        for c in self._get_cells_at_row(self._number_of_rows - 1):
+            c._border_bottom = True
+        for c in self._get_cells_at_column(0):
+            c._border_left = True
+        for c in self._get_cells_at_column(self._number_of_columns - 1):
+            c._border_right = True
+        return self
+
+    def outer_borders_rounded(self, border_radius: Decimal = Decimal(20)) -> "Table":
+        """
+        This function sets rounded borders on the outside of this Table
+        :param border_radius:   the desired border radius
+        :return:                self
+        """
+        # upper left
+        ul: typing.Optional[TableCell] = self._get_cells_at(0, 0)
+        if ul is not None:
+            ul._border_radius_top_left = border_radius
+        # upper right
+        ur: typing.Optional[TableCell] = self._get_cells_at(
+            0, self._number_of_columns - 1
+        )
+        if ur is not None:
+            ur._border_radius_top_right = border_radius
+        # lower right
+        lr: typing.Optional[TableCell] = self._get_cells_at(
+            self._number_of_rows - 1, self._number_of_columns - 1
+        )
+        if lr is not None:
+            lr._border_radius_bottom_right = border_radius
+        # lower left
+        ll: typing.Optional[TableCell] = self._get_cells_at(self._number_of_rows - 1, 0)
+        if ll is not None:
+            ll._border_radius_bottom_left = border_radius
+        # return
+        return self
+
+    def set_background_color_on_all_cells(self, background_color: Color) -> "Table":
+        """
+        This method sets the background Color on all TableCell objects in this Table
+        """
+        for e in self._content:
+            e._background_color = background_color
+        return self
+
+    def set_border_color_on_all_cells(self, border_color: Color) -> "Table":
+        """
+        This method sets the border color on all TableCell objects in this Table
+        """
+        for e in self._content:
+            e._border_color = border_color
+        return self
+
+    def set_border_width_on_all_cells(self, border_width: Decimal) -> "Table":
+        """
+        This method sets the border width on all TableCell objects in this Table
+        """
+        assert border_width >= 0
+        for e in self._content:
+            e._border_width = border_width
+        return self
+
+    def set_borders_on_all_cells(
+        self,
+        border_top: bool,
+        border_right: bool,
+        border_bottom: bool,
+        border_left: bool,
+    ) -> "Table":
+        """
+        This method sets the border(s) on all TableCell objects in this Table
+        """
+        for e in self._content:
+            e._border_top = border_top
+            e._border_right = border_right
+            e._border_bottom = border_bottom
+            e._border_left = border_left
+        return self
+
+    def set_padding_on_all_cells(
+        self,
+        padding_top: Decimal,
+        padding_right: Decimal,
+        padding_bottom: Decimal,
+        padding_left: Decimal,
+    ) -> "Table":
+        """
+        This method sets the padding on all TableCell objects in this Table
+        """
+        for e in self._content:
+            e._padding_top = padding_top
+            e._padding_right = padding_right
+            e._padding_bottom = padding_bottom
+            e._padding_left = padding_left
         return self

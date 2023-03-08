@@ -100,6 +100,10 @@ class CanvasStreamProcessor:
     (which is needed to handle /Form XObjects).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         page: "Page",  # type: ignore[name-defined]
@@ -170,6 +174,14 @@ class CanvasStreamProcessor:
             ]
         }
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def create_child_canvas_stream_processor(
         self, resource_dictionaries: typing.List[Dictionary]
     ) -> "CanvasStreamProcessor":
@@ -184,6 +196,12 @@ class CanvasStreamProcessor:
             self._resource_dictionaries + resource_dictionaries,
         )
 
+    def get_canvas(self) -> "Canvas":  # type: ignore[name-defined]
+        """
+        This function returns the Canvas on which this CanvasStreamProcessor is active.
+        """
+        return self._canvas
+
     def get_operator(self, name: str) -> typing.Optional["CanvasOperator"]:  # type: ignore [name-defined]
         """
         This function returns the CanvasOperator matching the given operator-name.
@@ -196,12 +214,6 @@ class CanvasStreamProcessor:
         This function returns the Page on which this CanvasStreamProcessor is active.
         """
         return self._page
-
-    def get_canvas(self) -> "Canvas":  # type: ignore[name-defined]
-        """
-        This function returns the Canvas on which this CanvasStreamProcessor is active.
-        """
-        return self._canvas
 
     def get_resource(
         self, resource_type_name: str, name: str
@@ -238,7 +250,7 @@ class CanvasStreamProcessor:
         canvas_tokenizer = HighLevelTokenizer(io_source)
 
         # process content
-        operand_stk: typing.List[AnyPDFType] = []
+        operand_stk: typing.List[typing.Optional[AnyPDFType]] = []
         instruction_number: int = 0
         time_per_operator: typing.Dict[str, float] = {}
         calls_per_operator: typing.Dict[str, int] = {}

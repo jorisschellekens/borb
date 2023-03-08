@@ -22,17 +22,9 @@ class RootDictionaryTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading the /Catalog object
     """
 
-    def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
-    ) -> bool:
-        """
-        This function returns True if the object to be converted represents a /Catalog Dictionary
-        """
-        return (
-            isinstance(object, Dict)
-            and "Type" in object
-            and object["Type"] == "Catalog"
-        )
+    #
+    # PRIVATE
+    #
 
     def _re_order_pages(self, root_dictionary: dict) -> None:
 
@@ -64,6 +56,26 @@ class RootDictionaryTransformer(Transformer):
         for p in pages_in_order:
             root_dictionary["Pages"]["Kids"].append(p)
         root_dictionary["Pages"][Name("Count")] = Decimal(len(pages_in_order))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+    ) -> bool:
+        """
+        This function returns True if the object to be converted represents a /Catalog Dictionary
+        """
+        return (
+            isinstance(object, Dict)
+            and "Type" in object
+            and object["Type"] == "Catalog"
+        )
 
     def transform(
         self,

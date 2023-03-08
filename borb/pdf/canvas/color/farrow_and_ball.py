@@ -152,16 +152,25 @@ class FarrowAndBall(HexColor):
         "black-blue": "#3d4345",
     }
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, color_name: str):
         assert color_name in FarrowAndBall.COLOR_DEFINITION
         self.color_name: str = color_name
         super(FarrowAndBall, self).__init__(FarrowAndBall.COLOR_DEFINITION[color_name])
 
-    def get_name(self) -> str:
-        """
-        This function returns the name of this `Farrow and Ball` color
-        """
-        return self.color_name
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        return FarrowAndBall(self.color_name)
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def find_nearest_farrow_and_ball_color(color: Color) -> "FarrowAndBall":
@@ -169,8 +178,8 @@ class FarrowAndBall(HexColor):
         This function find the nearest `Farrow and Ball` equivalent for a given Color
         """
         rgb_color_001: RGBColor = color.to_rgb()
-        d_min: typing.Optional[Decimal] = None
-        c_min: typing.Optional[str] = None
+        min_dist: typing.Optional[Decimal] = None
+        color_with_min_dist: typing.Optional[str] = None
         for n, c in FarrowAndBall.COLOR_DEFINITION.items():
             rgb_color_002: RGBColor = HexColor(c)
             d: Decimal = (
@@ -178,12 +187,15 @@ class FarrowAndBall(HexColor):
                 + (rgb_color_001.green - rgb_color_002.green) ** 2
                 + (rgb_color_001.blue - rgb_color_002.blue) ** 2
             )
-            if d_min is None or d < d_min:
-                d_min = d
-                c_min = n
-        assert d_min is not None
-        assert c_min is not None
-        return FarrowAndBall(c_min)
+            if min_dist is None or d < min_dist:
+                min_dist = d
+                color_with_min_dist = n
+        assert min_dist is not None
+        assert color_with_min_dist is not None
+        return FarrowAndBall(color_with_min_dist)
 
-    def __deepcopy__(self, memodict={}):
-        return FarrowAndBall(self.color_name)
+    def get_name(self) -> str:
+        """
+        This function returns the name of this `Farrow and Ball` color
+        """
+        return self.color_name

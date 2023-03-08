@@ -21,6 +21,10 @@ class DisconnectedShape(LayoutElement):
     It has convenience methods to calculate width and height, perform scaling, etc
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         lines: typing.List[
@@ -79,84 +83,9 @@ class DisconnectedShape(LayoutElement):
         self._stroke_color = stroke_color
         self._line_width = line_width
 
-    def get_width(self) -> Decimal:
-        """
-        This function returns the width of this DisjointShape
-        """
-        min_x = min([min(x[0][0], x[1][0]) for x in self._lines])
-        max_x = max([max(x[0][0], x[1][0]) for x in self._lines])
-        return max_x - min_x
-
-    def get_height(self) -> Decimal:
-        """
-        This function returns the height of this DisjointShape
-        """
-        min_y = min([min(x[0][1], x[1][1]) for x in self._lines])
-        max_y = max([max(x[0][1], x[1][1]) for x in self._lines])
-        return max_y - min_y
-
-    def rotate(self, angle_in_radians: float) -> "Shape":  # type: ignore[name-defined]
-        """
-        This function rotates the DisjointShape for a given angle
-        :param angle_in_radians:    the angle
-        :return:                    this DisjointShape
-        """
-        a: Decimal = Decimal(math.cos(angle_in_radians))
-        b: Decimal = Decimal(-math.sin(angle_in_radians))
-        c: Decimal = Decimal(math.sin(angle_in_radians))
-        d: Decimal = Decimal(math.cos(angle_in_radians))
-        self._lines = [
-            (
-                (a * l[0][0] + c * l[0][1], b * l[0][0] + d * l[0][1]),
-                (a * l[1][0] + c * l[1][1], b * l[1][0] + d * l[1][1]),
-            )
-            for l in self._lines
-        ]
-        return self
-
-    def scale_to_fit(
-        self, max_width: Decimal, max_height: Decimal
-    ) -> "DisconnectedShape":
-        """
-        This method scales this DisjointShape to fit a given max. width / height
-        """
-        w_scale = max_width / self.get_width()
-        h_scale = max_height / self.get_height()
-
-        # preserve aspect ratio
-        w_scale = min(w_scale, h_scale)
-        h_scale = w_scale
-
-        if w_scale < 1:
-            self._lines = [
-                ((x[0][0] * w_scale, x[0][1]), (x[1][0] * w_scale, x[1][1]))
-                for x in self._lines
-            ]
-        if h_scale < 1:
-            self._lines = [
-                ((x[0][0], x[0][1] * h_scale), (x[1][0], x[1][1] * h_scale))
-                for x in self._lines
-            ]
-        return self
-
-    def move_to(
-        self, lower_left_x: Decimal, lower_left_y: Decimal
-    ) -> "DisconnectedShape":
-        """
-        This method translates this DisjointShape so its lower left corner aligns with the given coordinates
-        """
-        min_x = min([min(x[0][0], x[1][0]) for x in self._lines])
-        min_y = min([min(x[0][1], x[1][1]) for x in self._lines])
-        delta_x = lower_left_x - min_x
-        delta_y = lower_left_y - min_y
-        self._lines = [
-            (
-                (x[0][0] + delta_x, x[0][1] + delta_y),
-                (x[1][0] + delta_x, x[1][1] + delta_y),
-            )
-            for x in self._lines
-        ]
-        return self
+    #
+    # PRIVATE
+    #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         return Rectangle(
@@ -195,3 +124,113 @@ class DisconnectedShape(LayoutElement):
 
         # append to page
         page.append_to_content_stream(content)
+
+    #
+    # PUBLIC
+    #
+
+    def get_height(self) -> Decimal:
+        """
+        This function returns the height of this DisjointShape
+        """
+        min_y = min([min(x[0][1], x[1][1]) for x in self._lines])
+        max_y = max([max(x[0][1], x[1][1]) for x in self._lines])
+        return max_y - min_y
+
+    def get_width(self) -> Decimal:
+        """
+        This function returns the width of this DisjointShape
+        """
+        min_x = min([min(x[0][0], x[1][0]) for x in self._lines])
+        max_x = max([max(x[0][0], x[1][0]) for x in self._lines])
+        return max_x - min_x
+
+    def move_to(
+        self, lower_left_x: Decimal, lower_left_y: Decimal
+    ) -> "DisconnectedShape":
+        """
+        This method translates this DisjointShape so its lower left corner aligns with the given coordinates
+        """
+        min_x = min([min(x[0][0], x[1][0]) for x in self._lines])
+        min_y = min([min(x[0][1], x[1][1]) for x in self._lines])
+        delta_x = lower_left_x - min_x
+        delta_y = lower_left_y - min_y
+        self._lines = [
+            (
+                (x[0][0] + delta_x, x[0][1] + delta_y),
+                (x[1][0] + delta_x, x[1][1] + delta_y),
+            )
+            for x in self._lines
+        ]
+        return self
+
+    def rotate(self, angle_in_radians: float) -> "Shape":  # type: ignore[name-defined]
+        """
+        This function rotates the DisjointShape for a given angle
+        :param angle_in_radians:    the angle
+        :return:                    this DisjointShape
+        """
+        a: Decimal = Decimal(math.cos(angle_in_radians))
+        b: Decimal = Decimal(-math.sin(angle_in_radians))
+        c: Decimal = Decimal(math.sin(angle_in_radians))
+        d: Decimal = Decimal(math.cos(angle_in_radians))
+        self._lines = [
+            (
+                (a * l[0][0] + c * l[0][1], b * l[0][0] + d * l[0][1]),
+                (a * l[1][0] + c * l[1][1], b * l[1][0] + d * l[1][1]),
+            )
+            for l in self._lines
+        ]
+        return self
+
+    def scale_down(
+        self,
+        max_width: Decimal,
+        max_height: Decimal,
+        preserve_aspect_ratio: bool = True,
+    ) -> "DisconnectedShape":
+        """
+        This method scales this Shape down to fit a given max. width / height
+        """
+        w_scale = max_width / self.get_width()
+        h_scale = max_height / self.get_height()
+        if preserve_aspect_ratio:
+            w_scale = min(w_scale, h_scale)
+            h_scale = w_scale
+        if w_scale < 1:
+            self._lines = [
+                ((x[0][0] * w_scale, x[0][1]), (x[1][0] * w_scale, x[1][1]))
+                for x in self._lines
+            ]
+        if h_scale < 1:
+            self._lines = [
+                ((x[0][0], x[0][1] * h_scale), (x[1][0], x[1][1] * h_scale))
+                for x in self._lines
+            ]
+        return self
+
+    def scale_up(
+        self,
+        max_width: Decimal,
+        max_height: Decimal,
+        preserve_aspect_ratio: bool = True,
+    ) -> "DisconnectedShape":
+        """
+        This method scales this Shape down to fit a given max. width / height
+        """
+        w_scale = max_width / self.get_width()
+        h_scale = max_height / self.get_height()
+        if preserve_aspect_ratio:
+            w_scale = min(w_scale, h_scale)
+            h_scale = w_scale
+        if w_scale > 1:
+            self._lines = [
+                ((x[0][0] * w_scale, x[0][1]), (x[1][0] * w_scale, x[1][1]))
+                for x in self._lines
+            ]
+        if h_scale > 1:
+            self._lines = [
+                ((x[0][0], x[0][1] * h_scale), (x[1][0], x[1][1] * h_scale))
+                for x in self._lines
+            ]
+        return self

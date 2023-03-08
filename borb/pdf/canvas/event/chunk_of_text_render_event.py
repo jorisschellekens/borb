@@ -21,6 +21,10 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
     This implementation of Event is triggered right after the Canvas has processed a text-rendering instruction
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, graphics_state: CanvasGraphicsState, raw_bytes: String):
         assert graphics_state.font is not None
         assert isinstance(graphics_state.font, Font)
@@ -97,17 +101,26 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         # store graphics state
         self._graphics_state = graphics_state
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def get_baseline(self) -> Rectangle:
+        """
+        This function returns the bounding box of this ChunkOfTextRenderEvent,
+        starting at the baseline (not at the descent)
+        """
+        return self._baseline_bounding_box
+
     def get_font_size(self) -> Decimal:
         """
         This function returns the font size
         """
         return self._font_size
-
-    def get_space_character_width_estimate_in_user_space(self) -> Decimal:
-        """
-        This function returns the width (in user space) of the space-character.
-        """
-        return self._space_character_width_estimate_in_user_space
 
     def get_space_character_width_estimate_in_text_space(self) -> Decimal:
         """
@@ -119,12 +132,11 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
             / self._font_size
         )
 
-    def get_baseline(self) -> Rectangle:
+    def get_space_character_width_estimate_in_user_space(self) -> Decimal:
         """
-        This function returns the bounding box of this ChunkOfTextRenderEvent,
-        starting at the baseline (not at the descent)
+        This function returns the width (in user space) of the space-character.
         """
-        return self._baseline_bounding_box
+        return self._space_character_width_estimate_in_user_space
 
     def split_on_glyphs(self) -> typing.List["ChunkOfTextRenderEvent"]:
         """
@@ -196,6 +208,18 @@ class LeftToRightComparator:
     This comparator favors left-to-right, up-to-down text reading order.
     This corresponds to the expected western language reading order.
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def cmp(obj0: ChunkOfTextRenderEvent, obj1: ChunkOfTextRenderEvent):

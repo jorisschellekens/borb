@@ -15,16 +15,12 @@ These are roughly the steps followed:
 1. Upon installing `borb`, a random user ID is generated
 2. This user ID is stored in the installation directory of `borb` (assuming the right file-permissions, etc)
 3. Whenever a read/write operation is performed, `borb` sends the following data:
-   1. **city** (e.g. "Ghent")
-   2. **country_code** (e.g. "BE")
-   3. **country_name** (e.g. "Belgium")
-   4. **event** (this tells our servers whether you are reading/writing a PDF)
-   5. **latitude** (down to the city level)
-   6. **longitude** (down to the city level)
-   7. **state** (e.g. "East-Flanders")
-   8. **sys_platform** (which operating system you are using `borb` on)
-   9. **utc_time_in_ms**
-   10. **version** (which version of `borb` you are using)  
+   1. **anonymous_user_id** (A randomly generated ID, associated with your user/installation of `borb`)
+   2. **event** (The action that triggered sending statistics, this could be `PDF::loads` or `PDF::dumps`)
+   3. **number_of_pages** (the number of pages read/written)
+   4. **sys_platform** (which operating system you are using `borb` on)
+   5. **utc_time_in_ms**
+   6. **version** (which version of `borb` you are using)
 
 ***Note:** In order to determine your location (city, country_code, country_name, latitude, longitude, state) a free online API is used*
 

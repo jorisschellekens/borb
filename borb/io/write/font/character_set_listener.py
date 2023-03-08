@@ -18,9 +18,17 @@ class CharacterSetListener(EventListener):
     are used by which Font. This is particularly useful when performing Font subsetting.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(CharacterSetListener, self).__init__()
         self._character_set_per_font: typing.Dict[Font, typing.Set[str]] = {}
+
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, ChunkOfTextRenderEvent):
@@ -32,6 +40,10 @@ class CharacterSetListener(EventListener):
                 self._character_set_per_font[f] = s
             else:
                 self._character_set_per_font[f] = set([x for x in event.get_text()])
+
+    #
+    # PUBLIC
+    #
 
     def get_character_set_per_font(self) -> typing.Dict[Font, typing.Set[str]]:
         """

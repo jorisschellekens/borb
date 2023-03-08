@@ -20,21 +20,33 @@ class CanvasOperator:
     setting the active color and so on
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, text: str, number_of_operands: int):
         self._text: str = text
         self._number_of_operands: int = number_of_operands
 
-    def get_text(self) -> str:
-        """
-        Return the str that invokes this CanvasOperator
-        """
-        return self._text
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_number_of_operands(self) -> int:
         """
         Return the number of operands for this CanvasOperator
         """
         return self._number_of_operands
+
+    def get_text(self) -> str:
+        """
+        Return the str that invokes this CanvasOperator
+        """
+        return self._text
 
     def invoke(
         self,

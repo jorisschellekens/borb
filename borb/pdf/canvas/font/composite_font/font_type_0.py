@@ -24,6 +24,10 @@ class Type0Font(Font):
     0 font is known as the root font, and its associated CIDFont is called its descendant.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(Type0Font, self).__init__()
         self[Name("Type")] = Name("Font")
@@ -32,19 +36,77 @@ class Type0Font(Font):
         self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {}
         self._byte_to_char_identifier: typing.Dict[int, int] = {}
 
-    def _read_to_unicode(self):
-        if len(self._unicode_lookup_to_character_identifier) > 0:
-            return
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
         # fmt: off
-        assert "ToUnicode" in self, "Type0Font must have a /ToUnicode entry"
-        assert ("DecodedBytes" in self["ToUnicode"]), "Type0Font must have a valid /ToUnicode entry"
+        f_out: Type0Font = super(Type0Font, self).__deepcopy__(memodict)
+        f_out[Name("Subtype")] = Name("Type0")
+        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
+        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
+        return f_out
         # fmt: on
-        cmap_bytes: bytes = self["ToUnicode"]["DecodedBytes"]
-        self._character_identifier_to_unicode_lookup = self._read_cmap(cmap_bytes)
-        self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {}
-        for k, v in self._character_identifier_to_unicode_lookup.items():
-            if v not in self._unicode_lookup_to_character_identifier:
-                self._unicode_lookup_to_character_identifier[v] = k
+
+    def _empty_copy(self) -> "Font":
+        return Type0Font()
+
+    @staticmethod
+    def _find_best_matching_predefined_cmap(cmap_name: str) -> typing.Dict[int, str]:
+        cmap_dir: Path = Path(__file__).parent / "cmaps"
+        assert cmap_dir.exists(), "cmaps dir not found."
+        predefined_cmaps: typing.List[str] = [x.name for x in cmap_dir.iterdir()]
+
+        # pseudo match
+        if cmap_name not in predefined_cmaps:
+
+            if cmap_name == "Adobe-Identity-UCS2":
+                # fmt: off
+                logger.info("Encoding Adobe-Identity-UCS2 was specified, using Adobe-Identity-H in stead")
+                cmap_name = "Adobe-Identity-H"
+                # fmt: on
+
+            if cmap_name == "Adobe-Japan1-UCS2":
+                # fmt: off
+                logger.info("Encoding Adobe-Identity-UCS2 was specified, using Adobe-Japan1-0 in stead")
+                cmap_name = "Adobe-Japan1-0"
+                # fmt: on
+
+            if cmap_name not in predefined_cmaps:
+                # fmt: off
+                logger.info("Encoding %s was specified, defaulting to Adobe-Identity-H in stead" % cmap_name)
+                cmap_name = "Adobe-Identity-H"
+                # fmt: on
+
+        # read predefined cmap
+        cmap_bytes: typing.Optional[bytes] = None
+        with open(cmap_dir / cmap_name, "rb") as cmap_file_handle:
+            cmap_bytes = cmap_file_handle.read()
+        assert cmap_bytes is not None
+
+        # use Font._read_cmap to process (and return)
+        return Font._read_cmap(cmap_bytes)
+
+    def _get_cmap_name(self) -> str:
+        # b) Obtain the registry and ordering of the character collection used by the font’s CMap
+        # (for example, Adobe and Japan1) from its CIDSystemInfo dictionary.
+        # fmt: off
+        assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
+        assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
+        assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
+        assert ("CIDSystemInfo" in self["DescendantFonts"][0]), "Type0Font must have a valid /DescendantFonts entry"
+        assert ("Registry" in self["DescendantFonts"][0]["CIDSystemInfo"]), "Type0Font must have a valid /DescendantFonts entry"
+        assert ("Ordering" in self["DescendantFonts"][0]["CIDSystemInfo"]), "Type0Font must have a valid /DescendantFonts entry"
+        # fmt: on
+        registry: str = str(self["DescendantFonts"][0]["CIDSystemInfo"]["Registry"])
+        ordering: str = str(self["DescendantFonts"][0]["CIDSystemInfo"]["Ordering"])
+
+        # c) Construct a second CMap name by concatenating the registry and ordering obtained in step (b) in
+        # the format registry–ordering–UCS2 (for example, Adobe–Japan1–UCS2).
+        cmap_name: str = "".join([registry, "-", ordering, "-", "UCS2"])
+
+        return cmap_name
 
     def _read_encoding_cmap(self):
         if len(self._byte_to_char_identifier) > 0:
@@ -60,6 +122,24 @@ class Type0Font(Font):
         self._char_to_byte_identifier = {
             v: k for k, v in self._byte_to_char_identifier.items()
         }
+
+    def _read_to_unicode(self):
+        if len(self._unicode_lookup_to_character_identifier) > 0:
+            return
+        # fmt: off
+        assert "ToUnicode" in self, "Type0Font must have a /ToUnicode entry"
+        assert ("DecodedBytes" in self["ToUnicode"]), "Type0Font must have a valid /ToUnicode entry"
+        # fmt: on
+        cmap_bytes: bytes = self["ToUnicode"]["DecodedBytes"]
+        self._character_identifier_to_unicode_lookup = self._read_cmap(cmap_bytes)
+        self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {}
+        for k, v in self._character_identifier_to_unicode_lookup.items():
+            if v not in self._unicode_lookup_to_character_identifier:
+                self._unicode_lookup_to_character_identifier[v] = k
+
+    #
+    # PUBLIC
+    #
 
     def character_identifier_to_unicode(
         self, character_identifier: int
@@ -111,61 +191,45 @@ class Type0Font(Font):
         # default
         return None
 
-    def _get_cmap_name(self) -> str:
-        # b) Obtain the registry and ordering of the character collection used by the font’s CMap
-        # (for example, Adobe and Japan1) from its CIDSystemInfo dictionary.
+    def get_ascent(self) -> bDecimal:
+        """
+        This function returns the maximum height above the baseline reached by glyphs in this font.
+        The height of glyphs for accented characters shall be excluded.
+        """
         # fmt: off
         assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
         assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
         assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
-        assert ("CIDSystemInfo" in self["DescendantFonts"][0]), "Type0Font must have a valid /DescendantFonts entry"
-        assert ("Registry" in self["DescendantFonts"][0]["CIDSystemInfo"]), "Type0Font must have a valid /DescendantFonts entry"
-        assert ("Ordering" in self["DescendantFonts"][0]["CIDSystemInfo"]), "Type0Font must have a valid /DescendantFonts entry"
         # fmt: on
-        registry: str = str(self["DescendantFonts"][0]["CIDSystemInfo"]["Registry"])
-        ordering: str = str(self["DescendantFonts"][0]["CIDSystemInfo"]["Ordering"])
+        descendant_font: Font = self["DescendantFonts"][0]
+        return descendant_font.get_ascent()
 
-        # c) Construct a second CMap name by concatenating the registry and ordering obtained in step (b) in
-        # the format registry–ordering–UCS2 (for example, Adobe–Japan1–UCS2).
-        cmap_name: str = "".join([registry, "-", ordering, "-", "UCS2"])
+    def get_descent(self) -> bDecimal:
+        """
+        This function returns the maximum depth below the baseline reached by glyphs in this font.
+        The value shall be a negative number.
+        """
+        # fmt: off
+        assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
+        assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
+        assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
+        # fmt: on
+        descendant_font: Font = self["DescendantFonts"][0]
+        return descendant_font.get_descent()
 
-        return cmap_name
-
-    @staticmethod
-    def _find_best_matching_predefined_cmap(cmap_name: str) -> typing.Dict[int, str]:
-        cmap_dir: Path = Path(__file__).parent / "cmaps"
-        assert cmap_dir.exists(), "cmaps dir not found."
-        predefined_cmaps: typing.List[str] = [x.name for x in cmap_dir.iterdir()]
-
-        # pseudo match
-        if cmap_name not in predefined_cmaps:
-
-            if cmap_name == "Adobe-Identity-UCS2":
-                # fmt: off
-                logger.info("Encoding Adobe-Identity-UCS2 was specified, using Adobe-Identity-H in stead")
-                cmap_name = "Adobe-Identity-H"
-                # fmt: on
-
-            if cmap_name == "Adobe-Japan1-UCS2":
-                # fmt: off
-                logger.info("Encoding Adobe-Identity-UCS2 was specified, using Adobe-Japan1-0 in stead")
-                cmap_name = "Adobe-Japan1-0"
-                # fmt: on
-
-            if cmap_name not in predefined_cmaps:
-                # fmt: off
-                logger.info("Encoding %s was specified, defaulting to Adobe-Identity-H in stead" % cmap_name)
-                cmap_name = "Adobe-Identity-H"
-                # fmt: on
-
-        # read predefined cmap
-        cmap_bytes: typing.Optional[bytes] = None
-        with open(cmap_dir / cmap_name, "rb") as cmap_file_handle:
-            cmap_bytes = cmap_file_handle.read()
-        assert cmap_bytes is not None
-
-        # use Font._read_cmap to process (and return)
-        return Font._read_cmap(cmap_bytes)
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
+        """
+        This function returns the width (in text space) of a given character identifier.
+        If this Font is unable to represent the glyph that corresponds to the character identifier,
+        this function returns None
+        """
+        # fmt: off
+        assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
+        assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
+        assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
+        # fmt: on
+        descendant_font: Font = self["DescendantFonts"][0]
+        return descendant_font.get_width(character_identifier)
 
     def unicode_to_character_identifier(self, unicode: str) -> typing.Optional[int]:
         """
@@ -195,55 +259,3 @@ class Type0Font(Font):
 
         # default
         return None
-
-    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
-        """
-        This function returns the width (in text space) of a given character identifier.
-        If this Font is unable to represent the glyph that corresponds to the character identifier,
-        this function returns None
-        """
-        # fmt: off
-        assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
-        assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
-        assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
-        # fmt: on
-        descendant_font: Font = self["DescendantFonts"][0]
-        return descendant_font.get_width(character_identifier)
-
-    def get_ascent(self) -> bDecimal:
-        """
-        This function returns the maximum height above the baseline reached by glyphs in this font.
-        The height of glyphs for accented characters shall be excluded.
-        """
-        # fmt: off
-        assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
-        assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
-        assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
-        # fmt: on
-        descendant_font: Font = self["DescendantFonts"][0]
-        return descendant_font.get_ascent()
-
-    def get_descent(self) -> bDecimal:
-        """
-        This function returns the maximum depth below the baseline reached by glyphs in this font.
-        The value shall be a negative number.
-        """
-        # fmt: off
-        assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
-        assert isinstance(self["DescendantFonts"], List), "Type0Font must have a valid /DescendantFonts entry"
-        assert (len(self["DescendantFonts"]) == 1), "Type0Font must have a valid /DescendantFonts entry"
-        # fmt: on
-        descendant_font: Font = self["DescendantFonts"][0]
-        return descendant_font.get_descent()
-
-    def _empty_copy(self) -> "Font":
-        return Type0Font()
-
-    def __deepcopy__(self, memodict={}):
-        # fmt: off
-        f_out: Type0Font = super(Type0Font, self).__deepcopy__(memodict)
-        f_out[Name("Subtype")] = Name("Type0")
-        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
-        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
-        return f_out
-        # fmt: on

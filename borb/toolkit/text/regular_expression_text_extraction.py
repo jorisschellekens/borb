@@ -33,6 +33,10 @@ class PDFMatch:
     as well as the location (on the page) of the match.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         re_match: re.Match,
@@ -55,19 +59,43 @@ class PDFMatch:
         self.lastgroup = self._re_match.lastgroup
         self.string = self._re_match.string
 
-    def get_font_color(self) -> Color:
-        """
-        This function returns the Color in which the text was written that matched the regular expression
-        :return:    the font_color in which the text was written
-        """
-        return self._font_color
+    #
+    # PRIVATE
+    #
 
-    def get_font_size(self) -> Decimal:
+    def __getitem__(self, item):
         """
-        This function returns the font_size in which the text was written that matched the regular expression
-        :return:    the font_size in which the text was written
+        This is identical to m.group(g). This allows easier access to an individual group from a match:
         """
-        return self._font_size
+        return self._re_match.__getitem__(item)
+
+    #
+    # PUBLIC
+    #
+
+    def end(self, __group: typing.Union[int, str] = 0) -> int:
+        """
+        Return the indices of the end of the substring matched by group;
+        group defaults to zero (meaning the whole matched substring).
+        Return -1 if group exists but did not contribute to the match.
+        For a match object m, and a group g that did contribute to the match,
+        the substring matched by group g (equivalent to m.group(g)) is m.string[m.start(g):m.end(g)]
+        """
+        return self._re_match.end(__group)
+
+    def expand(self, template: typing.AnyStr) -> typing.AnyStr:
+        """
+        Returns one or more subgroups of the match. If there is a single argument, the result is a single string;
+        if there are multiple arguments, the result is a tuple with one item per argument.
+        Without arguments, group1 defaults to zero (the whole match is returned).
+        If a groupN argument is zero, the corresponding return value is the entire matching string; if it is in the inclusive range [1..99],
+        it is the string matching the corresponding parenthesized group.
+        If a group number is negative or larger than the number of groups defined in the pattern,
+        an IndexError exception is raised. If a group is contained in a part of the pattern that did not match,
+        the corresponding result is None. If a group is contained in a part of the pattern that matched multiple times,
+        the last match is returned.
+        """
+        return self._re_match.expand(template)
 
     def get_bounding_boxes(self) -> typing.List["Rectangle"]:
         """
@@ -106,19 +134,19 @@ class PDFMatch:
             out.append(Rectangle(min_x, min_y, max_x - min_x, max_y - min_y))
         return out
 
-    def expand(self, template: typing.AnyStr) -> typing.AnyStr:
+    def get_font_color(self) -> Color:
         """
-        Returns one or more subgroups of the match. If there is a single argument, the result is a single string;
-        if there are multiple arguments, the result is a tuple with one item per argument.
-        Without arguments, group1 defaults to zero (the whole match is returned).
-        If a groupN argument is zero, the corresponding return value is the entire matching string; if it is in the inclusive range [1..99],
-        it is the string matching the corresponding parenthesized group.
-        If a group number is negative or larger than the number of groups defined in the pattern,
-        an IndexError exception is raised. If a group is contained in a part of the pattern that did not match,
-        the corresponding result is None. If a group is contained in a part of the pattern that matched multiple times,
-        the last match is returned.
+        This function returns the Color in which the text was written that matched the regular expression
+        :return:    the font_color in which the text was written
         """
-        return self._re_match.expand(template)
+        return self._font_color
+
+    def get_font_size(self) -> Decimal:
+        """
+        This function returns the font_size in which the text was written that matched the regular expression
+        :return:    the font_size in which the text was written
+        """
+        return self._font_size
 
     def group(self, __group: typing.Union[str, int] = 0) -> typing.AnyStr:
         """
@@ -129,19 +157,6 @@ class PDFMatch:
         """
         return self._re_match.group(__group)
 
-    def __getitem__(self, item):
-        """
-        This is identical to m.group(g). This allows easier access to an individual group from a match:
-        """
-        return self._re_match.__getitem__(item)
-
-    def groups(self, default: typing.AnyStr = None) -> typing.Sequence[typing.AnyStr]:
-        """
-        Return a tuple containing all the subgroups of the match, from 1 up to however many groups are in the pattern.
-        The default argument is used for groups that did not participate in the match; it defaults to None.
-        """
-        return self._re_match.groups(default)  # type: ignore[arg-type]
-
     def groupdict(
         self, default: typing.AnyStr = None
     ) -> typing.Dict[str, typing.AnyStr]:
@@ -150,6 +165,20 @@ class PDFMatch:
         The default argument is used for groups that did not participate in the match; it defaults to None.
         """
         return self._re_match.groupdict(default)  # type: ignore[arg-type]
+
+    def groups(self, default: typing.AnyStr = None) -> typing.Sequence[typing.AnyStr]:
+        """
+        Return a tuple containing all the subgroups of the match, from 1 up to however many groups are in the pattern.
+        The default argument is used for groups that did not participate in the match; it defaults to None.
+        """
+        return self._re_match.groups(default)  # type: ignore[arg-type]
+
+    def span(self, __group: typing.Union[int, str] = 0) -> typing.Tuple[int, int]:
+        """
+        For a match m, return the 2-tuple (m.start(group), m.end(group)).
+        Note that if group did not contribute to the match, this is (-1, -1). group defaults to zero, the entire match.
+        """
+        return self._re_match.span(__group)
 
     def start(self, __group: typing.Union[int, str] = 0) -> int:
         """
@@ -161,28 +190,15 @@ class PDFMatch:
         """
         return self._re_match.start(__group)
 
-    def end(self, __group: typing.Union[int, str] = 0) -> int:
-        """
-        Return the indices of the end of the substring matched by group;
-        group defaults to zero (meaning the whole matched substring).
-        Return -1 if group exists but did not contribute to the match.
-        For a match object m, and a group g that did contribute to the match,
-        the substring matched by group g (equivalent to m.group(g)) is m.string[m.start(g):m.end(g)]
-        """
-        return self._re_match.end(__group)
-
-    def span(self, __group: typing.Union[int, str] = 0) -> typing.Tuple[int, int]:
-        """
-        For a match m, return the 2-tuple (m.start(group), m.end(group)).
-        Note that if group did not contribute to the match, this is (-1, -1). group defaults to zero, the entire match.
-        """
-        return self._re_match.span(__group)
-
 
 class RegularExpressionTextExtraction(EventListener):
     """
     This implementation of EventListener allows you to search for regular expressions in a PDF Document
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(self, regular_expression):
         self._regular_expression = regular_expression
@@ -193,23 +209,9 @@ class RegularExpressionTextExtraction(EventListener):
         self._text_per_page: typing.Dict[int, str] = {}
         self._current_page: int = -1
 
-    def _event_occurred(self, event: Event) -> None:
-        if isinstance(event, ChunkOfTextRenderEvent):
-            self._render_text(event)
-        if isinstance(event, BeginPageEvent):
-            self._begin_page(event.get_page())
-        if isinstance(event, EndPageEvent):
-            self._end_page(event.get_page())
-
-    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
-
-        # init if needed
-        if self._current_page not in self._text_render_info_events_per_page:
-            self._text_render_info_events_per_page[self._current_page] = []
-
-        # append TextRenderInfo
-        for e in text_render_info.split_on_glyphs():
-            self._text_render_info_events_per_page[self._current_page].append(e)
+    #
+    # PRIVATE
+    #
 
     def _begin_page(self, page: Page):
         self._current_page += 1
@@ -309,6 +311,34 @@ class RegularExpressionTextExtraction(EventListener):
                 )
             )
 
+    def _event_occurred(self, event: Event) -> None:
+        if isinstance(event, ChunkOfTextRenderEvent):
+            self._render_text(event)
+        if isinstance(event, BeginPageEvent):
+            self._begin_page(event.get_page())
+        if isinstance(event, EndPageEvent):
+            self._end_page(event.get_page())
+
+    def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
+
+        # init if needed
+        if self._current_page not in self._text_render_info_events_per_page:
+            self._text_render_info_events_per_page[self._current_page] = []
+
+        # append TextRenderInfo
+        for e in text_render_info.split_on_glyphs():
+            self._text_render_info_events_per_page[self._current_page].append(e)
+
+    #
+    # PUBLIC
+    #
+
+    def get_matches(self) -> typing.Dict[int, typing.List[PDFMatch]]:
+        """
+        This function returns a typing.List[PDFMatch] matching the regular expression
+        """
+        return self._matches_per_page
+
     @staticmethod
     def get_matches_for_pdf(
         pattern: str, pdf: Document
@@ -341,9 +371,3 @@ class RegularExpressionTextExtraction(EventListener):
             out[page_nr] = cse.get_matches().get(0, [])
         # return
         return out
-
-    def get_matches(self) -> typing.Dict[int, typing.List[PDFMatch]]:
-        """
-        This function returns a typing.List[PDFMatch] matching the regular expression
-        """
-        return self._matches_per_page

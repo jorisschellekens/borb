@@ -26,11 +26,16 @@ class Trie:
                 [len(v) for k, v in self._children.items()]
             )
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._root: typing.Optional[Trie.TrieNode] = None
 
-    def __len__(self) -> int:
-        return 0 if self._root is None else len(self._root)
+    #
+    # PRIVATE
+    #
 
     def __getitem__(self, item) -> typing.Optional[typing.Any]:
         n: typing.Optional[Trie.TrieNode] = self._root
@@ -43,6 +48,9 @@ class Trie:
                 return None
         assert n is not None, "unexpected error while performing __getitem__ on Trie"
         return n._value
+
+    def __len__(self) -> int:
+        return 0 if self._root is None else len(self._root)
 
     def __setitem__(self, key, value):
         n: typing.Optional[Trie.TrieNode] = self._root
@@ -57,3 +65,7 @@ class Trie:
         assert n is not None, "unexpected error while performing __setitem__ on Trie"
         n._value = value
         return self
+
+    #
+    # PUBLIC
+    #

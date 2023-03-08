@@ -18,6 +18,10 @@ class OrderedList(List):
     This implementation of LayoutElement represents an ordered (that is to say numbered) list
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         background_color: typing.Optional[Color] = None,
@@ -66,6 +70,10 @@ class OrderedList(List):
             vertical_alignment=vertical_alignment,
         )
 
+    #
+    # PRIVATE
+    #
+
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
@@ -74,3 +82,7 @@ class OrderedList(List):
             font_size=self.get_font_size(),
             font_color=X11Color("Black"),
         )
+
+    #
+    # PUBLIC
+    #

@@ -21,6 +21,10 @@ class ProgressBar(LayoutElement):
     stroke_color. This implementation of ProgressBar is roughly size 12 font wide.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         percentage: float = 0.0,
@@ -77,6 +81,10 @@ class ProgressBar(LayoutElement):
         self._stroke_color: Color = stroke_color
         self._fill_color: Color = fill_color
 
+    #
+    # PRIVATE
+    #
+
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         h: Decimal = min(available_space.get_height(), Decimal(12 * 1.2))
         return Rectangle(
@@ -129,6 +137,10 @@ class ProgressBar(LayoutElement):
         # append to page
         page.append_to_content_stream(content)
 
+    #
+    # PUBLIC
+    #
+
 
 class ProgressSquare(ProgressBar):
     """
@@ -136,6 +148,14 @@ class ProgressSquare(ProgressBar):
     It displays a rectangular shape of fill_color, overlaid with a (smaller) rectangular shape of
     stroke_color. This implementation of ProgressBar is roughly size 12 font tall AND wide.
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         h: Decimal = min(available_space.get_height(), Decimal(12 * 1.2))
@@ -145,3 +165,7 @@ class ProgressSquare(ProgressBar):
             h,
             h,
         )
+
+    #
+    # PUBLIC
+    #

@@ -26,6 +26,18 @@ class Lipsum:
     and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def generate_agatha_christie_text(number_of_sentences: int = 5) -> str:
         """
@@ -149,25 +161,6 @@ class Lipsum:
         )
 
     @staticmethod
-    def generate_mary_shelley_text(number_of_sentences: int = 5) -> str:
-        """
-        This function produces Mary Shelley styled lorem ipsum text
-        :param number_of_sentences:         the number of sentences to be produced
-        :return:                            lorem ipsum text
-        """
-        assert (
-            number_of_sentences >= 1
-        ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
-        tg: TextGenerator = TextGenerator().load(resources_dir / "mm_mary_shelley.json")
-        return "".join(
-            [
-                tg.generate(random.randint(7, 32)) + " "
-                for _ in range(0, number_of_sentences)
-            ]
-        )
-
-    @staticmethod
     def generate_lipsum_text(number_of_sentences: int = 5) -> str:
         """
         This function produces lorem ipsum text
@@ -180,6 +173,25 @@ class Lipsum:
         ), "number_of_sentences must be a positive non-zero quantity"
         resources_dir: Path = Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(resources_dir / "mm_lipsum.json")
+        return "".join(
+            [
+                tg.generate(random.randint(7, 32)) + " "
+                for _ in range(0, number_of_sentences)
+            ]
+        )
+
+    @staticmethod
+    def generate_mary_shelley_text(number_of_sentences: int = 5) -> str:
+        """
+        This function produces Mary Shelley styled lorem ipsum text
+        :param number_of_sentences:         the number of sentences to be produced
+        :return:                            lorem ipsum text
+        """
+        assert (
+            number_of_sentences >= 1
+        ), "number_of_sentences must be a positive non-zero quantity"
+        resources_dir: Path = Path(__file__).parent / "resources"
+        tg: TextGenerator = TextGenerator().load(resources_dir / "mm_mary_shelley.json")
         return "".join(
             [
                 tg.generate(random.randint(7, 32)) + " "

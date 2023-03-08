@@ -13,8 +13,20 @@ class BeginPageEvent(Event):
     This implementation of Event is triggered right before the Canvas is being processed.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, page: Page):
         self._page: Page = page
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_page(self) -> Page:
         """

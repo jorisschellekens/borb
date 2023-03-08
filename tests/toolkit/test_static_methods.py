@@ -17,7 +17,10 @@ from borb.toolkit import (
     SimpleParagraphExtraction,
     TextRankKeywordExtraction,
     TFIDFKeywordExtraction,
-    RegularExpressionTextExtraction, PDFToSVG, PDFToJPG, PDFToMP3,
+    RegularExpressionTextExtraction,
+    PDFToSVG,
+    PDFToJPG,
+    PDFToMP3,
 )
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
 
@@ -115,12 +118,15 @@ class TestStaticMethods(unittest.TestCase):
 
     def test_convert_to_svg(self):
         import xml.etree.ElementTree as ET
+
         l: PDFToSVG = PDFToSVG()
         doc: typing.Optional[Document] = None
         with open(self.output_dir / "output.pdf", "rb") as fh:
             doc = PDF.loads(fh, [l])
         assert doc is not None
-        assert ET.tostring(l.convert_to_svg()[0]) == ET.tostring(PDFToSVG.convert_pdf_to_svg(doc)[0])
+        assert ET.tostring(l.convert_to_svg()[0]) == ET.tostring(
+            PDFToSVG.convert_pdf_to_svg(doc)[0]
+        )
 
     def test_get_matches(self):
         l: RegularExpressionTextExtraction = RegularExpressionTextExtraction("Poirot")

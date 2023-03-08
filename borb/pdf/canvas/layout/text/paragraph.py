@@ -108,136 +108,6 @@ class Paragraph(LineOfText):
         self._previous_attr_hash_for_layout: typing.Optional[int] = None
         self._previous_lines_of_text: typing.Optional[typing.List[LineOfText]] = None
 
-    def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
-        # asserts
-        assert self._font_size is not None
-
-        # attempt to split into words (preserve space if needed)
-        words: typing.List[str] = [""]
-        tokens_to_split_on: typing.List[str] = [" ", "\t", "\n"]
-
-        tokens_to_preserve: typing.List[str] = []
-        if self._respect_newlines_in_text:
-            tokens_to_preserve.append("\n")
-        if self._respect_spaces_in_text:
-            tokens_to_preserve.append(" ")
-            tokens_to_preserve.append("\t")
-
-        for c in self._text:
-            if c in tokens_to_split_on:
-                # we have a token we split on, and preserve
-                # add it to the list of words
-                if c in tokens_to_preserve:
-                    words.append(c)
-                    words.append("")
-                else:
-                    # we have a token we split on, but don't preserve
-                    # such as whitespace, with self.respect_spaces_in_text set to False
-                    if words[-1] != "":
-                        words.append("")
-            else:
-                # build the word that was already being built
-                words[-1] += c
-        words = [x for x in words if len(x) > 0]
-
-        # build lines using words
-        lines_of_text = []
-        for i, w in enumerate(words):
-
-            # split on \n
-            if w == "\n" and self._respect_newlines_in_text:
-                lines_of_text.append("")
-                continue
-
-            # build line of text to check if it fits the bounding box
-            potential_text = lines_of_text[-1] if len(lines_of_text) > 0 else ""
-            if len(potential_text) != 0 and not self._respect_spaces_in_text:
-                potential_text += " "
-            potential_text += w
-
-            # check the remaining space in the box
-            # checking with 0 is not a great idea due to rounding errors
-            # so, as a pre-emptive measure, we round the number to 2 digits
-            # fmt: off
-            potential_width = GlyphLine.from_str(potential_text, self._font, self._font_size).get_width_in_text_space()
-            remaining_space_in_box: Decimal = round(bounding_box.width - potential_width, 2)
-            # fmt: on
-
-            # IF there is space left over, we add the word to the lines of text being built
-            if remaining_space_in_box >= Decimal(0):
-                if len(lines_of_text) == 0:
-                    lines_of_text.append(w)
-                else:
-                    if len(lines_of_text[-1]) > 0 and not self._respect_spaces_in_text:
-                        lines_of_text[-1] += " "
-                    lines_of_text[-1] += w
-
-            # (ELSE) there is no more room in the box for this word,
-            # BUT perhaps we can hyphenate the word
-            else:
-                # if no hyphenation class is provided, we can't hyphenate
-                if self._hyphenation is None:
-                    lines_of_text.append(w)
-                    continue
-
-                # if we have to respect the spacing in the text, we don't hyphenate
-                if self._respect_spaces_in_text:
-                    lines_of_text.append(w)
-                    continue
-
-                # calculate potential hyphenation breaks
-                # if the word can not be broken into parts, we can't hyphenate
-                hyphenated_word_parts = self._hyphenation.hyphenate(w).split(chr(173))
-                if len(hyphenated_word_parts) == 1:
-                    lines_of_text.append(w)
-                    continue
-
-                potential_text = lines_of_text[-1] if len(lines_of_text) > 0 else ""
-                if len(potential_text) != 0 and not self._respect_spaces_in_text:
-                    potential_text += " "
-
-                # check where the text can be split, in order to fit in the bounding box
-                hyphenation_split_index: int = 0
-                for i in range(1, len(hyphenated_word_parts)):
-                    # fmt: off
-                    potential_text_after_hyphenation = potential_text + "".join([x for x in hyphenated_word_parts[0:i]]) + "-"
-                    potential_width = GlyphLine.from_str(potential_text_after_hyphenation, self._font, self._font_size).get_width_in_text_space()
-                    remaining_space_in_box = round(bounding_box.width - potential_width, 2)
-                    # fmt: on
-                    if remaining_space_in_box > Decimal(0):
-                        hyphenation_split_index = i
-                    else:
-                        break
-
-                # no sensible split was found
-                if hyphenation_split_index == 0:
-                    lines_of_text.append(w)
-                    continue
-
-                # fmt: off
-                # break the text according to the hyphenation
-                # IF there is a previous line of text, we can append it to that line
-                if len(lines_of_text) > 0:
-                    if len(lines_of_text[-1]) > 0 and not self._respect_spaces_in_text:
-                        lines_of_text[-1] += " "
-                    lines_of_text[-1] += "".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-"
-                # ELSE the hyphenated word is added (in parts) to lines_of_text
-                else:
-                    lines_of_text.append("".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-")
-                lines_of_text.append("".join([x for x in hyphenated_word_parts[hyphenation_split_index:]]))
-                # fmt: on
-
-        # last-minute cleanup
-        while len(lines_of_text) > 0 and lines_of_text[-1] == "":
-            lines_of_text.pop(len(lines_of_text) - 1)
-
-        # return
-        return lines_of_text if len(lines_of_text) > 0 else [""]
-
-    #
-    #  RENDERING LOGIC
-    #
-
     def _calculate_attribute_hash_for_content_box(self) -> int:
         attr: typing.List[typing.Any] = [
             self._text,
@@ -379,6 +249,7 @@ class Paragraph(LineOfText):
             page.append_to_content_stream("\n/Standard <</MCID %d>>\nBDC\n" % next_mcid)
 
         # call paint on all LineOfText objects
+        assert self._previous_lines_of_text is not None
         for i, l in enumerate(self._previous_lines_of_text):
             l.paint(
                 page,
@@ -395,3 +266,129 @@ class Paragraph(LineOfText):
         # if the Paragraph needs to be tagged, insert (CLOSING) tagging operators
         if self._needs_to_be_tagged(page):
             page.append_to_content_stream("\nEMC\n")
+
+    def _split_text(self, bounding_box: Rectangle) -> typing.List[str]:
+        # asserts
+        assert self._font_size is not None
+
+        # attempt to split into words (preserve space if needed)
+        words: typing.List[str] = [""]
+        tokens_to_split_on: typing.List[str] = [" ", "\t", "\n"]
+
+        tokens_to_preserve: typing.List[str] = []
+        if self._respect_newlines_in_text:
+            tokens_to_preserve.append("\n")
+        if self._respect_spaces_in_text:
+            tokens_to_preserve.append(" ")
+            tokens_to_preserve.append("\t")
+
+        for c in self._text:
+            if c in tokens_to_split_on:
+                # we have a token we split on, and preserve
+                # add it to the list of words
+                if c in tokens_to_preserve:
+                    words.append(c)
+                    words.append("")
+                else:
+                    # we have a token we split on, but don't preserve
+                    # such as whitespace, with self.respect_spaces_in_text set to False
+                    if words[-1] != "":
+                        words.append("")
+            else:
+                # build the word that was already being built
+                words[-1] += c
+        words = [x for x in words if len(x) > 0]
+
+        # build lines using words
+        lines_of_text = []
+        for i, w in enumerate(words):
+
+            # split on \n
+            if w == "\n" and self._respect_newlines_in_text:
+                lines_of_text.append("")
+                continue
+
+            # build line of text to check if it fits the bounding box
+            potential_text = lines_of_text[-1] if len(lines_of_text) > 0 else ""
+            if len(potential_text) != 0 and not self._respect_spaces_in_text:
+                potential_text += " "
+            potential_text += w
+
+            # check the remaining space in the box
+            # checking with 0 is not a great idea due to rounding errors
+            # so, as a pre-emptive measure, we round the number to 2 digits
+            # fmt: off
+            potential_width = GlyphLine.from_str(potential_text, self._font, self._font_size).get_width_in_text_space()
+            remaining_space_in_box: Decimal = round(bounding_box.width - potential_width, 2)
+            # fmt: on
+
+            # IF there is space left over, we add the word to the lines of text being built
+            if remaining_space_in_box >= Decimal(0):
+                if len(lines_of_text) == 0:
+                    lines_of_text.append(w)
+                else:
+                    if len(lines_of_text[-1]) > 0 and not self._respect_spaces_in_text:
+                        lines_of_text[-1] += " "
+                    lines_of_text[-1] += w
+
+            # (ELSE) there is no more room in the box for this word,
+            # BUT perhaps we can hyphenate the word
+            else:
+                # if no hyphenation class is provided, we can't hyphenate
+                if self._hyphenation is None:
+                    lines_of_text.append(w)
+                    continue
+
+                # if we have to respect the spacing in the text, we don't hyphenate
+                if self._respect_spaces_in_text:
+                    lines_of_text.append(w)
+                    continue
+
+                # calculate potential hyphenation breaks
+                # if the word can not be broken into parts, we can't hyphenate
+                hyphenated_word_parts = self._hyphenation.hyphenate(w).split(chr(173))
+                if len(hyphenated_word_parts) == 1:
+                    lines_of_text.append(w)
+                    continue
+
+                potential_text = lines_of_text[-1] if len(lines_of_text) > 0 else ""
+                if len(potential_text) != 0 and not self._respect_spaces_in_text:
+                    potential_text += " "
+
+                # check where the text can be split, in order to fit in the bounding box
+                hyphenation_split_index: int = 0
+                for i in range(1, len(hyphenated_word_parts)):
+                    # fmt: off
+                    potential_text_after_hyphenation = potential_text + "".join([x for x in hyphenated_word_parts[0:i]]) + "-"
+                    potential_width = GlyphLine.from_str(potential_text_after_hyphenation, self._font, self._font_size).get_width_in_text_space()
+                    remaining_space_in_box = round(bounding_box.width - potential_width, 2)
+                    # fmt: on
+                    if remaining_space_in_box > Decimal(0):
+                        hyphenation_split_index = i
+                    else:
+                        break
+
+                # no sensible split was found
+                if hyphenation_split_index == 0:
+                    lines_of_text.append(w)
+                    continue
+
+                # fmt: off
+                # break the text according to the hyphenation
+                # IF there is a previous line of text, we can append it to that line
+                if len(lines_of_text) > 0:
+                    if len(lines_of_text[-1]) > 0 and not self._respect_spaces_in_text:
+                        lines_of_text[-1] += " "
+                    lines_of_text[-1] += "".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-"
+                # ELSE the hyphenated word is added (in parts) to lines_of_text
+                else:
+                    lines_of_text.append("".join([x for x in hyphenated_word_parts[0:hyphenation_split_index]]) + "-")
+                lines_of_text.append("".join([x for x in hyphenated_word_parts[hyphenation_split_index:]]))
+                # fmt: on
+
+        # last-minute cleanup
+        while len(lines_of_text) > 0 and lines_of_text[-1] == "":
+            lines_of_text.pop(len(lines_of_text) - 1)
+
+        # return
+        return lines_of_text if len(lines_of_text) > 0 else [""]

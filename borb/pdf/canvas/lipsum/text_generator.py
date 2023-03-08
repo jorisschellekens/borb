@@ -19,6 +19,10 @@ class TextGenerator:
     This class represents a simple Markov model to generate text.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._token_ids: typing.Dict[str, int] = {}
         self._rev_token_ids: typing.Dict[int, str] = {}
@@ -26,6 +30,10 @@ class TextGenerator:
         self._markov_model: typing.Dict[
             typing.Tuple[int, int], typing.Dict[int, int]
         ] = {}
+
+    #
+    # PRIVATE
+    #
 
     def __len__(self):
         return len(self._token_ids)
@@ -107,58 +115,9 @@ class TextGenerator:
         # return
         return self
 
-    def store(self, file_name: str) -> None:
-        """
-        This function stores this TextGenerator in a (zipped) JSON format
-        :param file_name:   the location where to store the (zipped) JSON
-        :return:            None
-        """
-        with open(file_name, "wb") as json_file_handle:
-            json_file_handle.write(
-                zlib.compress(
-                    bytes(
-                        json.dumps(
-                            {
-                                "token_ids": self._token_ids,
-                                "rev_token_ids": self._rev_token_ids,
-                                "token_frequency": self._token_frequency,
-                                "markov_model": {
-                                    str(k[0]) + "|" + str(k[1]): v
-                                    for k, v in self._markov_model.items()
-                                },
-                            }
-                        ),
-                        encoding="utf8",
-                    ),
-                    level=9,
-                )
-            )
-
-    def load(self, json_file: Path) -> "TextGenerator":
-        """
-        This function loads a TextGenerator from a (zipped) JSON file
-        :param json_file:   the location where to load the (zipped) JSON
-        :return:            self
-        """
-        with open(json_file, "rb") as json_file_handle:
-            json_obj = json.loads(zlib.decompress(json_file_handle.read()))
-        (
-            self._token_ids,
-            self._rev_token_ids,
-            self._token_frequency,
-            self._markov_model,
-        ) = (
-            {k: int(v) for k, v in json_obj["token_ids"].items()},
-            {int(k): v for k, v in json_obj["rev_token_ids"].items()},
-            {int(k): int(v) for k, v in json_obj["token_frequency"].items()},
-            {
-                (int(k.split("|")[0]), int(k.split("|")[1])): {
-                    int(a): int(b) for a, b in v.items()
-                }
-                for k, v in json_obj["markov_model"].items()
-            },
-        )
-        return self
+    #
+    # PUBLIC
+    #
 
     def generate(self, min_sentence_length: int = 32) -> str:
         """
@@ -201,7 +160,7 @@ class TextGenerator:
                 continue
 
             # select next element
-            nexts: typing.Dict[int, float] = self._markov_model[mm_key]
+            nexts: typing.Dict[int, int] = self._markov_model[mm_key]
             ops: typing.List[int] = []
             for k, v in nexts.items():
                 for _ in range(0, v):
@@ -222,29 +181,55 @@ class TextGenerator:
         # return
         return "".join([x + " " for x in sentence_being_built])
 
+    def load(self, json_file: Path) -> "TextGenerator":
+        """
+        This function loads a TextGenerator from a (zipped) JSON file
+        :param json_file:   the location where to load the (zipped) JSON
+        :return:            self
+        """
+        with open(json_file, "rb") as json_file_handle:
+            json_obj = json.loads(zlib.decompress(json_file_handle.read()))
+        (
+            self._token_ids,
+            self._rev_token_ids,
+            self._token_frequency,
+            self._markov_model,
+        ) = (
+            {k: int(v) for k, v in json_obj["token_ids"].items()},
+            {int(k): v for k, v in json_obj["rev_token_ids"].items()},
+            {int(k): int(v) for k, v in json_obj["token_frequency"].items()},
+            {
+                (int(k.split("|")[0]), int(k.split("|")[1])): {
+                    int(a): int(b) for a, b in v.items()
+                }
+                for k, v in json_obj["markov_model"].items()
+            },
+        )
+        return self
 
-def main():
-    """
-    This method trains a TextGenerator for a couple of corpus texts
-    :return:    None
-    """
-    models_to_train: typing.Dict[str, str] = {
-        "https://raw.githubusercontent.com/PhelypeOleinik/lipsum/master/lipsum-la.txt": "mm_lipsum.json",
-        "https://www.gutenberg.org/files/84/84-0.txt": "mm_mary_shelley.json",
-        "https://www.gutenberg.org/files/1342/1342-0.txt": "mm_jane_austen.json",
-        "https://www.gutenberg.org/cache/epub/61262/pg61262.txt": "mm_agatha_christie.json",
-        "https://www.gutenberg.org/cache/epub/768/pg768.txt": "mm_emily_bronte.json",
-        "https://www.gutenberg.org/files/2852/2852-0.txt": "mm_arthur_conan_doyle.json",
-        "https://www.gutenberg.org/cache/epub/67098/pg67098.txt": "mm_alan_alexander_milne.json",
-        "https://www.gutenberg.org/files/11/11-0.txt": "mm_lewis_carroll.json",
-    }
-
-    for k, v in models_to_train.items():
-        tg: TextGenerator = TextGenerator()
-        tg._train_using_project_gutenberg(k)
-        tg.store(v)
-        print("%s has %d words" % (v, len(tg)))
-
-
-if __name__ == "__main__":
-    main()
+    def store(self, file_name: str) -> None:
+        """
+        This function stores this TextGenerator in a (zipped) JSON format
+        :param file_name:   the location where to store the (zipped) JSON
+        :return:            None
+        """
+        with open(file_name, "wb") as json_file_handle:
+            json_file_handle.write(
+                zlib.compress(
+                    bytes(
+                        json.dumps(
+                            {
+                                "token_ids": self._token_ids,
+                                "rev_token_ids": self._rev_token_ids,
+                                "token_frequency": self._token_frequency,
+                                "markov_model": {
+                                    str(k[0]) + "|" + str(k[1]): v
+                                    for k, v in self._markov_model.items()
+                                },
+                            }
+                        ),
+                        encoding="utf8",
+                    ),
+                    level=9,
+                )
+            )

@@ -16,6 +16,18 @@ class RectangularMazeFactory:
     from one point in the maze to any other point is called a perfect maze.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def rectangular_maze(grid_width: int = 10, grid_height: int = 10):
         """

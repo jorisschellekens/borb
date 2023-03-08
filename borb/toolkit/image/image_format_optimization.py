@@ -9,7 +9,8 @@ import typing
 
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.io.read.types import Name, add_base_methods
+from borb.io.read.pdf_object import PDFObject
+from borb.io.read.types import Name
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.event_listener import Event, EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
@@ -22,9 +23,17 @@ class ImageFormatOptimization(EventListener):
     to fit their actual dimensions (ensuring they are not bigger than they need to be)
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(ImageFormatOptimization, self).__init__()
         self._current_page: typing.Optional[Page] = None
+
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: "Event") -> None:
         if isinstance(event, BeginPageEvent):
@@ -60,6 +69,10 @@ class ImageFormatOptimization(EventListener):
         # resize
         if (w0 * h0) < (w1 * h1):
             resized_image: PILImage = source_image.resize((w0, h0))  # type: ignore[attr-defined, valid-type]
-            add_base_methods(resized_image)
+            PDFObject.add_pdf_object_methods(resized_image)
             self._current_page["Resources"]["XObject"][resource_name] = resized_image
             resized_image.set_parent(self._current_page["Resources"]["XObject"][resource_name])  # type: ignore[attr-defined]
+
+    #
+    # PUBLIC
+    #

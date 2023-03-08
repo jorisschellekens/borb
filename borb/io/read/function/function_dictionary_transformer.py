@@ -20,8 +20,17 @@ class FunctionDictionaryTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading a Function Dictionary
     """
 
-    def __init__(self):
-        super(FunctionDictionaryTransformer, self).__init__()
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
@@ -85,7 +94,7 @@ class FunctionDictionaryTransformer(Transformer):
                     transformed_object[k] = v
 
         # linkage
-        transformed_object.set_parent(parent_object)  # type: ignore [attr-defined]
+        transformed_object.set_parent(parent_object)
 
         # return
         return transformed_object

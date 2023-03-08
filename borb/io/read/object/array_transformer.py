@@ -18,6 +18,18 @@ class ArrayTransformer(Transformer):
     This implementation of BaseTransformer converts a PDFArray to a List
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -40,8 +52,8 @@ class ArrayTransformer(Transformer):
         # create root object
         # fmt: off
         assert isinstance(object_to_transform, List), "object_to_transform must be of type List"
+        object_to_transform.set_parent(parent_object)
         # fmt: on
-        object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
         # transform child(ren)
         for i in range(0, len(object_to_transform)):

@@ -29,9 +29,33 @@ class Type3Font(Type1Font):
     appropriate glyph names for the glyphs.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(Type3Font, self).__init__()
         self[Name("Subtype")] = Name("Type3")
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        # fmt: off
+        f_out: Font = super(Type3Font, self).__deepcopy__(memodict)
+        f_out[Name("Subtype")] = Name("Type3")
+        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
+        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
+        return f_out
+        # fmt: on
+
+    def _empty_copy(self) -> "Font":
+        return Type3Font()
+
+    #
+    # PUBLIC
+    #
 
     def get_ascent(self) -> bDecimal:
         """
@@ -56,15 +80,3 @@ class Type3Font(Type1Font):
             "Type3Font does not have an `Descent` entry in its `FontDescriptor` dictionary."
         )
         return bDecimal(0)  # TODO
-
-    def _empty_copy(self) -> "Font":
-        return Type3Font()
-
-    def __deepcopy__(self, memodict={}):
-        # fmt: off
-        f_out: Font = super(Type3Font, self).__deepcopy__(memodict)
-        f_out[Name("Subtype")] = Name("Type3")
-        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
-        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
-        return f_out
-        # fmt: on

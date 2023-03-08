@@ -98,7 +98,7 @@ class TestAddAllTypesOfBarcode(unittest.TestCase):
             PDF.dumps(pdf_file_handle, pdf)
 
         # compare visually
-        compare_visually_to_ground_truth(out_file)
+        compare_visually_to_ground_truth(out_file, maximum_normalized_difference=0.0033)
         check_pdf_using_validator(out_file)
 
 

@@ -14,8 +14,6 @@ import typing
 
 import requests
 from borb.license.anonymous_user_id import AnonymousUserID
-
-from borb.license.geo_information import GeoInformation
 from borb.license.version import Version
 
 
@@ -29,6 +27,59 @@ class UsageStatistics:
     _ENDPOINT_URL: str = (
         "https://cztmincfqq4fobtt6c7ect7gli0isbwx.lambda-url.us-east-1.on.aws/"
     )
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    @staticmethod
+    def _send_usage_statistics_for_event(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
+
+        # get anonymous_user_id
+        anonymous_user_id: typing.Optional[str] = AnonymousUserID.get()
+        if anonymous_user_id is None or len(anonymous_user_id) < 16:
+            return
+
+        # get number_of_pages
+        number_of_pages: int = 0
+        try:
+            if document is not None:
+                number_of_pages = int(
+                    document.get_document_info().get_number_of_pages()
+                )
+        except:
+            pass
+
+        # set payload
+        json_payload: typing.Dict[str, typing.Any] = {
+            "anonymous_user_id": anonymous_user_id,
+            "event": event,
+            "number_of_pages": number_of_pages,
+            "sys_platform": sys.platform,
+            "utc_time_in_ms": int(datetime.now(timezone.utc).timestamp() * 1000),
+            "version": Version.get_version(),
+        }
+
+        # set headers
+        headers = {"Content-type": "application/json", "Accept": "text/plain"}
+
+        # perform request
+        try:
+            requests.post(
+                UsageStatistics._ENDPOINT_URL,
+                headers=headers,
+                data=json.dumps(json_payload),
+            )
+        except:
+            pass
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def disable() -> None:
@@ -47,9 +98,7 @@ class UsageStatistics:
         AnonymousUserID.enable()
 
     @staticmethod
-    def send_usage_statistics(
-        event: str, document: typing.Optional["Document"] = None
-    ) -> None:
+    def send_usage_statistics(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
         """
         This method sends the usage statistics to the borb license server
         :param event:       the event that is to be registered
@@ -66,49 +115,3 @@ class UsageStatistics:
             ).start()
         except:
             pass
-
-    @staticmethod
-    def _send_usage_statistics_for_event(
-        event: str, document: typing.Optional["Document"] = None
-    ) -> None:
-
-        # get anonymous_user_id
-        anonymous_user_id: str = AnonymousUserID.get()
-        if anonymous_user_id is None or len(anonymous_user_id) < 16:
-            return
-
-        # get number_of_pages
-        number_of_pages: int = 0
-        try:
-            if document is not None:
-                number_of_pages = int(
-                    document.get_document_info().get_number_of_pages()
-                )
-        except:
-            pass
-
-        # set payload
-        json_payload: typing.Dict[str, typing.Any] = {
-            "anonymous_user_id": anonymous_user_id,
-            "city": GeoInformation.get_city(),
-            "country_code": GeoInformation.get_country_code(),
-            "country_name": GeoInformation.get_country_name(),
-            "event": event,
-            "latitude": GeoInformation.get_latitude(),
-            "longitude": GeoInformation.get_longitude(),
-            "number_of_pages": number_of_pages,
-            "state": GeoInformation.get_state(),
-            "sys_platform": sys.platform,
-            "utc_time_in_ms": int(datetime.now(timezone.utc).timestamp() * 1000),
-            "version": Version.get_version(),
-        }
-
-        # set headers
-        headers = {"Content-type": "application/json", "Accept": "text/plain"}
-
-        # perform request
-        requests.post(
-            UsageStatistics._ENDPOINT_URL,
-            headers=headers,
-            data=json.dumps(json_payload),
-        )

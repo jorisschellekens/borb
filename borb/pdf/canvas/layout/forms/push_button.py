@@ -8,6 +8,7 @@ import typing
 import zlib
 from decimal import Decimal
 
+from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, Name, List, String, Stream, Boolean
 from borb.pdf.canvas.color.color import HexColor, Color
@@ -24,6 +25,10 @@ class PushButton(FormField):
     This implementation of FormField represents a push button.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,
@@ -35,7 +40,7 @@ class PushButton(FormField):
         border_top: bool = True,
         border_width: Decimal = Decimal(1),
         field_name: typing.Optional[str] = None,
-        font_size: Decimal = Decimal(12),
+        font_size: typing.Optional[Decimal] = Decimal(12),
         font_color: Color = HexColor("000000"),
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
@@ -46,43 +51,60 @@ class PushButton(FormField):
         padding_left: Decimal = Decimal(6),
         padding_right: Decimal = Decimal(6),
         padding_top: Decimal = Decimal(2),
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
-        super(PushButton, self).__init__()
+        super(PushButton, self).__init__(
+            background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=Decimal(0),
+            border_radius_bottom_right=Decimal(0),
+            border_radius_top_left=Decimal(0),
+            border_radius_top_right=Decimal(0),
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            font_size=font_size,
+            horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
+            vertical_alignment=vertical_alignment,
+        )
         assert len(text) > 0
-        self._text = text
-        self._background_color = background_color
-        self._border_bottom = border_bottom
-        self._border_color = border_color
-        self._border_left = border_left
-        self._border_right = border_right
-        self._border_top = border_top
-        assert border_width >= 0
-        self._border_width = border_width
         self._field_name: typing.Optional[str] = field_name
-        assert font_size > 0
-        self._font_size = font_size
-        self._font_color = font_color
-        self._horizontal_alignment = horizontal_alignment
-        assert margin_bottom is not None and margin_bottom >= 0
-        self._margin_bottom = margin_bottom
-        assert margin_left is not None and margin_left >= 0
-        self._margin_left = margin_left
-        assert margin_right is not None and margin_right >= 0
-        self._margin_right = margin_right
-        assert margin_top is not None and margin_top >= 0
-        self._margin_top = margin_top
-        assert padding_bottom >= 0
-        self._padding_bottom = padding_bottom
-        assert padding_left >= 0
-        self._padding_left = padding_left
-        assert padding_right >= 0
-        self._padding_right = padding_right
-        assert padding_top >= 0
-        self._padding_top = padding_top
+        self._text = text
+        self._font_color: Color = font_color
         self._widget_dictionary: typing.Optional[Dictionary] = None
+
+    #
+    # PRIVATE
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        assert self._font_size is not None
+        line_of_text: LineOfText = LineOfText(
+            self._text,
+            background_color=self._background_color,
+            font_size=self._font_size,
+            font_color=self._font_color,
+        )
+        return line_of_text.get_layout_box(available_space)
 
     def _init_widget_dictionary(self, page: Page) -> None:
         if self._widget_dictionary is not None:
+            return
+
+        root: typing.Optional[PDFObject] = page.get_root()
+        assert root is not None
+        assert isinstance(root, Dictionary)
+        if "XRef" not in root:
             return
 
         # init page and font resources
@@ -92,16 +114,17 @@ class PushButton(FormField):
         )
 
         # widget resource dictionary
-        widget_resources: Dictionary = Dictionary().set_is_unique(True)  # type: ignore [attr-defined]
+        widget_resources: Dictionary = Dictionary()
+        widget_resources.set_is_unique(True)
         widget_resources[Name("Font")] = page["Resources"]["Font"]
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
+        catalog: Dictionary = root["XRef"]["Trailer"]["Root"]
 
         # widget dictionary
         # fmt: off
-        self._widget_dictionary = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
-        self._widget_dictionary.set_is_unique(True) # type: ignore [attr-defined]
+        self._widget_dictionary = Dictionary()
+        self._widget_dictionary.set_is_unique(True)
         self._widget_dictionary[Name("AA")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")] = Dictionary()
         self._widget_dictionary[Name("AA")][Name("D")][Name("Type")] = Name("Action")
@@ -110,7 +133,8 @@ class PushButton(FormField):
 
         # create normal appearance
         # fmt: off
-        self._widget_dictionary[Name("AP")] = Dictionary().set_is_unique(True)     # type: ignore [attr-defined]
+        self._widget_dictionary[Name("AP")] = Dictionary()
+        self._widget_dictionary[Name("AP")].set_is_unique(True)
         self._widget_dictionary[Name("AP")][Name("N")] = Stream()
         self._widget_dictionary[Name("AP")][Name("N")][Name("Type")] = Name("XObject")
         self._widget_dictionary[Name("AP")][Name("N")][Name("Subtype")] = Name("Form")
@@ -167,16 +191,6 @@ class PushButton(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        assert self._font_size is not None
-        line_of_text: LineOfText = LineOfText(
-            self._text,
-            background_color=self._background_color,
-            font_size=self._font_size,
-            font_color=self._font_color,
-        )
-        return line_of_text.get_layout_box(available_space)
-
     def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
 
         # init self._widget_dictionary
@@ -209,11 +223,19 @@ class PushButton(FormField):
             self._widget_dictionary["Rect"][3] = bDecimal(cbox.get_y() + cbox.get_height())         # ur_y
         # fmt: on
 
+    #
+    # PUBLIC
+    #
+
 
 class JavaScriptPushButton(PushButton):
     """
     This implementation of FormField represents a push button that triggers JavaScript.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -227,7 +249,7 @@ class JavaScriptPushButton(PushButton):
         border_top: bool = True,
         border_width: Decimal = Decimal(1),
         field_name: typing.Optional[str] = None,
-        font_size: Decimal = Decimal(12),
+        font_size: typing.Optional[Decimal] = Decimal(12),
         font_color: Color = HexColor("000000"),
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: Decimal = Decimal(0),
@@ -238,6 +260,7 @@ class JavaScriptPushButton(PushButton):
         padding_left: Decimal = Decimal(6),
         padding_right: Decimal = Decimal(6),
         padding_top: Decimal = Decimal(2),
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(JavaScriptPushButton, self).__init__(
             text=text,
@@ -260,8 +283,13 @@ class JavaScriptPushButton(PushButton):
             padding_left=padding_left,
             padding_right=padding_right,
             padding_top=padding_top,
+            vertical_alignment=vertical_alignment,
         )
         self._javascript: str = javascript
+
+    #
+    # PRIVATE
+    #
 
     def _init_widget_dictionary(self, page: Page) -> None:
 
@@ -270,7 +298,8 @@ class JavaScriptPushButton(PushButton):
 
         # build JavaScript stream object
         # fmt: off
-        javascript_stream = Stream().set_is_unique(True)     # type: ignore [attr-defined]
+        javascript_stream = Stream()
+        javascript_stream.set_is_unique(True)     # type: ignore [attr-defined]
         javascript_stream[Name("Type")] = Name("JavaScript")
         javascript_stream[Name("DecodedBytes")] = bytes(self._javascript, "latin1")
         javascript_stream[Name("Bytes")] = zlib.compress(javascript_stream[Name("DecodedBytes")], 9)
@@ -284,3 +313,7 @@ class JavaScriptPushButton(PushButton):
             self._widget_dictionary[Name("AA")][Name("D")][Name("S")] = Name("JavaScript")
             self._widget_dictionary[Name("AA")][Name("D")][Name("JS")] = javascript_stream
         # fmt: on
+
+    #
+    # PUBLIC
+    #

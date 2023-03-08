@@ -20,6 +20,18 @@ class RunLengthDecode:
     frequent long runs of a single byte value).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def decode(bytes_in: bytes) -> bytes:
         """

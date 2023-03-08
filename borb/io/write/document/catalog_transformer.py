@@ -30,19 +30,15 @@ class CatalogTransformer(DictionaryTransformer):
     This implementation of WriteBaseTransformer is responsible for writing /Catalog Dictionary objects
     """
 
-    def can_be_transformed(self, any: AnyPDFType):
-        """
-        This function returns True if the object to be transformed is a /Catalog Dictionary
-        """
-        return (
-            isinstance(any, Dictionary) and "Type" in any and any["Type"] == "Catalog"
-        )
-
     #
-    # /OutputIntents
+    # CONSTRUCTOR
     #
 
-    def _build_rgb_outputintent_dictionary(self, root_dictionary: dict) -> None:
+    #
+    # PRIVATE
+    #
+
+    def _build_rgb_outputintent_dictionary(self, root_dictionary: Dictionary) -> None:
 
         # TODO check if exists already
 
@@ -61,7 +57,7 @@ class CatalogTransformer(DictionaryTransformer):
         dest_output_profile[Name("N")] = bDecimal(3)
 
         # create RGB OutputIntent
-        rgb_outputintent: dict = Dictionary()
+        rgb_outputintent: Dictionary = Dictionary()
         rgb_outputintent[Name("Type")] = Name("OutputIntent")
         rgb_outputintent[Name("S")] = Name("GTS_PDFA1")
         rgb_outputintent[Name("OutputCondition")] = String("")
@@ -69,16 +65,28 @@ class CatalogTransformer(DictionaryTransformer):
         rgb_outputintent[Name("Info")] = String("sRGB IEC61966-2.1")
         rgb_outputintent[Name("RegistryName")] = String("http://www.color.org")
         rgb_outputintent[Name("DestOutputProfile")] = dest_output_profile
-        dest_output_profile.set_parent(rgb_outputintent)  # type: ignore [attr-defined]
+        dest_output_profile.set_parent(rgb_outputintent)
 
         # creatte OutputIntents
         outputintents_array = bList()
         outputintents_array.append(rgb_outputintent)
-        rgb_outputintent.set_parent(outputintents_array)  # type: ignore [attr-defined]
+        rgb_outputintent.set_parent(outputintents_array)
 
         # add to root_dictionary
         root_dictionary[Name("OutputIntents")] = outputintents_array
-        outputintents_array.set_parent(root_dictionary)  # type: ignore [attr-defined]
+        outputintents_array.set_parent(root_dictionary)
+
+    #
+    # PUBLIC
+    #
+
+    def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be transformed is a /Catalog Dictionary
+        """
+        return (
+            isinstance(any, Dictionary) and "Type" in any and any["Type"] == "Catalog"
+        )
 
     def transform(
         self,
@@ -89,9 +97,10 @@ class CatalogTransformer(DictionaryTransformer):
         This method writes a /Catalog Dictionary to a byte stream
         """
 
+        assert isinstance(object_to_transform, Dictionary)
+
         # /OutputIntents
         # fmt: off
-
         needs_outputintents: bool = (context is not None
                                      and isinstance(context.root_object, Document)
                                      and context.root_object.get_document_info().get_conformance_level_upon_create() is not None)

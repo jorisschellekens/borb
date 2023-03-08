@@ -18,6 +18,18 @@ class WidgetAnnotation(Annotation):
     be merged into a single dictionary containing entries that pertain to both a field and an annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(WidgetAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

@@ -19,6 +19,18 @@ class StreamTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading Stream objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -38,13 +50,14 @@ class StreamTransformer(Transformer):
         This function reads a Stream from a byte stream
         """
         assert isinstance(object_to_transform, Stream)
-        object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
+        object_to_transform.set_parent(parent_object)
 
         # resolve references in stream dictionary
         # fmt: off
         assert context is not None, "context must be defined to read Stream objects"
         assert (context.tokenizer is not None), "context.tokenizer must be defined to read Stream objects"
         # fmt: on
+
         xref = parent_object.get_root().get("XRef")
         for k, v in object_to_transform.items():
             if isinstance(v, Reference):
@@ -64,7 +77,7 @@ class StreamTransformer(Transformer):
                     object_to_transform[k] = v
 
         # linkage
-        object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
+        object_to_transform.set_parent(parent_object)
 
         # return
         return object_to_transform

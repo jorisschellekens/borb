@@ -20,6 +20,10 @@ class FixedColumnWidthTable(Table):
     This class represents a Table with columns of fixed width
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         number_of_rows: int,
@@ -76,6 +80,29 @@ class FixedColumnWidthTable(Table):
             column_widths = [Decimal(1) for _ in range(0, number_of_columns)]
         assert len(column_widths) == number_of_columns
         self._column_widths: typing.List[Decimal] = column_widths
+
+    #
+    # PRIVATE
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+
+        # fill table
+        number_of_cells: int = self._number_of_rows * self._number_of_columns
+        empty_cells: int = number_of_cells - sum(
+            [(x._row_span * x._col_span) for x in self._content]
+        )
+        for _ in range(0, empty_cells):
+            self.add(Paragraph(" ", respect_spaces_in_text=True))
+
+        # return
+        min_y: Decimal = self._get_grid_coordinates(available_space)[-1][-1][1]
+        return Rectangle(
+            available_space.get_x(),
+            min_y,
+            available_space.get_width(),
+            available_space.get_y() + available_space.get_height() - min_y,
+        )
 
     def _get_grid_coordinates(
         self, available_space: Rectangle
@@ -135,25 +162,6 @@ class FixedColumnWidthTable(Table):
         # return
         return [[(x, y) for y in grid_y_to_page_y] for x in grid_x_to_page_x]
 
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-
-        # fill table
-        number_of_cells: int = self._number_of_rows * self._number_of_columns
-        empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
-        )
-        for _ in range(0, empty_cells):
-            self.add(Paragraph(" ", respect_spaces_in_text=True))
-
-        # return
-        min_y: Decimal = self._get_grid_coordinates(available_space)[-1][-1][1]
-        return Rectangle(
-            available_space.get_x(),
-            min_y,
-            available_space.get_width(),
-            available_space.get_y() + available_space.get_height() - min_y,
-        )
-
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
 
         # fill table
@@ -180,3 +188,7 @@ class FixedColumnWidthTable(Table):
             )
             e._set_layout_box(cbox)
             e.paint(page, cbox)
+
+    #
+    # PUBLIC
+    #

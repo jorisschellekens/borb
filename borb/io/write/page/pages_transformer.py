@@ -22,6 +22,18 @@ class PagesTransformer(DictionaryTransformer):
     for writing Dictionary objects of /Type /Pages
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a /Pages Dictionary
@@ -42,14 +54,13 @@ class PagesTransformer(DictionaryTransformer):
         # fmt: on
 
         # /Kids can be written immediately
-        object_to_transform[Name("Kids")].set_is_inline(True)  # type: ignore [attr-defined]
+        object_to_transform[Name("Kids")].set_is_inline(True)
 
         # queue writing of /Page objects
         queue: typing.List[AnyPDFType] = []
         for i, k in enumerate(object_to_transform["Kids"]):
             queue.append(k)
-            ref: Reference = self.get_reference(k, context)
-            object_to_transform["Kids"][i] = ref
+            object_to_transform["Kids"][i] = self.get_reference(k, context)
 
         # delegate to super
         super(PagesTransformer, self).transform(object_to_transform, context)

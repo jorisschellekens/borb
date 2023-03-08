@@ -18,6 +18,10 @@ class HorizontalRule(LayoutElement):
     This implementation of LayoutElement represents an horizontal line across the page
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         line_width: Decimal = Decimal(1),
@@ -33,6 +37,10 @@ class HorizontalRule(LayoutElement):
         # fmt: on
         self._line_width: Decimal = line_width
         self._line_color: Color = line_color
+
+    #
+    # PRIVATE
+    #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         return Rectangle(
@@ -66,3 +74,7 @@ class HorizontalRule(LayoutElement):
 
         # modify content stream
         page.append_to_content_stream(content)
+
+    #
+    # PUBLIC
+    #

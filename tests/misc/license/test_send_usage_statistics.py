@@ -6,7 +6,6 @@ from borb.pdf import Document, Page, SingleColumnLayout, PageLayout, Paragraph, 
 
 
 class TestSendUsageStatistics(unittest.TestCase):
-
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         # find output dir
@@ -19,7 +18,6 @@ class TestSendUsageStatistics(unittest.TestCase):
             self.output_dir.mkdir()
 
     def test_send_usage_statistics(self):
-
         def _get_user_id() -> str:
             return "developer-user-id-jsc"
 

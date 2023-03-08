@@ -24,6 +24,10 @@ class ReadTransformerState:
     - etc
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         source: Optional[Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO]] = None,
@@ -38,6 +42,14 @@ class ReadTransformerState:
         self.password: typing.Optional[str] = password
         self.security_handler: typing.Optional[typing.Any] = None
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
 
 class Transformer:
     """
@@ -45,49 +57,19 @@ class Transformer:
     Add children to handle specific cases (transforming dictionaries, arrays, xref, etc)
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._children = []
         self._parent = None
-        self._level = 0
-        self._invocation_count = 0
+        self._level: int = 0
+        self._invocation_count: int = 0
 
-    def get_children(self) -> typing.List["Transformer"]:
-        """
-        This functions returns all child ReadBaseTransformers of this ReadBaseTransformer
-        """
-        return self._children
-
-    def add_child_transformer(self, child_transformer: "Transformer") -> "Transformer":  # type: ignore[name-defined]
-        """
-        Add a child ReadBaseTransformer to this ReadBaseTransformer.
-        Child transformers can be used to encapsulate specific object-creation/transformation logic.
-        e.g. creating XREF, converting arrays, dictionaries, etc
-        :param handler: the ReadBaseTransformer implementation to be added
-        :type handler:  Transformer
-        """
-        self._children.append(child_transformer)
-        child_transformer._parent = self
-        return self
-
-    def get_root_transformer(self) -> "Transformer":  # type: ignore[name-defined]
-        """
-        This function returns the top-level ReadBaseTransformer.
-        This is useful when delegating calls from inside a ReadBaseTransformer to another.
-        e.g. Transforming a dictionary by reading its delimiters and then transforming each key/value in turn by
-        calling top-level ReadBaseTransformer
-        """
-        p = self
-        while p._parent is not None:
-            p = p._parent
-        return p
-
-    def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
-    ) -> bool:
-        """
-        This function returns True if the object to be transformed can be transformed by this ReadBaseTransformer
-        """
-        return False
+    #
+    # PRIVATE
+    #
 
     def _is_recursive_object(self, object_to_transform) -> bool:
         try:
@@ -101,6 +83,48 @@ class Transformer:
         except:
             pass
         return False
+
+    #
+    # PUBLIC
+    #
+
+    def add_child_transformer(self, child_transformer: "Transformer") -> "Transformer":  # type: ignore[name-defined]
+        """
+        Add a child ReadBaseTransformer to this ReadBaseTransformer.
+        Child transformers can be used to encapsulate specific object-creation/transformation logic.
+        e.g. creating XREF, converting arrays, dictionaries, etc
+        :param handler: the ReadBaseTransformer implementation to be added
+        :type handler:  Transformer
+        """
+        self._children.append(child_transformer)
+        child_transformer._parent = self
+        return self
+
+    def can_be_transformed(
+        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+    ) -> bool:
+        """
+        This function returns True if the object to be transformed can be transformed by this ReadBaseTransformer
+        """
+        return False
+
+    def get_children(self) -> typing.List["Transformer"]:
+        """
+        This functions returns all child ReadBaseTransformers of this ReadBaseTransformer
+        """
+        return self._children
+
+    def get_root_transformer(self) -> "Transformer":  # type: ignore[name-defined]
+        """
+        This function returns the top-level ReadBaseTransformer.
+        This is useful when delegating calls from inside a ReadBaseTransformer to another.
+        e.g. Transforming a dictionary by reading its delimiters and then transforming each key/value in turn by
+        calling top-level ReadBaseTransformer
+        """
+        p = self
+        while p._parent is not None:
+            p = p._parent
+        return p
 
     def transform(
         self,

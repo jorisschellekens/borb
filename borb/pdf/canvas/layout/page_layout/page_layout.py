@@ -20,14 +20,20 @@ class PageLayout:
     and what the remaining free space is.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, page: Page):
         self._page = page
 
-    def get_page(self) -> Page:
-        """
-        This function returns the Page for which this PageLayout is active.
-        """
-        return self._page
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def add(self, layout_element: LayoutElement) -> "PageLayout":
         """
@@ -35,3 +41,9 @@ class PageLayout:
         The specific implementation of `PageLayout` should decide where the `LayoutElement` will be placed.
         """
         return self
+
+    def get_page(self) -> Page:
+        """
+        This function returns the Page for which this PageLayout is active.
+        """
+        return self._page

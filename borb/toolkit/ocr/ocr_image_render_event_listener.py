@@ -36,6 +36,10 @@ class OCREvent(Event):
     This implementation of Event represents content that was recognized during the OCR process.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,
@@ -54,11 +58,25 @@ class OCREvent(Event):
         self._page: Page = page
         self._confidence: Decimal = confidence
 
-    def get_text(self) -> str:
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def get_bounding_box(self) -> Rectangle:
         """
-        This function returns the text of this OCREvent
+        This function returns the bounding box of this OCREvent
         """
-        return self._text
+        return self._bounding_box
+
+    def get_confidence(self) -> Decimal:
+        """
+        This function returns the OCR confidence of this OCREvent
+        """
+        return self._confidence
 
     def get_font(self) -> Font:
         """
@@ -67,23 +85,17 @@ class OCREvent(Event):
         """
         return self._font
 
-    def get_font_size(self) -> Decimal:
-        """
-        This function returns the font_size of this OCREvent
-        """
-        return self._font_size
-
     def get_font_color(self) -> Color:
         """
         This function returns the font_color of this OCREvent
         """
         return self._font_color
 
-    def get_bounding_box(self) -> Rectangle:
+    def get_font_size(self) -> Decimal:
         """
-        This function returns the bounding box of this OCREvent
+        This function returns the font_size of this OCREvent
         """
-        return self._bounding_box
+        return self._font_size
 
     def get_page(self) -> Page:
         """
@@ -91,11 +103,11 @@ class OCREvent(Event):
         """
         return self._page
 
-    def get_confidence(self) -> Decimal:
+    def get_text(self) -> str:
         """
-        This function returns the OCR confidence of this OCREvent
+        This function returns the text of this OCREvent
         """
-        return self._confidence
+        return self._text
 
 
 class OCRImageRenderEventListener(EventListener):
@@ -104,6 +116,10 @@ class OCRImageRenderEventListener(EventListener):
     If text has been found, OCRImageRenderEventListener will add optional content to ensure
     the PDF can now be searched for the recognized text.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self, tesseract_data_dir: Path, minimal_confidence: Decimal = Decimal(0.75)
@@ -117,6 +133,10 @@ class OCRImageRenderEventListener(EventListener):
         self._minimum_confidence: Decimal = minimal_confidence
         self._helvetica: Font = StandardType1Font("Helvetica")
         self._page: typing.Optional[Page] = None
+
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: Event) -> None:
         if isinstance(event, BeginPageEvent):
@@ -196,51 +216,6 @@ class OCRImageRenderEventListener(EventListener):
                         confidence,
                     )
                 )
-
-    def _get_text_width(self, font_size: Decimal, text: str):
-        w: Decimal = Decimal(0)
-        ZERO: Decimal = Decimal(0)
-        for c in text:
-            try:
-                cid: typing.Optional[
-                    int
-                ] = self._helvetica.unicode_to_character_identifier(c)
-                assert cid is not None
-                w += (
-                    (self._helvetica.get_width(cid) or ZERO)
-                    * font_size
-                    * Decimal(0.001)
-                )
-            except:
-                pass
-        return w
-
-    def _get_font_size(self, text: str, bounding_box_width: Decimal) -> Decimal:
-        """
-        This function attempts to find the font_size that would best fit the given text in the given width
-        :param text:                the text to fit
-        :param bounding_box_width:  the bounding box (width) to fit
-        """
-        estimated_font_size_lowerbound: Decimal = Decimal(1)
-        estimated_font_size_upperbound: Decimal = Decimal(1024)
-        iteration_count: int = 0
-        while (
-            abs(estimated_font_size_upperbound - estimated_font_size_lowerbound) > 1
-            and iteration_count < 11
-        ):
-            midpoint: Decimal = (
-                estimated_font_size_upperbound + estimated_font_size_lowerbound
-            ) / Decimal(2)
-            midpoint = Decimal(int(midpoint))
-            estimated_width: Decimal = self._get_text_width(midpoint, text)
-            iteration_count += 1
-            if estimated_width > bounding_box_width:
-                estimated_font_size_upperbound = midpoint
-                continue
-            if estimated_width < bounding_box_width:
-                estimated_font_size_lowerbound = midpoint
-                continue
-        return estimated_font_size_lowerbound
 
     def _get_font_color(
         self,
@@ -345,5 +320,54 @@ class OCRImageRenderEventListener(EventListener):
         # return
         return min_delta_color or HexColor("000000")
 
+    def _get_font_size(self, text: str, bounding_box_width: Decimal) -> Decimal:
+        """
+        This function attempts to find the font_size that would best fit the given text in the given width
+        :param text:                the text to fit
+        :param bounding_box_width:  the bounding box (width) to fit
+        """
+        estimated_font_size_lowerbound: Decimal = Decimal(1)
+        estimated_font_size_upperbound: Decimal = Decimal(1024)
+        iteration_count: int = 0
+        while (
+            abs(estimated_font_size_upperbound - estimated_font_size_lowerbound) > 1
+            and iteration_count < 11
+        ):
+            midpoint: Decimal = (
+                estimated_font_size_upperbound + estimated_font_size_lowerbound
+            ) / Decimal(2)
+            midpoint = Decimal(int(midpoint))
+            estimated_width: Decimal = self._get_text_width(midpoint, text)
+            iteration_count += 1
+            if estimated_width > bounding_box_width:
+                estimated_font_size_upperbound = midpoint
+                continue
+            if estimated_width < bounding_box_width:
+                estimated_font_size_lowerbound = midpoint
+                continue
+        return estimated_font_size_lowerbound
+
+    def _get_text_width(self, font_size: Decimal, text: str):
+        w: Decimal = Decimal(0)
+        ZERO: Decimal = Decimal(0)
+        for c in text:
+            try:
+                cid: typing.Optional[
+                    int
+                ] = self._helvetica.unicode_to_character_identifier(c)
+                assert cid is not None
+                w += (
+                    (self._helvetica.get_width(cid) or ZERO)
+                    * font_size
+                    * Decimal(0.001)
+                )
+            except:
+                pass
+        return w
+
     def _ocr_text_occurred(self, event: OCREvent):
         pass
+
+    #
+    # PUBLIC
+    #

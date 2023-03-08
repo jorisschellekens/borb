@@ -19,13 +19,17 @@ class FontExtraction(EventListener):
     extract font-related information from a Document
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._fonts_per_page: typing.Dict[int, typing.List[Font]] = {}
         self._current_page: int = -1
 
-    def _event_occurred(self, event: Event) -> None:
-        if isinstance(event, BeginPageEvent):
-            self._begin_page(event)
+    #
+    # PRIVATE
+    #
 
     def _begin_page(self, event: BeginPageEvent):
 
@@ -49,11 +53,13 @@ class FontExtraction(EventListener):
         for _, f in page["Resources"]["Font"].items():
             self._fonts_per_page[self._current_page].append(f)
 
-    def get_fonts(self) -> typing.Dict[int, List[Font]]:
-        """
-        This function returns all fonts used on a given PDF
-        """
-        return self._fonts_per_page
+    def _event_occurred(self, event: Event) -> None:
+        if isinstance(event, BeginPageEvent):
+            self._begin_page(event)
+
+    #
+    # PUBLIC
+    #
 
     def get_font_names(self) -> typing.Dict[int, typing.List[str]]:
         """
@@ -68,3 +74,9 @@ class FontExtraction(EventListener):
                 if font_name is not None:
                     out[k].append(font_name)
         return out
+
+    def get_fonts(self) -> typing.Dict[int, List[Font]]:
+        """
+        This function returns all fonts used on a given PDF
+        """
+        return self._fonts_per_page

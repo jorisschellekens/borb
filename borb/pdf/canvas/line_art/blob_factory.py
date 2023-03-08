@@ -15,20 +15,13 @@ class BlobFactory:
     This class provides static convenience methods for generating a stylistic blob
     """
 
-    @staticmethod
-    def _sum_points(
-        P1: typing.Tuple[Decimal, Decimal], P2: typing.Tuple[Decimal, Decimal]
-    ) -> typing.Tuple[Decimal, Decimal]:
-        x1, y1 = P1
-        x2, y2 = P2
-        return x1 + x2, y1 + y2
+    #
+    # CONSTRUCTOR
+    #
 
-    @staticmethod
-    def _multiply_point(
-        multiplier: Decimal, P: typing.Tuple[Decimal, Decimal]
-    ) -> typing.Tuple[Decimal, Decimal]:
-        x, y = P
-        return Decimal(x * multiplier), Decimal(y * multiplier)
+    #
+    # PRIVATE
+    #
 
     @staticmethod
     def _check_if_object_is_polygon(
@@ -38,6 +31,13 @@ class BlobFactory:
             return True
         else:
             return False
+
+    @staticmethod
+    def _multiply_point(
+        multiplier: Decimal, P: typing.Tuple[Decimal, Decimal]
+    ) -> typing.Tuple[Decimal, Decimal]:
+        x, y = P
+        return Decimal(x * multiplier), Decimal(y * multiplier)
 
     @staticmethod
     def _q_point(P1, P2):
@@ -52,6 +52,42 @@ class BlobFactory:
         summand2 = BlobFactory._multiply_point(Decimal(0.75), P2)
         R = BlobFactory._sum_points(summand1, summand2)
         return R
+
+    @staticmethod
+    def _sum_points(
+        P1: typing.Tuple[Decimal, Decimal], P2: typing.Tuple[Decimal, Decimal]
+    ) -> typing.Tuple[Decimal, Decimal]:
+        x1, y1 = P1
+        x2, y2 = P2
+        return x1 + x2, y1 + y2
+
+    #
+    # PUBLIC
+    #
+
+    @staticmethod
+    def blob(number_of_edges: int) -> typing.List[typing.Tuple[Decimal, Decimal]]:
+        """
+        This function returns a smoothed n-sided blob shape
+        """
+
+        # generate regular polygon
+        points = [
+            (Decimal(cos(radians(x))), Decimal(sin(radians(x))))
+            for x in range(0, 360, int(360 / number_of_edges))
+        ]
+
+        # randomly distort polygon
+        random_radius = [Decimal(random.randint(1, 10)) for _ in range(0, len(points))]
+        points = [(p[0] * r, p[1] * r) for p, r in zip(points, random_radius)]
+
+        # smoothing
+        while len(points) < 1024:
+            points = BlobFactory.smooth_closed_polygon(points, 2)
+        points.append(points[0])
+
+        # return
+        return points
 
     @staticmethod
     def smooth_closed_polygon(
@@ -78,30 +114,6 @@ class BlobFactory:
 
             # get everything ready for next iteration
             points = points_next_iter
-
-        # return
-        return points
-
-    @staticmethod
-    def blob(number_of_edges: int) -> typing.List[typing.Tuple[Decimal, Decimal]]:
-        """
-        This function returns a smoothed n-sided blob shape
-        """
-
-        # generate regular polygon
-        points = [
-            (Decimal(cos(radians(x))), Decimal(sin(radians(x))))
-            for x in range(0, 360, int(360 / number_of_edges))
-        ]
-
-        # randomly distort polygon
-        random_radius = [Decimal(random.randint(1, 10)) for _ in range(0, len(points))]
-        points = [(p[0] * r, p[1] * r) for p, r in zip(points, random_radius)]
-
-        # smoothing
-        while len(points) < 1024:
-            points = BlobFactory.smooth_closed_polygon(points, 2)
-        points.append(points[0])
 
         # return
         return points

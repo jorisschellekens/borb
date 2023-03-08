@@ -25,6 +25,10 @@ class MultiColumnLayout(PageLayout):
     Once a column is full, the next column is automatically selected, although the next column can be manually selected.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         page: Page,
@@ -73,10 +77,18 @@ class MultiColumnLayout(PageLayout):
         self._previous_element: typing.Optional[LayoutElement] = None
         self._current_column_index = Decimal(0)
 
+    #
+    # PRIVATE
+    #
+
     def _get_margin_between_elements(
-        self, previous_element: LayoutElement, element: LayoutElement
+        self,
+        previous_element: typing.Optional[LayoutElement],
+        element: typing.Optional[LayoutElement],
     ) -> Decimal:
         if previous_element is None:
+            return Decimal(0)
+        if element is None:
             return Decimal(0)
 
         # text elements
@@ -95,38 +107,9 @@ class MultiColumnLayout(PageLayout):
         # default
         return Decimal(5)
 
-    def switch_to_next_column(self) -> "PageLayout":
-        """
-        This function forces this PageLayout to move to the next column on the Page
-        """
-        self._current_column_index += Decimal(1)
-        if self._current_column_index == self._number_of_columns:
-            return self.switch_to_next_page()
-        assert self._page_height
-        self._previous_element = None
-        return self
-
-    def switch_to_next_page(self) -> "PageLayout":
-        """
-        This function forces this PageLayout to move to the next Page
-        """
-        self._current_column_index = Decimal(0)
-        assert self._page_height
-        self._previous_element = None
-
-        # find Document
-        doc = self.get_page().get_root()  # type: ignore[attr-defined]
-        assert isinstance(doc, Document)
-
-        # create new Page
-        assert self._page_width
-        assert self._page_height
-        new_page = Page(width=self._page_width, height=self._page_height)
-        self._page = new_page
-        doc.add_page(new_page)
-
-        # return
-        return self
+    #
+    # PUBLIC
+    #
 
     def add(self, layout_element: LayoutElement) -> "PageLayout":
         """
@@ -141,9 +124,11 @@ class MultiColumnLayout(PageLayout):
         previous_element_margin_bottom: Decimal = Decimal(0)
         previous_element_y = self._page_height - self._vertical_margin_top
         if self._previous_element is not None:
-            previous_element_y = (
-                self._previous_element.get_previous_layout_box().get_y()
-            )
+            prev_element_prev_layout_box: typing.Optional[
+                Rectangle
+            ] = self._previous_element.get_previous_layout_box()
+            assert prev_element_prev_layout_box is not None
+            previous_element_y = prev_element_prev_layout_box.get_y()
             previous_element_margin_bottom = self._previous_element.get_margin_bottom()
 
         # calculate next available rectangle
@@ -204,6 +189,39 @@ class MultiColumnLayout(PageLayout):
         # return
         return self
 
+    def switch_to_next_column(self) -> "PageLayout":
+        """
+        This function forces this PageLayout to move to the next column on the Page
+        """
+        self._current_column_index += Decimal(1)
+        if self._current_column_index == self._number_of_columns:
+            return self.switch_to_next_page()
+        assert self._page_height
+        self._previous_element = None
+        return self
+
+    def switch_to_next_page(self) -> "PageLayout":
+        """
+        This function forces this PageLayout to move to the next Page
+        """
+        self._current_column_index = Decimal(0)
+        assert self._page_height
+        self._previous_element = None
+
+        # find Document
+        doc = self.get_page().get_root()  # type: ignore[attr-defined]
+        assert isinstance(doc, Document)
+
+        # create new Page
+        assert self._page_width
+        assert self._page_height
+        new_page = Page(width=self._page_width, height=self._page_height)
+        self._page = new_page
+        doc.add_page(new_page)
+
+        # return
+        return self
+
 
 class SingleColumnLayout(MultiColumnLayout):
     """
@@ -211,6 +229,10 @@ class SingleColumnLayout(MultiColumnLayout):
     and lays out the content on the Page as if there were was a single column to flow text, images, etc into.
     Once this column is full, the next page is automatically created.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -225,3 +247,11 @@ class SingleColumnLayout(MultiColumnLayout):
             vertical_margin=vertical_margin,
         )
         self._inter_column_margin = Decimal(0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

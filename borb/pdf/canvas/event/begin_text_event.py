@@ -12,4 +12,16 @@ class BeginTextEvent(Event):
     This implementation of Event is triggered when an BT instruction is being processed.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     pass

@@ -23,33 +23,23 @@ class Document(Dictionary):
     This class represents a PDF document
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, conformance_level: typing.Optional[ConformanceLevel] = None):
         super(Document, self).__init__()
         self._conformance_level_upon_create: typing.Optional[
             ConformanceLevel
         ] = conformance_level
 
-    def get_document_info(self) -> DocumentInfo:
-        """
-        This function returns the DocumentInfo of this Document
-        """
-        return DocumentInfo(self)
-
-    def get_xmp_document_info(self) -> XMPDocumentInfo:
-        """
-        This function returns the XMPDocumentInfo of this Document
-        """
-        return XMPDocumentInfo(self)
-
     #
-    # adding/removing pages
+    # PRIVATE
     #
 
-    def get_page(self, page_number: int) -> Page:
-        """
-        This function returns a Page (at given page_number) within this Document
-        """
-        return self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"][page_number]
+    #
+    # PUBLIC
+    #
 
     def add_document(self, document: "Document") -> "Document":
         """
@@ -62,112 +52,62 @@ class Document(Dictionary):
             self.add_page(document.get_page(i))
         return self
 
-    def add_page(self, page: Page) -> "Document":  # type: ignore [name-defined]
+    def add_embedded_file(self, file_name: str, file_bytes: bytes) -> "Document":
         """
-        This method appends a page (from another Document) to this Document
+        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
+        some provision should be made to ensure that the external references will remain valid. One way to do this is to
+        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
+        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
+        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
+        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
+        This method embeds a file (specified by its name and bytes) into this Document
         """
-        return self.insert_page(page)
 
-    def insert_page(self, page: Page, index: typing.Optional[int] = None) -> "Document":  # type: ignore [name-defined]
-        """
-        This method appends a page (from another Document) to this Document at a given index
-        """
-        # build XRef
-        if "XRef" not in self:
-            self[Name("XRef")] = PlainTextXREF()
-            self[Name("XRef")].set_parent(self)
-        # build Trailer
-        if "Trailer" not in self["XRef"]:
-            self["XRef"][Name("Trailer")] = Dictionary()
-            self["XRef"][Name("Size")] = bDecimal(0)
-            self["XRef"]["Trailer"].set_parent(self["XRef"])
-        # build Root
-        if "Root" not in self["XRef"]["Trailer"]:
-            self["XRef"]["Trailer"][Name("Root")] = Dictionary()
-            self["XRef"]["Trailer"]["Root"][Name("Type")] = Name("Catalog")
-            self["XRef"]["Trailer"]["Root"].set_parent(self["XRef"]["Trailer"])
-        # build Pages
-        if "Pages" not in self["XRef"]["Trailer"]["Root"]:
-            # fmt: off
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")] = Dictionary()
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Count")] = bDecimal(0)
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Kids")] = List()
-            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Type")] = Name("Pages")
-            self["XRef"]["Trailer"]["Root"]["Pages"].set_parent(self["XRef"]["Trailer"]["Root"])
-            self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"].set_parent(self["XRef"]["Trailer"]["Root"]["Pages"])
-            # fmt: on
-        # update /Kids
-        kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
-        assert kids is not None
-        assert isinstance(kids, List)
-        if index is None:
-            index = len(kids)
-        kids.insert(index, page)
-        # update /Count
-        prev_count = self["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
-        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = bDecimal(
-            prev_count + 1
-        )
-        # set /Parent
-        page[Name("Parent")] = self["XRef"]["Trailer"]["Root"]["Pages"]
-        page.set_parent(kids)  # type: ignore [attr-defined]
-        # return
-        return self
+        # build actual file stream
+        stream = Stream()
+        stream[Name("Type")] = Name("EmbeddedFile")
+        stream[Name("Bytes")] = file_bytes
+        stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
 
-    def pop_page(self, index: int) -> "Document":  # type: ignore [name-specified]
-        """
-        This method removes a Page from this Document at a given index.
-        It then returns this Document.
-        """
-        if "XRef" not in self:
-            return self
-        if "Trailer" not in self["XRef"]:
-            return self
-        if "Root" not in self["XRef"]["Trailer"]:
-            return self
-        if "Pages" not in self["XRef"]["Trailer"]["Root"]:
-            return self
-        if "Kids" not in self["XRef"]["Trailer"]["Root"]["Pages"]:
-            return self
-        if "Count" not in self["XRef"]["Trailer"]["Root"]["Pages"]:
-            return self
+        # build /EF NameTree node
+        leaf = Dictionary()
+        leaf[Name("EF")] = Dictionary()
+        leaf[Name("EF")][Name("F")] = stream
+        leaf[Name("F")] = String(file_name)
+        leaf[Name("Type")] = Name("Filespec")
 
-        # get Kids
-        kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
-        assert kids is not None
-        assert isinstance(kids, List)
-
-        # out of bounds
-        if index < 0 or index >= len(kids):
-            return self
-
-        # remove
-        kids.pop(index)
-        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = bDecimal(len(kids))
+        # put
+        NameTree(self, name=Name("EmbeddedFiles")).put(file_name, leaf)
 
         # return
         return self
 
-    #
-    # outlines
-    #
+    def add_embedded_javascript(self, javascript: str) -> "Document":
+        """
+        This function appends embedded JavaScript to this Document, returning self.
+        :param javascript:  the Javascript str to be appended to this Document
+        :return:            self
+        """
 
-    def has_outlines(self) -> bool:
-        """
-        A PDF document may contain a document outline that the conforming reader may display on the screen,
-        allowing the user to navigate interactively from one part of the document to another. The outline consists of a
-        tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of
-        contents to display the document’s structure to the user.
-        This function returns True if this Document has outlines, false otherwise
-        """
-        try:
-            return (
-                "Outlines" in self["XRef"]["Trailer"]["Root"]
-                and "Count" in self["XRef"]["Trailer"]["Root"]["Outlines"]
-                and self["XRef"]["Trailer"]["Root"]["Outlines"]["Count"] > 0
-            )
-        except:
-            return False
+        # build actual javascript stream
+        stream = Stream()
+        stream[Name("Type")] = Name("JavaScript")
+        stream[Name("DecodedBytes")] = bytes(javascript, "latin1")
+        stream[Name("Bytes")] = zlib.compress(stream[Name("DecodedBytes")], 9)
+        stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
+        stream[Name("Filter")] = Name("FlateDecode")
+
+        # set up NameTree leaf
+        leaf = Dictionary()
+        leaf[Name("S")] = Name("JavaScript")
+        leaf[Name("JS")] = stream
+
+        # put
+        nt: NameTree = NameTree(self, name=Name("JavaScript"))
+        nt.put("script-{0:03d}.js".format(len(nt)), leaf)
+
+        # return
+        return self
 
     def add_outline(
         self,
@@ -188,7 +128,8 @@ class Document(Dictionary):
         contents to display the document’s structure to the user.
         This function adds an outline to this Document
         """
-        destination = List().set_is_inline(True)  # type: ignore [attr-defined]
+        destination = List()
+        destination.set_is_inline(True)  # type: ignore [attr-defined]
         destination.append(bDecimal(page_nr))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:
@@ -336,54 +277,17 @@ class Document(Dictionary):
 
         return self
 
-    #
-    # embedded files
-    #
-
-    def add_embedded_file(self, file_name: str, file_bytes: bytes) -> "Document":
+    def add_page(self, page: Page) -> "Document":  # type: ignore [name-defined]
         """
-        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
-        some provision should be made to ensure that the external references will remain valid. One way to do this is to
-        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
-        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
-        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
-        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
-        This method embeds a file (specified by its name and bytes) into this Document
+        This method appends a page (from another Document) to this Document
         """
+        return self.insert_page(page)
 
-        # build actual file stream
-        stream = Stream()
-        stream[Name("Type")] = Name("EmbeddedFile")
-        stream[Name("Bytes")] = file_bytes
-        stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
-
-        # build /EF NameTree node
-        leaf = Dictionary()
-        leaf[Name("EF")] = Dictionary()
-        leaf[Name("EF")][Name("F")] = stream
-        leaf[Name("F")] = String(file_name)
-        leaf[Name("Type")] = Name("Filespec")
-
-        # put
-        NameTree(self, name=Name("EmbeddedFiles")).put(file_name, leaf)
-
-        # return
-        return self
-
-    def get_embedded_files(self) -> typing.Dict[str, bytes]:
+    def get_document_info(self) -> DocumentInfo:
         """
-        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
-        some provision should be made to ensure that the external references will remain valid. One way to do this is to
-        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
-        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
-        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
-        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
-        This method returns all embedded files, as a dictionary of names unto bytes
+        This function returns the DocumentInfo of this Document
         """
-        return {
-            str(k): v["EF"]["F"]["DecodedBytes"]
-            for k, v in NameTree(self, Name("EmbeddedFiles")).items()
-        }
+        return DocumentInfo(self)
 
     def get_embedded_file(self, file_name: str) -> typing.Optional[bytes]:
         """
@@ -403,33 +307,126 @@ class Document(Dictionary):
         # default
         return None
 
-    #
-    # embedded javascript
-    #
-
-    def add_embedded_javascript(self, javascript: str) -> "Document":
+    def get_embedded_files(self) -> typing.Dict[str, bytes]:
         """
-        This function appends embedded JavaScript to this Document, returning self.
-        :param javascript:  the Javascript str to be appended to this Document
-        :return:            self
+        If a PDF file contains file specifications that refer to an external file and the PDF file is archived or transmitted,
+        some provision should be made to ensure that the external references will remain valid. One way to do this is to
+        arrange for copies of the external files to accompany the PDF file. Embedded file streams (PDF 1.3) address
+        this problem by allowing the contents of referenced files to be embedded directly within the body of the PDF
+        file. This makes the PDF file a self-contained unit that can be stored or transmitted as a single entity. (The
+        embedded files are included purely for convenience and need not be directly processed by any conforming reader.)
+        This method returns all embedded files, as a dictionary of names unto bytes
         """
+        return {
+            str(k): v["EF"]["F"]["DecodedBytes"]
+            for k, v in NameTree(self, Name("EmbeddedFiles")).items()
+        }
 
-        # build actual javascript stream
-        stream = Stream()
-        stream[Name("Type")] = Name("JavaScript")
-        stream[Name("DecodedBytes")] = bytes(javascript, "latin1")
-        stream[Name("Bytes")] = zlib.compress(stream[Name("DecodedBytes")], 9)
-        stream[Name("Length")] = bDecimal(len(stream[Name("Bytes")]))
-        stream[Name("Filter")] = Name("FlateDecode")
+    def get_page(self, page_number: int) -> Page:
+        """
+        This function returns a Page (at given page_number) within this Document
+        """
+        return self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"][page_number]
 
-        # set up NameTree leaf
-        leaf = Dictionary()
-        leaf[Name("S")] = Name("JavaScript")
-        leaf[Name("JS")] = stream
+    def get_xmp_document_info(self) -> XMPDocumentInfo:
+        """
+        This function returns the XMPDocumentInfo of this Document
+        """
+        return XMPDocumentInfo(self)
 
-        # put
-        nt: NameTree = NameTree(self, name=Name("JavaScript"))
-        nt.put("script-{0:03d}.js".format(len(nt)), leaf)
+    def has_outlines(self) -> bool:
+        """
+        A PDF document may contain a document outline that the conforming reader may display on the screen,
+        allowing the user to navigate interactively from one part of the document to another. The outline consists of a
+        tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of
+        contents to display the document’s structure to the user.
+        This function returns True if this Document has outlines, false otherwise
+        """
+        try:
+            return (
+                "Outlines" in self["XRef"]["Trailer"]["Root"]
+                and "Count" in self["XRef"]["Trailer"]["Root"]["Outlines"]
+                and self["XRef"]["Trailer"]["Root"]["Outlines"]["Count"] > 0
+            )
+        except:
+            return False
+
+    def insert_page(self, page: Page, index: typing.Optional[int] = None) -> "Document":  # type: ignore [name-defined]
+        """
+        This method appends a page (from another Document) to this Document at a given index
+        """
+        # build XRef
+        if "XRef" not in self:
+            self[Name("XRef")] = PlainTextXREF()
+            self[Name("XRef")].set_parent(self)
+        # build Trailer
+        if "Trailer" not in self["XRef"]:
+            self["XRef"][Name("Trailer")] = Dictionary()
+            self["XRef"][Name("Size")] = bDecimal(0)
+            self["XRef"]["Trailer"].set_parent(self["XRef"])
+        # build Root
+        if "Root" not in self["XRef"]["Trailer"]:
+            self["XRef"]["Trailer"][Name("Root")] = Dictionary()
+            self["XRef"]["Trailer"]["Root"][Name("Type")] = Name("Catalog")
+            self["XRef"]["Trailer"]["Root"].set_parent(self["XRef"]["Trailer"])
+        # build Pages
+        if "Pages" not in self["XRef"]["Trailer"]["Root"]:
+            # fmt: off
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")] = Dictionary()
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Count")] = bDecimal(0)
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Kids")] = List()
+            self["XRef"]["Trailer"][Name("Root")][Name("Pages")][Name("Type")] = Name("Pages")
+            self["XRef"]["Trailer"]["Root"]["Pages"].set_parent(self["XRef"]["Trailer"]["Root"])
+            self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"].set_parent(self["XRef"]["Trailer"]["Root"]["Pages"])
+            # fmt: on
+        # update /Kids
+        kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
+        assert kids is not None
+        assert isinstance(kids, List)
+        if index is None:
+            index = len(kids)
+        kids.insert(index, page)
+        # update /Count
+        prev_count = self["XRef"]["Trailer"]["Root"]["Pages"]["Count"]
+        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = bDecimal(
+            prev_count + 1
+        )
+        # set /Parent
+        page[Name("Parent")] = self["XRef"]["Trailer"]["Root"]["Pages"]
+        page.set_parent(kids)  # type: ignore [attr-defined]
+        # return
+        return self
+
+    def pop_page(self, index: int) -> "Document":  # type: ignore [name-specified]
+        """
+        This method removes a Page from this Document at a given index.
+        It then returns this Document.
+        """
+        if "XRef" not in self:
+            return self
+        if "Trailer" not in self["XRef"]:
+            return self
+        if "Root" not in self["XRef"]["Trailer"]:
+            return self
+        if "Pages" not in self["XRef"]["Trailer"]["Root"]:
+            return self
+        if "Kids" not in self["XRef"]["Trailer"]["Root"]["Pages"]:
+            return self
+        if "Count" not in self["XRef"]["Trailer"]["Root"]["Pages"]:
+            return self
+
+        # get Kids
+        kids = self["XRef"]["Trailer"]["Root"]["Pages"]["Kids"]
+        assert kids is not None
+        assert isinstance(kids, List)
+
+        # out of bounds
+        if index < 0 or index >= len(kids):
+            return self
+
+        # remove
+        kids.pop(index)
+        self["XRef"]["Trailer"]["Root"]["Pages"][Name("Count")] = bDecimal(len(kids))
 
         # return
         return self

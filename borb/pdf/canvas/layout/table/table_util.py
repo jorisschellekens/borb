@@ -22,6 +22,18 @@ class TableUtil:
     This class contains utility methods for using the Table classes in borb.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def from_2d_array(
         data: typing.List[typing.List[typing.Any]],

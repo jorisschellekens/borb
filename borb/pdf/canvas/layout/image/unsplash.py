@@ -23,6 +23,18 @@ class Unsplash:
     This class expects `keyring.get_password("unsplash", "access_key")` to have been set.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def get_image(
         keywords: typing.List[str],

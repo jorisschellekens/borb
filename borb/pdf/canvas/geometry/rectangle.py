@@ -15,6 +15,10 @@ class Rectangle:
     The term oblong is occasionally used to refer to a non-square rectangle.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         lower_left_x: Decimal,
@@ -29,6 +33,45 @@ class Rectangle:
         self.width = width
         self.height = height
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def circumference_contains(self, x: Decimal, y: Decimal) -> bool:
+        """
+        This function returns True if the circumference of this Rectangle contains the given point
+        False otherwise
+        """
+        return x in [self.x, self.x + self.width] and y in [
+            self.y,
+            self.y + self.height,
+        ]
+
+    def contains(self, x: Decimal, y: Decimal) -> bool:
+        """
+        This function returns True if this Rectangle contains the given point
+        False otherwise
+        """
+        return self.x <= x <= (self.x + self.width) and self.y <= y <= (
+            self.y + self.height
+        )
+
+    def get_height(self) -> Decimal:
+        """
+        This function returns the height of this Rectangle
+        """
+        return self.height
+
+    def get_width(self) -> Decimal:
+        """
+        This function returns the width of this Rectangle
+        """
+        return self.width
+
     def get_x(self) -> Decimal:
         """
         This function returns the x-coordinate of the lower-left of this Rectangle
@@ -41,17 +84,18 @@ class Rectangle:
         """
         return self.y
 
-    def get_width(self) -> Decimal:
+    def grow(self, amount: Decimal) -> "Rectangle":
         """
-        This function returns the width of this Rectangle
+        This function returns a (slightly) larger Rectangle,
+        grown by the given amount
         """
-        return self.width
-
-    def get_height(self) -> Decimal:
-        """
-        This function returns the height of this Rectangle
-        """
-        return self.height
+        assert amount >= 0
+        return Rectangle(
+            self.x - amount,
+            self.y - amount,
+            self.width + Decimal(2) * amount,
+            self.height + Decimal(2) * amount,
+        )
 
     def intersects(self, other_rectangle: "Rectangle") -> bool:
         """
@@ -66,25 +110,6 @@ class Rectangle:
         # fmt: on
         return x_intersect and y_intersect
 
-    def contains(self, x: Decimal, y: Decimal) -> bool:
-        """
-        This function returns True if this Rectangle contains the given point
-        False otherwise
-        """
-        return self.x <= x <= (self.x + self.width) and self.y <= y <= (
-            self.y + self.height
-        )
-
-    def circumference_contains(self, x: Decimal, y: Decimal) -> bool:
-        """
-        This function returns True if the circumference of this Rectangle contains the given point
-        False otherwise
-        """
-        return x in [self.x, self.x + self.width] and y in [
-            self.y,
-            self.y + self.height,
-        ]
-
     def shrink(self, amount: Decimal) -> "Rectangle":
         """
         This function returns a (slightly) smaller Rectangle,
@@ -96,17 +121,4 @@ class Rectangle:
             self.y + amount,
             self.width - Decimal(2) * amount,
             self.height - Decimal(2) * amount,
-        )
-
-    def grow(self, amount: Decimal) -> "Rectangle":
-        """
-        This function returns a (slightly) larger Rectangle,
-        grown by the given amount
-        """
-        assert amount >= 0
-        return Rectangle(
-            self.x - amount,
-            self.y - amount,
-            self.width + Decimal(2) * amount,
-            self.height + Decimal(2) * amount,
         )

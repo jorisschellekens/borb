@@ -22,14 +22,9 @@ class Annotation(Dictionary):
     wide variety of standard annotation types, described in detail in 12.5.6, “Annotation Types.”
     """
 
-    @staticmethod
-    def _timestamp_to_str() -> str:
-        timestamp_str = "D:"
-        now = datetime.datetime.now()
-        for n in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
-            timestamp_str += "{0:02}".format(n)
-        timestamp_str += "Z00"
-        return timestamp_str
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -138,3 +133,20 @@ class Annotation(Dictionary):
         # If it is determined to be invisible, the annotation shall be skipped, as if it
         # were not in the document.
         # self[Name("OC")] = None
+
+    #
+    # PRIVATE
+    #
+
+    @staticmethod
+    def _timestamp_to_str() -> str:
+        timestamp_str = "D:"
+        now = datetime.datetime.now()
+        for n in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
+            timestamp_str += "{0:02}".format(n)
+        timestamp_str += "Z00"
+        return timestamp_str
+
+    #
+    # PUBLIC
+    #

@@ -12,8 +12,9 @@ from typing import Any, Optional, Union
 from PIL import Image  # type: ignore [import]
 
 from borb.io.filter.stream_decode_util import decode_stream
+from borb.io.read.pdf_object import PDFObject
 from borb.io.read.transformer import ReadTransformerState, Transformer
-from borb.io.read.types import AnyPDFType, Reference, Stream, add_base_methods
+from borb.io.read.types import AnyPDFType, Reference, Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,18 @@ class GrayscaleImageTransformer(Transformer):
     """
     This implementation of ReadBaseTransformer is responsible for reading a grayscale image object
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
@@ -90,7 +103,7 @@ class GrayscaleImageTransformer(Transformer):
                     pass
 
         # add base methods
-        add_base_methods(tmp)
+        PDFObject.add_pdf_object_methods(tmp)
 
         # set parent
         tmp.set_parent(parent_object)  # type: ignore[attr-defined]

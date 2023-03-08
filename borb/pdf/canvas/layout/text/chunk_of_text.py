@@ -23,6 +23,10 @@ class ChunkOfText(LayoutElement):
     This implementation of LayoutElement represents one uninterrupted block of text
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,
@@ -97,109 +101,8 @@ class ChunkOfText(LayoutElement):
         self._multiplied_leading: typing.Optional[Decimal] = multiplied_leading
         self._fixed_leading: typing.Optional[Decimal] = fixed_leading
 
-    def get_text(self) -> str:
-        """
-        This function returns the text of this LayoutElement
-        """
-        return self._text
-
-    def get_font(self) -> Font:
-        """
-        This function returns the Font of this LayoutElement
-        """
-        return self._font
-
-    def get_font_color(self) -> Color:
-        """
-        This function returns the font Color of this LayoutElement
-        """
-        return self._font_color
-
-    def _get_font_resource_name(self, font: Font, page: Page):
-        # create resources if needed
-        if "Resources" not in page:
-            page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
-        if "Font" not in page["Resources"]:
-            page["Resources"][Name("Font")] = Dictionary()
-
-        # insert font into resources
-        font_resource_name = [
-            k for k, v in page["Resources"]["Font"].items() if v == font
-        ]
-        if len(font_resource_name) > 0:
-            return font_resource_name[0]
-        else:
-            font_index = len(page["Resources"]["Font"]) + 1
-            page["Resources"]["Font"][Name("F%d" % font_index)] = font
-            return Name("F%d" % font_index)
-
-    def _write_text_bytes(self) -> str:
-        hex_mode: bool = False
-        # check glyphs
-        for c in self._text:
-            if ord(c) != self._font.unicode_to_character_identifier(c):
-                hex_mode = True
-                break
-        # delegate
-        if hex_mode or isinstance(self._font, TrueTypeFont):
-            return self._write_text_bytes_in_hex()
-        else:
-            return self._write_text_bytes_in_ascii()
-
-    def _write_text_bytes_in_hex(self) -> str:
-        # decide whether we should write 1 byte, or 2 bytes
-        font: Font = self._font
-        use_four_bytes: bool = False
-        if "Encoding" in font and font["Encoding"] in ["Identity-H", "Identity-V"]:
-            use_four_bytes = True
-
-        # write each cid
-        sOut: str = ""
-        for c in self._text:
-            cid: typing.Optional[int] = self._font.unicode_to_character_identifier(c)
-            assert cid is not None, "Font %s can not represent '%s'" % (
-                self._font.get_font_name(),
-                c,
-            )
-            hex_rep: str = hex(int(cid))[2:]
-            hex_rep = self._pad_string_with_zeroes(hex_rep, 4 if use_four_bytes else 2)
-            sOut += "".join(["<", hex_rep, ">"])
-        return "".join(["[", sOut, "] TJ"])
-
-    def _pad_string_with_zeroes(self, s: str, n: int = 2) -> str:
-        while len(s) < n:
-            s = "0" + s
-        return s
-
-    def _write_text_bytes_in_ascii(self) -> str:
-        """
-        This function escapes certain reserved characters in PDF strings.
-        """
-        sOut: str = ""
-        for c in self._text:
-            if c == "\r":
-                sOut += "\\r"
-            elif c == "\n":
-                sOut += "\\n"
-            elif c == "\t":
-                sOut += "\\t"
-            elif c == "\b":
-                sOut += "\\b"
-            elif c == "\f":
-                sOut += "\\f"
-            elif c in ["(", ")", "\\"]:
-                sOut += "\\" + c
-            elif 0 <= ord(c) < 8:
-                sOut += "\\00" + oct(ord(c))[2:]
-            elif 8 <= ord(c) < 32:
-                sOut += "\\0" + oct(ord(c))[2:]
-            else:
-                sOut += c
-        # default
-        return "".join(["(", sOut, ") Tj"])
-
     #
-    # RENDERING METHODS
+    # PRIVATE
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
@@ -223,6 +126,29 @@ class ChunkOfText(LayoutElement):
             w,
             line_height,
         )
+
+    def _get_font_resource_name(self, font: Font, page: Page):
+        # create resources if needed
+        if "Resources" not in page:
+            page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
+        if "Font" not in page["Resources"]:
+            page["Resources"][Name("Font")] = Dictionary()
+
+        # insert font into resources
+        font_resource_name = [
+            k for k, v in page["Resources"]["Font"].items() if v == font
+        ]
+        if len(font_resource_name) > 0:
+            return font_resource_name[0]
+        else:
+            font_index = len(page["Resources"]["Font"]) + 1
+            page["Resources"]["Font"][Name("F%d" % font_index)] = font
+            return Name("F%d" % font_index)
+
+    def _pad_string_with_zeroes(self, s: str, n: int = 2) -> str:
+        while len(s) < n:
+            s = "0" + s
+        return s
 
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
 
@@ -261,3 +187,85 @@ class ChunkOfText(LayoutElement):
             self._write_text_bytes(),  # Tj
         )
         page.append_to_content_stream(content)
+
+    def _write_text_bytes(self) -> str:
+        hex_mode: bool = False
+        # check glyphs
+        for c in self._text:
+            if ord(c) != self._font.unicode_to_character_identifier(c):
+                hex_mode = True
+                break
+        # delegate
+        if hex_mode or isinstance(self._font, TrueTypeFont):
+            return self._write_text_bytes_in_hex()
+        else:
+            return self._write_text_bytes_in_ascii()
+
+    def _write_text_bytes_in_ascii(self) -> str:
+        """
+        This function escapes certain reserved characters in PDF strings.
+        """
+        sOut: str = ""
+        for c in self._text:
+            if c == "\r":
+                sOut += "\\r"
+            elif c == "\n":
+                sOut += "\\n"
+            elif c == "\t":
+                sOut += "\\t"
+            elif c == "\b":
+                sOut += "\\b"
+            elif c == "\f":
+                sOut += "\\f"
+            elif c in ["(", ")", "\\"]:
+                sOut += "\\" + c
+            elif 0 <= ord(c) < 8:
+                sOut += "\\00" + oct(ord(c))[2:]
+            elif 8 <= ord(c) < 32:
+                sOut += "\\0" + oct(ord(c))[2:]
+            else:
+                sOut += c
+        # default
+        return "".join(["(", sOut, ") Tj"])
+
+    def _write_text_bytes_in_hex(self) -> str:
+        # decide whether we should write 1 byte, or 2 bytes
+        font: Font = self._font
+        use_four_bytes: bool = False
+        if "Encoding" in font and font["Encoding"] in ["Identity-H", "Identity-V"]:
+            use_four_bytes = True
+
+        # write each cid
+        sOut: str = ""
+        for c in self._text:
+            cid: typing.Optional[int] = self._font.unicode_to_character_identifier(c)
+            assert cid is not None, "Font %s can not represent '%s'" % (
+                self._font.get_font_name(),
+                c,
+            )
+            hex_rep: str = hex(int(cid))[2:]
+            hex_rep = self._pad_string_with_zeroes(hex_rep, 4 if use_four_bytes else 2)
+            sOut += "".join(["<", hex_rep, ">"])
+        return "".join(["[", sOut, "] TJ"])
+
+    #
+    # PUBLIC
+    #
+
+    def get_font(self) -> Font:
+        """
+        This function returns the Font of this LayoutElement
+        """
+        return self._font
+
+    def get_font_color(self) -> Color:
+        """
+        This function returns the font Color of this LayoutElement
+        """
+        return self._font_color
+
+    def get_text(self) -> str:
+        """
+        This function returns the text of this LayoutElement
+        """
+        return self._text

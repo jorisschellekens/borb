@@ -38,4 +38,15 @@ class SimpleFont(Font):
         stream containing the font program.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
     pass

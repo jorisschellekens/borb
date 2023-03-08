@@ -49,6 +49,16 @@ ADOBE_STANDARD_ENCODING_LOOKUP = [
 # fmt: on
 
 
+def adobe_standard_decode(byte_input: bytes) -> str:
+    """
+    This function decodes bytes using StandardEncoding
+    """
+    s: str = ""
+    for b in byte_input:
+        s += chr(ADOBE_STANDARD_ENCODING_LOOKUP[b])
+    return s
+
+
 def adobe_standard_encode(str_input: str) -> bytes:
     """
     This function encodes a str using StandardEncoding
@@ -63,13 +73,3 @@ def adobe_standard_encode(str_input: str) -> bytes:
         if char_index != -1:
             b.append(char_index)
     return b
-
-
-def adobe_standard_decode(byte_input: bytes) -> str:
-    """
-    This function decodes bytes using StandardEncoding
-    """
-    s: str = ""
-    for b in byte_input:
-        s += chr(ADOBE_STANDARD_ENCODING_LOOKUP[b])
-    return s

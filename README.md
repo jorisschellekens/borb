@@ -6,7 +6,7 @@
 [![Corpus Coverage : 100.0%](https://img.shields.io/badge/corpus%20coverage-100.0%25-green)]()
 [![Text Extraction : 93.1%](https://img.shields.io/badge/text%20extraction-93.1%25-green)]()
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
-[![Number of Tests : 429](https://img.shields.io/badge/number%20of%20tests-429-green)]()
+[![Number of Tests : 444](https://img.shields.io/badge/number%20of%20tests-429-green)]()
 [![Python : 3.8 | 3.9 | 3.10 ](https://img.shields.io/badge/python-3.8%20&#124;%203.9%20&#124;%203.10-green)]()
 
 [![Downloads](https://pepy.tech/badge/borb)](https://pepy.tech/project/borb)

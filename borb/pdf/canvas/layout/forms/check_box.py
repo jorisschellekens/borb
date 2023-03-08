@@ -7,9 +7,11 @@ This implementation of FormField represents a text field.
 import copy
 import typing
 import zlib
+from decimal import Decimal
 
+from borb.io.read.pdf_object import PDFObject
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.io.read.types import Boolean, Decimal
+from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, List as bList, Name, Stream, String
 from borb.io.read.types import String as bString
@@ -24,6 +26,10 @@ class CheckBox(FormField):
     """
     This implementation of FormField represents a text field.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -40,7 +46,7 @@ class CheckBox(FormField):
         border_width: Decimal = Decimal(1),
         field_name: typing.Optional[str] = None,
         font_color: Color = HexColor("000000"),
-        font_size: typing.Optional[Decimal] = Decimal(12),
+        font_size: Decimal = Decimal(12),
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
         margin_left: typing.Optional[Decimal] = Decimal(0),
@@ -76,18 +82,34 @@ class CheckBox(FormField):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        assert font_size >= 0
-        self._font_size = font_size
+        assert font_size is None or font_size >= 0
+        self._font_size: Decimal = font_size
         self._font_color = font_color
         self._field_name: typing.Optional[str] = field_name
         self._widget_dictionary: typing.Optional[Dictionary] = None
+
+    #
+    # PRIVATE
+    #
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        line_height: Decimal = self._font_size * Decimal(1.2)
+        return Rectangle(
+            available_space.x,
+            available_space.y + available_space.height - line_height,
+            min(available_space.get_width(), self._font_size),
+            line_height,
+        )
 
     def _init_widget_dictionary(self, page: Page, layout_box: Rectangle) -> None:
 
         if self._widget_dictionary is not None:
             return
 
-        if "XRef" not in page.get_root():  # type: ignore [attr-defined]
+        root: typing.Optional[PDFObject] = page.get_root()
+        assert root is not None
+        assert isinstance(root, Dictionary)
+        if "XRef" not in root:
             return
 
         # init page and font resources
@@ -103,7 +125,8 @@ class CheckBox(FormField):
         # widget "Off" appearance
         bts: bytes = bytes("/Tx BMC EMC", "latin1")
         widget_off_appearance: Stream = Stream()
-        widget_off_appearance[Name("BBox")] = bList().set_is_inline(True)  # type: ignore [attr-defined]
+        widget_off_appearance[Name("BBox")] = bList()
+        widget_off_appearance[Name("BBox")].set_is_inline(True)
         widget_off_appearance[Name("BBox")].append(bDecimal(0))
         widget_off_appearance[Name("BBox")].append(bDecimal(0))
         widget_off_appearance[Name("BBox")].append(bDecimal(layout_box.width))
@@ -113,6 +136,7 @@ class CheckBox(FormField):
         widget_off_appearance[Name("Filter")] = Name("FlateDecode")
         widget_off_appearance[Name("Length")] = bDecimal(len(bts))
         widget_off_appearance[Name("ProcSet")] = bList()
+        widget_off_appearance[Name("ProcSet")].set_is_inline(True)
         widget_off_appearance[Name("ProcSet")].append(Name("PDF"))
         widget_off_appearance[Name("ProcSet")].append(Name("Text"))
         widget_off_appearance[Name("Resources")] = widget_resources
@@ -142,7 +166,7 @@ class CheckBox(FormField):
         widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
 
         # get Catalog
-        catalog: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
+        catalog: Dictionary = root["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
 
         # get font_color (in RGB model)
         font_color_rgb: RGBColor = self._font_color.to_rgb()
@@ -194,15 +218,6 @@ class CheckBox(FormField):
             catalog["AcroForm"][Name("NeedAppearances")] = Boolean(True)
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        line_height: Decimal = self._font_size * Decimal(1.2)
-        return Rectangle(
-            available_space.x,
-            available_space.y + available_space.height - line_height,
-            min(available_space.get_width(), self._font_size),
-            line_height,
-        )
-
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
 
         # init self._widget_dictionary
@@ -217,3 +232,7 @@ class CheckBox(FormField):
             self._widget_dictionary["Rect"][2] = bDecimal(content_box.get_x() + content_box.width)
             self._widget_dictionary["Rect"][3] = bDecimal(content_box.get_y() + line_height)
         # fmt: on
+
+    #
+    # PUBLIC
+    #

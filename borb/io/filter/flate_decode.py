@@ -18,6 +18,18 @@ class FlateDecode:
     data.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def decode(
         bytes_in: bytes,

@@ -22,6 +22,10 @@ class PolygonAnnotation(Annotation):
     and last vertex are not implicitly connected.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         points: typing.List[typing.Tuple[Decimal, Decimal]],
@@ -68,3 +72,11 @@ class PolygonAnnotation(Annotation):
         self[Name("LE")] = List().set_is_inline(True)  # type: ignore [attr-defined]
         self["LE"].append(Name("None"))
         self["LE"].append(Name("None"))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

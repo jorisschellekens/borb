@@ -18,6 +18,10 @@ class Canvas(Dictionary):
     It takes its name from the canvas used in visual arts.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(Canvas, self).__init__()
         # compatibility mode
@@ -28,3 +32,11 @@ class Canvas(Dictionary):
         self.marked_content_stack = []
         # set graphics state stack
         self.graphics_state_stack = []
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

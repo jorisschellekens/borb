@@ -33,6 +33,10 @@ class CanvasGraphicsState:
     independent should not be written to modify these parameters.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self.ctm: Matrix = Matrix.identity_matrix()
         self.text_matrix: Matrix = Matrix.identity_matrix()
@@ -61,6 +65,10 @@ class CanvasGraphicsState:
         self.soft_mask = None
         self.alpha_constant = None
         self.alpha_source = None
+
+    #
+    # PRIVATE
+    #
 
     def __deepcopy__(self, memodict={}):
         out = CanvasGraphicsState()
@@ -104,3 +112,7 @@ class CanvasGraphicsState:
         # self.alpha_constant = None
         # self.alpha_source = None
         return out
+
+    #
+    # PUBLIC
+    #

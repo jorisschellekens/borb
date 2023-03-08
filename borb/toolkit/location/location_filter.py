@@ -19,16 +19,17 @@ class LocationFilter(EventListener):
     It only allows events to pass if they occur in a given Rectangle.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, rectangle: Rectangle):
         self._rectangle = rectangle
         self._listeners: typing.List[EventListener] = []
 
-    def add_listener(self, listener: "EventListener") -> "LocationFilter":
-        """
-        This methods add an EventListener to this (meta)-EventListener
-        """
-        self._listeners.append(listener)
-        return self
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: "Event") -> None:
         # filter ChunkOfTextRenderEvent
@@ -59,3 +60,14 @@ class LocationFilter(EventListener):
         # default
         for l in self._listeners:
             l._event_occurred(event)
+
+    #
+    # PUBLIC
+    #
+
+    def add_listener(self, listener: "EventListener") -> "LocationFilter":
+        """
+        This methods add an EventListener to this (meta)-EventListener
+        """
+        self._listeners.append(listener)
+        return self

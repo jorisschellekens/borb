@@ -25,9 +25,50 @@ class CIDType0Font(Font):
     A Type 0 CIDFont contains glyph descriptions based on CFF
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(CIDType0Font, self).__init__()
         self._width_cache: typing.Dict[int, bDecimal] = {}
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        # fmt: off
+        f_out: CIDType0Font = super(CIDType0Font, self).__deepcopy__(memodict)
+        f_out[Name("Subtype")] = Name("CIDFontType0")
+        f_out._width_cache: typing.Dict[int, bDecimal] = {k: v for k, v in self._width_cache.items()}
+        return f_out
+        # fmt: on
+
+    def _empty_copy(self) -> "Font":
+        return CIDType0Font()
+
+    #
+    # PUBLIC
+    #
+
+    def get_ascent(self) -> bDecimal:
+        """
+        This function returns the maximum height above the baseline reached by glyphs in this font.
+        The height of glyphs for accented characters shall be excluded.
+        """
+        assert "FontDescriptor" in self
+        assert "Ascent" in self["FontDescriptor"]
+        return self["FontDescriptor"]["Ascent"]
+
+    def get_descent(self) -> bDecimal:
+        """
+        This function returns the maximum depth below the baseline reached by glyphs in this font.
+        The value shall be a negative number.
+        """
+        assert "FontDescriptor" in self
+        assert "Descent" in self["FontDescriptor"]
+        return self["FontDescriptor"]["Descent"]
 
     def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
         """
@@ -83,32 +124,3 @@ class CIDType0Font(Font):
 
         # default
         return dw
-
-    def get_ascent(self) -> bDecimal:
-        """
-        This function returns the maximum height above the baseline reached by glyphs in this font.
-        The height of glyphs for accented characters shall be excluded.
-        """
-        assert "FontDescriptor" in self
-        assert "Ascent" in self["FontDescriptor"]
-        return self["FontDescriptor"]["Ascent"]
-
-    def get_descent(self) -> bDecimal:
-        """
-        This function returns the maximum depth below the baseline reached by glyphs in this font.
-        The value shall be a negative number.
-        """
-        assert "FontDescriptor" in self
-        assert "Descent" in self["FontDescriptor"]
-        return self["FontDescriptor"]["Descent"]
-
-    def _empty_copy(self) -> "Font":
-        return CIDType0Font()
-
-    def __deepcopy__(self, memodict={}):
-        # fmt: off
-        f_out: CIDType0Font = super(CIDType0Font, self).__deepcopy__(memodict)
-        f_out[Name("Subtype")] = Name("CIDFontType0")
-        f_out._width_cache: typing.Dict[int, bDecimal] = {k: v for k, v in self._width_cache.items()}
-        return f_out
-        # fmt: on

@@ -23,6 +23,10 @@ class WriteTransformerState:
     - etc
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         destination: Optional[typing.Union[io.BufferedIOBase, io.RawIOBase]] = None,
@@ -38,6 +42,14 @@ class WriteTransformerState:
         self.apply_font_subsetting: bool = False                                            # whether to apply Font subsetting or not
         # fmt: on
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
 
 class Transformer:
     """
@@ -46,96 +58,17 @@ class Transformer:
     such as persisting Image objects, or Dictionary objects, etc.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._handlers: typing.List["Transformer"] = []
         self._parent: typing.Optional["Transformer"] = None
 
-    def add_child_transformer(
-        self, handler: "Transformer"  # type: ignore [name-defined]
-    ) -> "Transformer":  # type: ignore [name-defined]
-        """
-        This function adds a BaseWriteTransformer to this WriteBaseTransformer.
-        Children of this WriteBaseTransformer will be called in turn, and their
-        `can_be_transformed` method should return True if the child WriteBaseTransformer
-        can handle the object to be transformed. The first child to return True will have its
-        `transform` method called.
-        This function returns self.
-        """
-        self._handlers.append(handler)
-        handler._parent = self
-        return self
-
-    def get_root_transformer(self) -> "Transformer":  # type: ignore [name-defined]
-        """
-        This function returns the WriteBaseTransformer at the root of this WriteBaseTransformer hierarchy.
-        This allows child WriteBaseTransformer implementations to call the root transformer.
-        This is useful for instance when transforming a dictionary, where each key/value would then be transformed
-        by delegating the call to the root WriteBaseTransformer.
-        """
-        p = self
-        while p._parent is not None:
-            p = p._parent
-        return p
-
-    def can_be_transformed(self, any: AnyPDFType):
-        """
-        This function returns True if this WriteBaseTransformer can transform the input object,
-        false otherwise
-        """
-        return False
-
-    def transform(
-        self,
-        object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
-    ):
-        """
-        This method writes an object (of type AnyPDFType) to a byte stream (specified in the WriteTransformerState)
-        """
-        # transform object
-        return_value = None
-        for h in self._handlers:
-            if h.can_be_transformed(object_to_transform):
-                return_value = h.transform(
-                    object_to_transform,
-                    context=context,
-                )
-                break
-
-        # return
-        return return_value
-
-    def _start_object(
-        self,
-        object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState],
-    ):
-        """
-        This function starts a new direct object by writing
-        its reference number followed by "obj" (e.g. "12 0 obj").
-        It also does some bookkeeping to ensure the byte offset is stored in the XREF
-        """
-        # get offset position
-        # fmt: off
-        assert context is not None, "A WriteTransformerState must be defined in order to write indirect objects."
-        assert context.destination is not None, "A WriteTransformerState must be defined in order to write indirect objects."
-        # fmt: on
-        byte_offset = context.destination.tell()
-
-        # update offset
-        ref = object_to_transform.get_reference()  # type: ignore [union-attr]
-        assert ref is not None
-        assert isinstance(ref, Reference)
-        ref.byte_offset = byte_offset
-
-        # write <object number> <generation number> obj
-        assert ref.object_number is not None
-        context.destination.write(
-            bytes(
-                "%d %d obj\n" % (ref.object_number, ref.generation_number or 0),
-                "latin1",
-            )
-        )
+    #
+    # PRIVATE
+    #
 
     def _end_object(
         self,
@@ -169,6 +102,64 @@ class Transformer:
             raise TypeError("unhashable type: %s" % obj.__class__.__name__)
         return h
 
+    def _start_object(
+        self,
+        object_to_transform: AnyPDFType,
+        context: Optional[WriteTransformerState],
+    ):
+        """
+        This function starts a new direct object by writing
+        its reference number followed by "obj" (e.g. "12 0 obj").
+        It also does some bookkeeping to ensure the byte offset is stored in the XREF
+        """
+        # get offset position
+        # fmt: off
+        assert context is not None, "A WriteTransformerState must be defined in order to write indirect objects."
+        assert context.destination is not None, "A WriteTransformerState must be defined in order to write indirect objects."
+        # fmt: on
+        byte_offset = context.destination.tell()
+
+        # update offset
+        ref = object_to_transform.get_reference()  # type: ignore [union-attr]
+        assert ref is not None
+        assert isinstance(ref, Reference)
+        ref.byte_offset = byte_offset
+
+        # write <object number> <generation number> obj
+        assert ref.object_number is not None
+        context.destination.write(
+            bytes(
+                "%d %d obj\n" % (ref.object_number, ref.generation_number or 0),
+                "latin1",
+            )
+        )
+
+    #
+    # PUBLIC
+    #
+
+    def add_child_transformer(
+        self, handler: "Transformer"  # type: ignore [name-defined]
+    ) -> "Transformer":  # type: ignore [name-defined]
+        """
+        This function adds a BaseWriteTransformer to this WriteBaseTransformer.
+        Children of this WriteBaseTransformer will be called in turn, and their
+        `can_be_transformed` method should return True if the child WriteBaseTransformer
+        can handle the object to be transformed. The first child to return True will have its
+        `transform` method called.
+        This function returns self.
+        """
+        self._handlers.append(handler)
+        handler._parent = self
+        return self
+
+    def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if this WriteBaseTransformer can transform the input object,
+        false otherwise
+        """
+        return False
+
     def get_reference(
         self, object: AnyPDFType, context: WriteTransformerState
     ) -> Reference:
@@ -187,17 +178,20 @@ class Transformer:
         if obj_id in context.indirect_objects_by_id:
             cached_indirect_object: AnyPDFType = context.indirect_objects_by_id[obj_id]
             assert not isinstance(cached_indirect_object, Reference)
-            return cached_indirect_object.get_reference()  # type: ignore[union-attr]
+            ref: typing.Optional[Reference] = cached_indirect_object.get_reference()
+            assert ref is not None
+            assert isinstance(ref, Reference)
+            return ref
 
         # look through existing indirect object hashes
         obj_hash: int = self._hash(object)
         if (not is_unique) and obj_hash in context.indirect_objects_by_hash:
             for obj in context.indirect_objects_by_hash[obj_hash]:
                 if obj == object:
-                    ref = obj.get_reference()  # type: ignore [union-attr]
+                    ref = obj.get_reference()
                     assert ref is not None
                     assert isinstance(ref, Reference)
-                    object.set_reference(ref)  # type: ignore [union-attr]
+                    object.set_reference(ref)
                     return ref
 
         # generate new object number
@@ -227,3 +221,37 @@ class Transformer:
 
         # return
         return ref
+
+    def get_root_transformer(self) -> "Transformer":
+        """
+        This function returns the WriteBaseTransformer at the root of this WriteBaseTransformer hierarchy.
+        This allows child WriteBaseTransformer implementations to call the root transformer.
+        This is useful for instance when transforming a dictionary, where each key/value would then be transformed
+        by delegating the call to the root WriteBaseTransformer.
+        """
+        p: typing.Optional["Transformer"] = self
+        while p is not None and p._parent is not None:
+            p = p._parent
+        assert p is not None
+        return p
+
+    def transform(
+        self,
+        object_to_transform: AnyPDFType,
+        context: Optional[WriteTransformerState] = None,
+    ):
+        """
+        This method writes an object (of type AnyPDFType) to a byte stream (specified in the WriteTransformerState)
+        """
+        # transform object
+        return_value = None
+        for h in self._handlers:
+            if h.can_be_transformed(object_to_transform):
+                return_value = h.transform(
+                    object_to_transform,
+                    context=context,
+                )
+                break
+
+        # return
+        return return_value

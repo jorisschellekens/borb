@@ -35,45 +35,16 @@ class PlainTextXREF(XREF):
     begins at 0.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__()
 
-    def read(
-        self,
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
-        tok: HighLevelTokenizer,
-        initial_offset: Optional[int] = None,
-    ) -> "XREF":
-        """
-        This method attempts to read a plaintext XREF from the given io_source.
-        It will either throw an exception, or return this XREF
-        """
-
-        if initial_offset is not None:
-            src.seek(initial_offset)
-        else:
-            self._seek_to_xref_token(src, tok)
-
-        # now we should be back to the start of XREF
-        token = tok.next_non_comment_token()
-        assert token is not None
-        assert token.get_text() == "xref"
-
-        # read xref sections
-        while True:
-            xref_section = self._read_section(src, tok)
-            if len(xref_section) == 0:
-                break
-            else:
-                for r in xref_section:
-                    self.add(r)
-
-        # process trailer
-        self[Name("Trailer")] = self._read_trailer(src, tok)
-        self[Name("Trailer")].set_parent(self)
-
-        # return self
-        return self
+    #
+    # PRIVATE
+    #
 
     def _read_section(
         self,
@@ -151,3 +122,44 @@ class PlainTextXREF(XREF):
 
         # return
         return trailer_dict
+
+    #
+    # PUBLIC
+    #
+
+    def read(
+        self,
+        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        tok: HighLevelTokenizer,
+        initial_offset: Optional[int] = None,
+    ) -> "XREF":
+        """
+        This method attempts to read a plaintext XREF from the given io_source.
+        It will either throw an exception, or return this XREF
+        """
+
+        if initial_offset is not None:
+            src.seek(initial_offset)
+        else:
+            self._seek_to_xref_token(src, tok)
+
+        # now we should be back to the start of XREF
+        token = tok.next_non_comment_token()
+        assert token is not None
+        assert token.get_text() == "xref"
+
+        # read xref sections
+        while True:
+            xref_section = self._read_section(src, tok)
+            if len(xref_section) == 0:
+                break
+            else:
+                for r in xref_section:
+                    self.add(r)
+
+        # process trailer
+        self[Name("Trailer")] = self._read_trailer(src, tok)
+        self[Name("Trailer")].set_parent(self)
+
+        # return self
+        return self

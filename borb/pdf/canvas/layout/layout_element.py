@@ -138,250 +138,9 @@ class LayoutElement:
         # linkage (for lists, tables, etc)
         self._parent = parent
 
-    def _needs_to_be_tagged(self, p: "Page") -> bool:
-        """
-        This function returns whether this LayoutElement needs to be tagged
-        :param p:   the Page on which this LayoutElement is to be painted
-        :return:    true if this LayoutElement needs to be tagged, False otherwise
-        """
-        document: typing.Optional["Document"] = p.get_document()
-        if document is None:
-            return False
-        # fmt: off
-        conformance_level: typing.Optional["ConformanceLevel"] = document.get_document_info().get_conformance_level_upon_create()
-        if conformance_level is None:
-            return False
-        return conformance_level.get_conformance_level() in ["A", "U"]
-        # fmt: on
-
-    def get_font_size(self) -> Decimal:
-        """
-        This function returns the font size of this LayoutElement
-        """
-        return self._font_size or Decimal(0)
-
-    def get_margin_top(self) -> Decimal:
-        """
-        This function returns the top margin of this LayoutElement
-        """
-        return self._margin_top or Decimal(0)
-
-    def get_margin_right(self) -> Decimal:
-        """
-        This function returns the right margin of this LayoutElement
-        """
-        return self._margin_right or Decimal(0)
-
-    def get_margin_bottom(self) -> Decimal:
-        """
-        This function returns the bottom margin of this LayoutElement
-        """
-        return self._margin_bottom or Decimal(0)
-
-    def get_margin_left(self) -> Decimal:
-        """
-        This function returns the left margin of this LayoutElement
-        """
-        return self._margin_left or Decimal(0)
-
     #
-    # NEW RENDERING LOGIC
+    # PRIVATE
     #
-
-    def get_previous_layout_box(self) -> typing.Optional[Rectangle]:
-        """
-        This function returns the previous result of layout of this LayoutElement
-        :return:    the Rectangle that was the result of the previous layout operation
-        """
-        return self._previous_layout_box
-
-    def get_previous_paint_box(self) -> typing.Optional[Rectangle]:
-        """
-        This function returns the previous result of painting this LayoutElement
-        :return:    the Rectangle that was the result of the previous paint operation
-        """
-        return self._previous_paint_box
-
-    def get_layout_box(self, available_space: Rectangle):
-        """
-        This function returns the previous result of layout
-        :return:    the Rectangle that was the result of the previous layout operation
-        """
-        horizontal_border_width: Decimal = Decimal(0)
-        if self._border_left:
-            horizontal_border_width += self._border_width
-        if self._border_right:
-            horizontal_border_width += self._border_width
-
-        vertical_border_width: Decimal = Decimal(0)
-        if self._border_top:
-            vertical_border_width += self._border_width
-        if self._border_bottom:
-            vertical_border_width += self._border_width
-
-        cbox_available_space: Rectangle = Rectangle(
-            available_space.get_x()
-            + self._padding_left
-            + (self._border_width if self._border_left else Decimal(0)),
-            available_space.get_y()
-            + self._padding_bottom
-            + (self._border_width if self._border_bottom else Decimal(0)),
-            max(
-                Decimal(0),
-                available_space.get_width()
-                - self._padding_left
-                - self._padding_right
-                - horizontal_border_width,
-            ),
-            max(
-                Decimal(0),
-                available_space.get_height()
-                - self._padding_top
-                - self._padding_bottom
-                - vertical_border_width,
-            ),
-        )
-
-        # determine content_box
-        cbox: Rectangle = self._get_content_box(cbox_available_space)
-
-        # take into account vertical_alignment
-        delta_x: Decimal = Decimal(0)
-        delta_y: Decimal = Decimal(0)
-        if self._vertical_alignment == Alignment.MIDDLE:
-            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(
-                2
-            )
-            cbox.y -= delta_y
-        if self._vertical_alignment == Alignment.BOTTOM:
-            delta_y = cbox_available_space.get_height() - cbox.get_height()
-            cbox.y -= delta_y
-
-        # take into account horizontal_alignment
-        if self._horizontal_alignment == Alignment.CENTERED:
-            delta_x = (cbox_available_space.get_width() - cbox.get_width()) / Decimal(2)
-            cbox.x += delta_x
-        if self._horizontal_alignment == Alignment.RIGHT:
-            delta_x = cbox_available_space.get_width() - cbox.get_width()
-            cbox.x += delta_x
-
-        # return
-        # fmt: off
-        self._previous_layout_box = Rectangle(
-            cbox.get_x() - self._padding_left - (self._border_width if self._border_left else Decimal(0)),
-            cbox.get_y() - self._padding_bottom - (self._border_width if self._border_bottom else Decimal(0)),
-            cbox.get_width() + self._padding_left + self._padding_right + horizontal_border_width,
-            cbox.get_height() + self._padding_top + self._padding_bottom + vertical_border_width,
-        )
-        # fmt: on
-        return self._previous_layout_box
-
-    def paint(self, page: "Page", available_space: Rectangle) -> None:  # type: ignore[name-defined]
-        """
-        This method paints this LayoutElement on the given Page, in the available space
-        :param page:                the Page on which to paint this LayoutElement
-        :param available_space:     the available space (as a Rectangle) on which to paint this LayoutElement
-        :return:                    None
-        """
-
-        # calculate horizontal_border_width
-        horizontal_border_width: Decimal = Decimal(0)
-        if self._border_left:
-            horizontal_border_width += self._border_width
-        if self._border_right:
-            horizontal_border_width += self._border_width
-
-        # calculate vertical_border_width
-        vertical_border_width: Decimal = Decimal(0)
-        if self._border_top:
-            vertical_border_width += self._border_width
-        if self._border_bottom:
-            vertical_border_width += self._border_width
-
-        cbox_available_space: Rectangle = Rectangle(
-            available_space.get_x()
-            + self._padding_left
-            + (self._border_width if self._border_left else Decimal(0)),
-            available_space.get_y()
-            + self._padding_bottom
-            + (self._border_width if self._border_bottom else Decimal(0)),
-            max(
-                Decimal(0),
-                available_space.get_width()
-                - self._padding_left
-                - self._padding_right
-                - horizontal_border_width,
-            ),
-            max(
-                Decimal(0),
-                available_space.get_height()
-                - self._padding_top
-                - self._padding_bottom
-                - vertical_border_width,
-            ),
-        )
-
-        # determine content_box
-        cbox: Rectangle = self._get_content_box(cbox_available_space)
-
-        # take into account vertical_alignment
-        delta_x: Decimal = Decimal(0)
-        delta_y: Decimal = Decimal(0)
-        if self._vertical_alignment == Alignment.MIDDLE:
-            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(
-                2
-            )
-            cbox.y -= delta_y
-        if self._vertical_alignment == Alignment.BOTTOM:
-            delta_y = cbox_available_space.get_height() - cbox.get_height()
-            cbox.y -= delta_y
-
-        # take into account horizontal_alignment
-        if self._horizontal_alignment == Alignment.CENTERED:
-            delta_x = (cbox_available_space.get_width() - cbox.get_width()) / Decimal(2)
-            cbox.x += delta_x
-        if self._horizontal_alignment == Alignment.RIGHT:
-            delta_x = cbox_available_space.get_width() - cbox.get_width()
-            cbox.x += delta_x
-
-        # paint the background first
-        bgbox: Rectangle = Rectangle(
-            cbox.get_x()
-            - self._padding_left
-            - (self._border_width if self._border_left else Decimal(0)),
-            cbox.get_y()
-            - self._padding_bottom
-            - (self._border_width if self._border_bottom else Decimal(0)),
-            cbox.get_width()
-            + self._padding_left
-            + self._padding_right
-            + horizontal_border_width,
-            cbox.get_height()
-            + self._padding_top
-            + self._padding_bottom
-            + vertical_border_width,
-        )
-        self._paint_background(page, bgbox)
-
-        # paint the borders
-        self._paint_borders(page, bgbox)
-
-        # paint the actual content
-        self._paint_content_box(page, cbox)
-
-        # set bounding box
-        self._previous_paint_box = bgbox
-
-    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-        return Rectangle(
-            available_space.get_x(),
-            available_space.get_y() + available_space.get_height(),
-            Decimal(0),
-            Decimal(0),
-        )
-
-    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore[name-defined]
-        pass
 
     def _get_border_outline(
         self, border_box: Rectangle
@@ -496,6 +255,30 @@ class LayoutElement:
 
         # return
         return points
+
+    def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        return Rectangle(
+            available_space.get_x(),
+            available_space.get_y() + available_space.get_height(),
+            Decimal(0),
+            Decimal(0),
+        )
+
+    def _needs_to_be_tagged(self, p: "Page") -> bool:  # type: ignore[name-defined]
+        """
+        This function returns whether this LayoutElement needs to be tagged
+        :param p:   the Page on which this LayoutElement is to be painted
+        :return:    true if this LayoutElement needs to be tagged, False otherwise
+        """
+        document: typing.Optional["Document"] = p.get_document()  # type: ignore[name-defined]
+        if document is None:
+            return False
+        # fmt: off
+        conformance_level: typing.Optional["ConformanceLevel"] = document.get_document_info().get_conformance_level_upon_create()   # type: ignore[name-defined]
+        if conformance_level is None:
+            return False
+        return conformance_level.get_conformance_level() in ["A", "U"]
+        # fmt: on
 
     def _paint_background(
         self, page: "Page", background_box: Rectangle  # type: ignore[name-defined]
@@ -624,3 +407,224 @@ class LayoutElement:
             )
         content += " Q"
         page.append_to_content_stream(content)
+
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore[name-defined]
+        pass
+
+    #
+    # PUBLIC
+    #
+
+    def get_font_size(self) -> Decimal:
+        """
+        This function returns the font size of this LayoutElement
+        """
+        return self._font_size or Decimal(0)
+
+    def get_layout_box(self, available_space: Rectangle):
+        """
+        This function returns the previous result of layout
+        :return:    the Rectangle that was the result of the previous layout operation
+        """
+        horizontal_border_width: Decimal = Decimal(0)
+        if self._border_left:
+            horizontal_border_width += self._border_width
+        if self._border_right:
+            horizontal_border_width += self._border_width
+
+        vertical_border_width: Decimal = Decimal(0)
+        if self._border_top:
+            vertical_border_width += self._border_width
+        if self._border_bottom:
+            vertical_border_width += self._border_width
+
+        cbox_available_space: Rectangle = Rectangle(
+            available_space.get_x()
+            + self._padding_left
+            + (self._border_width if self._border_left else Decimal(0)),
+            available_space.get_y()
+            + self._padding_bottom
+            + (self._border_width if self._border_bottom else Decimal(0)),
+            max(
+                Decimal(0),
+                available_space.get_width()
+                - self._padding_left
+                - self._padding_right
+                - horizontal_border_width,
+            ),
+            max(
+                Decimal(0),
+                available_space.get_height()
+                - self._padding_top
+                - self._padding_bottom
+                - vertical_border_width,
+            ),
+        )
+
+        # determine content_box
+        cbox: Rectangle = self._get_content_box(cbox_available_space)
+
+        # take into account vertical_alignment
+        delta_x: Decimal = Decimal(0)
+        delta_y: Decimal = Decimal(0)
+        if self._vertical_alignment == Alignment.MIDDLE:
+            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(
+                2
+            )
+            cbox.y -= delta_y
+        if self._vertical_alignment == Alignment.BOTTOM:
+            delta_y = cbox_available_space.get_height() - cbox.get_height()
+            cbox.y -= delta_y
+
+        # take into account horizontal_alignment
+        if self._horizontal_alignment == Alignment.CENTERED:
+            delta_x = (cbox_available_space.get_width() - cbox.get_width()) / Decimal(2)
+            cbox.x += delta_x
+        if self._horizontal_alignment == Alignment.RIGHT:
+            delta_x = cbox_available_space.get_width() - cbox.get_width()
+            cbox.x += delta_x
+
+        # return
+        # fmt: off
+        self._previous_layout_box = Rectangle(
+            cbox.get_x() - self._padding_left - (self._border_width if self._border_left else Decimal(0)),
+            cbox.get_y() - self._padding_bottom - (self._border_width if self._border_bottom else Decimal(0)),
+            cbox.get_width() + self._padding_left + self._padding_right + horizontal_border_width,
+            cbox.get_height() + self._padding_top + self._padding_bottom + vertical_border_width,
+        )
+        # fmt: on
+        return self._previous_layout_box
+
+    def get_margin_bottom(self) -> Decimal:
+        """
+        This function returns the bottom margin of this LayoutElement
+        """
+        return self._margin_bottom or Decimal(0)
+
+    def get_margin_left(self) -> Decimal:
+        """
+        This function returns the left margin of this LayoutElement
+        """
+        return self._margin_left or Decimal(0)
+
+    def get_margin_right(self) -> Decimal:
+        """
+        This function returns the right margin of this LayoutElement
+        """
+        return self._margin_right or Decimal(0)
+
+    def get_margin_top(self) -> Decimal:
+        """
+        This function returns the top margin of this LayoutElement
+        """
+        return self._margin_top or Decimal(0)
+
+    def get_previous_layout_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the previous result of layout of this LayoutElement
+        :return:    the Rectangle that was the result of the previous layout operation
+        """
+        return self._previous_layout_box
+
+    def get_previous_paint_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the previous result of painting this LayoutElement
+        :return:    the Rectangle that was the result of the previous paint operation
+        """
+        return self._previous_paint_box
+
+    def paint(self, page: "Page", available_space: Rectangle) -> None:  # type: ignore[name-defined]
+        """
+        This method paints this LayoutElement on the given Page, in the available space
+        :param page:                the Page on which to paint this LayoutElement
+        :param available_space:     the available space (as a Rectangle) on which to paint this LayoutElement
+        :return:                    None
+        """
+
+        # calculate horizontal_border_width
+        horizontal_border_width: Decimal = Decimal(0)
+        if self._border_left:
+            horizontal_border_width += self._border_width
+        if self._border_right:
+            horizontal_border_width += self._border_width
+
+        # calculate vertical_border_width
+        vertical_border_width: Decimal = Decimal(0)
+        if self._border_top:
+            vertical_border_width += self._border_width
+        if self._border_bottom:
+            vertical_border_width += self._border_width
+
+        cbox_available_space: Rectangle = Rectangle(
+            available_space.get_x()
+            + self._padding_left
+            + (self._border_width if self._border_left else Decimal(0)),
+            available_space.get_y()
+            + self._padding_bottom
+            + (self._border_width if self._border_bottom else Decimal(0)),
+            max(
+                Decimal(0),
+                available_space.get_width()
+                - self._padding_left
+                - self._padding_right
+                - horizontal_border_width,
+            ),
+            max(
+                Decimal(0),
+                available_space.get_height()
+                - self._padding_top
+                - self._padding_bottom
+                - vertical_border_width,
+            ),
+        )
+
+        # determine content_box
+        cbox: Rectangle = self._get_content_box(cbox_available_space)
+
+        # take into account vertical_alignment
+        delta_x: Decimal = Decimal(0)
+        delta_y: Decimal = Decimal(0)
+        if self._vertical_alignment == Alignment.MIDDLE:
+            delta_y = (cbox_available_space.get_height() - cbox.get_height()) / Decimal(
+                2
+            )
+            cbox.y -= delta_y
+        if self._vertical_alignment == Alignment.BOTTOM:
+            delta_y = cbox_available_space.get_height() - cbox.get_height()
+            cbox.y -= delta_y
+
+        # take into account horizontal_alignment
+        if self._horizontal_alignment == Alignment.CENTERED:
+            delta_x = (cbox_available_space.get_width() - cbox.get_width()) / Decimal(2)
+            cbox.x += delta_x
+        if self._horizontal_alignment == Alignment.RIGHT:
+            delta_x = cbox_available_space.get_width() - cbox.get_width()
+            cbox.x += delta_x
+
+        # paint the background first
+        bgbox: Rectangle = Rectangle(
+            cbox.get_x()
+            - self._padding_left
+            - (self._border_width if self._border_left else Decimal(0)),
+            cbox.get_y()
+            - self._padding_bottom
+            - (self._border_width if self._border_bottom else Decimal(0)),
+            cbox.get_width()
+            + self._padding_left
+            + self._padding_right
+            + horizontal_border_width,
+            cbox.get_height()
+            + self._padding_top
+            + self._padding_bottom
+            + vertical_border_width,
+        )
+        self._paint_background(page, bgbox)
+
+        # paint the borders
+        self._paint_borders(page, bgbox)
+
+        # paint the actual content
+        self._paint_content_box(page, cbox)
+
+        # set bounding box
+        self._previous_paint_box = bgbox

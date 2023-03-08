@@ -28,31 +28,9 @@ class PDFToJPG(PDFToSVG):
     This implementation of EventListener renders a PDF to a PIL Image
     """
 
-    @staticmethod
-    def convert_pdf_to_jpg(pdf: "Document") -> typing.Dict[int, PILImage.Image]:  # type: ignore[valid-type]
-        """
-        This function converts a PDF to an PIL.Image.Image
-        """
-        image_of_each_page: typing.Dict[int, PILImage.Image] = {}
-        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
-        for page_nr in range(0, number_of_pages):
-            # get Page object
-            page: Page = pdf.get_page(page_nr)
-            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
-
-            # register EventListener
-            cse: "PDFToJPG" = PDFToJPG()
-
-            # process Page
-            cse._event_occurred(BeginPageEvent(page))
-            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
-            cse._event_occurred(EndPageEvent(page))
-
-            # set in page
-            image_of_each_page[page_nr] = cse.convert_to_jpg()[0]
-
-        # return
-        return image_of_each_page
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -71,6 +49,17 @@ class PDFToJPG(PDFToSVG):
         self._italic_font: typing.Optional[Path] = None
         self._bold_italic_font: typing.Optional[Path] = None
         self._find_font_families()
+
+    #
+    # PRIVATE
+    #
+
+    def _begin_page(
+        self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
+    ) -> None:
+        self._jpg_image_per_page[int(page_nr)] = PILImage.new(
+            "RGB", (int(page_width), int(page_height)), color=(255, 255, 255)
+        )
 
     def _find_font_families(self):
         system: str = platform.system()
@@ -119,12 +108,25 @@ class PDFToJPG(PDFToSVG):
                     x for x in ttf_font_files if x.name.endswith(c + "-BoldItalic.ttf")
                 ][0]
 
-    def _begin_page(
-        self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
-    ) -> None:
-        self._jpg_image_per_page[int(page_nr)] = PILImage.new(
-            "RGB", (int(page_width), int(page_height)), color=(255, 255, 255)
-        )
+    def _render_image(
+        self,
+        page_nr: Decimal,
+        page_width: Decimal,
+        page_height: Decimal,
+        x: Decimal,
+        y: Decimal,
+        image_width: Decimal,
+        image_height: Decimal,
+        image: PILImage,  # type: ignore[valid-type]
+    ):
+        page_image = self._jpg_image_per_page.get(int(page_nr))
+        assert page_image is not None
+
+        # resize
+        image = image.resize((int(image_width), int(image_height)))
+
+        # paste
+        page_image.paste(image, (int(x), int(page_height - y - image_height)))
 
     def _render_text(
         self,
@@ -173,25 +175,35 @@ class PDFToJPG(PDFToSVG):
             ),
         )
 
-    def _render_image(
-        self,
-        page_nr: Decimal,
-        page_width: Decimal,
-        page_height: Decimal,
-        x: Decimal,
-        y: Decimal,
-        image_width: Decimal,
-        image_height: Decimal,
-        image: PILImage,  # type: ignore[valid-type]
-    ):
-        page_image = self._jpg_image_per_page.get(int(page_nr))
-        assert page_image is not None
+    #
+    # PUBLIC
+    #
 
-        # resize
-        image = image.resize((int(image_width), int(image_height)))
+    @staticmethod
+    def convert_pdf_to_jpg(pdf: "Document") -> typing.Dict[int, PILImage.Image]:  # type: ignore [name-defined]
+        """
+        This function converts a PDF to an PIL.Image.Image
+        """
+        image_of_each_page: typing.Dict[int, PILImage.Image] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
 
-        # paste
-        page_image.paste(image, (int(x), int(page_height - y - image_height)))
+            # register EventListener
+            cse: "PDFToJPG" = PDFToJPG()
+
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
+
+            # set in page
+            image_of_each_page[page_nr] = cse.convert_to_jpg()[0]
+
+        # return
+        return image_of_each_page
 
     def convert_to_jpg(self) -> typing.Dict[int, PILImage.Image]:  # type: ignore[valid-type]
         """

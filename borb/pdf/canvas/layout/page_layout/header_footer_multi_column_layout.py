@@ -24,6 +24,10 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
     which will do the actual rendering.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         # fmt: off
         self,
@@ -64,6 +68,10 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
         # add header and footer to first Page
         self._add_header_footer_to_current_page()
 
+    #
+    # PRIVATE
+    #
+
     def _add_header_footer_to_current_page(self) -> None:
 
         # add header
@@ -81,8 +89,9 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
             )
 
         # add footer
+        assert self._page_width is not None
+        assert self._page_height is not None
         if self._footer_callable is not None:
-            assert self._page_width is not None
             self._footer_callable(
                 self.get_page(),
                 Rectangle(
@@ -104,6 +113,10 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
         self._previous_element._previous_layout_box = (
             self._previous_element._previous_paint_box
         )
+
+    #
+    # PUBLIC
+    #
 
     def switch_to_next_page(self) -> "PageLayout":  # type: ignore[name-defined]
         """

@@ -23,6 +23,10 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
     It has convenience methods to calculate width and height, perform scaling, etc
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     class GradientType(enum.Enum):
         """
         This enumeration represents the type
@@ -73,15 +77,16 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
             gradient_type
         )
 
+    #
+    # PRIVATE
+    #
+
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         return super(GradientColoredDisconnectedShape, self)._get_content_box(
             available_space
         )
 
     def _paint_content_box(self, page: Page, bounding_box: Rectangle) -> None:
-
-        # scale to fit
-        self.scale_to_fit(bounding_box.width, bounding_box.height)
 
         # translate points to fit in box
         self.move_to(
@@ -182,3 +187,7 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
 
         # append to page
         page.append_to_content_stream(content)
+
+    #
+    # PUBLIC
+    #

@@ -14,6 +14,18 @@ class TrapNetAnnotation(Annotation):
     document.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(TrapNetAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

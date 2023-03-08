@@ -33,14 +33,28 @@ class XREF(Dictionary):
     It does not need to parse or load the whole file.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(XREF, self).__init__()
         self._entries: typing.List[Reference] = []
         self._cache: typing.Dict[int, Union[AnyPDFType, None]] = {}
 
-    ##
-    ## LOWLEVEL IO
-    ##
+    #
+    # PRIVATE
+    #
+
+    def __len__(self):
+        return len(self._entries)
+
+    def __str__(self):
+        out = "xref\n"
+        for s in self.sections:
+            out += str(s)
+        out += "startxref"
+        return out
 
     def _find_startxref_token(
         self,
@@ -64,7 +78,7 @@ class XREF(Dictionary):
             if idx >= 0:
                 return pos + idx
             # next iteration
-            pos = pos - 1024
+            pos = max(pos - 1024, 0)
             tok.seek(pos)
 
         # not found
@@ -97,36 +111,15 @@ class XREF(Dictionary):
             start_of_xref_offset = int(token.get_text())
             src.seek(start_of_xref_offset)
 
-    ##
-    ## GETTERS AND SETTERS
-    ##
+    #
+    # PUBLIC
+    #
 
     def add(self, r: Reference) -> "XREF":
         """
         Add a new Reference to this XREF
         """
         self._entries.append(r)
-        return self
-
-    def merge(self, other_xref: "XREF") -> "XREF":
-        """
-        Merge this XREF with another XREF
-        """
-        for r in other_xref._entries:
-            duplicate_entries = []
-            if r.object_number is not None:
-                duplicate_entries = [
-                    x for x in self._entries if x.object_number == r.object_number
-                ]
-            elif r.parent_stream_object_number is not None:
-                duplicate_entries = [
-                    x
-                    for x in self._entries
-                    if x.parent_stream_object_number == r.parent_stream_object_number
-                    and x.index_in_parent_stream == r.index_in_parent_stream
-                ]
-            if len(duplicate_entries) == 0:
-                self.add(r)
         return self
 
     def get_object(
@@ -240,16 +233,23 @@ class XREF(Dictionary):
         # return
         return obj
 
-    ##
-    ## OVERRIDES
-    ##
-
-    def __len__(self):
-        return len(self._entries)
-
-    def __str__(self):
-        out = "xref\n"
-        for s in self.sections:
-            out += str(s)
-        out += "startxref"
-        return out
+    def merge(self, other_xref: "XREF") -> "XREF":
+        """
+        Merge this XREF with another XREF
+        """
+        for r in other_xref._entries:
+            duplicate_entries = []
+            if r.object_number is not None:
+                duplicate_entries = [
+                    x for x in self._entries if x.object_number == r.object_number
+                ]
+            elif r.parent_stream_object_number is not None:
+                duplicate_entries = [
+                    x
+                    for x in self._entries
+                    if x.parent_stream_object_number == r.parent_stream_object_number
+                    and x.index_in_parent_stream == r.index_in_parent_stream
+                ]
+            if len(duplicate_entries) == 0:
+                self.add(r)
+        return self

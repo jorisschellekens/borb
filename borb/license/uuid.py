@@ -22,6 +22,18 @@ class UUID:
     While the probability that a UUID will be duplicated is not zero, it is close enough to zero to be negligible.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def get() -> str:
         """

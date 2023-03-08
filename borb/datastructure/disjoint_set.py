@@ -19,9 +19,38 @@ class disjointset:
     The last operation allows to find out efficiently if any two elements are in the same or different sets.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._parents = {}
         self._ranks = {}
+
+    #
+    # PRIVATE
+    #
+
+    def __contains__(self, item):
+        return item in self._parents
+
+    def __iter__(self):
+        return self._parents.__iter__()
+
+    def __len__(self):
+        return len(self._parents)
+
+    #
+    # PUBLIC
+    #
+
+    def add(self, x: Any) -> "disjointset":
+        """
+        Add an element to this disjointset
+        """
+        self._parents[x] = x
+        self._ranks[x] = 0
+        return self
 
     def find(self, x: Any) -> Any:
         """
@@ -31,32 +60,6 @@ class disjointset:
             return x
         else:
             return self.find(self._parents[x])
-
-    def union(self, x: Any, y: Any) -> "disjointset":
-        """
-        Mark two elements in this disjointset as equivalent,
-        propagating the equivalence throughout the disjointset
-        """
-        x_parent = self.find(x)
-        y_parent = self.find(y)
-        if x_parent is y_parent:
-            return self
-        if self._ranks[x_parent] > self._ranks[y_parent]:
-            self._parents[y_parent] = x_parent
-        elif self._ranks[y_parent] > self._ranks[x_parent]:
-            self._parents[x_parent] = y_parent
-        else:
-            self._parents[y_parent] = x_parent
-            self._ranks[x_parent] += 1
-        return self
-
-    def add(self, x: Any) -> "disjointset":
-        """
-        Add an element to this disjointset
-        """
-        self._parents[x] = x
-        self._ranks[x] = 0
-        return self
 
     def pop(self, x: Any) -> "disjointset":
         """
@@ -76,11 +79,20 @@ class disjointset:
             cluster_parents[p].append(x)
         return [v for k, v in cluster_parents.items()]
 
-    def __len__(self):
-        return len(self._parents)
-
-    def __contains__(self, item):
-        return item in self._parents
-
-    def __iter__(self):
-        return self._parents.__iter__()
+    def union(self, x: Any, y: Any) -> "disjointset":
+        """
+        Mark two elements in this disjointset as equivalent,
+        propagating the equivalence throughout the disjointset
+        """
+        x_parent = self.find(x)
+        y_parent = self.find(y)
+        if x_parent is y_parent:
+            return self
+        if self._ranks[x_parent] > self._ranks[y_parent]:
+            self._parents[y_parent] = x_parent
+        elif self._ranks[y_parent] > self._ranks[x_parent]:
+            self._parents[x_parent] = y_parent
+        else:
+            self._parents[y_parent] = x_parent
+            self._ranks[x_parent] += 1
+        return self

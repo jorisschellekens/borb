@@ -32,31 +32,9 @@ class PDFToSVG(EventListener):
     This implementation of EventListener renders a PDF to an SVG image
     """
 
-    @staticmethod
-    def convert_pdf_to_svg(pdf: Document) -> typing.Dict[int, ET.Element]:
-        """
-        This function converts a PDF to an SVG ET.Element
-        """
-        image_of_each_page: typing.Dict[int, ET.Element] = {}
-        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
-        for page_nr in range(0, number_of_pages):
-            # get Page object
-            page: Page = pdf.get_page(page_nr)
-            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
-
-            # register EventListener
-            cse: "PDFToSVG" = PDFToSVG()
-
-            # process Page
-            cse._event_occurred(BeginPageEvent(page))
-            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
-            cse._event_occurred(EndPageEvent(page))
-
-            # set in page
-            image_of_each_page[page_nr] = cse.convert_to_svg()[0]
-
-        # return
-        return image_of_each_page
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -68,6 +46,28 @@ class PDFToSVG(EventListener):
         self._page: typing.Optional[Page] = None
         self._page_nr = Decimal(-1)
         self._svg_per_page: typing.Dict[int, ET.Element] = {}
+
+    #
+    # PRIVATE
+    #
+
+    def _begin_page(
+        self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
+    ) -> None:
+
+        # init svg image
+        ET.register_namespace("", "http://www.w3.org/2000/svg")
+        svg_element = ET.Element("svg")
+        svg_element.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
+        svg_element.set("viewbox", "0 0 %d %d" % (page_width, page_height))
+
+        # white background
+        rct_element = ET.Element("rect")
+        rct_element.set("width", str(page_width))
+        rct_element.set("height", str(page_height))
+        rct_element.set("style", "fill:rgb(255, 255, 255);")
+        svg_element.append(rct_element)
+        self._svg_per_page[int(page_nr)] = svg_element  # type: ignore [assignment]
 
     def _event_occurred(self, event: Event) -> None:
         # BeginPageEvent
@@ -120,23 +120,38 @@ class PDFToSVG(EventListener):
                 event._text,
             )
 
-    def _begin_page(
-        self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
-    ) -> None:
+    def _render_image(
+        self,
+        page_nr: Decimal,
+        page_width: Decimal,
+        page_height: Decimal,
+        x: Decimal,
+        y: Decimal,
+        image_width: Decimal,
+        image_height: Decimal,
+        image: PILImage,  # type: ignore[valid-type]
+    ):
+        pass
 
-        # init svg image
-        ET.register_namespace("", "http://www.w3.org/2000/svg")
-        svg_element = ET.Element("svg")
-        svg_element.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
-        svg_element.set("viewbox", "0 0 %d %d" % (page_width, page_height))
+        # base64 image
+        with io.BytesIO() as output:
+            image.convert("RGB").save(output, format="JPEG")  # type: ignore[attr-defined]
+            base64_image = "data:image/png;base64," + base64.b64encode(
+                output.getvalue()
+            ).decode("utf-8")
 
-        # white background
-        rct_element = ET.Element("rect")
-        rct_element.set("width", str(page_width))
-        rct_element.set("height", str(page_height))
-        rct_element.set("style", "fill:rgb(255, 255, 255);")
-        svg_element.append(rct_element)
-        self._svg_per_page[int(page_nr)] = svg_element  # type: ignore [assignment]
+        image_element = ET.Element("image")
+        image_element.set("width", str(int(image_width)))
+        image_element.set("height", str(int(image_height)))
+        image_element.set("xlink:href", base64_image)
+
+        # position
+        image_element.set("x", str(int(x)))
+        image_element.set("y", str(int(page_height - y - image_height)))
+
+        # append
+        assert self._svg_per_page[int(page_nr)] is not None
+        self._svg_per_page[int(page_nr)].append(image_element)
 
     def _render_text(
         self,
@@ -193,38 +208,35 @@ class PDFToSVG(EventListener):
         assert self._svg_per_page[int(page_nr)] is not None
         self._svg_per_page[int(page_nr)].append(text_element)
 
-    def _render_image(
-        self,
-        page_nr: Decimal,
-        page_width: Decimal,
-        page_height: Decimal,
-        x: Decimal,
-        y: Decimal,
-        image_width: Decimal,
-        image_height: Decimal,
-        image: PILImage,  # type: ignore[valid-type]
-    ):
-        pass
+    #
+    # PUBLIC
+    #
 
-        # base64 image
-        with io.BytesIO() as output:
-            image.convert("RGB").save(output, format="JPEG")  # type: ignore[attr-defined]
-            base64_image = "data:image/png;base64," + base64.b64encode(
-                output.getvalue()
-            ).decode("utf-8")
+    @staticmethod
+    def convert_pdf_to_svg(pdf: Document) -> typing.Dict[int, ET.Element]:
+        """
+        This function converts a PDF to an SVG ET.Element
+        """
+        image_of_each_page: typing.Dict[int, ET.Element] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
 
-        image_element = ET.Element("image")
-        image_element.set("width", str(int(image_width)))
-        image_element.set("height", str(int(image_height)))
-        image_element.set("xlink:href", base64_image)
+            # register EventListener
+            cse: "PDFToSVG" = PDFToSVG()
 
-        # position
-        image_element.set("x", str(int(x)))
-        image_element.set("y", str(int(page_height - y - image_height)))
+            # process Page
+            cse._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [cse])
+            cse._event_occurred(EndPageEvent(page))
 
-        # append
-        assert self._svg_per_page[int(page_nr)] is not None
-        self._svg_per_page[int(page_nr)].append(image_element)
+            # set in page
+            image_of_each_page[page_nr] = cse.convert_to_svg()[0]
+
+        # return
+        return image_of_each_page
 
     def convert_to_svg(self) -> typing.Dict[int, ET.Element]:
         """

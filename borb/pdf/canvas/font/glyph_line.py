@@ -21,10 +21,22 @@ class Glyph:
     or contribute to a specific meaning of what is written, with that meaning dependent on cultural and social usage.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, character_code: int, unicode_str: str, width: Decimal):
         self._character_code: int = character_code
         self._unicode_str: str = unicode_str
         self._width: Decimal = width
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_character_code(self) -> int:
         """
@@ -50,6 +62,57 @@ class GlyphLine:
     This class represents a line of Glyph objects.
     This class contains utility methods to work with collections of Glyph objects.
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(
+        self,
+        glyphs: typing.List[Glyph],
+        font: Font,
+        font_size: Decimal,
+        character_spacing: Decimal = Decimal(0),
+        word_spacing: Decimal = Decimal(0),
+        horizontal_scaling: Decimal = Decimal(100),
+    ):
+        assert isinstance(font, Font)
+        self._glyphs: typing.List[Glyph] = glyphs
+        self._font = font
+        self._font_size = font_size
+        self._character_spacing = character_spacing
+        self._word_spacing = word_spacing
+        self._horizontal_scaling = horizontal_scaling
+
+    #
+    # PRIVATE
+    #
+
+    def __len__(self):
+        return len(self._glyphs)
+
+    def __str__(self):
+        return self.get_text()
+
+    @staticmethod
+    def _isspace(c: str) -> bool:
+        return ord(c) in [9, 10, 11, 12, 13, 32]
+
+    #
+    # PUBLIC
+    #
+
+    def add(self, glyph_or_glyphline: typing.Union[Glyph, "GlyphLine"]) -> "GlyphLine":
+        """
+        This function appends a Glyph (or all Glyph objects in a GlyphLine) to this GlyphLine.
+        This function returns self.
+        """
+        if isinstance(glyph_or_glyphline, Glyph):
+            self._glyphs.append(glyph_or_glyphline)
+        if isinstance(glyph_or_glyphline, GlyphLine):
+            for g in glyph_or_glyphline._glyphs:
+                self._glyphs.append(g)
+        return self
 
     @staticmethod
     def from_bytes(
@@ -145,64 +208,11 @@ class GlyphLine:
             glyphs, font, font_size, character_spacing, word_spacing, horizontal_scaling
         )
 
-    def __init__(
-        self,
-        glyphs: typing.List[Glyph],
-        font: Font,
-        font_size: Decimal,
-        character_spacing: Decimal = Decimal(0),
-        word_spacing: Decimal = Decimal(0),
-        horizontal_scaling: Decimal = Decimal(100),
-    ):
-        assert isinstance(font, Font)
-        self._glyphs: typing.List[Glyph] = glyphs
-        self._font = font
-        self._font_size = font_size
-        self._character_spacing = character_spacing
-        self._word_spacing = word_spacing
-        self._horizontal_scaling = horizontal_scaling
-
-    def split(self) -> typing.List["GlyphLine"]:
+    def get_text(self) -> str:
         """
-        This function splits the GlyphLine into several GlyphLine objects,
-        one per Glyph in the (original, this) GlyphLine.
+        This function returns the unicode str represented by the Glyph objects in this GlyphLine
         """
-        out: typing.List["GlyphLine"] = []
-        for g in self._glyphs:
-            out.append(
-                GlyphLine(
-                    b"",
-                    self._font,
-                    self._font_size,
-                    self._character_spacing,
-                    self._word_spacing,
-                    self._horizontal_scaling,
-                )
-            )
-            out[-1]._glyphs = [g]
-        return out
-
-    def add(self, glyph_or_glyphline: typing.Union[Glyph, "GlyphLine"]) -> "GlyphLine":
-        """
-        This function appends a Glyph (or all Glyph objects in a GlyphLine) to this GlyphLine.
-        This function returns self.
-        """
-        if isinstance(glyph_or_glyphline, Glyph):
-            self._glyphs.append(glyph_or_glyphline)
-        if isinstance(glyph_or_glyphline, GlyphLine):
-            for g in glyph_or_glyphline._glyphs:
-                self._glyphs.append(g)
-        return self
-
-    def uses_descent(self) -> bool:
-        """
-        This function returns True if any of the Glyph objects in the GlyphLine has a non-zero descent, False otherwise
-        """
-        return any([(x in ["y", "p", "q", "f", "g", "j"]) for x in self.get_text()])
-
-    @staticmethod
-    def _isspace(c: str) -> bool:
-        return ord(c) in [9, 10, 11, 12, 13, 32]
+        return "".join([x.get_unicode_str() for x in self._glyphs])
 
     def get_width_in_text_space(self) -> Decimal:
         """
@@ -233,14 +243,28 @@ class GlyphLine:
         # return
         return w
 
-    def get_text(self) -> str:
+    def split(self) -> typing.List["GlyphLine"]:
         """
-        This function returns the unicode str represented by the Glyph objects in this GlyphLine
+        This function splits the GlyphLine into several GlyphLine objects,
+        one per Glyph in the (original, this) GlyphLine.
         """
-        return "".join([x.get_unicode_str() for x in self._glyphs])
+        out: typing.List["GlyphLine"] = []
+        for g in self._glyphs:
+            out.append(
+                GlyphLine(
+                    b"",
+                    self._font,
+                    self._font_size,
+                    self._character_spacing,
+                    self._word_spacing,
+                    self._horizontal_scaling,
+                )
+            )
+            out[-1]._glyphs = [g]
+        return out
 
-    def __len__(self):
-        return len(self._glyphs)
-
-    def __str__(self):
-        return self.get_text()
+    def uses_descent(self) -> bool:
+        """
+        This function returns True if any of the Glyph objects in the GlyphLine has a non-zero descent, False otherwise
+        """
+        return any([(x in ["y", "p", "q", "f", "g", "j"]) for x in self.get_text()])

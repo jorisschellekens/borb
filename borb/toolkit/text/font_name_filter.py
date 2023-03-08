@@ -17,16 +17,17 @@ class FontNameFilter(EventListener):
     It only allows ChunkOfTextRenderEvent to pass if their corresponding font (name) matches.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, font_name: str):
         self._font_name = font_name
         self._listeners: typing.List[EventListener] = []
 
-    def add_listener(self, listener: "EventListener") -> "FontNameFilter":
-        """
-        This methods add an EventListener to this (meta)-EventListener
-        """
-        self._listeners.append(listener)
-        return self
+    #
+    # PRIVATE
+    #
 
     def _event_occurred(self, event: "Event") -> None:
         # filter ChunkOfTextRenderEvent
@@ -39,3 +40,14 @@ class FontNameFilter(EventListener):
         # default
         for l in self._listeners:
             l._event_occurred(event)
+
+    #
+    # PUBLIC
+    #
+
+    def add_listener(self, listener: "EventListener") -> "FontNameFilter":
+        """
+        This methods add an EventListener to this (meta)-EventListener
+        """
+        self._listeners.append(listener)
+        return self

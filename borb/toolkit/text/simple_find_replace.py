@@ -52,19 +52,16 @@ class SimpleFindReplace:
         """
         from borb.toolkit import RegularExpressionTextExtraction, PDFMatch
 
+        number_of_pages: int = int(
+            doc.get_document_info().get_number_of_pages() or Decimal(0)
+        )
         matches_per_page: typing.Dict[
             int, typing.List[PDFMatch]
         ] = RegularExpressionTextExtraction.get_matches_for_pdf(pattern, doc)
         if page_range is None:
-            page_range = [
-                x for x in range(0, int(doc.get_document_info().get_number_of_pages()))
-            ]
+            page_range = [x for x in range(0, number_of_pages)]
         else:
-            page_range = [
-                x
-                for x in page_range
-                if x >= 0 and x < doc.get_document_info().get_number_of_pages()
-            ]
+            page_range = [x for x in page_range if x >= 0 and x < number_of_pages]
         for page_nr in page_range:
 
             # insert redaction annotations

@@ -21,6 +21,10 @@ class UnderlineAnnotation(Annotation):
     annotations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self, bounding_box: Rectangle, stroke_color: Color = HexColor("faed27")
     ):
@@ -64,3 +68,11 @@ class UnderlineAnnotation(Annotation):
         self["Border"].append(bDecimal(0))
         self["Border"].append(bDecimal(0))
         self["Border"].append(bDecimal(1))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

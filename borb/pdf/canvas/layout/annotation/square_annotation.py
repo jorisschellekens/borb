@@ -24,6 +24,10 @@ class SquareAnnotation(Annotation):
     Table 168).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -81,3 +85,11 @@ class SquareAnnotation(Annotation):
             self["RD"].append(bDecimal(rectangle_difference[1]))
             self["RD"].append(bDecimal(rectangle_difference[2]))
             self["RD"].append(bDecimal(rectangle_difference[3]))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

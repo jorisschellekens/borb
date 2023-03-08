@@ -17,6 +17,63 @@ class XREFTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing XREF objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    def _section_xref(self, context: Optional[WriteTransformerState] = None):
+        assert (
+            context is not None
+        ), "A WriteTransformerState must be defined in order to write XREF objects."
+
+        # get all references
+        indirect_objects: typing.List[AnyPDFType] = [
+            item
+            for sublist in [v for k, v in context.indirect_objects_by_hash.items()]
+            for item in sublist
+        ]
+        references: typing.List[Reference] = []
+        for obj in indirect_objects:
+            ref = obj.get_reference()  # type: ignore [union-attr]
+            if ref is not None:
+                references.append(ref)
+        # sort
+        references.sort(key=lambda x: (x.object_number or 0))
+
+        # insert magic entry if needed
+        if len(references) == 0 or references[0].generation_number != 65535:
+            references.insert(
+                0,
+                Reference(
+                    generation_number=65535,
+                    object_number=0,
+                    byte_offset=0,
+                    is_in_use=False,
+                ),
+            )
+
+        # divide into sections
+        sections = [[references[0]]]
+        for i in range(1, len(references)):
+            ref = references[i]
+            prev_object_number = sections[-1][-1].object_number
+            assert prev_object_number is not None
+            if ref.object_number == prev_object_number + 1:
+                sections[-1].append(ref)
+            else:
+                sections.append([ref])
+
+        # return
+        return sections
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a cross-reference table
@@ -113,48 +170,3 @@ class XREFTransformer(Transformer):
 
         # write EOF
         context.destination.write(bytes("%%EOF", "latin1"))
-
-    def _section_xref(self, context: Optional[WriteTransformerState] = None):
-        assert (
-            context is not None
-        ), "A WriteTransformerState must be defined in order to write XREF objects."
-
-        # get all references
-        indirect_objects: typing.List[AnyPDFType] = [
-            item
-            for sublist in [v for k, v in context.indirect_objects_by_hash.items()]
-            for item in sublist
-        ]
-        references: typing.List[Reference] = []
-        for obj in indirect_objects:
-            ref = obj.get_reference()  # type: ignore [union-attr]
-            if ref is not None:
-                references.append(ref)
-        # sort
-        references.sort(key=lambda x: x.object_number)
-
-        # insert magic entry if needed
-        if len(references) == 0 or references[0].generation_number != 65535:
-            references.insert(
-                0,
-                Reference(
-                    generation_number=65535,
-                    object_number=0,
-                    byte_offset=0,
-                    is_in_use=False,
-                ),
-            )
-
-        # divide into sections
-        sections = [[references[0]]]
-        for i in range(1, len(references)):
-            ref = references[i]
-            prev_object_number = sections[-1][-1].object_number
-            assert prev_object_number is not None
-            if ref.object_number == prev_object_number + 1:
-                sections[-1].append(ref)
-            else:
-                sections.append([ref])
-
-        # return
-        return sections

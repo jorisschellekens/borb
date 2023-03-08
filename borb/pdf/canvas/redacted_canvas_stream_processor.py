@@ -19,21 +19,33 @@ class CopyCommandOperator(CanvasOperator):
     This CanvasOperator copies an existing operator and writes its bytes to the content stream of the canvas
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, operator_to_copy: CanvasOperator):
         super().__init__("", 0)
         self._operator_to_copy = operator_to_copy
 
-    def get_text(self) -> str:
-        """
-        Return the str that invokes this CanvasOperator
-        """
-        return self._operator_to_copy.get_text()
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_number_of_operands(self) -> int:
         """
         Return the number of operands for this CanvasOperator
         """
         return self._operator_to_copy.get_number_of_operands()
+
+    def get_text(self) -> str:
+        """
+        Return the str that invokes this CanvasOperator
+        """
+        return self._operator_to_copy.get_text()
 
     def invoke(
         self,
@@ -72,18 +84,21 @@ class CopyCommandOperator(CanvasOperator):
         )
 
 
-#
-# special copies of text-rendering operators
-#
-
-
 class ShowTextMod(CanvasOperator):
     """
     Show a text string.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Tj", 1)
+
+    #
+    # PRIVATE
+    #
 
     def _show_text_unmodified(
         self, canvas_stream_processor: "CanvasStreamProcessor", s: String
@@ -103,6 +118,10 @@ class ShowTextMod(CanvasOperator):
         canvas_stream_processor._redacted_content += ChunkOfText(  # type: ignore [attr-defined]
             s, f
         )._write_text_bytes()
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,
@@ -184,13 +203,21 @@ class ShowTextMod(CanvasOperator):
 class ShowTextWithGlyphPositioningMod(CanvasOperator):
     """
     This operator represents a modified version of the TJ operator
-    In stead of always rendering the text, it takes into account the location
+    Instead of always rendering the text, it takes into account the location
     at which the text is to be rendered, if the text falls in one of the redacted areas
     it will not render the text.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("TJ", 1)
+
+    #
+    # PRIVATE
+    #
 
     def _write_chunk_of_text(
         self, canvas_stream_processor: "CanvasStreamProcessor", s: str, f: "Font"  # type: ignore[name-defined]
@@ -201,6 +228,10 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
         canvas_stream_processor._redacted_content += ChunkOfText(  # type: ignore[attr-defined]
             s, f
         )._write_text_bytes()
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,
@@ -304,11 +335,6 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
             canvas.graphics_state.font = font_name
 
 
-#
-# redacted version of Canvas
-#
-
-
 class RedactedCanvasStreamProcessor(CanvasStreamProcessor):
     """
     In computer science and visualization, a canvas is a container that holds various drawing elements
@@ -316,6 +342,10 @@ class RedactedCanvasStreamProcessor(CanvasStreamProcessor):
     It takes its name from the canvas used in visual arts.
     This implementation of Canvas automatically handles redaction (removal of content).
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -342,6 +372,14 @@ class RedactedCanvasStreamProcessor(CanvasStreamProcessor):
 
         # TJ
         self._canvas_operators["TJ"] = ShowTextWithGlyphPositioningMod()
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_redacted_content(self) -> bytes:
         """

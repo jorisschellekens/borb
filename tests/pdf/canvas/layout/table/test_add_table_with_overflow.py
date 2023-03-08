@@ -104,13 +104,12 @@ class TestAddTableWithOverflow(unittest.TestCase):
         pdf.add_page(page)
 
         # set PageLayout
-        layout = SingleColumnLayoutWithOverflow(page, horizontal_margin=Decimal(5), vertical_margin=Decimal(5))
+        layout = SingleColumnLayoutWithOverflow(
+            page, horizontal_margin=Decimal(5), vertical_margin=Decimal(5)
+        )
 
         # add FlexibleColumnWidthTable
-        table = FlexibleColumnWidthTable(
-            number_of_columns=3,
-            number_of_rows=72
-        )
+        table = FlexibleColumnWidthTable(number_of_columns=3, number_of_rows=72)
         layout.add(table)
 
         # determine output location

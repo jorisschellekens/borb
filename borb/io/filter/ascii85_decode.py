@@ -15,6 +15,18 @@ class ASCII85Decode:
     reproducing the original binary data.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def decode(bytes_in: bytes) -> bytes:
         """

@@ -14,6 +14,18 @@ class FileAttachmentAnnotation(Annotation):
     PDF file (see 7.11.4, “Embedded File Streams”).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(FileAttachmentAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

@@ -17,9 +17,21 @@ class VersionAsCommentTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing the borb version in every PDF
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__()
         self._has_been_used: bool = False
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(self, any: AnyPDFType):
         """

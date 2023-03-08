@@ -2,6 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
+from borb.io.read.pdf_object import PDFObject
 from borb.pdf.pdf import PDF
 
 
@@ -27,7 +28,7 @@ class TestExportPDFToJSON(unittest.TestCase):
         with open(input_file, "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
             with open(self.output_dir / "output.json", "w") as json_file_handle:
-                json_file_handle.write(json.dumps(doc.to_json_serializable(), indent=4))
+                json_file_handle.write(json.dumps(PDFObject._to_json(doc), indent=4))
 
 
 if __name__ == "__main__":

@@ -34,41 +34,6 @@ class Color(object):
         pass
 
 
-class RGBColor(Color):
-    """
-    An RGB color space is any additive color space based on the RGB color model.
-    A particular color space that employs RGB primaries for part of its specification is defined by the three chromaticities of the red, green, and blue additive primaries,
-    and can produce any chromaticity that is the 2D triangle defined by those primary colors (ie. excluding transfer function, white point, etc.).
-    The primary colors are specified in terms of their CIE 1931 color space chromaticity coordinates (x,y), linking them to human-visible color.
-    RGB is an abbreviation for red–green–blue.
-    """
-
-    def __init__(self, r: Decimal, g: Decimal, b: Decimal):
-        assert 0 <= r <= 1
-        assert 0 <= g <= 1
-        assert 0 <= b <= 1
-        self.red = r
-        self.green = g
-        self.blue = b
-
-    def to_rgb(self):
-        """
-        This method returns the RGB representation of this Color
-        """
-        return self
-
-    def to_hex_string(self):
-        """
-        This method returns a hexadecimal string representing the RGB color
-        """
-        return "#{:02x}{:02x}{:02x}".format(
-            int(self.red * 255), int(self.green * 255), int(self.blue * 255)
-        )
-
-    def __deepcopy__(self, memodict={}):
-        return RGBColor(self.red, self.green, self.blue)
-
-
 class CMYKColor(Color):
     """
     The CMYK color model (also known as process color, or four color) is a subtractive color model, based on the CMY color model,
@@ -87,11 +52,26 @@ class CMYKColor(Color):
     instead of the combination of cyan, magenta, and yellow.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, c: Decimal, m: Decimal, y: Decimal, k: Decimal):
         self.cyan = c
         self.magenta = m
         self.yellow = y
         self.key = k
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        return CMYKColor(self.cyan, self.magenta, self.yellow, self.key)
+
+    #
+    # PUBLIC
+    #
 
     def to_rgb(self) -> "RGBColor":
         """
@@ -103,9 +83,6 @@ class CMYKColor(Color):
         b = (ONE - self.yellow) * (ONE - self.key)
         return RGBColor(r, g, b)
 
-    def __deepcopy__(self, memodict={}):
-        return CMYKColor(self.cyan, self.magenta, self.yellow, self.key)
-
 
 class GrayColor(Color):
     """
@@ -116,60 +93,29 @@ class GrayColor(Color):
     The contrast ranges from black at the weakest intensity to white at the strongest.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, g: Decimal):
         self.gray_level = g
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        return GrayColor(self.gray_level)
+
+    #
+    # PUBLIC
+    #
 
     def to_rgb(self) -> "RGBColor":
         """
         This method returns the RGB representation of this Color
         """
         return RGBColor(self.gray_level, self.gray_level, self.gray_level)
-
-    def __deepcopy__(self, memodict={}):
-        return GrayColor(self.gray_level)
-
-
-class HexColor(RGBColor):
-    """
-    A hex triplet is a six-digit, three-byte hexadecimal number used in HTML, CSS, SVG, and other computing applications to represent colors.
-    The bytes represent the red, green, and blue components of the color.
-    One byte represents a number in the range 00 to FF (in hexadecimal notation), or 0 to 255 in decimal notation.
-    This represents the least (0) to the most (255) intensity of each of the color components.
-
-    Thus web colors specify colors in the 24-bit RGB color scheme.
-
-    The hex triplet is formed by concatenating three bytes in hexadecimal notation, in the following order:
-    - Byte 1: red value (color type red)
-    - Byte 2: green value (color type green)
-    - Byte 3: blue value (color type blue)
-    """
-
-    def __init__(self, hex_string: str):
-        if hex_string.startswith("#"):
-            hex_string = hex_string[1:]
-        assert len(hex_string) == 6 or len(hex_string) == 8
-        r: float = 0
-        g: float = 0
-        b: float = 0
-        a: float = 0
-        if len(hex_string) == 6:
-            a = 255
-            r = int(hex_string[0:2], 16)
-            g = int(hex_string[2:4], 16)
-            b = int(hex_string[4:6], 16)
-        if len(hex_string) == 8:
-            a = int(hex_string[0:2], 16)
-            r = int(hex_string[2:4], 16)
-            g = int(hex_string[4:6], 16)
-            b = int(hex_string[6:8], 16)
-        a /= 255
-        r /= 255
-        g /= 255
-        b /= 255
-        super(HexColor, self).__init__(Decimal(r), Decimal(g), Decimal(b))
-
-    def __deepcopy__(self, memodict={}):
-        return HexColor(self.to_hex_string())
 
 
 class HSVColor(Color):
@@ -194,40 +140,56 @@ class HSVColor(Color):
     while shining a dim light on a red object causes the object to appear darker and less bright).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, hue: Decimal, saturation: Decimal, value: Decimal):
         self.hue = hue
         self.saturation = saturation
         self.value = value
 
-    def to_rgb(self) -> "RGBColor":
-        """
-        This method returns the RGB representation of this Color
-        """
-        h, s, v = self.hue, self.saturation, self.value
-        ONE = Decimal(1)
-        SIX = Decimal(6)
-        if s == 0:
-            return RGBColor(Decimal(v), Decimal(v), Decimal(v))
-        i = int(h * SIX)  # XXX assume int() truncates!
-        f = (h * SIX) - i
-        p, q, t = v * (ONE - s), v * (ONE - s * f), v * (ONE - s * (ONE - f))
-        i %= 6
-        if i == 0:
-            return RGBColor(Decimal(v), Decimal(t), Decimal(p))
-        if i == 1:
-            return RGBColor(Decimal(q), Decimal(v), Decimal(p))
-        if i == 2:
-            return RGBColor(Decimal(p), Decimal(v), Decimal(t))
-        if i == 3:
-            return RGBColor(Decimal(p), Decimal(q), Decimal(v))
-        if i == 4:
-            return RGBColor(Decimal(t), Decimal(p), Decimal(v))
-        if i == 5:
-            return RGBColor(Decimal(v), Decimal(p), Decimal(q))
-        return RGBColor(Decimal(0), Decimal(0), Decimal(0))
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        return HSVColor(self.hue, self.saturation, self.value)
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
-    def from_rgb(c: RGBColor) -> "HSVColor":
+    def analogous(color: Color) -> typing.List[Color]:
+        """
+        This function returns an analogous color scheme.
+        Analogous color schemes use colors that are next to each other on the color wheel. They usually match well and create serene and comfortable designs.
+        Analogous color schemes are often found in nature and are harmonious and pleasing to the eye.
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        return [
+            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
+            for a in [0, 15, 30]
+        ]
+
+    @staticmethod
+    def complementary(color: Color):
+        """
+        This function returns an HSV color whose hue is the complement of the current HSV color
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
+        return HSVColor(Decimal(new_hue / 360), c.saturation, c.value)
+
+    def darker(self) -> "HSVColor":
+        """
+        This function returns a darker shade of the current HSV color
+        """
+        return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
+
+    @staticmethod
+    def from_rgb(c: "RGBColor") -> "HSVColor":
         """
         This method returns the HSV representation of an RGB color
         """
@@ -253,34 +215,6 @@ class HSVColor(Color):
         FULL_CIRCLE = Decimal(360)
         return HSVColor(h / FULL_CIRCLE, s / HUNDRED, v / HUNDRED)
 
-    def darker(self) -> "HSVColor":
-        """
-        This function returns a darker shade of the current HSV color
-        """
-        return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
-
-    @staticmethod
-    def complementary(color: Color):
-        """
-        This function returns an HSV color whose hue is the complement of the current HSV color
-        """
-        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
-        new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
-        return HSVColor(Decimal(new_hue / 360), c.saturation, c.value)
-
-    @staticmethod
-    def analogous(color: Color) -> typing.List[Color]:
-        """
-        This function returns an analogous color scheme.
-        Analogous color schemes use colors that are next to each other on the color wheel. They usually match well and create serene and comfortable designs.
-        Analogous color schemes are often found in nature and are harmonious and pleasing to the eye.
-        """
-        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
-        return [
-            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
-            for a in [0, 15, 30]
-        ]
-
     @staticmethod
     def split_complementary(color: Color) -> typing.List[Color]:
         """
@@ -294,20 +228,6 @@ class HSVColor(Color):
         return [
             HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
             for a in [0, 165, 195]
-        ]
-
-    @staticmethod
-    def triadic(color: Color) -> typing.List[Color]:
-        """
-        This function returns a triadic color scheme.
-        A triadic color scheme uses colors that are evenly spaced around the color wheel.
-        Triadic color harmonies tend to be quite vibrant, even if you use pale or unsaturated versions of your hues.
-        To use a triadic harmony successfully, the colors should be carefully balanced - let one color dominate and use the two others for accent.
-        """
-        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
-        return [
-            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
-            for a in [0, 60, 120]
         ]
 
     @staticmethod
@@ -344,8 +264,254 @@ class HSVColor(Color):
             for a in [0, 90, 180, 270]
         ]
 
+    def to_rgb(self) -> "RGBColor":
+        """
+        This method returns the RGB representation of this Color
+        """
+        h, s, v = self.hue, self.saturation, self.value
+        ONE = Decimal(1)
+        SIX = Decimal(6)
+        if s == 0:
+            return RGBColor(Decimal(v), Decimal(v), Decimal(v))
+        i = int(h * SIX)  # XXX assume int() truncates!
+        f = (h * SIX) - i
+        p, q, t = v * (ONE - s), v * (ONE - s * f), v * (ONE - s * (ONE - f))
+        i %= 6
+        if i == 0:
+            return RGBColor(Decimal(v), Decimal(t), Decimal(p))
+        if i == 1:
+            return RGBColor(Decimal(q), Decimal(v), Decimal(p))
+        if i == 2:
+            return RGBColor(Decimal(p), Decimal(v), Decimal(t))
+        if i == 3:
+            return RGBColor(Decimal(p), Decimal(q), Decimal(v))
+        if i == 4:
+            return RGBColor(Decimal(t), Decimal(p), Decimal(v))
+        if i == 5:
+            return RGBColor(Decimal(v), Decimal(p), Decimal(q))
+        return RGBColor(Decimal(0), Decimal(0), Decimal(0))
+
+    @staticmethod
+    def triadic(color: Color) -> typing.List[Color]:
+        """
+        This function returns a triadic color scheme.
+        A triadic color scheme uses colors that are evenly spaced around the color wheel.
+        Triadic color harmonies tend to be quite vibrant, even if you use pale or unsaturated versions of your hues.
+        To use a triadic harmony successfully, the colors should be carefully balanced - let one color dominate and use the two others for accent.
+        """
+        c: HSVColor = HSVColor.from_rgb(color.to_rgb())
+        return [
+            HSVColor(Decimal((int(c.hue * 360 + a) % 360) / 360), c.saturation, c.value)
+            for a in [0, 60, 120]
+        ]
+
+
+class RGBColor(Color):
+    """
+    An RGB color space is any additive color space based on the RGB color model.
+    A particular color space that employs RGB primaries for part of its specification is defined by the three chromaticities of the red, green, and blue additive primaries,
+    and can produce any chromaticity that is the 2D triangle defined by those primary colors (ie. excluding transfer function, white point, etc.).
+    The primary colors are specified in terms of their CIE 1931 color space chromaticity coordinates (x,y), linking them to human-visible color.
+    RGB is an abbreviation for red–green–blue.
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self, r: Decimal, g: Decimal, b: Decimal):
+        assert 0 <= r <= 1
+        assert 0 <= g <= 1
+        assert 0 <= b <= 1
+        self.red = r
+        self.green = g
+        self.blue = b
+
+    #
+    # PRIVATE
+    #
+
     def __deepcopy__(self, memodict={}):
-        return HSVColor(self.hue, self.saturation, self.value)
+        return RGBColor(self.red, self.green, self.blue)
+
+    #
+    # PUBLIC
+    #
+
+    def to_hex_string(self):
+        """
+        This method returns a hexadecimal string representing the RGB color
+        """
+        return "#{:02x}{:02x}{:02x}".format(
+            int(self.red * 255), int(self.green * 255), int(self.blue * 255)
+        )
+
+    def to_rgb(self):
+        """
+        This method returns the RGB representation of this Color
+        """
+        return self
+
+
+class HexColor(RGBColor):
+    """
+    A hex triplet is a six-digit, three-byte hexadecimal number used in HTML, CSS, SVG, and other computing applications to represent colors.
+    The bytes represent the red, green, and blue components of the color.
+    One byte represents a number in the range 00 to FF (in hexadecimal notation), or 0 to 255 in decimal notation.
+    This represents the least (0) to the most (255) intensity of each of the color components.
+
+    Thus web colors specify colors in the 24-bit RGB color scheme.
+
+    The hex triplet is formed by concatenating three bytes in hexadecimal notation, in the following order:
+    - Byte 1: red value (color type red)
+    - Byte 2: green value (color type green)
+    - Byte 3: blue value (color type blue)
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self, hex_string: str):
+        if hex_string.startswith("#"):
+            hex_string = hex_string[1:]
+        assert len(hex_string) == 6 or len(hex_string) == 8
+        r: float = 0
+        g: float = 0
+        b: float = 0
+        a: float = 0
+        if len(hex_string) == 6:
+            a = 255
+            r = int(hex_string[0:2], 16)
+            g = int(hex_string[2:4], 16)
+            b = int(hex_string[4:6], 16)
+        if len(hex_string) == 8:
+            a = int(hex_string[0:2], 16)
+            r = int(hex_string[2:4], 16)
+            g = int(hex_string[4:6], 16)
+            b = int(hex_string[6:8], 16)
+        a /= 255
+        r /= 255
+        g /= 255
+        b /= 255
+        super(HexColor, self).__init__(Decimal(r), Decimal(g), Decimal(b))
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        return HexColor(self.to_hex_string())
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, HexColor)
+            and other.to_hex_string() == self.to_hex_string()
+        )
+
+    def __hash__(self):
+        return hash(self.to_hex_string())
+
+    #
+    # PUBLIC
+    #
+
+
+class Separation(Color):
+    """
+    When printing a page, most devices produce a single composite page on which all process colorants (and spot
+    colorants, if any) are combined. However, some devices, such as imagesetters, produce a separate,
+    monochromatic rendition of the page, called a separation, for each colorant. When the separations are later
+    combined—on a printing press, for example—and the proper inks or other colorants are applied to them, the
+    result is a full-colour page.
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self, color_space: typing.List[typing.Any], xs: typing.List[Decimal]):
+        super(Separation, self).__init__()
+        self.color_space = color_space
+        self.xs = xs
+        self._to_rgb_cache: typing.Optional[RGBColor] = None
+        """"
+        except Exception as ex:
+            if len(color_space) != 0 and len(xs) != 0:
+                logger.debug("Unable to instantiate separation color, defaulting to black")
+            self.rgb_color = RGBColor(Decimal(0), Decimal(0), Decimal(0))
+            pass
+        """
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        out: Separation = Separation([], [])
+        out._to_rgb_cache = self.to_rgb()
+        return out
+
+    #
+    # PUBLIC
+    #
+
+    def to_rgb(self) -> "RGBColor":
+        """
+        This method returns the RGB representation of this Color
+        """
+        if self._to_rgb_cache is not None:
+            return self._to_rgb_cache
+
+        assert isinstance(self.color_space[3], Function)
+        tint_function: Function = self.color_space[3]
+
+        # run function
+        try:
+            ys: typing.List[Decimal] = tint_function.evaluate(self.xs)
+            assert ys is not None
+        except:
+            logger.info(
+                "Unable to execute TintFunction for Separation %d, defaulting to black"
+                % id(self)
+            )
+            self._to_rgb_cache = RGBColor(Decimal(0), Decimal(0), Decimal(0))
+            return self._to_rgb_cache
+
+        # determine the color space to map to
+        alternative_color_space: typing.Optional[Name] = None
+        if isinstance(self.color_space[2], Name):
+            alternative_color_space = self.color_space[2]
+        if (
+            isinstance(self.color_space[2], List)
+            and len(self.color_space[2]) == 2
+            and isinstance(self.color_space[2][0], Name)
+        ):
+            alternative_color_space = self.color_space[2][0]
+
+        # DeviceCMYK
+        if alternative_color_space == "DeviceCMYK":
+            self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
+            return self._to_rgb_cache
+
+        # DeviceRGB
+        if alternative_color_space == "DeviceRGB":
+            self._to_rgb_cache = RGBColor(ys[0], ys[1], ys[2])
+            return self._to_rgb_cache
+
+        # ICCBased
+        if alternative_color_space == "ICCBased":
+            if len(ys) == 1:
+                self._to_rgb_cache = GrayColor(ys[0]).to_rgb()
+            if len(ys) == 3:
+                self._to_rgb_cache = RGBColor(ys[0], ys[1], ys[2])
+            if len(ys) == 4:
+                self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
+            assert self._to_rgb_cache is not None
+            return self._to_rgb_cache
+
+        # default
+        return RGBColor(Decimal(0), Decimal(0), Decimal(0))
 
 
 class X11Color(HexColor):
@@ -501,16 +667,25 @@ class X11Color(HexColor):
         "YellowGreen": "#FF9ACD32",
     }
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, color_name: str):
         assert color_name in X11Color.COLOR_DEFINITION
         self.color_name: str = color_name
         super(X11Color, self).__init__(X11Color.COLOR_DEFINITION[color_name])
 
-    def get_name(self) -> str:
-        """
-        This function returns the name of this X11Color
-        """
-        return self.color_name
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        return X11Color(self.color_name)
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def find_nearest_x11_color(color: Color) -> "X11Color":
@@ -534,90 +709,8 @@ class X11Color(HexColor):
         assert c_min is not None
         return X11Color(c_min)
 
-    def __deepcopy__(self, memodict={}):
-        return X11Color(self.color_name)
-
-
-class Separation(Color):
-    """
-    When printing a page, most devices produce a single composite page on which all process colorants (and spot
-    colorants, if any) are combined. However, some devices, such as imagesetters, produce a separate,
-    monochromatic rendition of the page, called a separation, for each colorant. When the separations are later
-    combined—on a printing press, for example—and the proper inks or other colorants are applied to them, the
-    result is a full-colour page.
-    """
-
-    def __init__(self, color_space: typing.List[typing.Any], xs: typing.List[Decimal]):
-        super(Separation, self).__init__()
-        self.color_space = color_space
-        self.xs = xs
-        self._to_rgb_cache: typing.Optional[RGBColor] = None
-        """"
-        except Exception as ex:
-            if len(color_space) != 0 and len(xs) != 0:
-                logger.debug("Unable to instantiate separation color, defaulting to black")
-            self.rgb_color = RGBColor(Decimal(0), Decimal(0), Decimal(0))
-            pass
+    def get_name(self) -> str:
         """
-
-    def to_rgb(self) -> "RGBColor":
+        This function returns the name of this X11Color
         """
-        This method returns the RGB representation of this Color
-        """
-        if self._to_rgb_cache is not None:
-            return self._to_rgb_cache
-
-        assert isinstance(self.color_space[3], Function)
-        tint_function: Function = self.color_space[3]
-
-        # run function
-        try:
-            ys: typing.List[Decimal] = tint_function.evaluate(self.xs)
-            assert ys is not None
-        except:
-            logger.info(
-                "Unable to execute TintFunction for Separation %d, defaulting to black"
-                % id(self)
-            )
-            self._to_rgb_cache = RGBColor(Decimal(0), Decimal(0), Decimal(0))
-            return self._to_rgb_cache
-
-        # determine the color space to map to
-        alternative_color_space: typing.Optional[Name] = None
-        if isinstance(self.color_space[2], Name):
-            alternative_color_space = self.color_space[2]
-        if (
-            isinstance(self.color_space[2], List)
-            and len(self.color_space[2]) == 2
-            and isinstance(self.color_space[2][0], Name)
-        ):
-            alternative_color_space = self.color_space[2][0]
-
-        # DeviceCMYK
-        if alternative_color_space == "DeviceCMYK":
-            self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
-            return self._to_rgb_cache
-
-        # DeviceRGB
-        if alternative_color_space == "DeviceRGB":
-            self._to_rgb_cache = RGBColor(ys[0], ys[1], ys[2])
-            return self._to_rgb_cache
-
-        # ICCBased
-        if alternative_color_space == "ICCBased":
-            if len(ys) == 1:
-                self._to_rgb_cache = GrayColor(ys[0]).to_rgb()
-            if len(ys) == 3:
-                self._to_rgb_cache = RGBColor(ys[0], ys[1], ys[2])
-            if len(ys) == 4:
-                self._to_rgb_cache = CMYKColor(ys[0], ys[1], ys[2], ys[3]).to_rgb()
-            assert self._to_rgb_cache is not None
-            return self._to_rgb_cache
-
-        # default
-        return RGBColor(Decimal(0), Decimal(0), Decimal(0))
-
-    def __deepcopy__(self, memodict={}):
-        out: Separation = Separation([], [])
-        out._to_rgb_cache = self.to_rgb()
-        return out
+        return self.color_name

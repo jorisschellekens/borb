@@ -18,6 +18,18 @@ class ScreenAnnotation(Annotation):
     entries specific to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(ScreenAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

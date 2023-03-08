@@ -215,9 +215,13 @@ class CountryDropDownList(DropDownList):
         "Zimbabwe",
     ]
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
-        # background_color: typing.Optional[Color] = None,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = True,
         border_color: Color = HexColor("808080"),
         border_left: bool = True,
@@ -231,7 +235,7 @@ class CountryDropDownList(DropDownList):
         default_value: str = "",
         field_name: typing.Optional[str] = None,
         font_color: Color = HexColor("000000"),
-        font_size: typing.Optional[Decimal] = Decimal(12),
+        font_size: Decimal = Decimal(12),
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
         margin_left: typing.Optional[Decimal] = Decimal(0),
@@ -245,7 +249,7 @@ class CountryDropDownList(DropDownList):
         vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(CountryDropDownList, self).__init__(
-            # background_color=background_color,
+            background_color=background_color,
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
@@ -270,6 +274,14 @@ class CountryDropDownList(DropDownList):
             padding_right=padding_right,
             padding_top=padding_top,
             possible_values=CountryDropDownList.COUNTRIES,
-            vertical_alignment=vertical_alignment,
             value=value,
+            vertical_alignment=vertical_alignment,
         )
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

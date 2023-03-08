@@ -40,6 +40,10 @@ class PolylineAnnotation(Annotation):
     and last vertex are not implicitly connected.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         points: typing.List[typing.Tuple[Decimal, Decimal]],
@@ -96,3 +100,11 @@ class PolylineAnnotation(Annotation):
             self["IC"].append(bDecimal(fill_color.to_rgb().red))
             self["IC"].append(bDecimal(fill_color.to_rgb().green))
             self["IC"].append(bDecimal(fill_color.to_rgb().blue))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

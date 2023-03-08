@@ -21,6 +21,18 @@ class ArrayTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing List objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents a List object
@@ -42,7 +54,7 @@ class ArrayTransformer(Transformer):
         # fmt: on
 
         # avoid resolving objects twice
-        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()  # type: ignore [attr-defined]
+        object_ref: typing.Optional[Reference] = object_to_transform.get_reference()
         if object_ref is not None and object_ref in context.resolved_references:
             assert object_ref is not None
             assert object_ref.object_number is not None
@@ -64,8 +76,8 @@ class ArrayTransformer(Transformer):
                 or isinstance(v, Stream)
                 or isinstance(v, Image)
             ) and not v.is_inline():  # type: ignore [union-attr]
-                out_value.append(self.get_reference(v, context))
-                queue.append(v)
+                out_value.append(self.get_reference(v, context))  # type: ignore [arg-type]
+                queue.append(v)  # type: ignore [arg-type]
             else:
                 out_value.append(v)
 
@@ -87,7 +99,7 @@ class ArrayTransformer(Transformer):
                 context.destination.write(bytes(" ", "latin1"))
 
         # write newline if the object is not inline
-        if object_to_transform.is_inline():  # type: ignore [attr-defined]
+        if object_to_transform.is_inline():
             context.destination.write(bytes("]", "latin1"))
         else:
             context.destination.write(bytes("]\n", "latin1"))

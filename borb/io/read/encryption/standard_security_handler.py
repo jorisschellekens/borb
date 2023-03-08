@@ -11,6 +11,7 @@ import typing
 import zlib
 
 from borb.io.read.encryption.rc4 import RC4
+from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import (
     AnyPDFType,
     Boolean,
@@ -20,6 +21,7 @@ from borb.io.read.types import (
     Reference,
     Stream,
     String,
+    Dictionary,
 )
 
 
@@ -30,9 +32,13 @@ class StandardSecurityHandler:
     based on whether the user creating the document specifies any passwords or access restrictions.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
-        encryption_dictionary: dict,
+        encryption_dictionary: Dictionary,
         user_password: typing.Optional[str] = None,
         owner_password: typing.Optional[str] = None,
     ):
@@ -67,7 +73,6 @@ class StandardSecurityHandler:
             )
             or b""
         )
-        assert self._u is not None
         assert len(self._u) == 32
 
         # (Required) A 32-byte string, based on both the owner and user passwords,
@@ -86,14 +91,16 @@ class StandardSecurityHandler:
         assert len(self._o) == 32
 
         # /ID
-        trailer: typing.Dict[typing.Any, typing.Any] = encryption_dictionary.get_parent()  # type: ignore [attr-defined]
+        trailer: typing.Optional[PDFObject] = encryption_dictionary.get_parent()
+        assert trailer is not None
+        assert isinstance(trailer, Dictionary)
         if "ID" in trailer:
             self._document_id: bytes = trailer["ID"][0].get_content_bytes()
 
         # (Required) A set of flags specifying which operations shall be permitted
         # when the document is opened with user access (see Table 22).
         assert "P" in encryption_dictionary
-        self._permissions: int = int(encryption_dictionary.get("P"))
+        self._permissions: int = int(encryption_dictionary.get("P"))  # type: ignore [arg-type]
 
         # (Optional; PDF 1.4; only if V is 2 or 3) The length of the encryption key, in bits.
         # The value shall be a multiple of 8, in the range 40 to 128. Default value: 40.
@@ -128,124 +135,49 @@ class StandardSecurityHandler:
         # assert password is not None
         self._encryption_key: bytes = self._compute_encryption_key(password)
 
-    def _encrypt_data(self, object: AnyPDFType) -> AnyPDFType:
-        # a) Obtain the object number and generation number from the object identifier of the string or stream to be
-        # encrypted (see 7.3.10, "Indirect Objects"). If the string is a direct object, use the identifier of the indirect
-        # object containing it.
-        reference: typing.Optional[Reference] = object.get_reference()  # type: ignore [union-attr]
-        if reference is None:
-            reference = object.get_parent().get_reference()  # type: ignore [union-attr]
-        assert reference is not None
-        assert reference.object_number is not None
-        assert reference.generation_number is not None
-        object_number: int = reference.object_number
-        generation_number: int = reference.generation_number
+    #
+    # PRIVATE
+    #
 
-        # b) For all strings and streams without crypt filter specifier; treating the object number and generation number
-        # as binary integers, extend the original n-byte encryption key to n + 5 bytes by appending the low-order 3
-        # bytes of the object number and the low-order 2 bytes of the generation number in that order, low-order byte
-        # first. (n is 5 unless the value of V in the encryption dictionary is greater than 1, in which case n is the value
-        # of Length divided by 8.)
-        # If using the AES algorithm, extend the encryption key an additional 4 bytes by adding the value “sAlT”,
-        # which corresponds to the hexadecimal values 0x73, 0x41, 0x6C, 0x54. (This addition is done for backward
-        # compatibility and is not intended to provide additional security.)
-        encryption_key = (
-            self._encryption_key
-            + object_number.to_bytes(3, byteorder="little", signed=False)
-            + generation_number.to_bytes(2, byteorder="little", signed=False)
-        )
-        n: int = 5
-        if self._v > 1:
-            n = int(self._key_length / 8)
+    def _authenticate_owner_password(self, owner_password: bytes) -> bool:
+        """
+        Algorithm 7: Authenticating the owner password
+        """
+        # a) Compute an encryption key from the supplied password string, as described in steps (a) to (d) of
+        # "Algorithm 3: Computing the encryption dictionary’s O (owner password) value".
 
-        # c) Initialize the MD5 hash function and pass the result of step (b) as input to this function.
-        h = hashlib.md5()
-        h.update(encryption_key)
+        # b) (Security handlers of revision 2 only) Decrypt the value of the encryption dictionary’s O entry, using an RC4
+        # encryption function with the encryption key computed in step (a).
+        # (Security handlers of revision 3 or greater) Do the following 20 times: Decrypt the value of the encryption
+        # dictionary’s O entry (first iteration) or the output from the previous iteration (all subsequent iterations),
+        # using an RC4 encryption function with a different encryption key at each iteration. The key shall be
+        # generated by taking the original key (obtained in step (a)) and performing an XOR (exclusive or) operation
+        # between each byte of the key and the single-byte value of the iteration counter (from 19 to 0).
 
-        # d) Use the first (n + 5) bytes, up to a maximum of 16, of the output from the MD5 hash as the key for the RC4
-        # or AES symmetric key algorithms, along with the string or stream data to be encrypted.
-        # If using the AES algorithm, the Cipher Block Chaining (CBC) mode, which requires an initialization vector,
-        # is used. The block size parameter is set to 16 bytes, and the initialization vector is a 16-byte random
-        # number that is stored as the first 16 bytes of the encrypted stream or string.
-        # The output is the encrypted data to be stored in the PDF file.
-        n_plus_5: int = min(16, n + 5)
-        if isinstance(object, String):
-            str_new_content_bytes: bytes = RC4().encrypt(
-                h.digest()[0:n_plus_5], object.get_content_bytes()
-            )
-            # TODO
-        if isinstance(object, HexadecimalString):
-            hex_str_new_content_bytes: bytes = RC4().encrypt(
-                h.digest()[0:n_plus_5], object.get_content_bytes()
-            )
-            # TODO
-        if isinstance(object, Stream):
-            stream_new_content_bytes: bytes = RC4().encrypt(
-                h.digest()[0:n_plus_5], object["DecodedBytes"]
-            )
-            object[Name("DecodedBytes")] = stream_new_content_bytes
-            object[Name("Bytes")] = zlib.compress(object["DecodedBytes"], 9)
-            return object
+        # c) The result of step (b) purports to be the user password. Authenticate this user password using "Algorithm
+        # 6: Authenticating the user password". If it is correct, the password supplied is the correct owner password.
 
-        # default
-        return object
+        return False
 
-    def _decrypt_data(self, object: AnyPDFType) -> AnyPDFType:
-        return self._encrypt_data(object)
+    def _authenticate_user_password(self, user_password: bytes) -> bool:
+        """
+        Algorithm 6: Authenticating the user password
+        """
+        # a) Perform all but the last step of "Algorithm 4: Computing the encryption dictionary’s U (user password)
+        # value (Security handlers of revision 2)" or "Algorithm 5: Computing the encryption dictionary’s U (user
+        # password) value (Security handlers of revision 3 or greater)" using the supplied password string.
+        previous_u_value: bytes = self._u
+        self._compute_encryption_dictionary_u_value(user_password)
+        u_value: bytes = self._u
+        self._u = previous_u_value
 
-    def _compute_encryption_key(self, password: bytes) -> bytes:
-        # a) Pad or truncate the password string to exactly 32 bytes. If the password string is more than 32 bytes long,
-        # use only its first 32 bytes; if it is less than 32 bytes long, pad it by appending the required number of
-        # additional bytes from the beginning of the following padding string:
-        # < 28 BF 4E 5E 4E 75 8A 41 64 00 4E 56 FF FA 01 08
-        # 2E 2E 00 B6 D0 68 3E 80 2F 0C A9 FE 64 53 69 7A >
-        # That is, if the password string is n bytes long, append the first 32 - n bytes of the padding string to the end
-        # of the password string. If the password string is empty (zero-length), meaning there is no user password,
-        # substitute the entire padding string in its place.
-
-        # b) Initialize the MD5 hash function and pass the result of step (a) as input to this function.
-        h = hashlib.md5()
-        h.update(StandardSecurityHandler._pad_or_truncate(password))
-
-        # c) Pass the value of the encryption dictionary’s O entry to the MD5 hash function. ("Algorithm 3: Computing
-        # the encryption dictionary’s O (owner password) value" shows how the O value is computed.)
-        h.update(self._o)
-
-        # d) Convert the integer value of the P entry to a 32-bit unsigned binary number and pass these bytes to the
-        # MD5 hash function, low-order byte first.
-        h.update(self._permissions.to_bytes(length=4, byteorder="little", signed=True))
-
-        # e) Pass the first element of the file’s file identifier array (the value of the ID entry in the document’s trailer
-        # dictionary; see Table 15) to the MD5 hash function.
-        h.update(self._document_id)
-
-        # f) (Security handlers of revision 4 or greater) If document metadata is not being encrypted, pass 4 bytes with
-        # the value 0xFFFFFFFF to the MD5 hash function.
-        if self._revision >= 4 and not self._encrypt_metadata:
-            h.update(bytes([255, 255, 255, 255]))
-
-        # g) Finish the hash.
-        digest: bytes = h.digest()
-
-        # h) (Security handlers of revision 3 or greater) Do the following 50 times: Take the output from the previous
-        # MD5 hash and pass the first n bytes of the output as input into a new MD5 hash, where n is the number of
-        # bytes of the encryption key as defined by the value of the encryption dictionary’s Length entry.
-        if self._revision >= 3:
-            n: int = int(self._key_length / 8)
-            for _ in range(0, 50):
-                h2 = hashlib.md5()
-                h2.update(digest[0:n])
-                digest = h2.digest()
-
-        # i) Set the encryption key to the first n bytes of the output from the final MD5 hash, where n shall always be 5
-        # for security handlers of revision 2 but, for security handlers of revision 3 or greater, shall depend on the
-        # value of the encryption dictionary’s Length entry.
-        n: int = 5
-        if self._revision >= 3:
-            n = int(self._key_length / 8)
-        encryption_key: bytes = digest[0:n]
-
-        return encryption_key
+        # b)If the result of step (a) is equal to the value of the encryption dictionary’s U entry (comparing on the first 16
+        # bytes in the case of security handlers of revision 3 or greater), the password supplied is the correct user
+        # password. The key obtained in step (a) (that is, in the first step of "Algorithm 4: Computing the encryption
+        # dictionary’s U (user password) value (Security handlers of revision 2)" or "Algorithm 5: Computing the
+        # encryption dictionary’s U (user password) value (Security handlers of revision 3 or greater)") shall be used
+        # to decrypt the document.
+        return self._u == u_value
 
     def _compute_encryption_dictionary_o_value(
         self,
@@ -273,7 +205,7 @@ class StandardSecurityHandler:
             for _ in range(0, 50):
                 h = hashlib.md5()
                 h.update(prev_digest)
-                prev_digest: bytes = h.digest()[0 : int(self._key_length / 8)]
+                prev_digest = h.digest()[0 : int(self._key_length / 8)]
 
         # d) Create an RC4 encryption key using the first n bytes of the output from the final MD5 hash, where n shall
         # always be 5 for security handlers of revision 2 but, for security handlers of revision 3 or greater, shall
@@ -362,68 +294,127 @@ class StandardSecurityHandler:
             )
             self._u = digest
 
-    def _authenticate_user_password(self, user_password: bytes) -> bool:
-        """
-        Algorithm 6: Authenticating the user password
-        """
-        # a) Perform all but the last step of "Algorithm 4: Computing the encryption dictionary’s U (user password)
-        # value (Security handlers of revision 2)" or "Algorithm 5: Computing the encryption dictionary’s U (user
-        # password) value (Security handlers of revision 3 or greater)" using the supplied password string.
-        previous_u_value: typing.Optional[bytes] = self._u
-        self._compute_encryption_dictionary_u_value(user_password)
-        u_value: bytes = self._u
-        self._u = previous_u_value
+    def _compute_encryption_key(self, password: typing.Optional[bytes]) -> bytes:
+        # a) Pad or truncate the password string to exactly 32 bytes. If the password string is more than 32 bytes long,
+        # use only its first 32 bytes; if it is less than 32 bytes long, pad it by appending the required number of
+        # additional bytes from the beginning of the following padding string:
+        # < 28 BF 4E 5E 4E 75 8A 41 64 00 4E 56 FF FA 01 08
+        # 2E 2E 00 B6 D0 68 3E 80 2F 0C A9 FE 64 53 69 7A >
+        # That is, if the password string is n bytes long, append the first 32 - n bytes of the padding string to the end
+        # of the password string. If the password string is empty (zero-length), meaning there is no user password,
+        # substitute the entire padding string in its place.
 
-        # b)If the result of step (a) is equal to the value of the encryption dictionary’s U entry (comparing on the first 16
-        # bytes in the case of security handlers of revision 3 or greater), the password supplied is the correct user
-        # password. The key obtained in step (a) (that is, in the first step of "Algorithm 4: Computing the encryption
-        # dictionary’s U (user password) value (Security handlers of revision 2)" or "Algorithm 5: Computing the
-        # encryption dictionary’s U (user password) value (Security handlers of revision 3 or greater)") shall be used
-        # to decrypt the document.
-        return self._u == u_value
+        # b) Initialize the MD5 hash function and pass the result of step (a) as input to this function.
+        h = hashlib.md5()
+        h.update(StandardSecurityHandler._pad_or_truncate(password))
 
-    def _authenticate_owner_password(self, owner_password: bytes) -> bool:
-        """
-        Algorithm 7: Authenticating the owner password
-        """
-        # a) Compute an encryption key from the supplied password string, as described in steps (a) to (d) of
-        # "Algorithm 3: Computing the encryption dictionary’s O (owner password) value".
+        # c) Pass the value of the encryption dictionary’s O entry to the MD5 hash function. ("Algorithm 3: Computing
+        # the encryption dictionary’s O (owner password) value" shows how the O value is computed.)
+        h.update(self._o)
 
-        # b) (Security handlers of revision 2 only) Decrypt the value of the encryption dictionary’s O entry, using an RC4
-        # encryption function with the encryption key computed in step (a).
-        # (Security handlers of revision 3 or greater) Do the following 20 times: Decrypt the value of the encryption
-        # dictionary’s O entry (first iteration) or the output from the previous iteration (all subsequent iterations),
-        # using an RC4 encryption function with a different encryption key at each iteration. The key shall be
-        # generated by taking the original key (obtained in step (a)) and performing an XOR (exclusive or) operation
-        # between each byte of the key and the single-byte value of the iteration counter (from 19 to 0).
+        # d) Convert the integer value of the P entry to a 32-bit unsigned binary number and pass these bytes to the
+        # MD5 hash function, low-order byte first.
+        h.update(self._permissions.to_bytes(length=4, byteorder="little", signed=True))
 
-        # c) The result of step (b) purports to be the user password. Authenticate this user password using "Algorithm
-        # 6: Authenticating the user password". If it is correct, the password supplied is the correct owner password.
+        # e) Pass the first element of the file’s file identifier array (the value of the ID entry in the document’s trailer
+        # dictionary; see Table 15) to the MD5 hash function.
+        h.update(self._document_id)
 
-        return False
+        # f) (Security handlers of revision 4 or greater) If document metadata is not being encrypted, pass 4 bytes with
+        # the value 0xFFFFFFFF to the MD5 hash function.
+        if self._revision >= 4 and not self._encrypt_metadata:
+            h.update(bytes([255, 255, 255, 255]))
 
-    #
-    # static utility methods
-    #
+        # g) Finish the hash.
+        digest: bytes = h.digest()
 
-    @staticmethod
-    def _unescape_pdf_syntax(
-        s: typing.Union[str, String, None]
-    ) -> typing.Optional[str]:
-        # None
-        if s is None:
-            return None
-        # String
-        if isinstance(s, String):
-            return str(s.get_content_bytes(), encoding="latin1")
-        # str
-        return str(String(s).get_content_bytes(), encoding="latin1")
+        # h) (Security handlers of revision 3 or greater) Do the following 50 times: Take the output from the previous
+        # MD5 hash and pass the first n bytes of the output as input into a new MD5 hash, where n is the number of
+        # bytes of the encryption key as defined by the value of the encryption dictionary’s Length entry.
+        n: int = 0
+        if self._revision >= 3:
+            n = int(self._key_length / 8)
+            for _ in range(0, 50):
+                h2 = hashlib.md5()
+                h2.update(digest[0:n])
+                digest = h2.digest()
 
-    @staticmethod
-    def _str_to_bytes(s: typing.Optional[str]) -> typing.Optional[bytes]:
-        if s is None:
-            return None
-        return bytes(s, encoding="charmap")
+        # i) Set the encryption key to the first n bytes of the output from the final MD5 hash, where n shall always be 5
+        # for security handlers of revision 2 but, for security handlers of revision 3 or greater, shall depend on the
+        # value of the encryption dictionary’s Length entry.
+        n = 5
+        if self._revision >= 3:
+            n = int(self._key_length / 8)
+        encryption_key: bytes = digest[0:n]
+
+        return encryption_key
+
+    def _decrypt_data(self, object: AnyPDFType) -> AnyPDFType:
+        return self._encrypt_data(object)
+
+    def _encrypt_data(self, object: AnyPDFType) -> AnyPDFType:
+        # a) Obtain the object number and generation number from the object identifier of the string or stream to be
+        # encrypted (see 7.3.10, "Indirect Objects"). If the string is a direct object, use the identifier of the indirect
+        # object containing it.
+        reference: typing.Optional[Reference] = object.get_reference()
+        if reference is None:
+            parent: typing.Optional[PDFObject] = object.get_parent()
+            assert parent is not None
+            reference = parent.get_reference()
+        assert reference is not None
+        assert reference.object_number is not None
+        assert reference.generation_number is not None
+        object_number: int = reference.object_number
+        generation_number: int = reference.generation_number
+
+        # b) For all strings and streams without crypt filter specifier; treating the object number and generation number
+        # as binary integers, extend the original n-byte encryption key to n + 5 bytes by appending the low-order 3
+        # bytes of the object number and the low-order 2 bytes of the generation number in that order, low-order byte
+        # first. (n is 5 unless the value of V in the encryption dictionary is greater than 1, in which case n is the value
+        # of Length divided by 8.)
+        # If using the AES algorithm, extend the encryption key an additional 4 bytes by adding the value “sAlT”,
+        # which corresponds to the hexadecimal values 0x73, 0x41, 0x6C, 0x54. (This addition is done for backward
+        # compatibility and is not intended to provide additional security.)
+        encryption_key = (
+            self._encryption_key
+            + object_number.to_bytes(3, byteorder="little", signed=False)
+            + generation_number.to_bytes(2, byteorder="little", signed=False)
+        )
+        n: int = 5
+        if self._v > 1:
+            n = int(self._key_length / 8)
+
+        # c) Initialize the MD5 hash function and pass the result of step (b) as input to this function.
+        h = hashlib.md5()
+        h.update(encryption_key)
+
+        # d) Use the first (n + 5) bytes, up to a maximum of 16, of the output from the MD5 hash as the key for the RC4
+        # or AES symmetric key algorithms, along with the string or stream data to be encrypted.
+        # If using the AES algorithm, the Cipher Block Chaining (CBC) mode, which requires an initialization vector,
+        # is used. The block size parameter is set to 16 bytes, and the initialization vector is a 16-byte random
+        # number that is stored as the first 16 bytes of the encrypted stream or string.
+        # The output is the encrypted data to be stored in the PDF file.
+        n_plus_5: int = min(16, n + 5)
+        if isinstance(object, String):
+            str_new_content_bytes: bytes = RC4().encrypt(
+                h.digest()[0:n_plus_5], object.get_content_bytes()
+            )
+            # TODO
+        if isinstance(object, HexadecimalString):
+            hex_str_new_content_bytes: bytes = RC4().encrypt(
+                h.digest()[0:n_plus_5], object.get_content_bytes()
+            )
+            # TODO
+        if isinstance(object, Stream):
+            stream_new_content_bytes: bytes = RC4().encrypt(
+                h.digest()[0:n_plus_5], object["DecodedBytes"]
+            )
+            object[Name("DecodedBytes")] = stream_new_content_bytes
+            object[Name("Bytes")] = zlib.compress(object["DecodedBytes"], 9)
+            return object
+
+        # default
+        return object
 
     @staticmethod
     def _pad_or_truncate(b: typing.Optional[bytes]) -> bytes:
@@ -441,3 +432,26 @@ class StandardSecurityHandler:
             b2: bytes = b + padding
             return b2[0:32]
         return b
+
+    @staticmethod
+    def _str_to_bytes(s: typing.Optional[str]) -> typing.Optional[bytes]:
+        if s is None:
+            return None
+        return bytes(s, encoding="charmap")
+
+    @staticmethod
+    def _unescape_pdf_syntax(
+        s: typing.Union[str, String, None]
+    ) -> typing.Optional[str]:
+        # None
+        if s is None:
+            return None
+        # String
+        if isinstance(s, String):
+            return str(s.get_content_bytes(), encoding="latin1")
+        # str
+        return str(String(s).get_content_bytes(), encoding="latin1")
+
+    #
+    # PUBLIC
+    #

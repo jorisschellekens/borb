@@ -14,6 +14,18 @@ class CaretAnnotation(Annotation):
     entries specific to caret annotations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(CaretAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

@@ -24,6 +24,18 @@ class ThreeDAnnotation(Annotation):
     not support 3D annotations and by all applications for the initial display of the annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(ThreeDAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

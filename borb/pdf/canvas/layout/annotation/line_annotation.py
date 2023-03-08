@@ -23,6 +23,10 @@ class LineAnnotation(Annotation):
     entries specific to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         start_point: typing.Tuple[Decimal, Decimal],
@@ -75,3 +79,11 @@ class LineAnnotation(Annotation):
             self["IC"].append(bDecimal(stroke_color.to_rgb().red))
             self["IC"].append(bDecimal(stroke_color.to_rgb().green))
             self["IC"].append(bDecimal(stroke_color.to_rgb().blue))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

@@ -35,7 +35,6 @@ class TestAddImageFromURLWithServerUsingCompression(unittest.TestCase):
         if not self.output_dir.exists():
             self.output_dir.mkdir()
 
-
     def test_add_image_by_url(self):
 
         doc: Document = Document()
@@ -67,9 +66,7 @@ class TestAddImageFromURLWithServerUsingCompression(unittest.TestCase):
 
         # add Image
         url = "https://d262ijfj3ea8g5.cloudfront.net/2017/img/logo.png"  # content_encoding 'gzip' or 'deflate' used here
-        layout.add(Image(url,
-                         width=Decimal(32),
-                         height=Decimal(32)))
+        layout.add(Image(url, width=Decimal(32), height=Decimal(32)))
 
         # store
         with open(self.output_dir / "output.pdf", "wb") as pdf_file_handle:

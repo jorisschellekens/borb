@@ -50,9 +50,27 @@ class InMemoryBarcodeWriter(BarcodeImageWriter):
     access to the PILImage being built
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(InMemoryBarcodeWriter, self).__init__(format="JPEG", mode="RGB")
         self.output_image: typing.Optional[PILImage] = None
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def get_output_image(self) -> PILImage:  # type: ignore[valid-type]
+        """
+        This function returns the PILImage representing the barcode
+        """
+        return self.output_image
 
     def save(self, filename, output):
         """
@@ -69,17 +87,15 @@ class InMemoryBarcodeWriter(BarcodeImageWriter):
         """
         self.output_image = output
 
-    def get_output_image(self) -> PILImage:  # type: ignore[valid-type]
-        """
-        This function returns the PILImage representing the barcode
-        """
-        return self.output_image
-
 
 class Barcode(Image):
     """
     This implementation of LayoutElement represents a barcode.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -150,6 +166,10 @@ class Barcode(Image):
         )
         self._background_color = fill_color
 
+    #
+    # PRIVATE
+    #
+
     def _generate_image_except_qr_code(self, data: str, type: BarcodeType):
         # generate image using barcode library
         writer: InMemoryBarcodeWriter = InMemoryBarcodeWriter()
@@ -189,3 +209,7 @@ class Barcode(Image):
         jpg_image = png_image.convert("RGB")  # type: ignore [attr-defined]
 
         return jpg_image
+
+    #
+    # PUBLIC
+    #

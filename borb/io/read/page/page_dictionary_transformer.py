@@ -26,6 +26,18 @@ class PageDictionaryTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading Page objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -51,7 +63,8 @@ class PageDictionaryTransformer(Transformer):
             return object_to_transform
 
         # convert dictionary like structure
-        page_out = Page().set_parent(parent_object)  # type: ignore [attr-defined]
+        page_out = Page()
+        page_out.set_parent(parent_object)
 
         # convert key/value pairs
         # fmt: off
@@ -93,10 +106,10 @@ class PageDictionaryTransformer(Transformer):
             contents.set_parent(page_out)  # type: ignore [attr-defined]
 
         # create Canvas
-        canvas = Canvas().set_parent(page_out)  # type: ignore [attr-defined]
+        canvas = Canvas().set_parent(page_out)
 
         # If there are no event listeners, processing the page has no effect
-        # we may as well skip it (cause it is very labour-intensive).
+        # we may as well skip it (because it is very labour-intensive).
         if len(event_listeners) > 0:
             # create CanvasStreamProcessor
             CanvasStreamProcessor(page_out, canvas, []).read(

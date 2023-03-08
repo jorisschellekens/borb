@@ -24,6 +24,35 @@ class ConformanceLevel(enum.Enum):
     PDFA_3B = 17
     PDFA_3U = 19
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def get_conformance_level(self) -> str:
+        """
+        This function returns the conformance-level (non-numeric part) of this ConformanceLevel
+        :return:    the non-numeric part of this ConformanceLevel (A, B, U)
+        """
+        if self in [ConformanceLevel.PDFA_1A, ConformanceLevel.PDFA_2A]:
+            return "A"
+        if self in [
+            ConformanceLevel.PDFA_1B,
+            ConformanceLevel.PDFA_2B,
+            ConformanceLevel.PDFA_3B,
+        ]:
+            return "B"
+        if self in [ConformanceLevel.PDFA_2U, ConformanceLevel.PDFA_3U]:
+            return "U"
+        assert False
+
     def get_standard(self) -> int:
         """
         This function returns the standard (the numeric part) of this ConformanceLevel
@@ -43,21 +72,4 @@ class ConformanceLevel(enum.Enum):
             ConformanceLevel.PDFA_3U,
         ]:
             return 3
-        assert False
-
-    def get_conformance_level(self) -> str:
-        """
-        This function returns the conformance-level (non-numeric part) of this ConformanceLevel
-        :return:    the non-numeric part of this ConformanceLevel (A, B, U)
-        """
-        if self in [ConformanceLevel.PDFA_1A, ConformanceLevel.PDFA_2A]:
-            return "A"
-        if self in [
-            ConformanceLevel.PDFA_1B,
-            ConformanceLevel.PDFA_2B,
-            ConformanceLevel.PDFA_3B,
-        ]:
-            return "B"
-        if self in [ConformanceLevel.PDFA_2U, ConformanceLevel.PDFA_3U]:
-            return "U"
         assert False

@@ -4,7 +4,7 @@ import unittest
 import requests
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.io.read.types import add_base_methods
+from borb.io.read.pdf_object import PDFObject
 
 
 class TestTypeAddedMethods(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestTypeAddedMethods(unittest.TestCase):
         )
 
         # add methods
-        add_base_methods(im1)
+        PDFObject.add_pdf_object_methods(im1)
 
         # set _parent
         im1.set_parent(im0)

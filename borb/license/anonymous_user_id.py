@@ -18,6 +18,14 @@ class AnonymousUserID:
     USER_ID_FILE_NAME: str = "anonymous_user_id"
     USER_ID: typing.Optional[str] = None
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
     @staticmethod
     def _get_borb_installation_dir() -> typing.Optional[Path]:
         for path_name in sysconfig.get_path_names():
@@ -33,15 +41,21 @@ class AnonymousUserID:
 
     @staticmethod
     def _get_user_id_file_from_borb_dir() -> typing.Optional[Path]:
-        borb_dir: typing.Optional[Path] = AnonymousUserID._get_borb_installation_dir()
-        if borb_dir is None:
+        installation_dir: typing.Optional[
+            Path
+        ] = AnonymousUserID._get_borb_installation_dir()
+        if installation_dir is None:
             return None
         # check whether the USER_ID_FILE_NAME file exists
-        user_id_file: Path = borb_dir / AnonymousUserID.USER_ID_FILE_NAME
+        user_id_file: Path = installation_dir / AnonymousUserID.USER_ID_FILE_NAME
         if user_id_file.exists():
             return user_id_file
         # return
         return None
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def disable() -> None:
@@ -51,13 +65,13 @@ class AnonymousUserID:
         When this file is empty, an empty user ID is passed in the get function
         :return:    None
         """
-        if (
-            AnonymousUserID._get_borb_installation_dir() is not None
-            and AnonymousUserID._get_borb_installation_dir().exists()
-        ):
+        installation_dir: typing.Optional[
+            Path
+        ] = AnonymousUserID._get_borb_installation_dir()
+        if installation_dir is not None and installation_dir.exists():
             try:
                 # fmt: off
-                with open(AnonymousUserID._get_borb_installation_dir() / AnonymousUserID.USER_ID_FILE_NAME, "w") as fh:
+                with open(installation_dir / AnonymousUserID.USER_ID_FILE_NAME, "w") as fh:
                     fh.write("")
                 # fmt: on
             except:
@@ -71,12 +85,12 @@ class AnonymousUserID:
         When this file is reset, a new user ID is created and passed in the get function
         :return:    None
         """
-        if (
-            AnonymousUserID._get_user_id_file_from_borb_dir() is not None
-            and AnonymousUserID._get_user_id_file_from_borb_dir().exists()
-        ):
+        user_id_file: typing.Optional[
+            Path
+        ] = AnonymousUserID._get_user_id_file_from_borb_dir()
+        if user_id_file is not None and user_id_file.exists():
             try:
-                AnonymousUserID._get_user_id_file_from_borb_dir().unlink()
+                user_id_file.unlink()
             except:
                 pass
         AnonymousUserID.get()
@@ -90,37 +104,37 @@ class AnonymousUserID:
         """
         # IF borb installation directory exists, but the file does not exist (yet)
         # THEN create the file, return the uuid
+        installation_dir: typing.Optional[
+            Path
+        ] = AnonymousUserID._get_borb_installation_dir()
+        user_id_file: typing.Optional[
+            Path
+        ] = AnonymousUserID._get_user_id_file_from_borb_dir()
         if (
-            AnonymousUserID._get_borb_installation_dir() is not None
-            and AnonymousUserID._get_borb_installation_dir().exists()
-            and (
-                AnonymousUserID._get_user_id_file_from_borb_dir() is None
-                or not AnonymousUserID._get_user_id_file_from_borb_dir().exists()
-            )
+            installation_dir is not None
+            and installation_dir.exists()
+            and (user_id_file is None or not user_id_file.exists())
         ):
             try:
                 # fmt: off
-                uuid: str = UUID.get()
-                with open(AnonymousUserID._get_borb_installation_dir() / AnonymousUserID.USER_ID_FILE_NAME, "w") as fh:
-                    fh.write(uuid)
-                return uuid
+                new_uuid: str = UUID.get()
+                with open(installation_dir / AnonymousUserID.USER_ID_FILE_NAME, "w") as fh:
+                    fh.write(new_uuid)
+                return new_uuid
                 # fmt: on
             except:
                 pass
 
         # IF the borb installation directory exists, and the user_id file exists
         # THEN read the user_id file, and return its content
-        if (
-            AnonymousUserID._get_user_id_file_from_borb_dir() is not None
-            and AnonymousUserID._get_user_id_file_from_borb_dir().exists()
-        ):
-            uuid: typing.Optional[str] = None
+        if user_id_file is not None and user_id_file.exists():
+            prev_uuid: typing.Optional[str] = None
             try:
-                with open(AnonymousUserID._get_user_id_file_from_borb_dir(), "r") as fh:
-                    uuid = fh.read()
+                with open(user_id_file, "r") as fh:
+                    prev_uuid = fh.read()
             except:
                 pass
-            return uuid
+            return prev_uuid
 
         # default
         return None

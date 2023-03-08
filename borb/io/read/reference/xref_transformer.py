@@ -43,6 +43,152 @@ class XREFTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading the XRef object
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    @staticmethod
+    def _check_header(context: ReadTransformerState) -> None:
+        """
+        This function checks whether or not the first bytes in the document contain the text %PDF
+        :param context: the TransformerContext (containing the io source)
+        :type context: TransformerContext
+        """
+        assert context is not None
+        assert context.source is not None
+        assert context.tokenizer is not None
+        context.source.seek(0)
+        arr = [
+            t
+            for t in [context.tokenizer.next_token() for _ in range(0, 10)]
+            if t is not None
+        ]
+        assert len(arr) > 0
+        assert any([t.get_text().startswith("%PDF") for t in arr])
+
+    def _read_xref(
+        self, context: ReadTransformerState, initial_offset: Optional[int] = None
+    ) -> None:
+        """
+        This function attempts to read the XREF table, first as plaintext, then as a stream
+        :param context:         the TransformerContext (containing the io source)
+        :type context:          TransformerContext
+        :param initial_offset:  the initial byte offset at which to read (set to None to allow this method to find the XREF)
+        :type initial_offset:   int
+        """
+        assert context is not None
+        assert context.root_object is not None
+        assert context.source is not None
+        assert context.tokenizer is not None
+
+        doc = context.root_object
+        src = context.source
+        tok = context.tokenizer
+
+        most_recent_xref: Optional[XREF] = None
+        exceptions_to_rethrow = []
+
+        # attempt to read plaintext XREF
+        try:
+            most_recent_xref = PlainTextXREF()
+            assert most_recent_xref is not None
+            most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+            most_recent_xref.read(src, tok, initial_offset)
+            if "XRef" in doc:
+                doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
+            else:
+                doc[Name("XRef")] = most_recent_xref
+        except Exception as ex0:
+            most_recent_xref = None
+            exceptions_to_rethrow.append(ex0)
+
+        # attempt to read stream XREF
+        if most_recent_xref is None:
+            try:
+                most_recent_xref = StreamXREF()
+                assert most_recent_xref is not None
+                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+                most_recent_xref.read(src, tok, initial_offset)
+                if "XRef" in doc:
+                    doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
+                else:
+                    doc[Name("XRef")] = most_recent_xref
+            except Exception as ex0:
+                most_recent_xref = None
+                exceptions_to_rethrow.append(ex0)
+
+        # attempt to rebuild XREF from document
+        if most_recent_xref is None:
+            try:
+                most_recent_xref = RebuiltXREF()
+                assert most_recent_xref is not None
+                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+                most_recent_xref.read(src, tok)
+                if "XRef" in doc:
+                    doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
+                else:
+                    doc[Name("XRef")] = most_recent_xref
+            except Exception as ex0:
+                most_recent_xref = None
+                exceptions_to_rethrow.append(ex0)
+
+        # unable to read XREF
+        # re-throw exceptions
+        if most_recent_xref is None:
+            for e in exceptions_to_rethrow:
+                raise e
+
+        # handle Prev, Previous
+        assert most_recent_xref is not None
+        prev = None
+        if "Prev" in most_recent_xref["Trailer"]:
+            prev = int(most_recent_xref["Trailer"]["Prev"])
+        if "Previous" in most_recent_xref["Trailer"]:
+            prev = int(most_recent_xref["Trailer"]["Previous"])
+        if prev is not None:
+            self._read_xref(context, initial_offset=prev)
+
+    @staticmethod
+    def _remove_prefix(context: ReadTransformerState) -> None:
+
+        assert context is not None
+        assert context.source is not None
+        assert context.tokenizer is not None
+
+        # read first 2 Kb
+        bytes_near_start_of_file = context.source.read(2048)
+        assert bytes_near_start_of_file is not None
+        text_near_start_of_file = bytes_near_start_of_file.decode("latin-1")
+        context.source.seek(0)
+
+        # find %PDF-
+        index_of_pdf_comment = -1
+        try:
+            index_of_pdf_comment = text_near_start_of_file.index("%PDF")
+        except ValueError:
+            pass
+
+        # truncate
+        if index_of_pdf_comment > 0:
+            # determine end of file
+            end_of_file = context.source.seek(0, os.SEEK_END)
+            context.source.seek(0)
+            # build byte array
+            bts = context.source.read(end_of_file)
+            assert bts is not None
+            bts = bts[index_of_pdf_comment:end_of_file]
+            # reset values in context
+            context.source = io.BytesIO(bts)
+            context.tokenizer._io_source = context.source
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -158,137 +304,3 @@ class XREFTransformer(Transformer):
 
         # return
         return context.root_object
-
-    @staticmethod
-    def _remove_prefix(context: ReadTransformerState) -> None:
-
-        assert context is not None
-        assert context.source is not None
-        assert context.tokenizer is not None
-
-        # read first 2 Kb
-        bytes_near_sof = context.source.read(2048)
-        assert bytes_near_sof is not None
-        text_near_sof = bytes_near_sof.decode("latin-1")
-        context.source.seek(0)
-
-        # find %PDF-
-        index_of_pdf_comment = -1
-        try:
-            index_of_pdf_comment = text_near_sof.index("%PDF")
-        except ValueError:
-            pass
-
-        # truncate
-        if index_of_pdf_comment > 0:
-            # determine end of file
-            end_of_file = context.source.seek(0, os.SEEK_END)
-            context.source.seek(0)
-            # build byte array
-            bts = context.source.read(end_of_file)
-            assert bts is not None
-            bts = bts[index_of_pdf_comment:end_of_file]
-            # reset values in context
-            context.source = io.BytesIO(bts)
-            context.tokenizer._io_source = context.source
-
-    @staticmethod
-    def _check_header(context: ReadTransformerState) -> None:
-        """
-        This function checks whether or not the first bytes in the document contain the text %PDF
-        :param context: the TransformerContext (containing the io source)
-        :type context: TransformerContext
-        """
-        assert context is not None
-        assert context.source is not None
-        assert context.tokenizer is not None
-        context.source.seek(0)
-        arr = [
-            t
-            for t in [context.tokenizer.next_token() for _ in range(0, 10)]
-            if t is not None
-        ]
-        assert len(arr) > 0
-        assert any([t.get_text().startswith("%PDF") for t in arr])
-
-    def _read_xref(
-        self, context: ReadTransformerState, initial_offset: Optional[int] = None
-    ) -> None:
-        """
-        This function attempts to read the XREF table, first as plaintext, then as a stream
-        :param context:         the TransformerContext (containing the io source)
-        :type context:          TransformerContext
-        :param initial_offset:  the initial byte offset at which to read (set to None to allow this method to find the XREF)
-        :type initial_offset:   int
-        """
-        assert context is not None
-        assert context.root_object is not None
-        assert context.source is not None
-        assert context.tokenizer is not None
-
-        doc = context.root_object
-        src = context.source
-        tok = context.tokenizer
-
-        most_recent_xref: Optional[XREF] = None
-        exceptions_to_rethrow = []
-
-        # attempt to read plaintext XREF
-        try:
-            most_recent_xref = PlainTextXREF()
-            assert most_recent_xref is not None
-            most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
-            most_recent_xref.read(src, tok, initial_offset)
-            if "XRef" in doc:
-                doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
-            else:
-                doc[Name("XRef")] = most_recent_xref
-        except Exception as ex0:
-            most_recent_xref = None
-            exceptions_to_rethrow.append(ex0)
-
-        # attempt to read stream XREF
-        if most_recent_xref is None:
-            try:
-                most_recent_xref = StreamXREF()
-                assert most_recent_xref is not None
-                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
-                most_recent_xref.read(src, tok, initial_offset)
-                if "XRef" in doc:
-                    doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
-                else:
-                    doc[Name("XRef")] = most_recent_xref
-            except Exception as ex0:
-                most_recent_xref = None
-                exceptions_to_rethrow.append(ex0)
-
-        # attempt to rebuild XREF from document
-        if most_recent_xref is None:
-            try:
-                most_recent_xref = RebuiltXREF()
-                assert most_recent_xref is not None
-                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
-                most_recent_xref.read(src, tok)
-                if "XRef" in doc:
-                    doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
-                else:
-                    doc[Name("XRef")] = most_recent_xref
-            except Exception as ex0:
-                most_recent_xref = None
-                exceptions_to_rethrow.append(ex0)
-
-        # unable to read XREF
-        # re-throw exceptions
-        if most_recent_xref is None:
-            for e in exceptions_to_rethrow:
-                raise e
-
-        # handle Prev, Previous
-        assert most_recent_xref is not None
-        prev = None
-        if "Prev" in most_recent_xref["Trailer"]:
-            prev = int(most_recent_xref["Trailer"]["Prev"])
-        if "Previous" in most_recent_xref["Trailer"]:
-            prev = int(most_recent_xref["Trailer"]["Previous"])
-        if prev is not None:
-            self._read_xref(context, initial_offset=prev)

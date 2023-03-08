@@ -24,6 +24,10 @@ class StrikeOutAnnotation(Annotation):
     annotations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -69,3 +73,11 @@ class StrikeOutAnnotation(Annotation):
         self["AP"]["N"]["BBox"].append(bDecimal(0))
         self["AP"]["N"]["BBox"].append(bDecimal(bounding_box.width))
         self["AP"]["N"]["BBox"].append(bDecimal(100))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

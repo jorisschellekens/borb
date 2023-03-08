@@ -18,6 +18,18 @@ class StringTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading String objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -41,6 +53,11 @@ class StringTransformer(Transformer):
         This function reads a String from a byte stream
         """
         # set parent
-        object_to_transform.set_parent(parent_object)  # type: ignore[union-attr]
-        # return
+        assert (
+            isinstance(object_to_transform, String)
+            or isinstance(object_to_transform, HexadecimalString)
+            or isinstance(object_to_transform, Name)
+        )
+        object_to_transform.set_parent(parent_object)
         return object_to_transform
+        # return

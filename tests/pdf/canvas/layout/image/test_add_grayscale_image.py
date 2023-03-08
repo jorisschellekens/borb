@@ -75,6 +75,7 @@ class TestAddGrayscaleImage(unittest.TestCase):
         )
 
         # convert to grayscale
+        img.force_load_image()
         pil_image_002 = img._image.convert("L")
 
         # add image

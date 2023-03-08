@@ -25,9 +25,21 @@ class FontDictionaryTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading a Font object
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(FontDictionaryTransformer, self).__init__()
         self._accept_true_type_standard_14_fonts: bool = True
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
@@ -104,7 +116,7 @@ class FontDictionaryTransformer(Transformer):
 
         # set parent
         assert font_obj is not None
-        font_obj.set_parent(parent_object)  # type: ignore [union-attr]
+        font_obj.set_parent(parent_object)
 
         # convert key/value pair(s)
         assert isinstance(object_to_transform, Dictionary)

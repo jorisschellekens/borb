@@ -20,6 +20,18 @@ class PopupAnnotation(Annotation):
     to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(PopupAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

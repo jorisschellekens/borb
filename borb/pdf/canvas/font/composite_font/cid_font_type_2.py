@@ -26,12 +26,17 @@ class CIDType2Font(CIDType0Font):
     A Type 2 CIDFont contains glyph descriptions based on the TrueType font format
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(CIDType2Font, self).__init__()
         self._cid_to_gid_map_cache: typing.Dict[int, int] = {}
 
-    def _empty_copy(self) -> "Font":
-        return CIDType2Font()
+    #
+    # PRIVATE
+    #
 
     def __deepcopy__(self, memodict={}):
         # fmt: off
@@ -40,3 +45,10 @@ class CIDType2Font(CIDType0Font):
         f_out._width_cache: typing.Dict[int, bDecimal] = {k: v for k, v in self._width_cache.items()}
         return f_out
         # fmt: on
+
+    def _empty_copy(self) -> "Font":
+        return CIDType2Font()
+
+    #
+    # PUBLIC
+    #

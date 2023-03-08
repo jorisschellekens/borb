@@ -39,6 +39,18 @@ class XMPMetadataTransformer(StreamTransformer):
     dictionary may have a Metadata entry (see Table 316).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -82,7 +94,7 @@ class XMPMetadataTransformer(StreamTransformer):
 
             # make copy so that we can add attributes like parent and listeners
             xml_root_out = Element(xml_root_orig.tag)
-            xml_root_out.set_parent(parent_object)  # type: ignore [attr-defined]
+            xml_root_out.set_parent(parent_object)
             for e in xml_root_orig:
                 xml_root_out.append(e)
 

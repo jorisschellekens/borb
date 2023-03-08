@@ -55,6 +55,10 @@ class RedactAnnotation(Annotation):
     evaluating potential redactions prior to removing the specified content.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -141,3 +145,11 @@ class RedactAnnotation(Annotation):
         self["AP"]["N"]["BBox"].append(bDecimal(0))
         self["AP"]["N"]["BBox"].append(bDecimal(100))
         self["AP"]["N"]["BBox"].append(bDecimal(100))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

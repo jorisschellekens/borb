@@ -39,6 +39,10 @@ class AnyObjectTransformer(Transformer):
     its child transformers, allowing it to transform AnyPDFType
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__()
         # fun
@@ -62,6 +66,14 @@ class AnyObjectTransformer(Transformer):
         self.add_child_transformer(ReferenceTransform())
         self.add_child_transformer(NumberTransformer())
         self.add_child_transformer(BooleanTransformer())
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(self, object_to_transform: AnyPDFType):
         """

@@ -17,6 +17,10 @@ class ImageRenderEvent(Event):
     This implementation of Event is triggered when an Image has been processed using a Do instruction
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, graphics_state: CanvasGraphicsState, image: PILImage):  # type: ignore[valid-type]
         self._image: PILImage = image  # type: ignore[valid-type]
 
@@ -30,6 +34,20 @@ class ImageRenderEvent(Event):
         self._width: Decimal = max(abs(v[0]), Decimal(1))
         self._height: Decimal = max(abs(v[1]), Decimal(1))
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+    def get_height(self) -> Decimal:
+        """
+        Get the height of the (scaled) Image
+        """
+        return self._height
+
     def get_image(self) -> PILImage:  # type: ignore[valid-type]
         """
         Get the (source) Image
@@ -37,6 +55,12 @@ class ImageRenderEvent(Event):
         how it is displayed in the PDF
         """
         return self._image
+
+    def get_width(self) -> Decimal:
+        """
+        Get the width of the (scaled) Image
+        """
+        return self._width
 
     def get_x(self) -> Decimal:
         """
@@ -49,15 +73,3 @@ class ImageRenderEvent(Event):
         Get the y-coordinate at which the Image is drawn
         """
         return self._y
-
-    def get_width(self) -> Decimal:
-        """
-        Get the width of the (scaled) Image
-        """
-        return self._width
-
-    def get_height(self) -> Decimal:
-        """
-        Get the height of the (scaled) Image
-        """
-        return self._height

@@ -40,6 +40,10 @@ class TextAnnotation(Annotation):
     shows the annotation dictionary entries specific to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -68,3 +72,11 @@ class TextAnnotation(Annotation):
         # The annotation dictionary’s AP entry, if present, shall take precedence
         # over the Name entry; see Table 168 and 12.5.5, “Appearance Streams.”
         self[Name("Name")] = text_annotation_icon.value
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

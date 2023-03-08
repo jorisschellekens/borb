@@ -12,6 +12,7 @@ from borb.io.read.types import AnyPDFType, Dictionary, Name
 from borb.io.write.font.subsetter import Subsetter
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.transformer import WriteTransformerState
+from borb.pdf import Page
 from borb.pdf.document.document import Document
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,18 @@ class PageTransformer(DictionaryTransformer):
     This implementation of WriteBaseTransformer is responsible
     for writing Dictionary objects of /Type /Page
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(self, any: AnyPDFType):
         """
@@ -39,6 +52,7 @@ class PageTransformer(DictionaryTransformer):
         """
         # fmt: off
         assert isinstance(object_to_transform, Dictionary)
+        assert isinstance(object_to_transform, Page)
         assert (context is not None), "context must be defined in order to write Page objects."
         assert context.root_object is not None, "context.root_object must be defined in order to write Page objects."
         assert isinstance(context.root_object, Document), "context.root_object must be of type Document in order to write Page objects."
@@ -52,7 +66,7 @@ class PageTransformer(DictionaryTransformer):
         # mark some keys as non-referencable
         for k in ["ArtBox", "BleedBox", "CropBox", "MediaBox", "TrimBox"]:
             if k in object_to_transform:
-                object_to_transform[k].set_is_inline(True)  # type: ignore [attr-defined]
+                object_to_transform[k].set_is_inline(True)
 
         # apply subsetting
         if context.apply_font_subsetting:

@@ -21,6 +21,10 @@ class HighlightAnnotation(Annotation):
     annotations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, bounding_box: Rectangle, color: Color = HexColor("faed27")):
 
         # create generic annotation
@@ -66,3 +70,11 @@ class HighlightAnnotation(Annotation):
         self["Border"].append(bDecimal(0))
         self["Border"].append(bDecimal(0))
         self["Border"].append(bDecimal(1))
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

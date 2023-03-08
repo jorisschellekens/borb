@@ -18,6 +18,18 @@ class NumberTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading Decimal objects
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -38,5 +50,5 @@ class NumberTransformer(Transformer):
         """
         # fmt: off
         assert isinstance(object_to_transform, Decimal), "object_to_transform must be of type Decimal"
+        return Decimal(object_to_transform).set_parent(parent_object)
         # fmt: on
-        return Decimal(object_to_transform).set_parent(parent_object)  # type: ignore [attr-defined]

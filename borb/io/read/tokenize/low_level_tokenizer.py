@@ -16,20 +16,20 @@ class TokenType(enum.IntEnum):
     This enum represents the various kinds of Token objects the PDF parser can encounter
     """
 
-    NUMBER = 1
-    STRING = 2
-    HEX_STRING = 3
-    NAME = 4
-    COMMENT = 5
-    START_ARRAY = 6
-    END_ARRAY = 7
-    START_DICT = 8
-    END_DICT = 9
-    REF = 10
-    OBJ = 11
-    END_OBJ = 12
-    OTHER = 13
-    END_OF_FILE = 14
+    COMMENT = 1
+    END_ARRAY = 2
+    END_DICT = 3
+    END_OBJ = 4
+    END_OF_FILE = 5
+    HEX_STRING = 6
+    NAME = 7
+    NUMBER = 8
+    OBJ = 9
+    OTHER = 10
+    REF = 11
+    START_ARRAY = 12
+    START_DICT = 13
+    STRING = 14
 
 
 class Token:
@@ -40,10 +40,22 @@ class Token:
     The token name is a category of lexical unit.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, byte_offset: int, token_type: TokenType, bts: bytes):
         self._byte_offset: int = byte_offset
         self._token_type: TokenType = token_type
         self._bytes: bytes = bts
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_byte_offset(self) -> int:
         """
@@ -80,13 +92,31 @@ class LowLevelTokenizer:
     and so forth.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, io_source):
         self._io_source = io_source
         # fmt: off
-        self._is_pseudo_digit = set([b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9', b'+', b'-', b'.']).__contains__
-        self._is_delimiter = set([b'\x00', b'\t', b'\n', b'\r', b'\x0c', b" ", b'%', b'(', b')', b'/', b'<', b'>', b'[', b']']).__contains__
-        self._is_whitespace = set([b'\x00', b'\t', b'\n', b'\r', b'\x0c', b' ']).__contains__
+        self._is_pseudo_digit = {b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9', b'+', b'-', b'.'}.__contains__
+        self._is_delimiter = {b'\x00', b'\t', b'\n', b'\r', b'\x0c', b" ", b'%', b'(', b')', b'/', b'<', b'>', b'[', b']'}.__contains__
+        self._is_whitespace = {b'\x00', b'\t', b'\n', b'\r', b'\x0c', b' '}.__contains__
         # fmt: on
+
+    #
+    # PRIVATE
+    #
+
+    def _next_byte(self):
+        return self._io_source.read(1)
+
+    def _prev_byte(self):
+        return self._io_source.seek(-1, io.SEEK_CUR)
+
+    #
+    # PUBLIC
+    #
 
     def next_non_comment_token(self) -> Optional[Token]:
         """
@@ -242,9 +272,3 @@ class LowLevelTokenizer:
         Return the current stream position.
         """
         return self._io_source.tell()
-
-    def _next_byte(self):
-        return self._io_source.read(1)
-
-    def _prev_byte(self):
-        return self._io_source.seek(-1, io.SEEK_CUR)

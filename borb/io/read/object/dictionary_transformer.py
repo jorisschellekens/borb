@@ -18,6 +18,18 @@ class DictionaryTransformer(Transformer):
     This implementation of ReadBaseTransformer is responsible for reading a Dictionary object
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
     ) -> bool:
@@ -40,8 +52,8 @@ class DictionaryTransformer(Transformer):
         # create root object
         # fmt: off
         assert isinstance(object_to_transform, Dictionary), "object_to_transform must be of type Dictionary"
+        object_to_transform.set_parent(parent_object)
         # fmt: on
-        object_to_transform.set_parent(parent_object)  # type: ignore [attr-defined]
 
         # transform key/value pair(s)
         for k, v in object_to_transform.items():

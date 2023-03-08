@@ -35,6 +35,14 @@ class Subsetter:
     Type0Font, the page content is also changed, updating the TJ instructions to refer to the new GIDs.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
     @staticmethod
     def _extract_text_per_font(page: "Page") -> typing.Dict[Font, typing.Set[str]]:
         csp = CanvasStreamProcessor(page, Canvas(), [])
@@ -74,6 +82,10 @@ class Subsetter:
         # return
         return page
 
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def apply(page: Page) -> Page:
         """
@@ -89,7 +101,7 @@ class Subsetter:
             return page
 
         # determine which fonts to apply subsetting to
-        fonts_to_be_subset: typing.List[Type0Font] = [
+        fonts_to_be_subset: typing.List[Font] = [
             x for x in page["Resources"]["Font"].values() if isinstance(x, Type0Font)
         ]
         if len(fonts_to_be_subset) == 0:
@@ -131,7 +143,7 @@ class Subsetter:
 
             # build TrueTypeFont
             # fmt: off
-            new_font: TrueTypeFont = TrueTypeFont.true_type_font_from_file(font_file_bytes_002)
+            new_font: Font = TrueTypeFont.true_type_font_from_file(font_file_bytes_002)
             basefont_prefix: str = "".join([random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(0, 6)])
             new_font[Name("BaseFont")] = Name(basefont_prefix + "+" + str(new_font[Name("BaseFont")]))
             new_font["FontDescriptor"][Name("FontName")] = new_font[Name("BaseFont")]
@@ -145,11 +157,11 @@ class Subsetter:
         Subsetter._modify_page_content_stream(page, fonts_to_be_subset, subset_fonts)
 
         # change Page / Resources / Font
-        for k, old_font in page["Resources"]["Font"].items():
+        for old_font_name, old_font in page["Resources"]["Font"].items():
             if old_font not in fonts_to_be_subset:
                 continue
-            new_font: Font = subset_fonts[fonts_to_be_subset.index(old_font)]
-            page["Resources"]["Font"][k] = new_font
+            new_font = subset_fonts[fonts_to_be_subset.index(old_font)]
+            page["Resources"]["Font"][old_font_name] = new_font
 
         # return
         return page

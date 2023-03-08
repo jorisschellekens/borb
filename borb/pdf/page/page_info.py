@@ -4,6 +4,7 @@
 """
     This class represents the meta-information belonging to a single page in a PDF document
 """
+import typing
 from decimal import Decimal
 from typing import Optional, Tuple
 
@@ -16,18 +17,21 @@ class PageInfo(Dictionary):
     This class represents the meta-information belonging to a single page in a PDF document
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, page: "Page"):  # type: ignore [name-defined]
         super(PageInfo, self).__init__()
         self._page = page
 
-    def get_width(self) -> Optional[Decimal]:
-        """
-        Return the width of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
-        expressed in default user space units, that shall define the
-        boundaries of the physical medium on which the page shall be
-        displayed or printed (see 14.11.2, "Page Boundaries").
-        """
-        return self._page["MediaBox"][2]
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_height(self) -> Optional[Decimal]:
         """
@@ -37,6 +41,17 @@ class PageInfo(Dictionary):
         displayed or printed (see 14.11.2, "Page Boundaries").
         """
         return self._page["MediaBox"][3]
+
+    def get_page_number(self) -> Optional[Decimal]:
+        """
+        This function returns the page number
+        """
+        kids = self._page.get_parent().get_parent().get("Kids")
+        l = int(self._page.get_parent().get_parent().get("Count"))
+        for i in range(0, l):
+            if kids[i] == self._page:
+                return Decimal(i)
+        return None
 
     def get_size(self) -> Tuple[Decimal, Decimal]:
         """
@@ -56,26 +71,25 @@ class PageInfo(Dictionary):
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
         """
-        w, h = self.get_width(), self.get_height()
+        w: typing.Optional[Decimal] = self.get_width()
+        h: typing.Optional[Decimal] = self.get_height()
         if w is None or h is None:
             return None
         assert w is not None
         assert h is not None
         for p in PageSize:
-            if abs(w - p.value[1]) <= 1 and abs(h - p.value[1]):
+            if abs(w - p.value[1]) <= 1 and abs(h - p.value[1]) <= 1:
                 return p
         return None
 
-    def get_page_number(self) -> Optional[Decimal]:
+    def get_width(self) -> Optional[Decimal]:
         """
-        This function returns the page number
+        Return the width of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
+        expressed in default user space units, that shall define the
+        boundaries of the physical medium on which the page shall be
+        displayed or printed (see 14.11.2, "Page Boundaries").
         """
-        kids = self._page.get_parent().get_parent().get("Kids")
-        l = int(self._page.get_parent().get_parent().get("Count"))
-        for i in range(0, l):
-            if kids[i] == self._page:
-                return Decimal(i)
-        return None
+        return self._page["MediaBox"][2]
 
     def uses_color_images(self) -> Optional[bool]:
         """

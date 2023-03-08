@@ -41,31 +41,9 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
     After this, a keywords table is constructed by combining the relevant words together if they appear following one another in the text.
     """
 
-    @staticmethod
-    def get_keywords_from_pdf(
-        pdf: Document,
-    ) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
-        """
-        This function returns the keywords for a given PDF (per page)
-        :param pdf:     the PDF to be analyzed
-        :return:        the keywords per page (represented by typing.Dict[int, typing.List[typing.Tuple[str, float]]])
-        """
-        keywords_per_page: typing.Dict[int, typing.List[typing.Tuple[str, float]]] = {}
-        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
-        for page_nr in range(0, number_of_pages):
-            # get Page object
-            page: Page = pdf.get_page(page_nr)
-            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
-            # register EventListener
-            l: "TextRankKeywordExtraction" = TextRankKeywordExtraction()
-            # process Page
-            l._event_occurred(BeginPageEvent(page))
-            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
-            l._event_occurred(EndPageEvent(page))
-            # add to output dictionary
-            keywords_per_page[page_nr] = l.get_keywords()[0]
-        # return
-        return keywords_per_page
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(self):
         super().__init__()
@@ -75,6 +53,10 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
         self._keywords_per_page: typing.Dict[
             int, typing.List[typing.Tuple[str, float]]
         ] = {}
+
+    #
+    # PRIVATE
+    #
 
     def _end_page(self, page: Page):
         super()._end_page(page)
@@ -134,8 +116,38 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
         self._keywords_per_page[self._current_page].sort(key=lambda x: x[1], reverse=True)
         # fmt: on
 
+    #
+    # PUBLIC
+    #
+
     def get_keywords(self) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
         """
         This function returns a typing.List[TextRankKeyword] for a given PDF
         """
         return self._keywords_per_page
+
+    @staticmethod
+    def get_keywords_from_pdf(
+        pdf: Document,
+    ) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
+        """
+        This function returns the keywords for a given PDF (per page)
+        :param pdf:     the PDF to be analyzed
+        :return:        the keywords per page (represented by typing.Dict[int, typing.List[typing.Tuple[str, float]]])
+        """
+        keywords_per_page: typing.Dict[int, typing.List[typing.Tuple[str, float]]] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+            # register EventListener
+            l: "TextRankKeywordExtraction" = TextRankKeywordExtraction()
+            # process Page
+            l._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
+            l._event_occurred(EndPageEvent(page))
+            # add to output dictionary
+            keywords_per_page[page_nr] = l.get_keywords()[0]
+        # return
+        return keywords_per_page

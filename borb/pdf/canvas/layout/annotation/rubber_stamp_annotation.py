@@ -43,6 +43,10 @@ class RubberStampAnnotation(Annotation):
     note. Table 181 shows the annotation dictionary entries specific to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -75,3 +79,11 @@ class RubberStampAnnotation(Annotation):
         # background and border) but not to the pop-up window that appears when
         # the annotation is opened.
         self[Name("CA")] = bDecimal(1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

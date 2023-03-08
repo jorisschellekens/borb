@@ -16,6 +16,10 @@ class CopyCommandOperator(CanvasOperator):
     This CanvasOperator copies an existing operator and writes its bytes to a content stream of the canvas.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self, operator_to_copy: CanvasOperator, output_content_stream: bytearray
     ):
@@ -23,17 +27,9 @@ class CopyCommandOperator(CanvasOperator):
         self._operator_to_copy = operator_to_copy
         self._output_content_stream: bytearray = output_content_stream
 
-    def get_text(self) -> str:
-        """
-        Return the str that invokes this CanvasOperator
-        """
-        return self._operator_to_copy.get_text()
-
-    def get_number_of_operands(self) -> int:
-        """
-        Return the number of operands for this CanvasOperator
-        """
-        return self._operator_to_copy.get_number_of_operands()
+    #
+    # PRIVATE
+    #
 
     def _operand_to_str(self, op: AnyPDFType) -> str:
         if isinstance(op, Decimal):
@@ -47,6 +43,22 @@ class CopyCommandOperator(CanvasOperator):
         if isinstance(op, list):
             return "[" + "".join([self._operand_to_str(x) + " " for x in op])[:-1] + "]"
         return ""
+
+    #
+    # PUBLIC
+    #
+
+    def get_number_of_operands(self) -> int:
+        """
+        Return the number of operands for this CanvasOperator
+        """
+        return self._operator_to_copy.get_number_of_operands()
+
+    def get_text(self) -> str:
+        """
+        Return the str that invokes this CanvasOperator
+        """
+        return self._operator_to_copy.get_text()
 
     def invoke(
         self,
@@ -65,8 +77,8 @@ class CopyCommandOperator(CanvasOperator):
         canvas = canvas_stream_processor.get_canvas()
 
         # copy operand string
+        # fmt: off
         self._output_content_stream += b"\n"
-        self._output_content_stream += b"".join(
-            [(bytes(self._operand_to_str(s), encoding="utf8") + b" ") for s in operands]
-        )
+        self._output_content_stream += b"".join([(bytes(self._operand_to_str(s), encoding="utf8") + b" ") for s in operands])
         self._output_content_stream += bytes(self.get_text(), encoding="utf8")
+        # fmt: on

@@ -28,6 +28,10 @@ class FreeTextAnnotation(Annotation):
     appearance of the text in these annotations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         bounding_box: Rectangle,
@@ -94,6 +98,10 @@ class FreeTextAnnotation(Annotation):
         # Default value: FreeText
         self[Name("IT")] = Name("FreeTextTypeWriter")
 
+    #
+    # PRIVATE
+    #
+
     def _embed_font_in_page(self, page: "Page") -> None:  # type: ignore[name-defined]
         if "Resources" not in page:
             page[Name("Resources")] = Dictionary()
@@ -120,3 +128,7 @@ class FreeTextAnnotation(Annotation):
                 self._font_color_rgb.blue,
             )
         )
+
+    #
+    # PUBLIC
+    #

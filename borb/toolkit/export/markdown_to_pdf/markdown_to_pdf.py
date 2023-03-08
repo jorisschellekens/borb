@@ -6,7 +6,7 @@ This class converts Markdown to PDF
 """
 import typing
 import xml.etree.ElementTree as ET
-from lxml.etree import Element
+from lxml.etree import Element  # type: ignore [import]
 
 from lxml.etree import HTMLParser  # type: ignore [import]
 from markdown_it import MarkdownIt  # type: ignore[import]
@@ -25,6 +25,14 @@ class MarkdownToPDF:
     """
     This class converts Markdown to PDF
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
 
     @staticmethod
     def _replace_github_flavored_emoji(
@@ -69,13 +77,13 @@ class MarkdownToPDF:
         if tail_exists and element_can_be_changed:
             for k, v in [(":" + x.lower() + ":", x) for x in dir(Emojis)]:
                 if k in e.tail:
-                    n: int = e.tail.find(k)
-                    before: str = e.tail[0:n]
-                    after: str = e.tail[n + len(k) :]
+                    n = e.tail.find(k)
+                    before = e.tail[0:n]
+                    after = e.tail[n + len(k) :]
                     e.tail = after
 
                     # create <span> element
-                    span: Element = Element("span")
+                    span = Element("span")
                     span.set("class", "emoji emoji_%s" % v)
                     span.text = k
                     span.tail = before
@@ -110,6 +118,10 @@ class MarkdownToPDF:
         for x in e:
             MarkdownToPDF._set_img_width_and_height(x)
         return e
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def convert_markdown_to_layout_element(

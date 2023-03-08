@@ -22,11 +22,77 @@ class Matrix:
     Any matrix can be multiplied element-wise by a scalar from its associated field.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         """
         Initialize a new Matrix
         """
         self.mtx: typing.List[typing.List[Decimal]] = [[], [], []]
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        m = Matrix()
+        m.mtx = [
+            [self.mtx[0][0], self.mtx[0][1], self.mtx[0][2]],
+            [self.mtx[1][0], self.mtx[1][1], self.mtx[1][2]],
+            [self.mtx[2][0], self.mtx[2][1], self.mtx[2][2]],
+        ]
+        return m
+
+    def __getitem__(self, item) -> List[Decimal]:
+        return self.mtx[item]
+
+    def __str__(self):
+        return "[[%f %f %f]\n [%f %f %f]\n [%f %f %f]]" % (
+            float(self.mtx[0][0]),
+            float(self.mtx[0][1]),
+            float(self.mtx[0][2]),
+            float(self.mtx[1][0]),
+            float(self.mtx[1][1]),
+            float(self.mtx[1][2]),
+            float(self.mtx[2][0]),
+            float(self.mtx[2][1]),
+            float(self.mtx[2][2]),
+        )
+
+    #
+    # PUBLIC
+    #
+
+    def cross(self, x: Decimal, y: Decimal, z: Decimal):
+        """
+        This method calculates the dot-product of this Matrix
+        with an input vector (represented by 3 input Decimal objects)
+        and returns the result
+        """
+        x2 = x * self[0][0] + y * self[1][0] + z * self[2][0]
+        y2 = x * self[0][1] + y * self[1][1] + z * self[2][1]
+        z2 = x * self[0][2] + y * self[1][2] + z * self[2][2]
+        return x2, y2, z2
+
+    def determinant(self) -> Decimal:
+        """
+        In linear algebra, the determinant is a scalar value that can be computed from the elements of a square matrix
+        and encodes certain properties of the linear transformation described by the matrix.
+        The determinant of a matrix A is denoted det(A), det A, or |A|.
+        Geometrically, it can be viewed as the volume scaling factor of the linear transformation described by the matrix.
+        This is also the signed volume of the n-dimensional parallelepiped spanned by the column or row vectors of the matrix.
+        The determinant is positive or negative according to whether the linear transformation preserves or reverses the orientation of a real vector space.
+        """
+        return (
+            self.mtx[0][0]
+            * (self.mtx[1][1] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][1])
+            - self.mtx[0][1]
+            * (self.mtx[1][0] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][0])
+            + self.mtx[0][2]
+            * (self.mtx[1][0] * self.mtx[2][1] - self.mtx[1][1] * self.mtx[2][0])
+        )
 
     @staticmethod
     def identity_matrix() -> "Matrix":
@@ -68,58 +134,4 @@ class Matrix:
                     m_vals[i][j] += self.mtx[i][k] * y.mtx[k][j]
         m = Matrix()
         m.mtx = m_vals
-        return m
-
-    def cross(self, x: Decimal, y: Decimal, z: Decimal):
-        """
-        This method calculates the dot-product of this Matrix
-        with an input vector (represented by 3 input Decimal objects)
-        and returns the result
-        """
-        x2 = x * self[0][0] + y * self[1][0] + z * self[2][0]
-        y2 = x * self[0][1] + y * self[1][1] + z * self[2][1]
-        z2 = x * self[0][2] + y * self[1][2] + z * self[2][2]
-        return x2, y2, z2
-
-    def __getitem__(self, item) -> List[Decimal]:
-        return self.mtx[item]
-
-    def __str__(self):
-        return "[[%f %f %f]\n [%f %f %f]\n [%f %f %f]]" % (
-            self.mtx[0][0],
-            self.mtx[0][1],
-            self.mtx[0][2],
-            self.mtx[1][0],
-            self.mtx[1][1],
-            self.mtx[1][2],
-            self.mtx[2][0],
-            self.mtx[2][1],
-            self.mtx[2][2],
-        )
-
-    def determinant(self) -> Decimal:
-        """
-        In linear algebra, the determinant is a scalar value that can be computed from the elements of a square matrix
-        and encodes certain properties of the linear transformation described by the matrix.
-        The determinant of a matrix A is denoted det(A), det A, or |A|.
-        Geometrically, it can be viewed as the volume scaling factor of the linear transformation described by the matrix.
-        This is also the signed volume of the n-dimensional parallelepiped spanned by the column or row vectors of the matrix.
-        The determinant is positive or negative according to whether the linear transformation preserves or reverses the orientation of a real vector space.
-        """
-        return (
-            self.mtx[0][0]
-            * (self.mtx[1][1] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][1])
-            - self.mtx[0][1]
-            * (self.mtx[1][0] * self.mtx[2][2] - self.mtx[1][2] * self.mtx[2][0])
-            + self.mtx[0][2]
-            * (self.mtx[1][0] * self.mtx[2][1] - self.mtx[1][1] * self.mtx[2][0])
-        )
-
-    def __deepcopy__(self, memodict={}):
-        m = Matrix()
-        m.mtx = [
-            [self.mtx[0][0], self.mtx[0][1], self.mtx[0][2]],
-            [self.mtx[1][0], self.mtx[1][1], self.mtx[1][2]],
-            [self.mtx[2][0], self.mtx[2][1], self.mtx[2][2]],
-        ]
         return m

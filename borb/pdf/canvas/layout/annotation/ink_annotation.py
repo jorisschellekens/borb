@@ -16,6 +16,18 @@ class InkAnnotation(Annotation):
     annotation dictionary entries specific to this type of annotation.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(InkAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

@@ -33,6 +33,10 @@ class Hyphenation:
     DO_NOT_HYPHENATE_BEFORE: int = 2
     DO_NOT_HYPHENATE_AFTER: int = -2
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, iso_language_code: str):
         self._patterns: Trie = Trie()
         self._min_prefix_length: int = 128
@@ -72,6 +76,14 @@ class Hyphenation:
             if "exceptions" in data:
                 for e in data["exceptions"]:
                     self._exceptions.append(e)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def hyphenate(self, s: str, hyphenation_character: str = chr(173)) -> str:
         """

@@ -17,6 +17,7 @@ from fontTools.cffLib import CFFFontSet, TopDict  # type: ignore [import]
 
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary, Name
+from borb.pdf.canvas.font.adobe_glyph_list import AdobeGlyphList
 from borb.pdf.canvas.font.adobe_standard_encoding import (
     adobe_standard_decode,
     adobe_standard_encode,
@@ -35,6 +36,10 @@ class Type1Font(SimpleFont):
     small sizes and low resolutions.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(Type1Font, self).__init__()
         self[Name("Type")] = Name("Font")
@@ -42,67 +47,21 @@ class Type1Font(SimpleFont):
         self._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {}
         self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {}
 
-    def _read_encoding_with_unclear_glyph_names(self):
+    #
+    # PRIVATE
+    #
 
-        # figure out how many characters we'll need to calculate
+    def __deepcopy__(self, memodict={}):
         # fmt: off
-        assert "FirstChar" in self, "Type1Font must have a /FirstChar entry"
-        assert isinstance(self["FirstChar"], bDecimal), "Type1Font must have a valid /FirstChar entry"
-        assert "LastChar" in self, "Type1Font must have a /LastChar entry"
-        assert isinstance(self["LastChar"], bDecimal), "Type1Font must have a valid /LastChar entry"
+        f_out: Font = super(Type1Font, self).__deepcopy__(memodict)
+        f_out[Name("Subtype")] = Name("Type1")
+        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
+        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
+        return f_out
         # fmt: on
-        first_char: int = int(self["FirstChar"])
-        last_char: int = int(self["LastChar"])
-        self._character_identifier_to_unicode_lookup = {}
 
-        i: int = 0
-        for i in range(first_char, last_char + 1):
-            y: typing.Optional[str] = None
-            try:
-                if self["Encoding"]["BaseEncoding"] == "WinAnsiEncoding":
-                    y = bytes([i]).decode("cp1252")
-                elif self["Encoding"]["BaseEncoding"] == "MacRomanEncoding":
-                    y = bytes([i]).decode("mac-roman")
-                elif self["Encoding"]["BaseEncoding"] == "MacExpertEncoding":
-                    # TODO replace by actual MacExpertEncoding
-                    logger.debug(
-                        "Font %s uses MacExpertEncoding, defaulting to MacRomanEncoding"
-                        % str(self["BaseFont"])
-                    )
-                    y = bytes([i]).decode("mac-roman")
-                elif self["Encoding"]["BaseEncoding"] == "StandardEncoding":
-                    y = adobe_standard_decode(bytes([i]))
-            except:
-                pass
-            if y is not None:
-                self._character_identifier_to_unicode_lookup[i] = y
-
-        # apply differences
-        j: int = 0
-        i = 0
-        encoding_without_differences: typing.Dict[int, str] = copy.deepcopy(
-            self._character_identifier_to_unicode_lookup
-        )
-        while i < len(self["Encoding"]["Differences"]):
-            assert isinstance(self["Encoding"]["Differences"][i], bDecimal)
-            character_code: int = self["Encoding"]["Differences"][i]
-            j = i + 1
-            while j < len(self["Encoding"]["Differences"]) and not isinstance(
-                self["Encoding"]["Differences"][j], bDecimal
-            ):
-                glyph_name: str = str(self["Encoding"]["Differences"][j])
-                cid: int = int(glyph_name[1:])
-                self._character_identifier_to_unicode_lookup[
-                    int(character_code)
-                ] = encoding_without_differences[cid]
-                character_code += 1
-                j += 1
-            i = j
-
-        # build reverse map
-        self._unicode_lookup_to_character_identifier = {
-            v: k for k, v in self._character_identifier_to_unicode_lookup.items()
-        }
+    def _empty_copy(self) -> "Font":
+        return Type1Font()
 
     def _read_encoding_with_differences(self) -> None:
 
@@ -194,6 +153,68 @@ class Type1Font(SimpleFont):
             v: k for k, v in self._character_identifier_to_unicode_lookup.items()
         }
 
+    def _read_encoding_with_unclear_glyph_names(self):
+
+        # figure out how many characters we'll need to calculate
+        # fmt: off
+        assert "FirstChar" in self, "Type1Font must have a /FirstChar entry"
+        assert isinstance(self["FirstChar"], bDecimal), "Type1Font must have a valid /FirstChar entry"
+        assert "LastChar" in self, "Type1Font must have a /LastChar entry"
+        assert isinstance(self["LastChar"], bDecimal), "Type1Font must have a valid /LastChar entry"
+        # fmt: on
+        first_char: int = int(self["FirstChar"])
+        last_char: int = int(self["LastChar"])
+        self._character_identifier_to_unicode_lookup = {}
+
+        i: int = 0
+        for i in range(first_char, last_char + 1):
+            y: typing.Optional[str] = None
+            try:
+                if self["Encoding"]["BaseEncoding"] == "WinAnsiEncoding":
+                    y = bytes([i]).decode("cp1252")
+                elif self["Encoding"]["BaseEncoding"] == "MacRomanEncoding":
+                    y = bytes([i]).decode("mac-roman")
+                elif self["Encoding"]["BaseEncoding"] == "MacExpertEncoding":
+                    # TODO replace by actual MacExpertEncoding
+                    logger.debug(
+                        "Font %s uses MacExpertEncoding, defaulting to MacRomanEncoding"
+                        % str(self["BaseFont"])
+                    )
+                    y = bytes([i]).decode("mac-roman")
+                elif self["Encoding"]["BaseEncoding"] == "StandardEncoding":
+                    y = adobe_standard_decode(bytes([i]))
+            except:
+                pass
+            if y is not None:
+                self._character_identifier_to_unicode_lookup[i] = y
+
+        # apply differences
+        j: int = 0
+        i = 0
+        encoding_without_differences: typing.Dict[int, str] = copy.deepcopy(
+            self._character_identifier_to_unicode_lookup
+        )
+        while i < len(self["Encoding"]["Differences"]):
+            assert isinstance(self["Encoding"]["Differences"][i], bDecimal)
+            character_code: int = self["Encoding"]["Differences"][i]
+            j = i + 1
+            while j < len(self["Encoding"]["Differences"]) and not isinstance(
+                self["Encoding"]["Differences"][j], bDecimal
+            ):
+                glyph_name: str = str(self["Encoding"]["Differences"][j])
+                cid: int = int(glyph_name[1:])
+                self._character_identifier_to_unicode_lookup[
+                    int(character_code)
+                ] = encoding_without_differences[cid]
+                character_code += 1
+                j += 1
+            i = j
+
+        # build reverse map
+        self._unicode_lookup_to_character_identifier = {
+            v: k for k, v in self._character_identifier_to_unicode_lookup.items()
+        }
+
     def _read_to_unicode(self):
         if len(self._unicode_lookup_to_character_identifier) > 0:
             return
@@ -206,6 +227,10 @@ class Type1Font(SimpleFont):
         self._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {
             v: k for k, v in self._character_identifier_to_unicode_lookup.items()
         }
+
+    #
+    # PUBLIC
+    #
 
     def character_identifier_to_unicode(
         self, character_identifier: int
@@ -293,6 +318,32 @@ class Type1Font(SimpleFont):
         # default
         return None
 
+    def get_ascent(self) -> bDecimal:
+        """
+        This function returns the maximum height above the baseline reached by glyphs in this font.
+        The height of glyphs for accented characters shall be excluded.
+        """
+        return self["FontDescriptor"]["Ascent"]
+
+    def get_descent(self) -> bDecimal:
+        """
+        This function returns the maximum depth below the baseline reached by glyphs in this font.
+        The value shall be a negative number.
+        """
+        return self["FontDescriptor"]["Descent"]
+
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
+        """
+        This function returns the width (in text space) of a given character identifier.
+        If this Font is unable to represent the glyph that corresponds to the character identifier,
+        this function returns None
+        """
+        first_char: int = int(self["FirstChar"])
+        last_char: int = int(self["LastChar"])
+        if first_char <= character_identifier <= last_char:
+            return self["Widths"][character_identifier - first_char]
+        return None
+
     def unicode_to_character_identifier(self, unicode: str) -> typing.Optional[int]:
         """
         This function maps a unicode str to its character identifier.
@@ -342,44 +393,6 @@ class Type1Font(SimpleFont):
         # default
         return None
 
-    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
-        """
-        This function returns the width (in text space) of a given character identifier.
-        If this Font is unable to represent the glyph that corresponds to the character identifier,
-        this function returns None
-        """
-        first_char: int = int(self["FirstChar"])
-        last_char: int = int(self["LastChar"])
-        if first_char <= character_identifier <= last_char:
-            return self["Widths"][character_identifier - first_char]
-        return None
-
-    def get_ascent(self) -> bDecimal:
-        """
-        This function returns the maximum height above the baseline reached by glyphs in this font.
-        The height of glyphs for accented characters shall be excluded.
-        """
-        return self["FontDescriptor"]["Ascent"]
-
-    def get_descent(self) -> bDecimal:
-        """
-        This function returns the maximum depth below the baseline reached by glyphs in this font.
-        The value shall be a negative number.
-        """
-        return self["FontDescriptor"]["Descent"]
-
-    def _empty_copy(self) -> "Font":
-        return Type1Font()
-
-    def __deepcopy__(self, memodict={}):
-        # fmt: off
-        f_out: Font = super(Type1Font, self).__deepcopy__(memodict)
-        f_out[Name("Subtype")] = Name("Type1")
-        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
-        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
-        return f_out
-        # fmt: on
-
 
 class StandardType1Font(Type1Font):
     """
@@ -405,25 +418,6 @@ class StandardType1Font(Type1Font):
         "Times-Roman",
         "ZapfDingbats",
     ]
-
-    @staticmethod
-    def _canonical_name(font_name: str) -> typing.Optional[str]:
-        def _to_lower_and_alpha(x: str) -> str:
-            return "".join([c for c in x.lower() if c in "abcdefghijklmnopqrstuvwxyz"])
-
-        canonical_name: str = _to_lower_and_alpha(font_name)
-        for n in StandardType1Font.STANDARD_14_FONT_NAMES:
-            if _to_lower_and_alpha(n) == canonical_name:
-                return n
-
-        return None
-
-    @staticmethod
-    def is_standard_14_font_name(font_name: str) -> bool:
-        """
-        This function returns True if the given str represents the name of one of the standard 14 fonts, False otherwise
-        """
-        return StandardType1Font._canonical_name(font_name) is not None
 
     # fmt: off
     def __init__(self, font_name: typing.Optional[str] = None):
@@ -467,8 +461,40 @@ class StandardType1Font(Type1Font):
                     except:
                         self._character_identifier_to_unicode_lookup[c] = ""
                 self._unicode_lookup_to_character_identifier = {v:k for k,v in self._character_identifier_to_unicode_lookup.items()}
-
     # fmt: on
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        # fmt: off
+        f_out: Font = super(StandardType1Font, self).__deepcopy__(memodict)
+        f_out[Name("Subtype")] = Name("Type1")
+        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
+        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
+        f_out._afm = self._afm
+        return f_out
+        # fmt: on
+
+    @staticmethod
+    def _canonical_name(font_name: str) -> typing.Optional[str]:
+        def _to_lower_and_alpha(x: str) -> str:
+            return "".join([c for c in x.lower() if c in "abcdefghijklmnopqrstuvwxyz"])
+
+        canonical_name: str = _to_lower_and_alpha(font_name)
+        for n in StandardType1Font.STANDARD_14_FONT_NAMES:
+            if _to_lower_and_alpha(n) == canonical_name:
+                return n
+
+        return None
+
+    def _empty_copy(self) -> "Font":
+        return StandardType1Font()
+
+    #
+    # PUBLIC
+    #
 
     def character_identifier_to_unicode(
         self, character_identifier: int
@@ -478,28 +504,6 @@ class StandardType1Font(Type1Font):
         If no such mapping exists, this function returns None.
         """
         return self._character_identifier_to_unicode_lookup.get(character_identifier)
-
-    def unicode_to_character_identifier(self, unicode: str) -> typing.Optional[int]:
-        """
-        This function maps a unicode str to its character identifier.
-        If no such mapping exists, this function returns None.
-        """
-        return self._unicode_lookup_to_character_identifier.get(unicode)
-
-    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
-        """
-        This function returns the width (in text space) of a given character identifier.
-        If this Font is unable to represent the glyph that corresponds to the character identifier,
-        this function returns None
-        """
-        widths: typing.List[bDecimal] = [
-            bDecimal(v[1])
-            for k, v in self._afm._chars.items()
-            if v[0] == character_identifier
-        ]
-        if len(widths) == 1:
-            return widths[0]
-        return bDecimal(0)
 
     def get_ascent(self) -> bDecimal:
         """
@@ -519,15 +523,33 @@ class StandardType1Font(Type1Font):
             return bDecimal(self._afm._attrs["Descender"])
         return bDecimal(0)
 
-    def _empty_copy(self) -> "Font":
-        return StandardType1Font()
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
+        """
+        This function returns the width (in text space) of a given character identifier.
+        If this Font is unable to represent the glyph that corresponds to the character identifier,
+        this function returns None
+        """
+        default_tuple: typing.Tuple[int, int, typing.Tuple[int, int, int, int]] = (
+            0,
+            0,
+            (0, 0, 0, 0),
+        )
+        name: typing.Optional[str] = AdobeGlyphList.UNICODE_TO_NAME.get(
+            ord(self._character_identifier_to_unicode_lookup[character_identifier]),
+            None,
+        )
+        return bDecimal(self._afm._chars.get(name, default_tuple)[1])
 
-    def __deepcopy__(self, memodict={}):
-        # fmt: off
-        f_out: Font = super(StandardType1Font, self).__deepcopy__(memodict)
-        f_out[Name("Subtype")] = Name("Type1")
-        f_out._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {k: v for k, v in self._character_identifier_to_unicode_lookup.items()}
-        f_out._unicode_lookup_to_character_identifier: typing.Dict[str, int] = {k: v for k, v in self._unicode_lookup_to_character_identifier.items()}
-        f_out._afm = self._afm
-        return f_out
-        # fmt: on
+    @staticmethod
+    def is_standard_14_font_name(font_name: str) -> bool:
+        """
+        This function returns True if the given str represents the name of one of the standard 14 fonts, False otherwise
+        """
+        return StandardType1Font._canonical_name(font_name) is not None
+
+    def unicode_to_character_identifier(self, unicode: str) -> typing.Optional[int]:
+        """
+        This function maps a unicode str to its character identifier.
+        If no such mapping exists, this function returns None.
+        """
+        return self._unicode_lookup_to_character_identifier.get(unicode)

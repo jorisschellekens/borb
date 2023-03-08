@@ -44,6 +44,10 @@ class LineOfText(ChunkOfText):
     text_alignment is not applicable for LineOfText, as its bounding box will always be the exact width needed
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,
@@ -114,7 +118,7 @@ class LineOfText(ChunkOfText):
         self._text_alignment = text_alignment
 
     #
-    # RENDERING LOGIC
+    # PRIVATE
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
@@ -193,3 +197,7 @@ class LineOfText(ChunkOfText):
             c.paint(page, cbox)
             prev_x += c._get_content_box(available_space).get_width()
             prev_x += remaining_space_per_whitespace
+
+    #
+    # PUBLIC
+    #

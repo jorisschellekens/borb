@@ -18,6 +18,18 @@ class PrinterMarkAnnotation(Annotation):
     discussion.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(PrinterMarkAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

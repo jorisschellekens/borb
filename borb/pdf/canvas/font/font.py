@@ -31,234 +31,13 @@ class Font(Dictionary):
     Today, the font is a digital file.
     """
 
-    def character_identifier_to_unicode(
-        self, character_identifier: int
-    ) -> typing.Optional[str]:
-        """
-        This function maps a character identifier to its unicode str.
-        If no such mapping exists, this function returns None.
-        """
-        return None
+    #
+    # CONSTRUCTOR
+    #
 
-    def unicode_to_character_identifier(self, unicode: str) -> typing.Optional[int]:
-        """
-        This function maps a unicode str to its character identifier.
-        If no such mapping exists, this function returns None.
-        """
-        return None
-
-    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
-        """
-        This function returns the width (in text space) of a given character identifier.
-        If this Font is unable to represent the glyph that corresponds to the character identifier,
-        this function returns None
-        """
-        return None
-
-    def get_ascent(self) -> bDecimal:
-        """
-        This function returns the maximum height above the baseline reached by glyphs in this font.
-        The height of glyphs for accented characters shall be excluded.
-        """
-        return bDecimal(0)
-
-    def get_descent(self) -> bDecimal:
-        """
-        This function returns the maximum depth below the baseline reached by glyphs in this font.
-        The value shall be a negative number.
-        """
-        return bDecimal(0)
-
-    def get_font_name(self) -> typing.Optional[str]:
-        """
-        This function returns the name of the Font
-        e.g. "Helvetica"
-        """
-        if "BaseFont" in self:
-            return str(self["BaseFont"])
-        if "FontFamily" in self:
-            return str(self["FontFamily"])
-        return None
-
-    def get_space_character_width_estimate(self) -> Decimal:
-        """
-        This function estimates the width of the space character (unicode 32) in this Font.
-        If the Font contains the character, this Font will return the corresponding width.
-
-        If the Font does not contain the character, its width may be derived from the
-        MissingWidth entry in the FontDescriptor, or the AvgWidth entry.
-
-        If the Font is a composite Font, the DW entry of its DescendantFont is used.
-
-        If all previously mentioned approaches fail, the width is estimated based on characters
-        that may be present in the Font. (e.g. the width of 'A' is typically twice that of ' ').
-        """
-        # 1. if space is defined, and the width of space is defined, return that
-        character_identifier: typing.Optional[
-            int
-        ] = self.unicode_to_character_identifier(" ")
-        width: typing.Optional[Decimal] = None
-        if character_identifier is not None:
-            width = self.get_width(character_identifier)
-            if width is not None:
-                return width
-        # 2. MissingWidth
-        if "FontDescriptor" in self and "MissingWidth" in self["FontDescriptor"]:
-            return self["FontDescriptor"]["MissingWidth"] / Decimal(2)
-        # 3. AvgWidth
-        if "FontDescriptor" in self and "AvgWidth" in self["FontDescriptor"]:
-            return self["FontDescriptor"]["AvgWidth"] / Decimal(2)
-        # 3. default width
-        if (
-            "DescendantFonts" in self
-            and isinstance(self["DescendantFonts"], List)
-            and len(self["DescendantFonts"]) == 1
-            and "DW" in self["DescendantFonts"][0]
-        ):
-            return self["DescendantFonts"][0]["DW"] / Decimal(2)
-        # 4. other characters may be defined, which give us a clue
-        # fmt: off
-        char_to_space_width_ratio: typing.Dict[str, Decimal] = {
-            "a": Decimal("0.500"), "b": Decimal("0.500"), "c": Decimal("0.556"),
-            "d": Decimal("0.500"), "e": Decimal("0.500"), "f": Decimal("1.000"),
-            "g": Decimal("0.500"), "h": Decimal("0.500"), "i": Decimal("1.252"),
-            "j": Decimal("1.252"), "k": Decimal("0.556"), "l": Decimal("1.252"),
-            "m": Decimal("0.334"), "n": Decimal("0.500"), "o": Decimal("0.500"),
-            "p": Decimal("0.500"), "q": Decimal("0.500"), "r": Decimal("0.835"),
-            "s": Decimal("0.556"), "t": Decimal("1.000"), "u": Decimal("0.500"),
-            "v": Decimal("0.556"), "w": Decimal("0.385"), "x": Decimal("0.556"),
-            "y": Decimal("0.556"), "z": Decimal("0.556"), "0": Decimal("0.500"),
-            "1": Decimal("0.500"), "2": Decimal("0.500"), "3": Decimal("0.500"),
-            "4": Decimal("0.500"), "5": Decimal("0.500"), "6": Decimal("0.500"),
-            "7": Decimal("0.500"), "8": Decimal("0.500"), "9": Decimal("0.500"),
-            "A": Decimal("0.417"), "B": Decimal("0.417"), "C": Decimal("0.385"),
-            "D": Decimal("0.385"), "E": Decimal("0.417"), "F": Decimal("0.455"),
-            "G": Decimal("0.357"), "H": Decimal("0.385"), "I": Decimal("1.000"),
-            "J": Decimal("0.556"), "K": Decimal("0.417"), "L": Decimal("0.500"),
-            "M": Decimal("0.334"), "N": Decimal("0.385"), "O": Decimal("0.357"),
-            "P": Decimal("0.417"), "Q": Decimal("0.357"), "R": Decimal("0.385"),
-            "S": Decimal("0.417"), "T": Decimal("0.455"), "U": Decimal("0.385"),
-            "V": Decimal("0.417"), "W": Decimal("0.294"), "X": Decimal("0.417"),
-            "Y": Decimal("0.417"), "Z": Decimal("0.455"),
-        }
-        # fmt: on
-        for k, v in char_to_space_width_ratio.items():
-            character_identifier = self.unicode_to_character_identifier(k)
-            if character_identifier is not None:
-                width = self.get_width(character_identifier)
-                if width is not None:
-                    return bDecimal(width * v)
-        # 5. helvetica
-        return Decimal(278)
-
-    # fmt: off
-    @staticmethod
-    def _read_cmap(cmap_bytes: bytes) -> typing.Dict[int, str]:
-
-        out_map: typing.Dict[int, str] = {}
-        cmap_tokenizer: HighLevelTokenizer = HighLevelTokenizer(io.BytesIO(cmap_bytes))
-
-        # process stream
-        prev_token: typing.Optional[Token] = None
-        number_of_bytes = len(cmap_bytes)
-        while cmap_tokenizer.tell() < number_of_bytes:
-            token: typing.Optional[Token] = cmap_tokenizer.next_non_comment_token()
-            assert token is not None
-
-            # beginbfchar
-            if token.get_text() == "beginbfchar":
-                assert prev_token is not None
-                number_of_lines_001: int = int(prev_token.get_text())
-                for _ in range(0, number_of_lines_001):
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-                    char_code: int = int(token.get_text()[1:-1], 16)
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-                    if token.get_text().startswith("<") and token.get_text().endswith(">"):
-                        unicode_str: str = str(token.get_text())[1:-1].replace(" ","")
-                        unicode_str = "".join([chr(int(unicode_str[j: j + 4], 16)) for j in range(0, len(unicode_str), 4)])
-                    elif token.get_text().startswith("/"):
-                        # TODO
-                        assert False, "Unsupported CMAP syntax"
-                    else:
-                        assert False, "Invalid CMAP"
-                    out_map[char_code] = unicode_str
-
-            if token.get_text() == "begincidrange":
-                assert prev_token is not None
-                number_of_lines_002: int = int(prev_token.get_text())
-                for _ in range(0, number_of_lines_002):
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-                    char_code_start_002: int = int(token.get_text()[1:-1], 16)
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-                    char_code_stop_002: int = int(token.get_text()[1:-1], 16)
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-
-                    # <FFFF> <FFFF> 0000
-                    if token.get_token_type() == TokenType.NUMBER:
-                        unicode_base: int = int(token.get_text())
-                        for i in range(char_code_start_002, char_code_stop_002 + 1):
-                            out_map[i] = chr(unicode_base + (i - char_code_start_002))
-
-            # beginbfrange
-            if token.get_text() == "beginbfrange":
-                assert prev_token is not None
-                number_of_lines_003: int = int(prev_token.get_text())
-                for _ in range(0, number_of_lines_003):
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-                    char_code_start_003: int = int(token.get_text()[1:-1], 16)
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-                    char_code_stop_003: int = int(token.get_text()[1:-1], 16)
-
-                    token = cmap_tokenizer.next_non_comment_token()
-                    assert token is not None
-
-                    # <FFFF> <FFFF> <FFFF>
-                    if token.get_token_type() == TokenType.HEX_STRING:
-                        unicode_base_str: str = str(token.get_text())[1:-1]
-                        for i in range(char_code_start_003, char_code_stop_003 + 1):
-                            unicode_hex: str = hex(int(unicode_base_str, 16) + (i - char_code_start_003))[2:]
-                            unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_hex) % 4)]) + unicode_hex)
-                            unicode_hex = "".join([chr(int(unicode_hex[j: j + 4], 16)) for j in range(0, len(unicode_hex), 4)])
-                            out_map[i] = unicode_hex
-                        continue
-
-                    # <FFFF> <FFFF> [ <FFFF>* ]
-                    if token.get_token_type() == TokenType.START_ARRAY:
-                        for i in range(char_code_start_003, char_code_stop_003 + 1):
-                            token = cmap_tokenizer.next_non_comment_token()
-                            assert token is not None
-                            unicode_base_str_003: str = str(token.get_text())[1:-1]
-                            unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_base_str_003) % 4)]) + unicode_base_str_003)
-                            unicode_hex = "".join([chr(int(unicode_hex[j: j + 4], 16)) for j in range(0, len(unicode_hex), 4)])
-                            out_map[i] = unicode_hex
-                        # read END_ARRAY
-                        token = cmap_tokenizer.next_non_comment_token()
-                        assert token is not None
-                        assert token.get_token_type() == TokenType.END_ARRAY
-                        continue
-
-            # set previous token
-            prev_token = token
-
-        # return
-        return out_map
-    # fmt: on
-
-    def _empty_copy(self) -> "Font":
-        assert False
+    #
+    # PRIVATE
+    #
 
     def __deepcopy__(self, memodict={}) -> "Font":
         out: Font = self._empty_copy()
@@ -407,3 +186,236 @@ class Font(Dictionary):
             if k not in f1:
                 f1[k] = copy.deepcopy(v)
         return f1
+
+    def _empty_copy(self) -> "Font":
+        assert False
+
+    # fmt: off
+    @staticmethod
+    def _read_cmap(cmap_bytes: bytes) -> typing.Dict[int, str]:
+
+        out_map: typing.Dict[int, str] = {}
+        cmap_tokenizer: HighLevelTokenizer = HighLevelTokenizer(io.BytesIO(cmap_bytes))
+
+        # process stream
+        prev_token: typing.Optional[Token] = None
+        number_of_bytes = len(cmap_bytes)
+        while cmap_tokenizer.tell() < number_of_bytes:
+            token: typing.Optional[Token] = cmap_tokenizer.next_non_comment_token()
+            assert token is not None
+
+            # beginbfchar
+            if token.get_text() == "beginbfchar":
+                assert prev_token is not None
+                number_of_lines_001: int = int(prev_token.get_text())
+                for _ in range(0, number_of_lines_001):
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+                    char_code: int = int(token.get_text()[1:-1], 16)
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+                    if token.get_text().startswith("<") and token.get_text().endswith(">"):
+                        unicode_str: str = str(token.get_text())[1:-1].replace(" ","")
+                        unicode_str = "".join([chr(int(unicode_str[j: j + 4], 16)) for j in range(0, len(unicode_str), 4)])
+                    elif token.get_text().startswith("/"):
+                        # TODO
+                        assert False, "Unsupported CMAP syntax"
+                    else:
+                        assert False, "Invalid CMAP"
+                    out_map[char_code] = unicode_str
+
+            if token.get_text() == "begincidrange":
+                assert prev_token is not None
+                number_of_lines_002: int = int(prev_token.get_text())
+                for _ in range(0, number_of_lines_002):
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+                    char_code_start_002: int = int(token.get_text()[1:-1], 16)
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+                    char_code_stop_002: int = int(token.get_text()[1:-1], 16)
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+
+                    # <FFFF> <FFFF> 0000
+                    if token.get_token_type() == TokenType.NUMBER:
+                        unicode_base: int = int(token.get_text())
+                        for i in range(char_code_start_002, char_code_stop_002 + 1):
+                            out_map[i] = chr(unicode_base + (i - char_code_start_002))
+
+            # beginbfrange
+            if token.get_text() == "beginbfrange":
+                assert prev_token is not None
+                number_of_lines_003: int = int(prev_token.get_text())
+                for _ in range(0, number_of_lines_003):
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+                    char_code_start_003: int = int(token.get_text()[1:-1], 16)
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+                    char_code_stop_003: int = int(token.get_text()[1:-1], 16)
+
+                    token = cmap_tokenizer.next_non_comment_token()
+                    assert token is not None
+
+                    # <FFFF> <FFFF> <FFFF>
+                    if token.get_token_type() == TokenType.HEX_STRING:
+                        unicode_base_str: str = str(token.get_text())[1:-1]
+                        for i in range(char_code_start_003, char_code_stop_003 + 1):
+                            unicode_hex: str = hex(int(unicode_base_str, 16) + (i - char_code_start_003))[2:]
+                            unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_hex) % 4)]) + unicode_hex)
+                            unicode_hex = "".join([chr(int(unicode_hex[j: j + 4], 16)) for j in range(0, len(unicode_hex), 4)])
+                            out_map[i] = unicode_hex
+                        continue
+
+                    # <FFFF> <FFFF> [ <FFFF>* ]
+                    if token.get_token_type() == TokenType.START_ARRAY:
+                        for i in range(char_code_start_003, char_code_stop_003 + 1):
+                            token = cmap_tokenizer.next_non_comment_token()
+                            assert token is not None
+                            unicode_base_str_003: str = str(token.get_text())[1:-1]
+                            unicode_hex = ("".join(["0" for _ in range(0, 4 - len(unicode_base_str_003) % 4)]) + unicode_base_str_003)
+                            unicode_hex = "".join([chr(int(unicode_hex[j: j + 4], 16)) for j in range(0, len(unicode_hex), 4)])
+                            out_map[i] = unicode_hex
+                        # read END_ARRAY
+                        token = cmap_tokenizer.next_non_comment_token()
+                        assert token is not None
+                        assert token.get_token_type() == TokenType.END_ARRAY
+                        continue
+
+            # set previous token
+            prev_token = token
+
+        # return
+        return out_map
+    # fmt: on
+
+    #
+    # PUBLIC
+    #
+
+    def character_identifier_to_unicode(
+        self, character_identifier: int
+    ) -> typing.Optional[str]:
+        """
+        This function maps a character identifier to its unicode str.
+        If no such mapping exists, this function returns None.
+        """
+        return None
+
+    def get_ascent(self) -> bDecimal:
+        """
+        This function returns the maximum height above the baseline reached by glyphs in this font.
+        The height of glyphs for accented characters shall be excluded.
+        """
+        return bDecimal(0)
+
+    def get_descent(self) -> bDecimal:
+        """
+        This function returns the maximum depth below the baseline reached by glyphs in this font.
+        The value shall be a negative number.
+        """
+        return bDecimal(0)
+
+    def get_font_name(self) -> typing.Optional[str]:
+        """
+        This function returns the name of the Font
+        e.g. "Helvetica"
+        """
+        if "BaseFont" in self:
+            return str(self["BaseFont"])
+        if "FontFamily" in self:
+            return str(self["FontFamily"])
+        return None
+
+    def get_space_character_width_estimate(self) -> Decimal:
+        """
+        This function estimates the width of the space character (unicode 32) in this Font.
+        If the Font contains the character, this Font will return the corresponding width.
+
+        If the Font does not contain the character, its width may be derived from the
+        MissingWidth entry in the FontDescriptor, or the AvgWidth entry.
+
+        If the Font is a composite Font, the DW entry of its DescendantFont is used.
+
+        If all previously mentioned approaches fail, the width is estimated based on characters
+        that may be present in the Font. (e.g. the width of 'A' is typically twice that of ' ').
+        """
+        # 1. if space is defined, and the width of space is defined, return that
+        character_identifier: typing.Optional[
+            int
+        ] = self.unicode_to_character_identifier(" ")
+        width: typing.Optional[Decimal] = None
+        if character_identifier is not None:
+            width = self.get_width(character_identifier)
+            if width is not None:
+                return width
+        # 2. MissingWidth
+        if "FontDescriptor" in self and "MissingWidth" in self["FontDescriptor"]:
+            return self["FontDescriptor"]["MissingWidth"] / Decimal(2)
+        # 3. AvgWidth
+        if "FontDescriptor" in self and "AvgWidth" in self["FontDescriptor"]:
+            return self["FontDescriptor"]["AvgWidth"] / Decimal(2)
+        # 3. default width
+        if (
+            "DescendantFonts" in self
+            and isinstance(self["DescendantFonts"], List)
+            and len(self["DescendantFonts"]) == 1
+            and "DW" in self["DescendantFonts"][0]
+        ):
+            return self["DescendantFonts"][0]["DW"] / Decimal(2)
+        # 4. other characters may be defined, which give us a clue
+        # fmt: off
+        char_to_space_width_ratio: typing.Dict[str, Decimal] = {
+            "a": Decimal("0.500"), "b": Decimal("0.500"), "c": Decimal("0.556"),
+            "d": Decimal("0.500"), "e": Decimal("0.500"), "f": Decimal("1.000"),
+            "g": Decimal("0.500"), "h": Decimal("0.500"), "i": Decimal("1.252"),
+            "j": Decimal("1.252"), "k": Decimal("0.556"), "l": Decimal("1.252"),
+            "m": Decimal("0.334"), "n": Decimal("0.500"), "o": Decimal("0.500"),
+            "p": Decimal("0.500"), "q": Decimal("0.500"), "r": Decimal("0.835"),
+            "s": Decimal("0.556"), "t": Decimal("1.000"), "u": Decimal("0.500"),
+            "v": Decimal("0.556"), "w": Decimal("0.385"), "x": Decimal("0.556"),
+            "y": Decimal("0.556"), "z": Decimal("0.556"), "0": Decimal("0.500"),
+            "1": Decimal("0.500"), "2": Decimal("0.500"), "3": Decimal("0.500"),
+            "4": Decimal("0.500"), "5": Decimal("0.500"), "6": Decimal("0.500"),
+            "7": Decimal("0.500"), "8": Decimal("0.500"), "9": Decimal("0.500"),
+            "A": Decimal("0.417"), "B": Decimal("0.417"), "C": Decimal("0.385"),
+            "D": Decimal("0.385"), "E": Decimal("0.417"), "F": Decimal("0.455"),
+            "G": Decimal("0.357"), "H": Decimal("0.385"), "I": Decimal("1.000"),
+            "J": Decimal("0.556"), "K": Decimal("0.417"), "L": Decimal("0.500"),
+            "M": Decimal("0.334"), "N": Decimal("0.385"), "O": Decimal("0.357"),
+            "P": Decimal("0.417"), "Q": Decimal("0.357"), "R": Decimal("0.385"),
+            "S": Decimal("0.417"), "T": Decimal("0.455"), "U": Decimal("0.385"),
+            "V": Decimal("0.417"), "W": Decimal("0.294"), "X": Decimal("0.417"),
+            "Y": Decimal("0.417"), "Z": Decimal("0.455"),
+        }
+        # fmt: on
+        for k, v in char_to_space_width_ratio.items():
+            character_identifier = self.unicode_to_character_identifier(k)
+            if character_identifier is not None:
+                width = self.get_width(character_identifier)
+                if width is not None:
+                    return bDecimal(width * v)
+        # 5. helvetica
+        return Decimal(278)
+
+    def get_width(self, character_identifier: int) -> typing.Optional[bDecimal]:
+        """
+        This function returns the width (in text space) of a given character identifier.
+        If this Font is unable to represent the glyph that corresponds to the character identifier,
+        this function returns None
+        """
+        return None
+
+    def unicode_to_character_identifier(self, unicode: str) -> typing.Optional[int]:
+        """
+        This function maps a unicode str to its character identifier.
+        If no such mapping exists, this function returns None.
+        """
+        return None

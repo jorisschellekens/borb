@@ -7,6 +7,7 @@ This implementation of LayoutElement acts as a common base class to form fields.
 import typing
 import zlib
 
+from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import Dictionary, List as bList, Name
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import LayoutElement
@@ -18,9 +19,23 @@ class FormField(LayoutElement):
     This implementation of LayoutElement acts as a common base class to form fields.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
     def _count_fields_on_page(self, page: Page) -> int:
         number_of_fields: int = 0
-        acroform_dict: Dictionary = page.get_root()["XRef"]["Trailer"]["Root"].get(  # type: ignore [attr-defined]
+
+        root: typing.Optional[PDFObject] = page.get_root()
+        assert root is not None
+        assert isinstance(root, Dictionary)
+        assert "XRef" in root
+
+        acroform_dict: Dictionary = root["XRef"]["Trailer"]["Root"].get(
             "AcroForm", Dictionary()
         )
         stk: typing.List[typing.Union[Dictionary, bList]] = [acroform_dict]
@@ -63,3 +78,7 @@ class FormField(LayoutElement):
             font_index = len(page["Resources"]["Font"]) + 1
             page["Resources"]["Font"][Name("F%d" % font_index)] = font
             return Name("F%d" % font_index)
+
+    #
+    # PUBLIC
+    #

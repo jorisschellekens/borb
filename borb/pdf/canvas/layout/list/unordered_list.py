@@ -18,6 +18,10 @@ class UnorderedList(List):
     This implementation of LayoutElement represents an unordered list
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         background_color: typing.Optional[Color] = None,
@@ -66,6 +70,10 @@ class UnorderedList(List):
             vertical_alignment=vertical_alignment,
         )
 
+    #
+    # PRIVATE
+    #
+
     def _determine_level(self, layout_element: LayoutElement) -> int:
         level = 0
         e = layout_element
@@ -74,9 +82,6 @@ class UnorderedList(List):
                 level += 1
             e = e._parent
         return level
-
-    def _get_bullet_text(self, item_index: int, item: LayoutElement) -> str:
-        return ["●", "❍", "✦"][self._determine_level(item) % 3]
 
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
@@ -89,3 +94,10 @@ class UnorderedList(List):
             font_color=X11Color("Black"),
             font="Zapfdingbats",
         )
+
+    def _get_bullet_text(self, item_index: int, item: LayoutElement) -> str:
+        return ["●", "❍", "✦"][self._determine_level(item) % 3]
+
+    #
+    # PUBLIC
+    #

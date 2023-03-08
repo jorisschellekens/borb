@@ -31,6 +31,10 @@ class Emoji(Image):
     but it is sometimes applied to messaging stickers by extension.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, path_to_resource: Path):
         # Emoji explictly does not support other LayoutElement properties
         # since emoji are considered to be at the character level, and borb
@@ -42,36 +46,9 @@ class Emoji(Image):
         self._fixed_leading: typing.Optional[Decimal] = None
         self._multiplied_leading: typing.Optional[Decimal] = Decimal(1.2)
 
-    def set_fixed_leading(self, fixed_leading: Decimal) -> "Emoji":
-        """
-        This function sets the fixed_leading of this Emoji
-        :param fixed_leading:       the fixed_leading that will be used
-        :return:                    self
-        """
-        self._multiplied_leading = None
-        self._fixed_leading = fixed_leading
-        return self
-
-    def set_multiplied_leading(self, multiplied_leading: Decimal) -> "Emoji":
-        """
-        This function sets the multiplied_leading of this Emoji
-        :param multiplied_leading:  the multiplied_leading that will be used
-        :return:                    self
-        """
-        self._fixed_leading = None
-        self._multiplied_leading = multiplied_leading
-        return self
-
-    def set_font_size(self, font_size: Decimal) -> "Emoji":
-        """
-        This function sets the font_size of this Emoji.
-        This function returns self.
-        """
-        assert font_size >= Decimal(0)
-        self._font_size = font_size
-        self._width = self._font_size
-        self._height = self._font_size
-        return self
+    #
+    # PRIVATE
+    #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         # determine line_height
@@ -93,6 +70,41 @@ class Emoji(Image):
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
         super(Emoji, self)._paint_content_box(page, available_space)
+
+    #
+    # PUBLIC
+    #
+
+    def set_fixed_leading(self, fixed_leading: Decimal) -> "Emoji":
+        """
+        This function sets the fixed_leading of this Emoji
+        :param fixed_leading:       the fixed_leading that will be used
+        :return:                    self
+        """
+        self._multiplied_leading = None
+        self._fixed_leading = fixed_leading
+        return self
+
+    def set_font_size(self, font_size: Decimal) -> "Emoji":
+        """
+        This function sets the font_size of this Emoji.
+        This function returns self.
+        """
+        assert font_size >= Decimal(0)
+        self._font_size = font_size
+        self._width = self._font_size
+        self._height = self._font_size
+        return self
+
+    def set_multiplied_leading(self, multiplied_leading: Decimal) -> "Emoji":
+        """
+        This function sets the multiplied_leading of this Emoji
+        :param multiplied_leading:  the multiplied_leading that will be used
+        :return:                    self
+        """
+        self._fixed_leading = None
+        self._multiplied_leading = multiplied_leading
+        return self
 
 
 class Emojis(enum.Enum):
@@ -942,26 +954,3 @@ class Emojis(enum.Enum):
     ZERO = Emoji(Path(__file__).parent / "resources/zero.png")
     ZZZ = Emoji(Path(__file__).parent / "resources/zzz.png")
     # fmt: on
-
-
-if __name__ == "__main__":
-
-    lines_to_write: typing.List[str] = []
-    for png_file in (Path(__file__).parent / "resources").iterdir():
-        name: str = png_file.name
-        if not name.endswith(".png"):
-            continue
-        name = name[:-4]
-        lines_to_write.append(
-            '    %s = Emoji(Path(__file__).parent / "resources/%s")'
-            % (name.upper(), name + ".png")
-        )
-
-    # sort
-    lines_to_write.sort()
-
-    # print
-    print("    # fmt: off")
-    for l in lines_to_write:
-        print(l)
-    print("    # fmt: on")

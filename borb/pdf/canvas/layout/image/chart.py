@@ -21,6 +21,10 @@ class Chart(Image):
     This implementation of LayoutElement represents a Chart
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         chart: "matplotlib.pyplot",  # type: ignore[name-defined]
@@ -77,3 +81,11 @@ class Chart(Image):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

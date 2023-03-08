@@ -18,6 +18,18 @@ class WatermarkAnnotation(Annotation):
     position of the annotation (see Table 191).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(WatermarkAnnotation, self).__init__()
         # TODO
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

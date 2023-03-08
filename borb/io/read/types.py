@@ -6,219 +6,33 @@ This module defines all the base types used in processing PDFs
 e.g. Boolean, CanvasOperatorName, Decimal, Dictionary, Element, Name, Stream, String, ..
 """
 import copy
-import types
 import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal as oDecimal
 from math import ceil, floor
 from typing import Optional, Union
 
-from PIL.Image import Image  # type: ignore [import]
-
+from borb.io.read.pdf_object import PDFObject
 from borb.io.read.postfix.postfix_eval import PostScriptEval
 
 
-def add_base_methods(object: typing.Any) -> typing.Any:
-    """
-    This function / decorator adds methods to a given object.
-    These added methods are useful for:
-    - handling linkage (parent/child relationships),
-    - serialization (JSON)
-    - hashing
-    - implementing the "listener" design pattern
-    - etc
-    """
-
-    def _to_json_serializable(to_convert=None):
-        """
-        Convert this object to a representation that
-        can be serialized as JSON
-        """
-        if isinstance(to_convert, dict):
-            return {
-                to_json_serializable(k): to_json_serializable(v)
-                for k, v in to_convert.items()
-            }
-        if isinstance(to_convert, list):
-            return [to_json_serializable(x) for x in to_convert]
-        if isinstance(to_convert, Decimal):
-            return float(to_convert)
-        if (
-            isinstance(to_convert, HexadecimalString)
-            or isinstance(to_convert, String)
-            or isinstance(to_convert, Name)
-            or isinstance(to_convert, CanvasOperatorName)
-        ):
-            return str(to_convert)
-        return None
-
-    def to_json_serializable(self):
-        """
-        This function converts this Object to something that can be JSON serialized
-        """
-        return _to_json_serializable(self)
-
-    def image_hash_method(self):
-        """
-        This function hashes Image objects
-        """
-        w = self.width
-        h = self.height
-        pixels = [
-            self.getpixel((0, 0)),
-            self.getpixel((0, h - 1)),
-            self.getpixel((w - 1, 0)),
-            self.getpixel((w - 1, h - 1)),
-        ]
-        hashcode = 1
-        for p in pixels:
-            if isinstance(p, typing.List) or isinstance(p, typing.Tuple):
-                hashcode += 32 * hashcode + sum(p)
-            else:
-                hashcode += 32 * hashcode + p
-        return hashcode
-
-    def deepcopy_mod(self, memodict={}):
-        """
-        This function overrides the __deepcopy__ method
-        this was needed
-        """
-        prev_function_ptr = self.__deepcopy__
-        self.__deepcopy__ = None
-        # copy
-        out = copy.deepcopy(self, memodict)
-        # restore
-        self.__deepcopy__ = prev_function_ptr
-        # add base methods
-        add_base_methods(out)
-        # return
-        return out
-
-    # get parent
-    def get_parent(self):
-        """
-        This function returns the parent Object of the current Object
-        """
-        if "_parent" not in vars(self):
-            setattr(self, "_parent", None)
-        return self._parent
-
-    # set parent
-    def set_parent(self, parent):
-        """
-        This function sets the parent Object of the current Object
-        """
-        if "_parent" not in vars(self):
-            setattr(self, "_parent", None)
-        self._parent = parent
-        return self
-
-    # get_root
-    def get_root(self):
-        """
-        This function returns the root parent Object of the current Object
-        """
-        e = self
-        while e.get_parent() is not None:
-            e = e.get_parent()
-        return e
-
-    # set_reference
-    def set_reference(self, reference: "Reference"):
-        """
-        This function sets the Reference for this Object, returning self
-        """
-        if "_reference" not in vars(self):
-            setattr(self, "_reference", None)
-        assert (
-            self._reference is None
-            or reference is None
-            or self._reference.object_number == reference.object_number
-            or (
-                self._reference.parent_stream_object_number
-                == reference.parent_stream_object_number
-                and self._reference.index_in_parent_stream
-                == reference.index_in_parent_stream
-            )
-        )
-        self._reference = reference
-        return self
-
-    # get_reference
-    def get_reference(self) -> typing.Optional["Reference"]:
-        """
-        This function returns the Reference for this Object or None if no Reference was set
-        """
-        if "_reference" not in vars(self):
-            setattr(self, "_reference", None)
-        return self._reference
-
-    # is_uniaue
-    def set_is_unique(self, a_flag: bool):
-        """
-        This function sets whether or not this Object is unique.
-        When an object is unique, it is not checked against the cache.
-        """
-        if "_is_unique" not in vars(self):
-            setattr(self, "_is_unique", None)
-        self._is_unique = a_flag
-        return self
-
-    # is_uniaue
-    def get_is_unique(self) -> bool:
-        """
-        This function returns whether or not this Object is unique.
-        When an object is unique, it is not checked against the cache.
-        """
-        if "_is_unique" not in vars(self):
-            setattr(self, "_is_unique", False)
-        return self._is_unique
-
-    # is_inline
-    def set_is_inline(self, a_flag: bool):
-        """
-        This function sets whether or not this Object is written inline.
-        When an object is inline, it is always embedded immediately in the PDF byte stream.
-        """
-        if "_is_inline" not in vars(self):
-            setattr(self, "_is_inline", None)
-        self._is_inline = a_flag
-        return self
-
-    # is_inline
-    def get_is_inline(self) -> bool:
-        """
-        This function returns whether or not this Object can be referenced.
-        When an object can not be referenced, it is always embedded immediately in the PDF byte stream.
-        """
-        if "_is_inline" not in vars(self):
-            setattr(self, "_is_inline", False)
-        return self._is_inline
-
-    object.set_parent = types.MethodType(set_parent, object)
-    object.get_parent = types.MethodType(get_parent, object)
-    object.get_root = types.MethodType(get_root, object)
-    object.set_reference = types.MethodType(set_reference, object)
-    object.get_reference = types.MethodType(get_reference, object)
-    object.set_is_inline = types.MethodType(set_is_inline, object)
-    object.is_inline = types.MethodType(get_is_inline, object)
-    object.set_is_unique = types.MethodType(set_is_unique, object)
-    object.is_unique = types.MethodType(get_is_unique, object)
-    object.to_json_serializable = types.MethodType(to_json_serializable, object)
-    if isinstance(object, Image):
-        object.__deepcopy__ = types.MethodType(deepcopy_mod, object)
-        object.__hash__ = types.MethodType(image_hash_method, object)
-
-
-class Boolean:
+class Boolean(PDFObject):
     """
     Boolean objects represent the logical values of true and false. They appear in PDF files using the keywords
     true and false.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, value: bool):
         super(Boolean, self).__init__()
         self._value = value
+
+    #
+    # PRIVATE
+    #
 
     def __bool__(self):
         return self._value
@@ -236,8 +50,12 @@ class Boolean:
         else:
             return "False"
 
+    #
+    # PUBLIC
+    #
 
-class CanvasOperatorName:
+
+class CanvasOperatorName(PDFObject):
     """
     This class represents a canvas operator name in PDF syntax
     """
@@ -269,10 +87,17 @@ class CanvasOperatorName:
     ]
     # fmt: on
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, text: str):
         super(CanvasOperatorName, self).__init__()
         self._text = text
-        add_base_methods(self)
+
+    #
+    # PRIVATE
+    #
 
     def __eq__(self, other):
         if isinstance(other, CanvasOperatorName):
@@ -287,8 +112,12 @@ class CanvasOperatorName:
     def __str__(self):
         return self._text
 
+    #
+    # PUBLIC
+    #
 
-class Decimal(oDecimal):  # type: ignore [no-redef]
+
+class Decimal(PDFObject, oDecimal):  # type: ignore [no-redef]
     """
     PDF provides two types of numeric objects: integer and real. Integer objects represent mathematical integers.
     Real objects represent mathematical real numbers. The range and precision of numbers may be limited by the
@@ -296,12 +125,23 @@ class Decimal(oDecimal):  # type: ignore [no-redef]
     limits for typical implementations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, obj: typing.Union[str, float, int, oDecimal]):
         super(Decimal, self).__init__()
-        add_base_methods(self)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
 
-class Dictionary(dict):
+class Dictionary(PDFObject, dict):
     """
     A dictionary object is an associative table containing pairs of objects, known as the dictionary’s entries. The first
     element of each entry is the key and the second element is the value. The key shall be a name (unlike
@@ -315,9 +155,23 @@ class Dictionary(dict):
     arbitrary order may be imposed upon them when written in a file. That ordering shall be ignored.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(Dictionary, self).__init__()
-        add_base_methods(self)
+
+    #
+    # PRIVATE
+    #
+
+    def __deepcopy__(self, memodict={}):
+        out = type(self).__new__(type(self))
+        Dictionary.__init__(out)
+        for k, v in self.items():
+            out[copy.deepcopy(k, memodict)] = copy.deepcopy(v, memodict)
+        return out
 
     def __hash__(self):
         hashcode: int = 1
@@ -329,15 +183,12 @@ class Dictionary(dict):
         assert isinstance(key, Name)
         super(Dictionary, self).__setitem__(key, value)
 
-    def __deepcopy__(self, memodict={}):
-        out = type(self).__new__(type(self))
-        Dictionary.__init__(out)
-        for k, v in self.items():
-            out[copy.deepcopy(k, memodict)] = copy.deepcopy(v, memodict)
-        return out
+    #
+    # PUBLIC
+    #
 
 
-class Element(ET.Element):
+class Element(PDFObject, ET.Element):
     """
     An XML element.
 
@@ -355,58 +206,21 @@ class Element(ET.Element):
     keyword arguments.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, tag, **extra):
-        super(Element, self).__init__(tag, **extra)
-        add_base_methods(self)
+        super().__init__()
+        # super(Element, self).__init__(tag, **extra)
 
+    #
+    # PRIVATE
+    #
 
-class Name:
-    """
-    Beginning with PDF 1.2 a name object is an atomic symbol uniquely defined by a sequence of any characters
-    (8-bit values) except null (character code 0). Uniquely defined means that any two name objects made up of
-    the same sequence of characters denote the same object. Atomic means that a name has no internal structure;
-    although it is defined by a sequence of characters, those characters are not considered elements of the name.
-    """
-
-    def __init__(self, text: str):
-        self._text = text
-        add_base_methods(self)
-
-    def __eq__(self, other):
-        if isinstance(other, Name):
-            return other._text == self._text
-        if isinstance(other, str):
-            return other == self._text
-        return False
-
-    def __hash__(self):
-        return self._text.__hash__()
-
-    def __str__(self):
-        return self._text
-
-    def __gt__(self, other):
-        return self._text > other._text
-
-    def __lt__(self, other):
-        return self._text < other._text
-
-    def __ge__(self, other):
-        return self._text >= other._text
-
-    def __le__(self, other):
-        return self._text <= other._text
-
-
-class Stream(Dictionary):
-    """
-    A stream object, like a string object, is a sequence of bytes. Furthermore, a stream may be of unlimited length,
-    whereas a string shall be subject to an implementation limit. For this reason, objects with potentially large
-    amounts of data, such as images and page descriptions, shall be represented as streams.
-    """
-
-    def __init__(self):
-        super(Stream, self).__init__()
+    #
+    # PUBLIC
+    #
 
 
 class Function(Dictionary):
@@ -418,24 +232,22 @@ class Function(Dictionary):
     functions are available, as indicated by the dictionary’s FunctionType entry.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(Function, self).__init__()
 
-    @staticmethod
-    def _interpolate(
-        x: oDecimal, x_min: oDecimal, x_max: oDecimal, y_min: oDecimal, y_max: oDecimal
-    ) -> oDecimal:
-        return y_min + (x - x_min) * ((y_max - y_min) / (x_max - x_min))
+    #
+    # PRIVATE
+    #
 
-    def _get_sample_number(self, sample: typing.List[oDecimal]) -> typing.Optional[int]:
-        size: typing.List[int] = [int(x) for x in self["Size"]]
-        N: int = 1
-        for s in size:
-            N *= s
-        F: typing.List[int] = [int(N / size[0])]
-        for i in range(1, len(size)):
-            F[i] = int(F[i - 1] / size[i])
-        return sum([F[i] * int(sample[i]) for i in range(0, len(sample))])
+    def __deepcopy__(self, memodict={}):
+        out: Function = Function()
+        for k, v in self.items():
+            out[k] = copy.deepcopy(v, memodict)
+        return out
 
     def _get_sample(self, sample_number: int) -> typing.List[oDecimal]:
         n: int = int(len(self["Range"]) / 2)
@@ -453,6 +265,26 @@ class Function(Dictionary):
             Decimal(int(byte_str[i : i + bps], 2)) for i in range(0, len(byte_str), bps)
         ]
         return ys
+
+    def _get_sample_number(self, sample: typing.List[oDecimal]) -> typing.Optional[int]:
+        size: typing.List[int] = [int(x) for x in self["Size"]]
+        N: int = 1
+        for s in size:
+            N *= s
+        F: typing.List[int] = [int(N / size[0])]
+        for i in range(1, len(size)):
+            F[i] = int(F[i - 1] / size[i])
+        return sum([F[i] * int(sample[i]) for i in range(0, len(sample))])
+
+    @staticmethod
+    def _interpolate(
+        x: oDecimal, x_min: oDecimal, x_max: oDecimal, y_min: oDecimal, y_max: oDecimal
+    ) -> oDecimal:
+        return y_min + (x - x_min) * ((y_max - y_min) / (x_max - x_min))
+
+    #
+    # PUBLIC
+    #
 
     def evaluate(self, xs: typing.List[oDecimal]) -> typing.List[oDecimal]:
         """
@@ -550,14 +382,194 @@ class Function(Dictionary):
         # this should be impossible
         assert False
 
-    def __deepcopy__(self, memodict={}):
-        out: Function = Function()
-        for k, v in self.items():
-            out[k] = copy.deepcopy(v, memodict)
-        return out
+
+class List(PDFObject, list):
+    """
+    An array object is a one-dimensional collection of objects arranged sequentially. Unlike arrays in many other
+    computer languages, PDF arrays may be heterogeneous; that is, an array’s elements may be any combination
+    of numbers, strings, dictionaries, or any other objects, including other arrays. An array may have zero
+    elements.
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self):
+        super(List, self).__init__()
+
+    #
+    # PRIVATE
+    #
+
+    def __hash__(self):
+        hashcode: int = 1
+        for e in self:
+            hashcode = 31 * hashcode + (0 if e is None else hash(e))
+        return hashcode
+
+    #
+    # PUBLIC
+    #
 
 
-class String:
+class Name(PDFObject):
+    """
+    Beginning with PDF 1.2 a name object is an atomic symbol uniquely defined by a sequence of any characters
+    (8-bit values) except null (character code 0). Uniquely defined means that any two name objects made up of
+    the same sequence of characters denote the same object. Atomic means that a name has no internal structure;
+    although it is defined by a sequence of characters, those characters are not considered elements of the name.
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self, text: str):
+        super().__init__()
+        self._text = text
+
+    #
+    # PRIVATE
+    #
+
+    def __eq__(self, other):
+        if isinstance(other, Name):
+            return other._text == self._text
+        if isinstance(other, str):
+            return other == self._text
+        return False
+
+    def __ge__(self, other):
+        return self._text >= other._text
+
+    def __gt__(self, other):
+        return self._text > other._text
+
+    def __hash__(self):
+        return self._text.__hash__()
+
+    def __le__(self, other):
+        return self._text <= other._text
+
+    def __lt__(self, other):
+        return self._text < other._text
+
+    def __str__(self):
+        return self._text
+
+    #
+    # PUBLIC
+    #
+
+
+class Reference(PDFObject):
+    """
+    Any object in a PDF file may be labelled as an indirect object. This gives the object a unique object identifier by
+    which other objects can refer to it (for example, as an element of an array or as the value of a dictionary entry).
+
+    The object identifier shall consist of two parts:
+
+    •   A positive integer object number. Indirect objects may be numbered sequentially within a PDF file, but this
+        is not required; object numbers may be assigned in any arbitrary order.
+
+    •   A non-negative integer generation number. In a newly created file, all indirect objects shall have generation
+        numbers of 0. Nonzero generation numbers may be introduced when the file is later updated; see sub-
+        clauses 7.5.4, "Cross-Reference Table" and 7.5.6, "Incremental Updates."
+
+    Together, the combination of an object number and a generation number shall uniquely identify an indirect
+    object.
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(
+        self,
+        object_number: Optional[int] = None,
+        generation_number: Optional[int] = None,
+        parent_stream_object_number: Optional[int] = None,
+        index_in_parent_stream: Optional[int] = None,
+        byte_offset: Optional[int] = None,
+        is_in_use: bool = True,
+        document: Optional["Document"] = None,  # type: ignore [name-defined]
+    ):
+        self.object_number = object_number
+        self.generation_number = generation_number
+        self.parent_stream_object_number = parent_stream_object_number
+        self.index_in_parent_stream = index_in_parent_stream
+        self.byte_offset = byte_offset
+        self.is_in_use = is_in_use
+        self.document = document
+
+    #
+    # PRIVATE
+    #
+
+    def __eq__(self, other):
+        if not isinstance(other, Reference):
+            return False
+        return (
+            self.object_number == other.object_number
+            and self.generation_number == other.generation_number
+            and self.parent_stream_object_number == other.parent_stream_object_number
+            and self.index_in_parent_stream == other.index_in_parent_stream
+            and self.byte_offset == other.byte_offset
+        )
+
+    def __hash__(self):
+        hashcode: int = 1
+        hashcode = hashcode * 31 + (
+            self.object_number if self.object_number is not None else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.generation_number if self.generation_number is not None else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.parent_stream_object_number
+            if self.parent_stream_object_number is not None
+            else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.index_in_parent_stream
+            if self.index_in_parent_stream is not None
+            else 0
+        )
+        hashcode = hashcode * 31 + (
+            self.byte_offset if self.byte_offset is not None else 0
+        )
+        return hashcode
+
+    #
+    # PUBLIC
+    #
+
+
+class Stream(Dictionary):
+    """
+    A stream object, like a string object, is a sequence of bytes. Furthermore, a stream may be of unlimited length,
+    whereas a string shall be subject to an implementation limit. For this reason, objects with potentially large
+    amounts of data, such as images and page descriptions, shall be represented as streams.
+    """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self):
+        super(Stream, self).__init__()
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
+
+class String(PDFObject):
     """
     A literal string shall be written as an arbitrary number of characters enclosed in parentheses. Any characters
     may appear in a string except unbalanced parentheses (LEFT PARENHESIS (28h) and RIGHT
@@ -565,12 +577,20 @@ class String:
     described in this sub-clause. Balanced pairs of parentheses within a string require no special treatment.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self, bts: typing.Union[bytes, str]):  # type: ignore [name-defined]
+        super().__init__()
         if isinstance(bts, str):
             self._text: str = bts
         if isinstance(bts, bytes):
             self._text = [(b & 0xFF) for b in bts]
-        add_base_methods(self)
+
+    #
+    # PRIVATE
+    #
 
     def __eq__(self, other):
         if isinstance(other, String):
@@ -579,17 +599,21 @@ class String:
             return other == self._text
         return False
 
+    def __getitem__(self, item):
+        return self._text[item]
+
     def __hash__(self):
         return self._text.__hash__()
-
-    def __str__(self):
-        return self._text
 
     def __len__(self):
         return len(self._text)
 
-    def __getitem__(self, item):
-        return self._text[item]
+    def __str__(self):
+        return self._text
+
+    #
+    # PUBLIC
+    #
 
     def get_content_bytes(self) -> bytearray:
         """
@@ -705,105 +729,6 @@ class HexadecimalString(String):
         for i in range(0, len(self), 2):
             arr.append(int(self[i : i + 2], 16))
         return arr
-
-
-class List(list):
-    """
-    An array object is a one-dimensional collection of objects arranged sequentially. Unlike arrays in many other
-    computer languages, PDF arrays may be heterogeneous; that is, an array’s elements may be any combination
-    of numbers, strings, dictionaries, or any other objects, including other arrays. An array may have zero
-    elements.
-    """
-
-    def __init__(self):
-        super(List, self).__init__()
-        add_base_methods(self)
-
-    def __hash__(self):
-        hashcode: int = 1
-        for e in self:
-            hashcode = 31 * hashcode + (0 if e is None else hash(e))
-        return hashcode
-
-
-class Reference:
-    """
-    Any object in a PDF file may be labelled as an indirect object. This gives the object a unique object identifier by
-    which other objects can refer to it (for example, as an element of an array or as the value of a dictionary entry).
-
-    The object identifier shall consist of two parts:
-
-    •   A positive integer object number. Indirect objects may be numbered sequentially within a PDF file, but this
-        is not required; object numbers may be assigned in any arbitrary order.
-
-    •   A non-negative integer generation number. In a newly created file, all indirect objects shall have generation
-        numbers of 0. Nonzero generation numbers may be introduced when the file is later updated; see sub-
-        clauses 7.5.4, "Cross-Reference Table" and 7.5.6, "Incremental Updates."
-
-    Together, the combination of an object number and a generation number shall uniquely identify an indirect
-    object.
-    """
-
-    object_number: Optional[int]
-    generation_number: Optional[int]
-    parent_stream_object_number: Optional[int]
-    index_in_parent_stream: Optional[int]
-    byte_offset: Optional[int]
-    is_in_use: bool
-    document: "Document"  # type: ignore [name-defined]
-
-    def __init__(
-        self,
-        object_number: Optional[int] = None,
-        generation_number: Optional[int] = None,
-        parent_stream_object_number: Optional[int] = None,
-        index_in_parent_stream: Optional[int] = None,
-        byte_offset: Optional[int] = None,
-        is_in_use: bool = True,
-        document: Optional["Document"] = None,  # type: ignore [name-defined]
-    ):
-        self.object_number = object_number
-        self.generation_number = generation_number
-        self.parent_stream_object_number = parent_stream_object_number
-        self.index_in_parent_stream = index_in_parent_stream
-        self.byte_offset = byte_offset
-        self.is_in_use = is_in_use
-        self.document = document
-        add_base_methods(self)
-
-    def __hash__(self):
-        hashcode: int = 1
-        hashcode = hashcode * 31 + (
-            self.object_number if self.object_number is not None else 0
-        )
-        hashcode = hashcode * 31 + (
-            self.generation_number if self.generation_number is not None else 0
-        )
-        hashcode = hashcode * 31 + (
-            self.parent_stream_object_number
-            if self.parent_stream_object_number is not None
-            else 0
-        )
-        hashcode = hashcode * 31 + (
-            self.index_in_parent_stream
-            if self.index_in_parent_stream is not None
-            else 0
-        )
-        hashcode = hashcode * 31 + (
-            self.byte_offset if self.byte_offset is not None else 0
-        )
-        return hashcode
-
-    def __eq__(self, other):
-        if not isinstance(other, Reference):
-            return False
-        return (
-            self.object_number == other.object_number
-            and self.generation_number == other.generation_number
-            and self.parent_stream_object_number == other.parent_stream_object_number
-            and self.index_in_parent_stream == other.index_in_parent_stream
-            and self.byte_offset == other.byte_offset
-        )
 
 
 AnyPDFType = Union[

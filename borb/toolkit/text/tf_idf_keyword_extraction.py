@@ -57,31 +57,9 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
     many more sophisticated ranking functions are variants of this simple model.
     """
 
-    @staticmethod
-    def get_keywords_from_pdf(
-        pdf: Document,
-    ) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
-        """
-        This function returns the keywords for a given PDF (per page)
-        :param pdf:     the PDF to be analyzed
-        :return:        the keywords per page (represented by typing.Dict[int, typing.List[typing.Tuple[str, float]]])
-        """
-        keywords_per_page: typing.Dict[int, typing.List[typing.Tuple[str, float]]] = {}
-        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
-        for page_nr in range(0, number_of_pages):
-            # get Page object
-            page: Page = pdf.get_page(page_nr)
-            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
-            # register EventListener
-            l: "TFIDFKeywordExtraction" = TFIDFKeywordExtraction()
-            # process Page
-            l._event_occurred(BeginPageEvent(page))
-            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
-            l._event_occurred(EndPageEvent(page))
-            # add to output dictionary
-            keywords_per_page[page_nr] = l.get_keywords()[0]
-        # return
-        return keywords_per_page
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self, stopwords: typing.List[str] = [], minimum_term_frequency: int = 3
@@ -93,6 +71,10 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         self._stopwords: typing.List[str] = [x.upper() for x in stopwords]
         self._number_of_pages: float = 0
         self._minimum_term_frequency: float = minimum_term_frequency
+
+    #
+    # PRIVATE
+    #
 
     def _end_page(self, page: Page):
         super()._end_page(page)
@@ -118,6 +100,10 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
         # update _inverse_page_frequency
         for w in set(words_on_page):
             self._inverse_page_frequency[w] = self._inverse_page_frequency.get(w, 0) + 1
+
+    #
+    # PUBLIC
+    #
 
     def get_keywords(self) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
         """
@@ -149,3 +135,29 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
 
         # return
         return out
+
+    @staticmethod
+    def get_keywords_from_pdf(
+        pdf: Document,
+    ) -> typing.Dict[int, typing.List[typing.Tuple[str, float]]]:
+        """
+        This function returns the keywords for a given PDF (per page)
+        :param pdf:     the PDF to be analyzed
+        :return:        the keywords per page (represented by typing.Dict[int, typing.List[typing.Tuple[str, float]]])
+        """
+        keywords_per_page: typing.Dict[int, typing.List[typing.Tuple[str, float]]] = {}
+        number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
+        for page_nr in range(0, number_of_pages):
+            # get Page object
+            page: Page = pdf.get_page(page_nr)
+            page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])
+            # register EventListener
+            l: "TFIDFKeywordExtraction" = TFIDFKeywordExtraction()
+            # process Page
+            l._event_occurred(BeginPageEvent(page))
+            CanvasStreamProcessor(page, Canvas(), []).read(page_source, [l])
+            l._event_occurred(EndPageEvent(page))
+            # add to output dictionary
+            keywords_per_page[page_nr] = l.get_keywords()[0]
+        # return
+        return keywords_per_page

@@ -25,6 +25,51 @@ class ImageExtraction(EventListener):
     This implementation of EventListener extracts all Image objects on a Page
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self):
+        """
+        Constructs a new SimpleImageExtraction
+        """
+        self._image_render_info_per_page = {}
+        self._current_page: int = -1
+
+    #
+    # PRIVATE
+    #
+
+    def _begin_page(self, page: Page):
+        self._current_page += 1
+
+    def _event_occurred(self, event: "Event") -> None:
+        if isinstance(event, BeginPageEvent):
+            self._begin_page(event.get_page())
+        if isinstance(event, ImageRenderEvent):
+            self._render_image(event)
+
+    def _render_image(self, image_render_event: "ImageRenderEvent"):
+
+        # init if needed
+        if self._current_page not in self._image_render_info_per_page:
+            self._image_render_info_per_page[self._current_page] = []
+
+        # append ImageRenderEvent
+        self._image_render_info_per_page[self._current_page].append(
+            image_render_event.get_image()
+        )
+
+    #
+    # PUBLIC
+    #
+
+    def get_images(self) -> typing.Dict[int, List[PILImage.Image]]:
+        """
+        This function returns a typing.List[Image] on a given page
+        """
+        return self._image_render_info_per_page
+
     @staticmethod
     def get_images_from_pdf(
         pdf: Document,
@@ -54,36 +99,3 @@ class ImageExtraction(EventListener):
 
         # return
         return images_of_each_page
-
-    def __init__(self):
-        """
-        Constructs a new SimpleImageExtraction
-        """
-        self._image_render_info_per_page = {}
-        self._current_page: int = -1
-
-    def _event_occurred(self, event: "Event") -> None:
-        if isinstance(event, BeginPageEvent):
-            self._begin_page(event.get_page())
-        if isinstance(event, ImageRenderEvent):
-            self._render_image(event)
-
-    def get_images(self) -> typing.Dict[int, List[PILImage.Image]]:
-        """
-        This function returns a typing.List[Image] on a given page
-        """
-        return self._image_render_info_per_page
-
-    def _render_image(self, image_render_event: "ImageRenderEvent"):
-
-        # init if needed
-        if self._current_page not in self._image_render_info_per_page:
-            self._image_render_info_per_page[self._current_page] = []
-
-        # append ImageRenderEvent
-        self._image_render_info_per_page[self._current_page].append(
-            image_render_event.get_image()
-        )
-
-    def _begin_page(self, page: Page):
-        self._current_page += 1

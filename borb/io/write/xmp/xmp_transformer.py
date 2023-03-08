@@ -22,6 +22,18 @@ class XMPTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing XMP meta-data information
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def can_be_transformed(self, any: AnyPDFType):
         """
         This function returns True if the object to be converted represents an XML element

@@ -41,24 +41,17 @@ class PDF:
     file attachments, and metadata to enable workflows requiring these features.
     """
 
-    @staticmethod
-    def loads(
-        file: Union[io.BufferedIOBase, io.RawIOBase],
-        event_listeners: List[EventListener] = [],
-        password: typing.Optional[str] = None,
-    ) -> Document:
-        """
-        This function reads a byte-stream input (which may be presented as an io.BufferedIOBase o io.RawIOBase)
-        and returns a Document.
-        """
-        document: Document = ReadAnyObjectTransformer().transform(
-            file,
-            parent_object=None,
-            context=ReadTransformerState(password=password),
-            event_listeners=event_listeners,
-        )
-        UsageStatistics.send_usage_statistics("PDF.loads", document)
-        return document
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def dumps(
@@ -77,3 +70,22 @@ class PDF:
             ),
             destination=file,
         )
+
+    @staticmethod
+    def loads(
+        file: Union[io.BufferedIOBase, io.RawIOBase],
+        event_listeners: List[EventListener] = [],
+        password: typing.Optional[str] = None,
+    ) -> Document:
+        """
+        This function reads a byte-stream input (which may be presented as an io.BufferedIOBase o io.RawIOBase)
+        and returns a Document.
+        """
+        document: Document = ReadAnyObjectTransformer().transform(
+            file,
+            parent_object=None,
+            context=ReadTransformerState(password=password),
+            event_listeners=event_listeners,
+        )
+        UsageStatistics.send_usage_statistics("PDF.loads", document)
+        return document

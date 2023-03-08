@@ -43,6 +43,10 @@ class CodeBlock(Paragraph):
     unless they are masked by an object declared with the same name.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,
@@ -97,3 +101,11 @@ class CodeBlock(Paragraph):
             respect_newlines_in_text=True,
             respect_spaces_in_text=True,
         )
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

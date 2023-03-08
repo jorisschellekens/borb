@@ -68,6 +68,18 @@ class RectangularHitomezashi:
     though modern day sashiko may use modern embroidery threads and embroidery needles.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def hitomezashi(
         horizontal_seed: typing.List[bool] = [

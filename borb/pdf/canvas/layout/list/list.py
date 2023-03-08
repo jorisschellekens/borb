@@ -19,6 +19,10 @@ class List(LayoutElement):
     This implementation of LayoutElement represents a list
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         background_color: typing.Optional[Color] = None,
@@ -70,19 +74,9 @@ class List(LayoutElement):
         self._bullet_margin: Decimal = Decimal(20)
         self._items: typing.List[LayoutElement] = []
 
-    def add(self, element: LayoutElement) -> "List":
-        """
-        This function adds a LayoutElement to this List
-        """
-        if self._font_size is None:
-            self._font_size = element.get_font_size()
-        if self._margin_top is None:
-            self._margin_top = element.get_font_size()
-        if self._margin_bottom is None:
-            self._margin_bottom = element.get_font_size()
-        self._items.append(element)
-        element._parent = self
-        return self
+    #
+    # PRIVATE
+    #
 
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
@@ -198,3 +192,21 @@ class List(LayoutElement):
                     previous_layout_box.get_height(),
                 ),
             )
+
+    #
+    # PUBLIC
+    #
+
+    def add(self, element: LayoutElement) -> "List":
+        """
+        This function adds a LayoutElement to this List
+        """
+        if self._font_size is None:
+            self._font_size = element.get_font_size()
+        if self._margin_top is None:
+            self._margin_top = element.get_font_size()
+        if self._margin_bottom is None:
+            self._margin_bottom = element.get_font_size()
+        self._items.append(element)
+        element._parent = self
+        return self

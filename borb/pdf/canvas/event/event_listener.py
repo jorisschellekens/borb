@@ -20,6 +20,18 @@ class EventListener:
     This listener is notified whenever the canvas processes an event/command.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def _event_occurred(self, event: Event) -> None:
         """
         This method is called whenever a matching Event is fired from the Canvas.

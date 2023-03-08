@@ -24,11 +24,23 @@ class ReferenceTransformer(Transformer):
     e.g. 97 0 R
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super(ReferenceTransformer, self).__init__()
         self._cache: typing.Dict[Reference, AnyPDFType] = {}
         self._cache_hits: int = 0
         self._cache_fails: int = 0
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def can_be_transformed(
         self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
@@ -61,14 +73,16 @@ class ReferenceTransformer(Transformer):
         ref_from_cache = self._cache.get(object_to_transform, None)
         if ref_from_cache is not None:
             self._cache_hits += 1
+
             # check linkage
-            if ref_from_cache.get_parent() is None:  # type: ignore[union-attr]
-                ref_from_cache.set_parent(parent_object)  # type: ignore[union-attr]
+            if ref_from_cache.get_parent() is None:
+                ref_from_cache.set_parent(parent_object)
                 return ref_from_cache
+
             # copy because of linkage
-            if ref_from_cache.get_parent() != parent_object:  # type: ignore[union-attr]
+            if ref_from_cache.get_parent() != parent_object:
                 ref_from_cache_copy = ref_from_cache  # TODO
-                ref_from_cache_copy.set_parent(parent_object)  # type: ignore[union-attr]
+                ref_from_cache_copy.set_parent(parent_object)
                 return ref_from_cache_copy
 
         self._cache_fails += 1

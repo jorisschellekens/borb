@@ -30,21 +30,12 @@ class InformationDictionaryTransformer(Transformer):
     This implementation of WriteBaseTransformer is responsible for writing /Info Dictionary objects
     """
 
-    def can_be_transformed(self, any: AnyPDFType):
-        """
-        This function returns True if the object to be transformed is an /Info Dictionary
-        """
-        if not isinstance(any, Dictionary):
-            return False
-        parent: AnyPDFType = any.get_parent()  # type: ignore [attr-defined]
-        return (
-            isinstance(parent, Dictionary)
-            and "Info" in parent
-            and parent["Info"] == any
-        )
+    #
+    # CONSTRUCTOR
+    #
 
     #
-    # XMP
+    # PRIVATE
     #
 
     def _consolidate_xmp_and_info_dictionary(self, document: Document) -> Dictionary:
@@ -92,35 +83,6 @@ class InformationDictionaryTransformer(Transformer):
         return new_info_dictionary
 
     @staticmethod
-    def _now_as_iso_8824_date_format() -> str:
-        timestamp_str = "D:"
-        now = datetime.datetime.now()
-        for n in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
-            timestamp_str += "{0:02}".format(n)
-        timestamp_str += "Z00"
-        return timestamp_str
-
-    def _update_info_dictionary(self, info_dictionary: Dictionary) -> Dictionary:
-
-        # set CreationDate
-        if "CreationDate" not in info_dictionary:
-            info_dictionary[Name("CreationDate")] = String(
-                InformationDictionaryTransformer._now_as_iso_8824_date_format()
-            )
-
-        # set ModDate
-        info_dictionary[Name("ModDate")] = String(
-            InformationDictionaryTransformer._now_as_iso_8824_date_format()
-        )
-
-        # set Producer
-        info_dictionary[Name("Producer")] = String(
-            Version.get_producer() + " " + Version.get_version()
-        )
-
-        return info_dictionary
-
-    @staticmethod
     def _convert_iso_8824_date_format_to_xmp_date_format(s: str) -> str:
         try:
             year: str = s[2:6]
@@ -138,6 +100,36 @@ class InformationDictionaryTransformer(Transformer):
     @staticmethod
     def _convert_xmp_date_format_to_iso_8824_date_format(s: str) -> str:
         return s
+
+    @staticmethod
+    def _now_as_iso_8824_date_format() -> str:
+        timestamp_str = "D:"
+        now = datetime.datetime.now()
+        for n in [now.year, now.month, now.day, now.hour, now.minute, now.second]:
+            timestamp_str += "{0:02}".format(n)
+        timestamp_str += "Z00"
+        return timestamp_str
+
+    def _update_info_dictionary(self, info_dictionary: Dictionary) -> Dictionary:
+
+        # set CreationDate
+        # fmt: off
+        if "CreationDate" not in info_dictionary:
+            info_dictionary[Name("CreationDate")] = String(InformationDictionaryTransformer._now_as_iso_8824_date_format())
+        # fmt: on
+
+        # set ModDate
+        # fmt: off
+        info_dictionary[Name("ModDate")] = String(InformationDictionaryTransformer._now_as_iso_8824_date_format())
+        # fmt: on
+
+        # set Producer
+        # fmt: off
+        info_dictionary[Name("Producer")] = String(Version.get_producer() + " " + Version.get_version())
+        # fmt: on
+
+        # return
+        return info_dictionary
 
     def _write_xmp_metadata_stream(
         self,
@@ -244,6 +236,23 @@ class InformationDictionaryTransformer(Transformer):
         # return
         return metadata_stream
 
+    #
+    # PUBLIC
+    #
+
+    def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be transformed is an /Info Dictionary
+        """
+        if not isinstance(any, Dictionary):
+            return False
+        parent: typing.Any = any.get_parent()
+        return (
+            isinstance(parent, Dictionary)
+            and "Info" in parent
+            and parent["Info"] == any
+        )
+
     def transform(
         self,
         object_to_transform: Any,
@@ -276,13 +285,11 @@ class InformationDictionaryTransformer(Transformer):
         # fmt: on
 
         if needs_xmp_metadata:
-            conformance_level: ConformanceLevel = (
-                document.get_document_info().get_conformance_level_upon_create()
-            )
 
             # write XMP /Metadata
             xmp_metadata_stream: Stream = self._write_xmp_metadata_stream(
-                new_info_dictionary, conformance_level
+                new_info_dictionary,
+                document.get_document_info().get_conformance_level_upon_create(),
             )
             assert context is not None
             document["XRef"]["Trailer"]["Root"][Name("Metadata")] = self.get_reference(
