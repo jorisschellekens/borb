@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf import HexColor
+from borb.pdf.canvas.color.color import X11Color, HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
@@ -14,17 +14,16 @@ from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import check_pdf_using_validator, compare_visually_to_ground_truth
+from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
-class TestWriteChunkOfText(unittest.TestCase):
+class TestAddChunkOfTextInRainbowColors(unittest.TestCase):
     """
-    This test creates a PDF with a ChunkOfText in it.
+    This test creates a PDF with 6 ChunkOfText objects in it, in red, orange, yellow, green, blue and purple.
     """
 
     def __init__(self, methodName="runTest"):
         super().__init__(methodName)
-
         # find output dir
         p: Path = Path(__file__).parent
         while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
@@ -59,13 +58,33 @@ class TestWriteChunkOfText(unittest.TestCase):
             .add(Paragraph("Test", font="Helvetica-Bold"))
             .add(Paragraph(Path(__file__).stem))
             .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(Paragraph("This test creates a PDF with a ChunkOfText in it."))
+            .add(
+                Paragraph(
+                    "This test creates a PDF with 6 ChunkOfText objects in it, in red, orange, yellow, green, blue and purple."
+                )
+            )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        ChunkOfText("Lorem Ipsum", font_size=Decimal(18.2)).paint(
-            page, Rectangle(Decimal(59), Decimal(550), Decimal(100), Decimal(100))
-        )
+        for i, c in enumerate(
+            [
+                X11Color("Red"),
+                X11Color("Orange"),
+                X11Color("Yellow"),
+                X11Color("YellowGreen"),
+                X11Color("Blue"),
+                X11Color("Purple"),
+            ]
+        ):
+            ChunkOfText("Lorem Ipsum", font_size=Decimal(24), font_color=c).paint(
+                page,
+                Rectangle(
+                    Decimal(59 + i * 30),
+                    Decimal(550 - i * 30),
+                    Decimal(100),
+                    Decimal(100),
+                ),
+            )
 
         # determine output location
         out_file = self.output_dir / "output.pdf"
@@ -78,6 +97,6 @@ class TestWriteChunkOfText(unittest.TestCase):
         with open(out_file, "rb") as in_file_handle:
             PDF.loads(in_file_handle)
 
-        # check
-        check_pdf_using_validator(out_file)
+        # compare visually
         compare_visually_to_ground_truth(out_file)
+        check_pdf_using_validator(out_file)

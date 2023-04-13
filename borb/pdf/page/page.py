@@ -142,7 +142,7 @@ class Page(Dictionary):
                 x["Rect"][2] - x["Rect"][0],
                 x["Rect"][3] - x["Rect"][1],
             )
-            for x in self["Annots"]
+            for x in self.get("Annots", [])
             if "Subtype" in x and x["Subtype"] == "Redact" and "Rect" in x
         ]
 

@@ -110,6 +110,14 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         # return
         return [t0, t1]
 
+    def _split_blockflow(
+        self, layout_element: LayoutElement, available_height: Decimal
+    ) -> typing.List[LayoutElement]:
+        from borb.pdf import BlockFlow
+
+        assert isinstance(layout_element, BlockFlow)
+        return layout_element._content
+
     #
     # PUBLIC
     #
@@ -121,6 +129,7 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
 
         # anything that isn't a Table gets added as expected
         if layout_element.__class__.__name__ not in [
+            "BlockFlow",
             "FlexibleColumnWidthTable",
             "FixedColumnWidthTable",
         ]:
@@ -166,9 +175,20 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         if lbox.get_height() <= available_height:
             return super(SingleColumnLayout, self).add(layout_element)
 
-        # split
-        for t in self._split_table(layout_element, available_height):
-            super(SingleColumnLayoutWithOverflow, self).add(t)
+        # split Table
+        if layout_element.__class__.__name__ in [
+            "FlexibleColumnWidthTable",
+            "FixedColumnWidthTable",
+        ]:
+            for t in self._split_table(layout_element, available_height):
+                super(SingleColumnLayoutWithOverflow, self).add(t)
+
+        # split BlockFlow
+        if layout_element.__class__.__name__ in [
+            "BlockFlow",
+        ]:
+            for t in self._split_blockflow(layout_element, available_height):
+                super(SingleColumnLayoutWithOverflow, self).add(t)
 
         # return
         return self

@@ -12,13 +12,13 @@ from pathlib import Path
 from lxml.etree import HTMLParser, _Comment  # type: ignore [import]
 from decimal import Decimal
 
-from borb.io.read.types import Decimal as bDecimal, Name, String, Dictionary
+from borb.io.read.types import Name, String, Dictionary
+from borb.pdf import SingleColumnLayoutWithOverflow
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.color.color import Color, HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
-from borb.pdf.canvas.layout.emoji.emoji import Emoji, Emojis
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.list.ordered_list import OrderedList
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
@@ -1019,7 +1019,7 @@ class HTMLToPDF:
         doc.add_page(page)
 
         # PageLayout
-        layout: PageLayout = SingleColumnLayout(page)
+        layout: PageLayout = SingleColumnLayoutWithOverflow(page)
 
         # parse HTML
         root_element: typing.Optional[ET.Element] = None

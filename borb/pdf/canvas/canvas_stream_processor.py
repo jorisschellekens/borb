@@ -256,8 +256,6 @@ class CanvasStreamProcessor:
         calls_per_operator: typing.Dict[str, int] = {}
         while canvas_tokenizer.tell() != length:
 
-            # print("<canvas pos='%d' length='%d' percentage='%d'/>" % ( canvas_tokenizer.tell(), length, int(canvas_tokenizer.tell() * 100 / length)))
-
             # attempt to read object
             tell_before: int = canvas_tokenizer.tell()
             obj = canvas_tokenizer.read_object()

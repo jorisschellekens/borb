@@ -38,7 +38,9 @@ class ImageTransformer(Transformer):
         # omit transparency
         if image_out.mode == "P":
             image_out = image_out.convert("RGBA")
-        if image_out.mode in ["RGBA", "LA"]:
+        if image_out.mode == "LA":
+            image_out = image_out.convert("RGBA")
+        if image_out.mode == "RGBA":
             fill_color = (255, 255, 255)  # new background color
             non_alpha_mode: str = image_out.mode[:-1]
             background = PILImage.new(

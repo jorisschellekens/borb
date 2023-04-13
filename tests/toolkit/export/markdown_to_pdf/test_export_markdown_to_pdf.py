@@ -2,7 +2,12 @@ import unittest
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf import Page, PageLayout, SingleColumnLayout
+from borb.pdf import (
+    Page,
+    PageLayout,
+    SingleColumnLayout,
+    SingleColumnLayoutWithOverflow,
+)
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 from borb.pdf.document.document import Document
@@ -92,6 +97,9 @@ class TestExportMarkdownToPDF(unittest.TestCase):
     def test_document_010(self):
         self._test_document("example-markdown-input-010.md")
 
+    def test_document_012(self):
+        self._test_document("example-markdown-input-012.md")
+
     def _test_document(self, file_to_convert: str):
 
         # create output directory if it does not exist yet
@@ -109,7 +117,7 @@ class TestExportMarkdownToPDF(unittest.TestCase):
             width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
         )
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayout(
+        layout: PageLayout = SingleColumnLayoutWithOverflow(
             page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
         )
         layout.add(MarkdownToPDF.convert_markdown_to_layout_element(txt))

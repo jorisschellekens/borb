@@ -202,11 +202,10 @@ class FlexibleColumnWidthTable(Table):
             new_x: Decimal = prev_x + column_widths[i - 1]
             grid_x_to_page_x.append(new_x)
 
+        # calculate bounds of TableCells with row_span == 1
         grid_y_to_page_y: typing.List[Decimal] = [
             available_space.get_y() + available_space.get_height()
         ]
-
-        # calculate bounds of TableCells with row_span == 1
         for r in range(0, self._number_of_rows):
             prev_row_lboxes: typing.List[Rectangle] = []
             for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
@@ -217,9 +216,8 @@ class FlexibleColumnWidthTable(Table):
                 grid_x: int = min([p[1] for p in e._table_coordinates])
 
                 # layout
-                h: Decimal = max(
-                    grid_y_to_page_y[r] - available_space.get_y(), Decimal(0)
-                )
+                prev_vertical_alignment = e._layout_element._vertical_alignment
+                e._layout_element._vertical_alignment = Alignment.TOP
                 prev_row_lboxes.append(
                     e.get_layout_box(
                         Rectangle(
@@ -227,15 +225,36 @@ class FlexibleColumnWidthTable(Table):
                             available_space.get_y(),
                             grid_x_to_page_x[grid_x + e._col_span]
                             - grid_x_to_page_x[grid_x],
-                            h,
+                            max(
+                                grid_y_to_page_y[r] - available_space.get_y(),
+                                Decimal(0),
+                            ),
                         )
                     )
                 )
+                e._layout_element._vertical_alignment = prev_vertical_alignment
 
             # keep track of the bottom of the previous (at this point current) row
             # this makes it easier to lay out the next row
             new_y: Decimal = min([lbox.get_y() for lbox in prev_row_lboxes])
+            row_height: Decimal = grid_y_to_page_y[-1] - new_y
             grid_y_to_page_y.append(new_y)
+
+            # do a second pass, this time with the right vertical alignment
+            # now that we know the tallest element (and thus the row height)
+            for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
+                grid_x: int = min([p[1] for p in e._table_coordinates])
+                if e._layout_element._vertical_alignment == Alignment.TOP:
+                    continue
+                e.get_layout_box(
+                    Rectangle(
+                        grid_x_to_page_x[grid_x],
+                        new_y,
+                        grid_x_to_page_x[grid_x + e._col_span]
+                        - grid_x_to_page_x[grid_x],
+                        row_height,
+                    )
+                )
 
         # return
         return [[(x, y) for y in grid_y_to_page_y] for x in grid_x_to_page_x]

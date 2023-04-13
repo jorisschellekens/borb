@@ -141,7 +141,6 @@ class Transformer:
             return object_to_transform
         for h in self._children:
             if h.can_be_transformed(object_to_transform):
-                # print("%s<%s level='%d' invocation='%d'>" % ("   " * self.level, h.__class__.__name__, self.level, self.invocation_count), flush=True)
                 self._level += 1
                 self._invocation_count += 1
                 out = h.transform(
@@ -151,6 +150,5 @@ class Transformer:
                     event_listeners=event_listeners,
                 )
                 self._level -= 1
-                # print("%s</%s>" % ("   " * self.level, h.__class__.__name__))
                 return out
         return None

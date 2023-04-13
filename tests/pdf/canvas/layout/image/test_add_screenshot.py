@@ -2,14 +2,18 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
+import requests
+from PIL import Image as PILImage
+
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.color.color import X11Color, HexColor
-from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf import HexColor
+from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.image.screenshot import ScreenShot
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.table.fixed_column_width_table import (
     FixedColumnWidthTable as Table,
 )
-from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -17,9 +21,9 @@ from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
-class TestWriteChunkOfTextInRainbowColors(unittest.TestCase):
+class TestAddScreenShot(unittest.TestCase):
     """
-    This test creates a PDF with 6 ChunkOfText objects in it, in red, orange, yellow, green, blue and purple.
+    This test creates a PDF with an Image in it, this Image is a ScreenShot
     """
 
     def __init__(self, methodName="runTest"):
@@ -35,14 +39,16 @@ class TestWriteChunkOfTextInRainbowColors(unittest.TestCase):
 
     def test_write_document(self):
 
-        # create document
-        pdf = Document()
+        # create empty document
+        pdf: Document = Document()
 
-        # add page
-        page = Page()
+        # create empty page
+        page: Page = Page()
+
+        # add page to document
         pdf.add_page(page)
 
-        # set layout
+        # add Image
         layout = SingleColumnLayout(page)
 
         # add test information
@@ -60,43 +66,32 @@ class TestWriteChunkOfTextInRainbowColors(unittest.TestCase):
             .add(Paragraph("Description", font="Helvetica-Bold"))
             .add(
                 Paragraph(
-                    "This test creates a PDF with 6 ChunkOfText objects in it, in red, orange, yellow, green, blue and purple."
+                    "This test creates a PDF with an Image in it, this Image is a ScreenShot"
                 )
             )
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
-        for i, c in enumerate(
-            [
-                X11Color("Red"),
-                X11Color("Orange"),
-                X11Color("Yellow"),
-                X11Color("YellowGreen"),
-                X11Color("Blue"),
-                X11Color("Purple"),
-            ]
-        ):
-            ChunkOfText("Lorem Ipsum", font_size=Decimal(24), font_color=c).paint(
-                page,
-                Rectangle(
-                    Decimal(59 + i * 30),
-                    Decimal(550 - i * 30),
-                    Decimal(100),
-                    Decimal(100),
-                ),
+        # add image
+        layout.add(
+            ScreenShot(
+                width=Decimal(256),
+                height=Decimal(256),
+                horizontal_alignment=Alignment.CENTERED,
+                x_display=":0",
             )
+        )
 
-        # determine output location
+        # write
         out_file = self.output_dir / "output.pdf"
+        with open(out_file, "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
 
-        # attempt to store PDF
-        with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf)
+        # compare visually (there is no point whatsoever in doing this)
+        # compare_visually_to_ground_truth(out_file)
 
-        # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
-            PDF.loads(in_file_handle)
-
-        # compare visually
-        compare_visually_to_ground_truth(out_file)
         check_pdf_using_validator(out_file)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -13,7 +13,10 @@ from datetime import datetime, timezone
 import typing
 
 import requests
-from borb.license.anonymous_user_id import AnonymousUserID
+
+from borb.license.license import License
+from borb.license.machine_id import MachineID
+from borb.license.persistent_random_user_id import PersistentRandomUserID
 from borb.license.version import Version
 
 
@@ -24,9 +27,10 @@ class UsageStatistics:
     where development effort needs to be spent, etc
     """
 
-    _ENDPOINT_URL: str = (
-        "https://cztmincfqq4fobtt6c7ect7gli0isbwx.lambda-url.us-east-1.on.aws/"
-    )
+    # fmt: off
+    _ENABLED: bool = True
+    _ENDPOINT_URL: str = "https://cztmincfqq4fobtt6c7ect7gli0isbwx.lambda-url.us-east-1.on.aws/"
+    # fmt: on
 
     #
     # CONSTRUCTOR
@@ -37,12 +41,15 @@ class UsageStatistics:
     #
 
     @staticmethod
-    def _send_usage_statistics_for_event(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
+    def _get_machine_id() -> typing.Optional[str]:
+        return MachineID.get()
 
-        # get anonymous_user_id
-        anonymous_user_id: typing.Optional[str] = AnonymousUserID.get()
-        if anonymous_user_id is None or len(anonymous_user_id) < 16:
-            return
+    @staticmethod
+    def _get_user_id() -> str:
+        return License.get_user_id() or PersistentRandomUserID.get()
+
+    @staticmethod
+    def _send_usage_statistics_in_thread(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
 
         # get number_of_pages
         number_of_pages: int = 0
@@ -56,8 +63,12 @@ class UsageStatistics:
 
         # set payload
         json_payload: typing.Dict[str, typing.Any] = {
-            "anonymous_user_id": anonymous_user_id,
+            "anonymous_user_id": UsageStatistics._get_user_id(),
+            "company": License.get_company(),
             "event": event,
+            "license_valid_from_in_ms": License.get_valid_from_in_ms(),
+            "license_valid_until_in_ms": License.get_valid_until_in_ms(),
+            "machine_id": UsageStatistics._get_machine_id(),
             "number_of_pages": number_of_pages,
             "sys_platform": sys.platform,
             "utc_time_in_ms": int(datetime.now(timezone.utc).timestamp() * 1000),
@@ -84,30 +95,32 @@ class UsageStatistics:
     @staticmethod
     def disable() -> None:
         """
-        This method disables the gathering of anonymous usage statistics
+        This function disables the sending of usage statistics
         :return:    None
         """
-        AnonymousUserID.disable()
+        UsageStatistics._ENABLED = False
 
     @staticmethod
     def enable() -> None:
         """
-        This method enables the gathering of anonymous usage statistics
+        This function enables the sending of usage statistics
         :return:    None
         """
-        AnonymousUserID.enable()
+        UsageStatistics._ENABLED = True
 
     @staticmethod
-    def send_usage_statistics(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
+    def send_usage_statistics(event: str = "", document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
         """
         This method sends the usage statistics to the borb license server
         :param event:       the event that is to be registered
         :param document     the Document being processed
         :return:        None
         """
+        if not UsageStatistics._ENABLED:
+            return
         try:
             threading.Thread(
-                target=UsageStatistics._send_usage_statistics_for_event,
+                target=UsageStatistics._send_usage_statistics_in_thread,
                 args=(
                     event,
                     document,

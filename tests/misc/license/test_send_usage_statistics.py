@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from borb.license.anonymous_user_id import AnonymousUserID
+from borb.license.persistent_random_user_id import PersistentRandomUserID
 from borb.pdf import Document, Page, SingleColumnLayout, PageLayout, Paragraph, PDF
 
 
@@ -22,8 +22,8 @@ class TestSendUsageStatistics(unittest.TestCase):
             return "developer-user-id-jsc"
 
         # monkey patching
-        prev_user_id_function = AnonymousUserID.get
-        AnonymousUserID.get = _get_user_id
+        prev_user_id_function = PersistentRandomUserID.get
+        PersistentRandomUserID.get = _get_user_id
 
         # build tiny little Document
         d: Document = Document()
@@ -41,4 +41,4 @@ class TestSendUsageStatistics(unittest.TestCase):
             PDF.dumps(out_file_handle, d)
 
         # restore
-        AnonymousUserID.get = prev_user_id_function
+        PersistentRandomUserID.get = prev_user_id_function

@@ -55,6 +55,9 @@ from .canvas.color.color import (
 )
 from .canvas.color.pantone import Pantone
 
+# Equation
+from .canvas.layout.equation.equation import Equation
+
 # Image
 from .canvas.layout.image.barcode import Barcode
 from .canvas.layout.image.barcode import BarcodeType

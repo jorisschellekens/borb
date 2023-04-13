@@ -14,7 +14,7 @@ from borb.pdf.pdf import PDF
 from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
 
 
-class TestWriteHelloWorldWithMonacoFont(unittest.TestCase):
+class TestAddParagraphWithMonacoFont(unittest.TestCase):
     """
     This test loads a truetype _font from a .ttf file and attempts to use it to write 2 paragraphs of lorem ipsum.
     """
