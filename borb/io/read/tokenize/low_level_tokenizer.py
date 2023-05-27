@@ -8,7 +8,7 @@ The high-level tokenizer will use this first pass to then build complex objects 
 """
 import enum
 import io
-from typing import Optional
+import typing
 
 
 class TokenType(enum.IntEnum):
@@ -118,7 +118,7 @@ class LowLevelTokenizer:
     # PUBLIC
     #
 
-    def next_non_comment_token(self) -> Optional[Token]:
+    def next_non_comment_token(self) -> typing.Optional[Token]:
         """
         This function retrieves the next non-comment Token.
         It returns None if no such Token exists (end of stream/file)
@@ -128,7 +128,7 @@ class LowLevelTokenizer:
             t = self.next_token()
         return t
 
-    def next_token(self) -> Optional[Token]:
+    def next_token(self) -> typing.Optional[Token]:
         """
         This function retrieves the next Token.
         It returns None if no such Token exists (end of stream/file)

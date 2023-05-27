@@ -9,11 +9,12 @@ import math
 import typing
 from decimal import Decimal
 from math import sqrt
-from typing import Tuple
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.page.page import Page
 
 
@@ -29,7 +30,7 @@ class ConnectedShape(LayoutElement):
 
     def __init__(
         self,
-        points: typing.List[Tuple[Decimal, Decimal]],
+        points: typing.List[typing.Tuple[Decimal, Decimal]],
         fill_color: typing.Optional[Color],
         stroke_color: typing.Optional[Color],
         auto_close_shape: bool = False,

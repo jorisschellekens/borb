@@ -6,12 +6,9 @@ This implementation of WriteBaseTransformer acts as an aggregator for
 its child transformers, allowing it to transform AnyPDFType
 """
 import io
-from typing import Optional, Union
+import typing
 
 from borb.io.read.types import AnyPDFType
-from borb.io.write.version.version_as_comment_transformer import (
-    VersionAsCommentTransformer,
-)
 from borb.io.write.document.catalog_transformer import CatalogTransformer
 from borb.io.write.document.document_transformer import DocumentTransformer
 from borb.io.write.document.information_dictionary_transformer import (
@@ -29,7 +26,11 @@ from borb.io.write.primitive.number_transformer import NumberTransformer
 from borb.io.write.primitive.string_transformer import StringTransformer
 from borb.io.write.reference.reference_transformer import ReferenceTransform
 from borb.io.write.reference.xref_transformer import XREFTransformer
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
+from borb.io.write.version.version_as_comment_transformer import (
+    VersionAsCommentTransformer,
+)
 from borb.io.write.xmp.xmp_transformer import XMPTransformer
 
 
@@ -85,8 +86,10 @@ class AnyObjectTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
-        destination: Optional[Union[io.BufferedIOBase, io.RawIOBase]] = None,
+        context: typing.Optional[WriteTransformerState] = None,
+        destination: typing.Optional[
+            typing.Union[io.BufferedIOBase, io.RawIOBase]
+        ] = None,
     ):
         """
         This method writes an (PDF) object to a byte stream

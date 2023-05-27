@@ -11,7 +11,9 @@ import typing
 from pathlib import Path
 
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import List, Name, Stream
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
 from borb.pdf.canvas.font.font import Font
 
 logger = logging.getLogger(__name__)

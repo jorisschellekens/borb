@@ -7,7 +7,10 @@ This CanvasOperator copies an existing operator and writes its bytes to a conten
 import typing
 from decimal import Decimal
 
-from borb.io.read.types import AnyPDFType, HexadecimalString, String, Name
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import HexadecimalString
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -35,9 +38,9 @@ class CopyCommandOperator(CanvasOperator):
         if isinstance(op, Decimal):
             return str(op)
         if isinstance(op, HexadecimalString):
-            return "<" + op._text + ">"
+            return "<" + str(op) + ">"
         if isinstance(op, String):
-            return "(" + op._text + ")"
+            return "(" + str(op) + ")"
         if isinstance(op, Name):
             return "/" + str(op)
         if isinstance(op, list):

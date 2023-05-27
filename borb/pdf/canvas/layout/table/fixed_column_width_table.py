@@ -7,7 +7,8 @@ This class represents a Table with columns of fixed width
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.table.table import Table
@@ -90,7 +91,7 @@ class FixedColumnWidthTable(Table):
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
+            [(x.get_row_span() * x.get_column_span()) for x in self._content]
         )
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
@@ -132,22 +133,22 @@ class FixedColumnWidthTable(Table):
             # we do a first pass over each row to determine how tall the row needs to be
             # we temporarily change every LayoutElement's vertical alignment
             # then we reset it to its previous value
-            for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
+            for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
 
                 # get coordinates of lower-left corner of this TableCell (in grid space)
                 # table keeps track of things in (row, column) style
                 # hence p[1], rather than p[0]
-                grid_x: int = min([p[1] for p in e._table_coordinates])
+                grid_x: int = min([p[1] for p in e.get_table_coordinates()])
 
                 # layout
-                prev_vertical_alignment = e._layout_element._vertical_alignment
-                e._layout_element._vertical_alignment = Alignment.TOP
+                prev_vertical_alignment = e.get_layout_element()._vertical_alignment
+                e.get_layout_element()._vertical_alignment = Alignment.TOP
                 prev_row_lboxes.append(
                     e.get_layout_box(
                         Rectangle(
                             grid_x_to_page_x[grid_x],
                             available_space.get_y(),
-                            grid_x_to_page_x[grid_x + e._col_span]
+                            grid_x_to_page_x[grid_x + e.get_column_span()]
                             - grid_x_to_page_x[grid_x],
                             max(
                                 Decimal(0),
@@ -156,7 +157,7 @@ class FixedColumnWidthTable(Table):
                         )
                     )
                 )
-                e._layout_element._vertical_alignment = prev_vertical_alignment
+                e.get_layout_element()._vertical_alignment = prev_vertical_alignment
 
             # keep track of the bottom of the previous (at this point current) row
             # this makes it easier to lay out the next row
@@ -166,15 +167,15 @@ class FixedColumnWidthTable(Table):
 
             # do a second pass, this time with the right vertical alignment
             # now that we know the tallest element (and thus the row height)
-            for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
-                grid_x: int = min([p[1] for p in e._table_coordinates])
-                if e._layout_element._vertical_alignment == Alignment.TOP:
+            for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
+                grid_x: int = min([p[1] for p in e.get_table_coordinates()])
+                if e.get_layout_element()._vertical_alignment == Alignment.TOP:
                     continue
                 e.get_layout_box(
                     Rectangle(
                         grid_x_to_page_x[grid_x],
                         new_y,
-                        grid_x_to_page_x[grid_x + e._col_span]
+                        grid_x_to_page_x[grid_x + e.get_column_span()]
                         - grid_x_to_page_x[grid_x],
                         row_height,
                     )
@@ -191,7 +192,7 @@ class FixedColumnWidthTable(Table):
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
+            [(x.get_row_span() * x.get_column_span()) for x in self._content]
         )
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
@@ -202,13 +203,13 @@ class FixedColumnWidthTable(Table):
 
         # paint
         for e in self._content:
-            grid_x: int = min([p[1] for p in e._table_coordinates])
-            grid_y: int = min([p[0] for p in e._table_coordinates])
+            grid_x: int = min([p[1] for p in e.get_table_coordinates()])
+            grid_y: int = min([p[0] for p in e.get_table_coordinates()])
             cbox: Rectangle = Rectangle(
                 m[grid_x][grid_y][0],
-                m[grid_x][grid_y + e._row_span][1],
-                m[grid_x + e._col_span][grid_y][0] - m[grid_x][grid_y][0],
-                m[grid_x][grid_y][1] - m[grid_x][grid_y + e._row_span][1],
+                m[grid_x][grid_y + e.get_row_span()][1],
+                m[grid_x + e.get_column_span()][grid_y][0] - m[grid_x][grid_y][0],
+                m[grid_x][grid_y][1] - m[grid_x][grid_y + e.get_row_span()][1],
             )
             e._set_layout_box(cbox)
             e.paint(page, cbox)

@@ -6,17 +6,17 @@ This implementation of EventListener extracts all Image objects on a Page
 """
 import io
 import typing
-from typing import List
 
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
 
@@ -64,7 +64,7 @@ class ImageExtraction(EventListener):
     # PUBLIC
     #
 
-    def get_images(self) -> typing.Dict[int, List[PILImage.Image]]:
+    def get_images(self) -> typing.Dict[int, typing.List[PILImage.Image]]:
         """
         This function returns a typing.List[Image] on a given page
         """

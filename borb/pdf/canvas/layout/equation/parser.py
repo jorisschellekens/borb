@@ -8,7 +8,8 @@ The parsing may be preceded or followed by other steps, or these may be combined
 """
 import typing
 
-from borb.pdf.canvas.layout.equation.token import Token, TokenType
+from borb.pdf.canvas.layout.equation.token import Token
+from borb.pdf.canvas.layout.equation.token import TokenType
 from borb.pdf.canvas.layout.equation.tokenizer import Tokenizer
 
 
@@ -114,6 +115,7 @@ class Parser:
             if t.get_type() == TokenType.OPERATOR:
                 assert len(args) >= t.get_number_of_arguments()
                 for _ in range(0, t.get_number_of_arguments()):
+                    # noinspection PyProtectedMember
                     t._children += [args[-1]]
                     args.pop(-1)
                 args += [t]
@@ -122,6 +124,7 @@ class Parser:
             if t.get_type() == TokenType.FUNCTION:
                 assert len(args) >= t.get_number_of_arguments()
                 for _ in range(0, t.get_number_of_arguments()):
+                    # noinspection PyProtectedMember
                     t._children += [args[-1]]
                     args.pop(-1)
                 args += [t]

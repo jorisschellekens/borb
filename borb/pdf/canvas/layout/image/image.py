@@ -7,16 +7,18 @@ This implementation of LayoutElement represents an Image
 import typing
 from decimal import Decimal
 from pathlib import Path
-from typing import Optional
 
 import requests
 from PIL import Image as PILImage  # type: ignore [import]
 
 from borb.io.read.pdf_object import PDFObject
-from borb.io.read.types import Dictionary, Name
-from borb.pdf.canvas.color.color import HexColor, Color
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.page.page import Page
 
 
@@ -32,6 +34,7 @@ class Image(LayoutElement):
     def __init__(
         self,
         image: typing.Union[str, Path, PILImage.Image],
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
         border_left: bool = False,
@@ -42,7 +45,7 @@ class Image(LayoutElement):
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        height: Optional[Decimal] = None,
+        height: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
@@ -53,10 +56,10 @@ class Image(LayoutElement):
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
         vertical_alignment: Alignment = Alignment.TOP,
-        width: Optional[Decimal] = None,
+        width: typing.Optional[Decimal] = None,
     ):
         super(Image, self).__init__(
-            background_color=None,
+            background_color=background_color,
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
@@ -147,7 +150,7 @@ class Image(LayoutElement):
         """
         This function forces the underlying PIL Image to load.
         Images can be specified by providing a Path, str, or PIL Image.
-        The underyling image is only loaded when needed (such as when performing layout)
+        The underlying image is only loaded when needed (such as when performing layout)
         :return:    None
         """
         # load Image from URL
@@ -175,3 +178,11 @@ class Image(LayoutElement):
             self._width = Decimal(self._image.width)
         if self._height is None:
             self._height = Decimal(self._image.height)
+
+    def get_PIL_image(self) -> PILImage.Image:
+        """
+        This function returns the PIL Image underlying this borb Image
+        :return:    the PIL Image underlying this borb Image
+        """
+        self.force_load_image()
+        return self._image

@@ -8,7 +8,9 @@ The company is particularly well known for the unusual names of its products.
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.color.color import RGBColor
 
 
 class FarrowAndBall(HexColor):

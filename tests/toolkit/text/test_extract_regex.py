@@ -1,15 +1,11 @@
+import typing
 import unittest
-from datetime import datetime
 from decimal import Decimal
-from pathlib import Path
 
 from borb.pdf import ConnectedShape
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
@@ -18,24 +14,13 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
-from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
+from tests.test_case import TestCase
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestExtractRegularExpression(unittest.TestCase):
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-    def test_write_document(self):
+class TestExtractRegularExpression(TestCase):
+    def test_create_dummy_pdf(self):
 
         # create document
         pdf = Document()
@@ -47,24 +32,10 @@ class TestExtractRegularExpression(unittest.TestCase):
         # add test information
         layout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-                    font_color=HexColor("00ff00"),
-                )
+            self.get_test_header(
+                test_description="This test creates a PDF with an empty Page, and a Paragraph of text. "
+                "A subsequent test will attempt to match a regular expression against the lipsum text."
             )
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with an empty Page, and a Paragraph of text. "
-                    "A subsequent test will attempt to match a regular expression against the lipsum text."
-                )
-            )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         layout.add(
@@ -86,18 +57,19 @@ class TestExtractRegularExpression(unittest.TestCase):
         )
 
         # attempt to store PDF
-        out_file: Path = self.output_dir / "output_001.pdf"
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.get_first_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
-        check_pdf_using_validator(out_file)
+        self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_match_regular_expression(self):
 
         # attempt to read PDF
-        doc = None
+        doc: typing.Optional[Document] = None
         l = RegularExpressionTextExtraction("ad minim veniam")
-        with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
+        with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, [l])
+
+        assert doc is not None
 
         bb = l.get_matches()[0][0].get_bounding_boxes()[0]
         assert 196 <= int(bb.x) <= 198
@@ -113,13 +85,12 @@ class TestExtractRegularExpression(unittest.TestCase):
         ).paint(doc.get_page(0), bb)
 
         # attempt to store PDF
-        out_file: Path = self.output_dir / "output_002.pdf"
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.get_second_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
         # compare visually
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
+        self.compare_visually_to_ground_truth(self.get_second_output_file())
+        self.check_pdf_using_validator(self.get_second_output_file())
 
 
 if __name__ == "__main__":

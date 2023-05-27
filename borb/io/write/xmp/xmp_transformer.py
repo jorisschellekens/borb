@@ -6,13 +6,16 @@ This implementation of WriteBaseTransformer
 is responsible for writing XMP meta-data information
 """
 import logging
+import typing
 import xml.etree.ElementTree as ET
-from typing import Optional
 
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Name, Reference, Stream
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +46,7 @@ class XMPTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes an ET.Element (representing XMP meta information) to a byte stream

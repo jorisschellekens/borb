@@ -19,9 +19,12 @@ import typing
 from decimal import Decimal
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.tokenize.low_level_tokenizer import Token, TokenType
+from borb.io.read.tokenize.low_level_tokenizer import Token
+from borb.io.read.tokenize.low_level_tokenizer import TokenType
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, List, Name
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
 
 
 class Font(Dictionary):

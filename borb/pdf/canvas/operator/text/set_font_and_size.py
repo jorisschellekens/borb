@@ -11,7 +11,8 @@ explicitly by using Tf before any text is shown.
 
 import typing
 
-from borb.io.read.types import AnyPDFType, Decimal
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 

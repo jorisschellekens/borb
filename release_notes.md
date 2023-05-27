@@ -1,15 +1,9 @@
 # :mega: borb release notes
 
-This release is a feature release:
-- Added `Equation` to the `LayoutElement` hierarchy
-  - `Equation` allows you to easily add mathematical expressions to a PDF
-  - Determine the `font`, `font_size`, `font_color` and many other attributes
-  - `Equation` behaves just like any other `LayoutElement`
-  
-- Fix minor issue in `SimpleFindReplace`
-
-- Fix minor issue in `Image` (present for `Image` objects with mode `LA`)
-
-- Fix `vertical_alignment` for `Table` implementations
-  - `vertical_alignment` is now relative to the `Table` rather than to the `Page`
-  - This approach does incur the cost of having to determine the tallest `LayoutElement` in the row
+This release refactors the testing in `borb`.
+- All tests have been refactored into directories corresponding the main functionality they test
+  - E.g. tests for `Equation` (in `borb.pdf.canvas.layout.equation`) can be found in `tests.pdf.canvas.layout.equation`
+  - Tests derive from `TestCase`
+    - `TestCase` offers some utility methods to standardize output files
+    - `TestCase` offers the methods to visually compare an output
+    - `TestCase` offers the methods to check a PDF using a validator

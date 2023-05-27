@@ -7,8 +7,11 @@ This implementation of LayoutElement represents an ordered (that is to say numbe
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor, X11Color
-from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.color.color import X11Color
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.list.list import List
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
@@ -77,10 +80,26 @@ class OrderedList(List):
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
+
+        # determine font_size from item
+        font_size: typing.Optional[Decimal] = None
+        try:
+            font_size = item.get_font_size()
+        except:
+            pass
+
+        # determine font_color from item
+        font_color: typing.Optional[Color] = None
+        try:
+            font_color = item.get_font_color()
+        except:
+            pass
+
+        # return
         return ChunkOfText(
             text=str(item_index + 1) + ".",
-            font_size=self.get_font_size(),
-            font_color=X11Color("Black"),
+            font_size=font_size or Decimal(12),
+            font_color=font_color or X11Color("Black"),
         )
 
     #

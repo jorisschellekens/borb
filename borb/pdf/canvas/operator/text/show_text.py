@@ -6,7 +6,9 @@ Show a text string.
 """
 import typing
 
-from borb.io.read.types import AnyPDFType, Name, String
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -43,6 +45,7 @@ class ShowText(CanvasOperator):
 
         # render
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(tri)
 
         # update text rendering location

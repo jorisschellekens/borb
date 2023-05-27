@@ -11,7 +11,8 @@ from pathlib import Path
 
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.pdf import PDF
@@ -26,7 +27,7 @@ class FreeSpaceFinder(EventListener):
         """
         This class represents a rasterized, low-res view of a Page.
         But rather than rendering instructions on this raster, each cell simply keeps track
-        of whether or not the cell is available. This enables a quick lookup for availability of a given Rectangle.
+        of whether the cell is available. This enables a quick lookup for availability of a given Rectangle.
         """
 
         def __init__(
@@ -40,7 +41,7 @@ class FreeSpaceFinder(EventListener):
                 for _ in range(0, ceil(self._page_height / self._resolution))
             ]
 
-        def _get_free_space(
+        def get_free_space(
             self, desired_rectangle: Rectangle
         ) -> typing.Optional[Rectangle]:
             """
@@ -90,7 +91,12 @@ class FreeSpaceFinder(EventListener):
                 desired_rectangle.height,
             )
 
-        def _mark_as_unavailable(self, rectangle: Rectangle) -> "FreeSpaceFinder.Grid":
+        def mark_as_unavailable(self, rectangle: Rectangle) -> "FreeSpaceFinder.Grid":
+            """
+            This method marks a given area in this Grid as unavailable for future content
+            :param rectangle:   the Rectangle to be marked
+            :return:            self
+            """
             x_grid = int(int(rectangle.x) / self._resolution)
             y_grid = int(int(rectangle.y) / self._resolution)
             w = int(int(rectangle.width) / self._resolution)
@@ -134,9 +140,9 @@ class FreeSpaceFinder(EventListener):
                 Rectangle
             ] = event.get_previous_layout_box()
             if bounding_box_001 is not None:
-                self._grid_per_page[self._page_number]._mark_as_unavailable(
-                    bounding_box_001
-                )
+                # fmt: off
+                self._grid_per_page[self._page_number].mark_as_unavailable(bounding_box_001)
+                # fmt: on
 
         # ImageRenderEvent
         if isinstance(event, ImageRenderEvent):
@@ -145,9 +151,9 @@ class FreeSpaceFinder(EventListener):
                 event.get_x(), event.get_y(), event.get_width(), event.get_height()
             )
             if bounding_box_002 is not None:
-                self._grid_per_page[self._page_number]._mark_as_unavailable(
-                    bounding_box_002
-                )
+                # fmt: off
+                self._grid_per_page[self._page_number].mark_as_unavailable(bounding_box_002)
+                # fmt: on
 
     #
     # PUBLIC
@@ -178,5 +184,5 @@ class FreeSpaceFinder(EventListener):
         If no such Rectangle exists, this method returns None.
         """
         if page_number in self._grid_per_page:
-            return self._grid_per_page[page_number]._get_free_space(desired_rectangle)
+            return self._grid_per_page[page_number].get_free_space(desired_rectangle)
         return None

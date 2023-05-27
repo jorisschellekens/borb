@@ -5,19 +5,17 @@
 This implementation of WriteBaseTransformer is responsible for writing /Catalog Dictionary objects
 """
 import logging
+import typing
 import zlib
 from pathlib import Path
-from typing import Optional
 
-from borb.io.read.types import (
-    AnyPDFType,
-    Dictionary,
-    Name,
-    String,
-    List as bList,
-    Stream,
-    Decimal as bDecimal,
-)
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List as bList
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.document.document import Document
@@ -91,7 +89,7 @@ class CatalogTransformer(DictionaryTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a /Catalog Dictionary to a byte stream

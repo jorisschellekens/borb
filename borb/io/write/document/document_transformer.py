@@ -7,10 +7,14 @@ This implementation of WriteBaseTransformer is responsible for writing Document 
 import logging
 import random
 import typing
-from typing import Any, Optional
 
-from borb.io.read.types import AnyPDFType, Dictionary, HexadecimalString, List, Name
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import HexadecimalString
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.document.document import Document
 
 logger = logging.getLogger(__name__)
@@ -81,8 +85,8 @@ class DocumentTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Any,
-        context: Optional[WriteTransformerState] = None,
+        object_to_transform: typing.Any,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Document object to a byte stream

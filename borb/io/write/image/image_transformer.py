@@ -6,15 +6,17 @@ This implementation of WriteBaseTransformer is responsible for writing Image obj
 """
 import io
 import typing
-from typing import Optional
 
 from PIL import Image as PILImage  # type: ignore [import]
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Name, Reference, Stream
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 
 class ImageTransformer(Transformer):
@@ -72,7 +74,7 @@ class ImageTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes an Image to a byte stream
@@ -85,7 +87,7 @@ class ImageTransformer(Transformer):
 
         # get image bytes
         contents: typing.Optional[bytes] = None
-        filter_name: Optional[Name] = None
+        filter_name: typing.Optional[Name] = None
         try:
             with io.BytesIO() as output:
                 assert isinstance(object_to_transform, PILImage.Image)

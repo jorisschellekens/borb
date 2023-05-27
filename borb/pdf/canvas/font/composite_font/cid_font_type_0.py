@@ -16,7 +16,8 @@
 import typing
 
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import List, Name
+from borb.io.read.types import List
+from borb.io.read.types import Name
 from borb.pdf.canvas.font.font import Font
 
 

@@ -7,9 +7,9 @@ This includes; ChunkOfText, LineOfText, Paragraph and Heading
 """
 import typing
 from decimal import Decimal
-from typing import Union
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -32,7 +32,7 @@ class Paragraph(LineOfText):
         text: str,
         respect_newlines_in_text: bool = False,
         respect_spaces_in_text: bool = False,
-        font: Union[Font, str] = "Helvetica",
+        font: typing.Union[Font, str] = "Helvetica",
         font_size: Decimal = Decimal(12),
         text_alignment: Alignment = Alignment.LEFT,
         vertical_alignment: Alignment = Alignment.TOP,

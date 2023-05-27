@@ -12,17 +12,15 @@ import zlib
 
 from borb.io.read.encryption.rc4 import RC4
 from borb.io.read.pdf_object import PDFObject
-from borb.io.read.types import (
-    AnyPDFType,
-    Boolean,
-    Decimal,
-    HexadecimalString,
-    Name,
-    Reference,
-    Stream,
-    String,
-    Dictionary,
-)
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Boolean
+from borb.io.read.types import Decimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import HexadecimalString
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 
 
 class StandardSecurityHandler:
@@ -39,8 +37,8 @@ class StandardSecurityHandler:
     def __init__(
         self,
         encryption_dictionary: Dictionary,
-        user_password: typing.Optional[str] = None,
         owner_password: typing.Optional[str] = None,
+        user_password: typing.Optional[str] = None,
     ):
 
         # (Optional) A code specifying the algorithm to be used in encrypting and

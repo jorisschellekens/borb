@@ -65,9 +65,9 @@ class LZWDecode:
     #
 
     def __init__(self):
+        self._bits_to_read: int = 9
         self._lookup_table: typing.Dict[int, bytearray] = {}
         self._table_index: int = 0
-        self._bits_to_read: int = 9
 
     #
     # PRIVATE

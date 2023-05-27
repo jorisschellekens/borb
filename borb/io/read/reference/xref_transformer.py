@@ -8,13 +8,16 @@ import io
 import os
 import typing
 from decimal import Decimal
-from typing import Any, Optional, Union
 
 from borb.io.read.encryption.standard_security_handler import StandardSecurityHandler
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.transformer import ReadTransformerState, Transformer
-from borb.io.read.types import AnyPDFType, Dictionary, Name
-from borb.pdf.canvas.event.event_listener import EventListener, Event
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.document.document import Document
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 from borb.pdf.xref.rebuilt_xref import RebuiltXREF
@@ -71,7 +74,7 @@ class XREFTransformer(Transformer):
         assert any([t.get_text().startswith("%PDF") for t in arr])
 
     def _read_xref(
-        self, context: ReadTransformerState, initial_offset: Optional[int] = None
+        self, context: ReadTransformerState, initial_offset: typing.Optional[int] = None
     ) -> None:
         """
         This function attempts to read the XREF table, first as plaintext, then as a stream
@@ -89,7 +92,7 @@ class XREFTransformer(Transformer):
         src = context.source
         tok = context.tokenizer
 
-        most_recent_xref: Optional[XREF] = None
+        most_recent_xref: typing.Optional[XREF] = None
         exceptions_to_rethrow = []
 
         # attempt to read plaintext XREF
@@ -190,7 +193,8 @@ class XREFTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be converted represents a cross-reference table
@@ -199,11 +203,11 @@ class XREFTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads a cross-reference table from a byte stream
         """
@@ -220,6 +224,7 @@ class XREFTransformer(Transformer):
 
         # add listener(s)
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(BeginDocumentEvent())  # type: ignore [attr-defined]
 
         # remove prefix
@@ -300,6 +305,7 @@ class XREFTransformer(Transformer):
 
         # notify
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(EndDocumentEvent())  # type: ignore [attr-defined]
 
         # return

@@ -7,9 +7,10 @@ element of array shall be either a string or a number.
 """
 import typing
 from decimal import Decimal
-from typing import List
 
-from borb.io.read.types import AnyPDFType, Name, String
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -42,7 +43,7 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
         Invoke the TJ operator
         """
 
-        assert isinstance(operands[0], List), "Operand 0 of TJ must be a List"
+        assert isinstance(operands[0], typing.List), "Operand 0 of TJ must be a List"
         canvas = canvas_stream_processor.get_canvas()
 
         # handle Font being a Name (optimization)
@@ -63,6 +64,7 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
                 tri = ChunkOfTextRenderEvent(canvas.graphics_state, obj)
                 # render
                 for l in event_listeners:
+                    # noinspection PyProtectedMember
                     l._event_occurred(tri)
                 # update text rendering location
                 canvas.graphics_state.text_matrix[2][0] += tri.get_baseline().width

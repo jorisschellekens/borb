@@ -6,8 +6,8 @@ This implementation of LayoutElement aggregates other LayoutElements
 and lays them out underneath each other.
 """
 import typing
-
 from decimal import Decimal
+
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 

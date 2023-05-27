@@ -1,13 +1,9 @@
 import unittest
-from datetime import datetime
-from decimal import Decimal
-from pathlib import Path
+
+import nltk
 
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -15,10 +11,7 @@ from borb.pdf.pdf import PDF
 from borb.toolkit.text.stop_words import ENGLISH_STOP_WORDS
 from borb.toolkit.text.text_rank_keyword_extraction import TextRankKeywordExtraction
 from borb.toolkit.text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
-
-import nltk
-
-from tests.test_util import check_pdf_using_validator
+from tests.test_case import TestCase
 
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
@@ -26,24 +19,13 @@ nltk.download("averaged_perceptron_tagger")
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestExtractKeywords(unittest.TestCase):
+class TestExtractKeywords(TestCase):
     """
     This test attempts to extract the keywords (TF-IDF)
     from each PDF in the corpus
     """
 
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-    def test_write_document(self):
+    def test_create_dummy_pdf(self):
 
         # create document
         pdf = Document()
@@ -55,19 +37,10 @@ class TestExtractKeywords(unittest.TestCase):
         # add test information
         layout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with an empty Page, and a Paragraph of text. "
-                    "A subsequent test will attempt to extract the keywords from this text."
-                )
+            self.get_test_header(
+                test_description="This test creates a PDF with an empty Page, and a Paragraph of text. "
+                "A subsequent test will attempt to extract the keywords from this text."
             )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         layout.add(
@@ -96,15 +69,13 @@ class TestExtractKeywords(unittest.TestCase):
             )
         )
 
-        # attempt to store PDF
-        out_file: Path = self.output_dir / "output_001.pdf"
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.get_first_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
-        check_pdf_using_validator(out_file)
+        self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_extract_keywords_using_tf_idf_from_document(self):
 
-        with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
+        with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             l = TFIDFKeywordExtraction(ENGLISH_STOP_WORDS)
             doc = PDF.loads(pdf_file_handle, [l])
 
@@ -118,19 +89,10 @@ class TestExtractKeywords(unittest.TestCase):
         # add test information
         layout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with an empty Page, and adds the keywords it found"
-                    "in the previously made PDF."
-                )
+            self.get_test_header(
+                test_description="This test creates a PDF with an empty Page, "
+                "and adds the keywords it found in the previously made PDF."
             )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         # add list
@@ -141,15 +103,14 @@ class TestExtractKeywords(unittest.TestCase):
         layout.add(ul)
 
         # attempt to store PDF
-        out_file: Path = self.output_dir / "output_002.pdf"
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.get_second_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
-        check_pdf_using_validator(out_file)
+        self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_extract_keywords_using_textrank_from_document(self):
 
         l = TextRankKeywordExtraction()
-        with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
+        with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle, [l])
 
         # create document
@@ -162,19 +123,10 @@ class TestExtractKeywords(unittest.TestCase):
         # add test information
         layout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with an empty Page, and adds the keywords it found"
-                    "in the previously made PDF."
-                )
+            self.get_test_header(
+                test_description="This test creates a PDF with an empty Page, and adds the keywords it found"
+                "in the previously made PDF."
             )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         # add list
@@ -185,10 +137,9 @@ class TestExtractKeywords(unittest.TestCase):
         layout.add(ul)
 
         # attempt to store PDF
-        out_file: Path = self.output_dir / "output_003.pdf"
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.get_third_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
-        check_pdf_using_validator(out_file)
+        self.check_pdf_using_validator(self.get_third_output_file())
 
 
 if __name__ == "__main__":

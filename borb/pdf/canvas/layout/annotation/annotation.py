@@ -10,7 +10,11 @@ import datetime
 import typing
 from decimal import Decimal
 
-from borb.io.read.types import Dictionary, Name, List, Decimal as bDecimal, String
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 
@@ -86,7 +90,7 @@ class Annotation(Dictionary):
         # subdictionary (see Section 12.5.5, “Appearance Streams”).
         # self[Name("AS")] = None
 
-        # Optional) An array specifying the characteristics of the annotation’s
+        # (Optional) An array specifying the characteristics of the annotation’s
         # border, which shall be drawn as a rounded rectangle.
         # (PDF 1.0) The array consists of three numbers defining the horizontal
         # corner radius, vertical corner radius, and border width, all in default user

@@ -6,7 +6,6 @@
 """
 import typing
 from decimal import Decimal
-from typing import Optional, Tuple
 
 from borb.io.read.types import Dictionary
 from borb.pdf.page.page_size import PageSize
@@ -33,7 +32,7 @@ class PageInfo(Dictionary):
     # PUBLIC
     #
 
-    def get_height(self) -> Optional[Decimal]:
+    def get_height(self) -> typing.Optional[Decimal]:
         """
         Return the height of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
         expressed in default user space units, that shall define the
@@ -42,7 +41,7 @@ class PageInfo(Dictionary):
         """
         return self._page["MediaBox"][3]
 
-    def get_page_number(self) -> Optional[Decimal]:
+    def get_page_number(self) -> typing.Optional[Decimal]:
         """
         This function returns the page number
         """
@@ -53,7 +52,7 @@ class PageInfo(Dictionary):
                 return Decimal(i)
         return None
 
-    def get_size(self) -> Tuple[Decimal, Decimal]:
+    def get_size(self) -> typing.Tuple[Decimal, Decimal]:
         """
         Return the (width, height) of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
         expressed in default user space units, that shall define the
@@ -62,7 +61,7 @@ class PageInfo(Dictionary):
         """
         return self.get_width() or Decimal(0), self.get_height() or Decimal(0)
 
-    def get_size_as_enum(self) -> Optional[PageSize]:
+    def get_size_as_enum(self) -> typing.Optional[PageSize]:
         """
         Return the size of the MediaBox as a convenient, well-known,
         well-defined property (e.g. A4_PORTRAIT).
@@ -82,7 +81,7 @@ class PageInfo(Dictionary):
                 return p
         return None
 
-    def get_width(self) -> Optional[Decimal]:
+    def get_width(self) -> typing.Optional[Decimal]:
         """
         Return the width of the MediaBox. This is a rectangle (see 7.9.5, "Rectangles"),
         expressed in default user space units, that shall define the
@@ -91,7 +90,7 @@ class PageInfo(Dictionary):
         """
         return self._page["MediaBox"][2]
 
-    def uses_color_images(self) -> Optional[bool]:
+    def uses_color_images(self) -> typing.Optional[bool]:
         """
         The PDF operators used in content streams are grouped into categories of related operators called procedure
         sets (see Table 314). Each procedure set corresponds to a named resource containing the implementations of
@@ -102,7 +101,7 @@ class PageInfo(Dictionary):
         """
         return "ImageC" in self._page["Resources"]["ProcSet"]
 
-    def uses_grayscale_images(self) -> Optional[bool]:
+    def uses_grayscale_images(self) -> typing.Optional[bool]:
         """
         The PDF operators used in content streams are grouped into categories of related operators called procedure
         sets (see Table 314). Each procedure set corresponds to a named resource containing the implementations of
@@ -113,7 +112,7 @@ class PageInfo(Dictionary):
         """
         return "ImageB" in self._page["Resources"]["ProcSet"]
 
-    def uses_indexed_images(self) -> Optional[bool]:
+    def uses_indexed_images(self) -> typing.Optional[bool]:
         """
         The PDF operators used in content streams are grouped into categories of related operators called procedure
         sets (see Table 314). Each procedure set corresponds to a named resource containing the implementations of
@@ -124,7 +123,7 @@ class PageInfo(Dictionary):
         """
         return "ImageI" in self._page["Resources"]["ProcSet"]
 
-    def uses_painting_and_graphics_state(self) -> Optional[bool]:
+    def uses_painting_and_graphics_state(self) -> typing.Optional[bool]:
         """
         The PDF operators used in content streams are grouped into categories of related operators called procedure
         sets (see Table 314). Each procedure set corresponds to a named resource containing the implementations of
@@ -135,7 +134,7 @@ class PageInfo(Dictionary):
         """
         return "PDF" in self._page["Resources"]["ProcSet"]
 
-    def uses_text(self) -> Optional[bool]:
+    def uses_text(self) -> typing.Optional[bool]:
         """
         The PDF operators used in content streams are grouped into categories of related operators called procedure
         sets (see Table 314). Each procedure set corresponds to a named resource containing the implementations of

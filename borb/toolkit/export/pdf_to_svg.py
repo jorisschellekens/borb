@@ -9,22 +9,21 @@ import io
 import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal
-from pathlib import Path
 
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.page.page_size import PageSize
-from borb.pdf.pdf import PDF
 
 
 class PDFToSVG(EventListener):
@@ -96,16 +95,16 @@ class PDFToSVG(EventListener):
         if isinstance(event, ChunkOfTextRenderEvent):
             assert self._page is not None
             font_name_as_str = "Helvetica"
-            if event._font.get_font_name():
-                font_name_as_str = str(event._font.get_font_name())
+            if event.get_font().get_font_name():
+                font_name_as_str = str(event.get_font().get_font_name())
             self._render_text(
                 self._page_nr,
                 self._page.get_page_info().get_width() or self._default_page_width,
                 self._page.get_page_info().get_height() or self._default_page_height,
                 event.get_baseline().get_x(),
                 event.get_baseline().get_y(),
-                event._font_color,
-                event._font_size,
+                event.get_font_color(),
+                event.get_font_size(),
                 font_name_as_str.replace("#20", " ")
                 .replace(",Bold", "")
                 .replace(",bold", "")
@@ -117,7 +116,7 @@ class PDFToSVG(EventListener):
                 .replace("italic", ""),
                 "BOLD" in font_name_as_str.upper(),
                 "ITALIC" in font_name_as_str.upper(),
-                event._text,
+                event.get_text(),
             )
 
     def _render_image(

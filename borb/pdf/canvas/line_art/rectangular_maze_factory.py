@@ -39,8 +39,8 @@ class RectangularMazeFactory:
 
         # determine lines
         cells: typing.List[typing.List[typing.Tuple[bool, bool, bool, bool]]] = [
-            [(True, True, True, True) for _ in range(0, grid_width)]
-            for _ in range(0, grid_height)
+            [(True, True, True, True) for _ in range(0, grid_height)]
+            for _ in range(0, grid_width)
         ]
 
         cells_stk: typing.List[typing.Tuple[int, int]] = [

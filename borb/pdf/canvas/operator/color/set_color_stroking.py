@@ -7,10 +7,12 @@ and ICCBased colour spaces.
 """
 import typing
 from decimal import Decimal
-from typing import List
 
 from borb.io.read.types import AnyPDFType
-from borb.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor, Separation
+from borb.pdf.canvas.color.color import CMYKColor
+from borb.pdf.canvas.color.color import GrayColor
+from borb.pdf.canvas.color.color import RGBColor
+from borb.pdf.canvas.color.color import Separation
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 
@@ -48,7 +50,7 @@ class SetColorStroking(CanvasOperator):
             return 3
         # separation
         if (
-            isinstance(stroke_color_space, List)
+            isinstance(stroke_color_space, typing.List)
             and len(stroke_color_space) == 4
             and stroke_color_space[0] == "Separation"
         ):
@@ -113,7 +115,7 @@ class SetColorStroking(CanvasOperator):
 
         # separation
         if (
-            isinstance(stroke_color_space, List)
+            isinstance(stroke_color_space, typing.List)
             and stroke_color_space[0] == "Separation"
         ):
             assert isinstance(

@@ -6,7 +6,6 @@ This module contains various implementations of `PageLayout`.
 `PageLayout` can be used to add `LayoutElement` objects to a `Page` without
 having to specify coordinates.
 """
-import copy
 import typing
 from decimal import Decimal
 

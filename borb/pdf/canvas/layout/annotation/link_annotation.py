@@ -10,7 +10,10 @@ import enum
 import typing
 from decimal import Decimal
 
-from borb.io.read.types import Name, List, Decimal as bDecimal, String
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation

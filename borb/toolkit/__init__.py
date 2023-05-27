@@ -79,6 +79,9 @@ except:
 # table
 from .table.table_detection_by_lines import TableDetectionByLines
 
+# test
+from .test_util.pdf_test_runner import PDFTestRunner
+
 # text
 from .text.simple_text_extraction import SimpleTextExtraction
 from .text.simple_non_ligature_text_extraction import SimpleNonLigatureTextExtraction

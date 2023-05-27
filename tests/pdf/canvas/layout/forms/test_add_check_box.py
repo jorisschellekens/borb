@@ -1,105 +1,146 @@
 import unittest
 from decimal import Decimal
-from pathlib import Path
 
+from borb.pdf import FlexibleColumnWidthTable
+from borb.pdf import OrderedList
+from borb.pdf import UnorderedList
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.forms.check_box import CheckBox
-from borb.pdf.canvas.layout.forms.country_drop_down_list import CountryDropDownList
-from borb.pdf.canvas.layout.forms.text_field import TextField
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable,
-)
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
+from tests.test_case import TestCase
 
 
-class TestAddCheckBox(unittest.TestCase):
+class TestAddCheckBox(TestCase):
     """
     This test attempts to extract the text of each PDF in the corpus
     """
 
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-    def test_write_check_box_at_absolute_position(self):
-
-        # create empty document
+    def test_add_checkbox(self):
+        # create document
         pdf: Document = Document()
-
-        # create empty page
         page: Page = Page()
-
-        # add page to document
         pdf.add_page(page)
-
-        # write TextField
-        tf: CheckBox = CheckBox()
-        tf.paint(page, Rectangle(Decimal(105), Decimal(764), Decimal(419), Decimal(16)))
+        page_layout: PageLayout = SingleColumnLayout(page)
+        page_layout.add(
+            self.get_test_header("This test creates a PDF with a Checkbox in it.")
+        )
+        page_layout.add(CheckBox())
 
         # write
-        out_file = self.output_dir / "output_001.pdf"
-        with open(out_file, "wb") as pdf_file_handle:
+        with open(self.get_first_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
-        check_pdf_using_validator(out_file)
 
-    def test_write_check_box_using_layout_manager(self):
+        # compare
+        self.compare_visually_to_ground_truth(self.get_first_output_file())
+        self.check_pdf_using_validator(self.get_first_output_file())
 
-        # create empty document
+    def test_add_orderedlist_of_checkboxes(self):
+        # create document
         pdf: Document = Document()
-
-        # create empty page
         page: Page = Page()
-
-        # add page to document
         pdf.add_page(page)
-
-        # layout manager
-        l: PageLayout = SingleColumnLayout(page)
-
-        # write TextField
-        l.add(
-            FixedColumnWidthTable(number_of_rows=4, number_of_columns=2)
-            .add(Paragraph("Name:"))
-            .add(
-                TextField(
-                    value="Doe", font_color=HexColor("56cbf9"), font_size=Decimal(20)
-                )
+        page_layout: PageLayout = SingleColumnLayout(page)
+        page_layout.add(
+            self.get_test_header(
+                "This test creates a PDF with an OrderedList of Checkboxes in it."
             )
-            .add(Paragraph("Firstname:"))
-            .add(
-                TextField(
-                    value="John", font_color=HexColor("56cbf9"), font_size=Decimal(20)
-                )
+        )
+        page_layout.add(OrderedList().add(CheckBox()).add(CheckBox()).add(CheckBox()))
+
+        # write
+        with open(self.get_second_output_file(), "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+
+        # compare
+        self.compare_visually_to_ground_truth(self.get_second_output_file())
+        self.check_pdf_using_validator(self.get_second_output_file())
+
+    def test_add_unorderedlist_of_checkboxes(self):
+        # create document
+        pdf: Document = Document()
+        page: Page = Page()
+        pdf.add_page(page)
+        page_layout: PageLayout = SingleColumnLayout(page)
+        page_layout.add(
+            self.get_test_header(
+                "This test creates a PDF with an UnorderedList of Checkboxes in it."
             )
-            .add(Paragraph("Place of residence:"))
-            .add(CountryDropDownList(value="Belgium"))
-            .add(Paragraph("I consent to receiving promotional emails:"))
+        )
+        page_layout.add(UnorderedList().add(CheckBox()).add(CheckBox()).add(CheckBox()))
+
+        # write
+        with open(self.get_third_output_file(), "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+
+        # compare
+        self.compare_visually_to_ground_truth(self.get_third_output_file())
+        self.check_pdf_using_validator(self.get_third_output_file())
+
+    def test_add_table_of_checkboxes(self):
+        # create document
+        pdf: Document = Document()
+        page: Page = Page()
+        pdf.add_page(page)
+        page_layout: PageLayout = SingleColumnLayout(page)
+        page_layout.add(
+            self.get_test_header(
+                "This test creates a PDF with an Table of Checkboxes in it."
+            )
+        )
+        page_layout.add(
+            FlexibleColumnWidthTable(number_of_columns=3, number_of_rows=3)
             .add(CheckBox())
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
+            .add(CheckBox())
+            .add(CheckBox())
+            .add(CheckBox())
+            .add(CheckBox())
+            .add(CheckBox())
+            .add(CheckBox())
+            .add(CheckBox())
+            .add(CheckBox())
         )
 
         # write
-        out_file = self.output_dir / "output_002.pdf"
-        with open(out_file, "wb") as pdf_file_handle:
+        with open(self.get_fourth_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
 
-        # check
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
+        # compare
+        self.compare_visually_to_ground_truth(self.get_fourth_output_file())
+        self.check_pdf_using_validator(self.get_fourth_output_file())
+
+    def test_add_checkbox_using_borders(self):
+        # create document
+        pdf: Document = Document()
+        page: Page = Page()
+        pdf.add_page(page)
+        page_layout: PageLayout = SingleColumnLayout(page)
+        page_layout.add(
+            self.get_test_header("This test creates a PDF with a Checkbox in it.")
+        )
+        page_layout.add(
+            CheckBox(
+                border_top=True,
+                border_right=True,
+                border_bottom=True,
+                border_left=True,
+                border_color=HexColor("56cbf9"),
+                border_radius_top_left=Decimal(10),
+                border_radius_top_right=Decimal(10),
+                border_radius_bottom_right=Decimal(10),
+            )
+        )
+
+        # write
+        with open(self.get_fifth_output_file(), "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+
+        # compare
+        self.compare_visually_to_ground_truth(self.get_fifth_output_file())
+        self.check_pdf_using_validator(self.get_fifth_output_file())
 
 
 if __name__ == "__main__":

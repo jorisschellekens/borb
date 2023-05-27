@@ -12,7 +12,8 @@ from PIL import Image as PILImage  # type: ignore [import]
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import Name
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.page.page import Page
 

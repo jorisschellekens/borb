@@ -7,13 +7,14 @@ This implementation of ReadBaseTransformer is responsible for reading a jpeg2000
 import io
 import logging
 import typing
-from typing import Any, Optional, Union
 
 from PIL import Image  # type: ignore [import]
 
 from borb.io.read.pdf_object import PDFObject
-from borb.io.read.transformer import ReadTransformerState, Transformer
-from borb.io.read.types import AnyPDFType, Stream
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 
 logger = logging.getLogger(__name__)
@@ -37,7 +38,8 @@ class JPEG2000ImageTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be transformed is a JPEG2000 object
@@ -58,11 +60,11 @@ class JPEG2000ImageTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads a JPEG2000 Image from byte stream
         """

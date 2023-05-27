@@ -5,10 +5,11 @@
 This implementation of LayoutElement acts as a common base class to form fields.
 """
 import typing
-import zlib
 
 from borb.io.read.pdf_object import PDFObject
-from borb.io.read.types import Dictionary, List as bList, Name
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List as bList
+from borb.io.read.types import Name
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.page.page import Page

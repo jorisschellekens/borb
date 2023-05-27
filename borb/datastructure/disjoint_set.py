@@ -6,7 +6,6 @@
     is a data structure that stores a collection of disjoint (non-overlapping) sets.
 """
 import typing
-from typing import Any, List
 
 
 class disjointset:
@@ -44,7 +43,7 @@ class disjointset:
     # PUBLIC
     #
 
-    def add(self, x: Any) -> "disjointset":
+    def add(self, x: typing.Any) -> "disjointset":
         """
         Add an element to this disjointset
         """
@@ -52,7 +51,7 @@ class disjointset:
         self._ranks[x] = 0
         return self
 
-    def find(self, x: Any) -> Any:
+    def find(self, x: typing.Any) -> typing.Any:
         """
         Find the root of an element in this disjointset
         """
@@ -61,17 +60,17 @@ class disjointset:
         else:
             return self.find(self._parents[x])
 
-    def pop(self, x: Any) -> "disjointset":
+    def pop(self, x: typing.Any) -> "disjointset":
         """
         Remove an element from this disjointset
         """
         raise NotImplementedError()
 
-    def sets(self) -> List[List[Any]]:
+    def sets(self) -> typing.List[typing.List[typing.Any]]:
         """
         This function returns all equivalence sets in this disjointset
         """
-        cluster_parents: typing.Dict[Any, Any] = {}
+        cluster_parents: typing.Dict[typing.Any, typing.Any] = {}
         for x, _ in self._parents.items():
             p = self.find(x)
             if p not in cluster_parents:
@@ -79,7 +78,7 @@ class disjointset:
             cluster_parents[p].append(x)
         return [v for k, v in cluster_parents.items()]
 
-    def union(self, x: Any, y: Any) -> "disjointset":
+    def union(self, x: typing.Any, y: typing.Any) -> "disjointset":
         """
         Mark two elements in this disjointset as equivalent,
         propagating the equivalence throughout the disjointset

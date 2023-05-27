@@ -7,8 +7,8 @@ compression method, reproducing the original text or binary
 data.
 """
 import copy
+import typing
 import zlib
-from typing import List
 
 
 class FlateDecode:
@@ -33,9 +33,9 @@ class FlateDecode:
     @staticmethod
     def decode(
         bytes_in: bytes,
-        predictor: int = 1,
         bits_per_component: int = 8,
         columns: int = 1,
+        predictor: int = 1,
     ) -> bytes:
         """
         Decompresses data encoded using the zlib/deflate
@@ -74,8 +74,8 @@ class FlateDecode:
         bytes_per_row: int = int((columns * bits_per_component + 7) / 8)
         bytes_per_pixel = int(bits_per_component / 8)
 
-        current_row: List[int] = [0 for _ in range(0, bytes_per_row)]
-        prior_row: List[int] = [0 for _ in range(0, bytes_per_row)]
+        current_row: typing.List[int] = [0 for _ in range(0, bytes_per_row)]
+        prior_row: typing.List[int] = [0 for _ in range(0, bytes_per_row)]
         number_of_rows = int(len(bytes_after_zlib) / bytes_per_row)
 
         # easy case

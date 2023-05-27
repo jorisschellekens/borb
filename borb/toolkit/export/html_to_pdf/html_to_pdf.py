@@ -7,34 +7,41 @@ This class converts HTML to PDF.
 import logging
 import typing
 import xml.etree.ElementTree as ET
+from decimal import Decimal
 from pathlib import Path
 
-from lxml.etree import HTMLParser, _Comment  # type: ignore [import]
-from decimal import Decimal
+# noinspection PyProtectedMember
+from lxml.etree import HTMLParser  # type: ignore [import]
+from lxml.etree import _Comment
 
-from borb.io.read.types import Name, String, Dictionary
-from borb.pdf import SingleColumnLayoutWithOverflow
-from borb.pdf.canvas.layout.image.image import Image
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import String
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.emoji.emoji import Emojis
-from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.horizontal_rule import HorizontalRule
+from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.list.ordered_list import OrderedList
+from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.page_layout.block_flow import BlockFlow
+from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
+from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
+from borb.pdf.canvas.layout.page_layout.single_column_layout_with_overflow import (
+    SingleColumnLayoutWithOverflow,
+)
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
 from borb.pdf.canvas.layout.table.table import Table
-from borb.pdf.canvas.layout.horizontal_rule import HorizontalRule
-from borb.pdf.canvas.layout.layout_element import LayoutElement
-from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.heterogeneous_paragraph import LineBreakChunk
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
-from borb.pdf.canvas.layout.page_layout.block_flow import BlockFlow
-from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
 
 logger = logging.getLogger(__name__)
 

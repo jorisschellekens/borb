@@ -8,7 +8,8 @@ It also adds an outline in the document outline tree.
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType

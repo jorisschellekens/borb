@@ -32,9 +32,9 @@ class RC4:
     #
 
     def __init__(self):
-        self._state = [n for n in range(256)]
         self._p: int = 0
         self._q: int = 0
+        self._state = [n for n in range(256)]
 
     #
     # PRIVATE

@@ -36,10 +36,13 @@ causes nothing to be painted.
 import logging
 import typing
 from decimal import Decimal
-from typing import List
 
-from borb.io.read.types import AnyPDFType, Name
-from borb.pdf.canvas.color.color import CMYKColor, GrayColor, RGBColor, Separation
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Name
+from borb.pdf.canvas.color.color import CMYKColor
+from borb.pdf.canvas.color.color import GrayColor
+from borb.pdf.canvas.color.color import RGBColor
+from borb.pdf.canvas.color.color import Separation
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 logger = logging.getLogger(__name__)
@@ -93,7 +96,7 @@ class SetColorSpaceStroking(CanvasOperator):
 
         assert isinstance(operands[0], Name)
         color_space_name: Name = operands[0]
-        color_space: List = []
+        color_space: typing.List = []
 
         if color_space_name not in [
             "DeviceGray",
@@ -112,7 +115,7 @@ class SetColorSpaceStroking(CanvasOperator):
             )
 
         if not isinstance(color_space_name, Name) and isinstance(
-            color_space_name, List
+            color_space_name, typing.List
         ):
             assert isinstance(color_space_name[0], Name)
             color_space = color_space_name

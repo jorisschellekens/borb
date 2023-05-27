@@ -7,11 +7,11 @@ This implementation of LayoutElement represents a Chart
 import io
 import typing
 from decimal import Decimal
-from typing import Optional
 
 from PIL import Image as PILImage  # type: ignore [import]
 
-from borb.pdf.canvas.color.color import HexColor, Color
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
 
@@ -38,7 +38,7 @@ class Chart(Image):
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        height: Optional[Decimal] = None,
+        height: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
@@ -49,7 +49,7 @@ class Chart(Image):
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
         vertical_alignment: Alignment = Alignment.TOP,
-        width: Optional[Decimal] = None,
+        width: typing.Optional[Decimal] = None,
     ):
         # chart to image
         byte_buffer = io.BytesIO()

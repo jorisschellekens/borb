@@ -4,9 +4,9 @@
 """
 This class represents a line segment
 """
+import typing
 from decimal import Decimal
 from math import sqrt
-from typing import Tuple
 
 from borb.pdf.canvas.geometry.matrix import Matrix
 
@@ -34,13 +34,13 @@ class LineSegment:
     # PUBLIC
     #
 
-    def get_end(self) -> Tuple[Decimal, Decimal]:
+    def get_end(self) -> typing.Tuple[Decimal, Decimal]:
         """
         This function returns the end of this LineSegment
         """
         return (self.x1, self.y1)
 
-    def get_start(self) -> Tuple[Decimal, Decimal]:
+    def get_start(self) -> typing.Tuple[Decimal, Decimal]:
         """
         This function returns the start of this LineSegment
         """

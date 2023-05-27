@@ -9,7 +9,9 @@ import logging
 import typing
 from decimal import Decimal
 
-from borb.io.read.types import Function, List, Name
+from borb.io.read.types import Function
+from borb.io.read.types import List
+from borb.io.read.types import Name
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +74,17 @@ class CMYKColor(Color):
     #
     # PUBLIC
     #
+
+    @staticmethod
+    def from_rgb(c: "RGBColor") -> "CMYKColor":
+        """
+        This method returns the CMYKColor representation of an RGB color
+        """
+        K: Decimal = Decimal(1.0) - max(c.red, c.green, c.blue)
+        C: Decimal = (Decimal(1) - c.red - K) / (Decimal(1.0) - K)
+        M: Decimal = (Decimal(1) - c.green - K) / (Decimal(1.0) - K)
+        Y: Decimal = (Decimal(1) - c.blue - K) / (Decimal(1.0) - K)
+        return CMYKColor(C, M, Y, K)
 
     def to_rgb(self) -> "RGBColor":
         """

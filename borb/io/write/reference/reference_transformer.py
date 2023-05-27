@@ -4,10 +4,12 @@
 """
 This implementation of WriteBaseTransformer is responsible for writing References
 """
-from typing import Optional
+import typing
 
-from borb.io.read.types import AnyPDFType, Reference
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Reference
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 
 class ReferenceTransform(Transformer):
@@ -36,7 +38,7 @@ class ReferenceTransform(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Reference to a byte stream

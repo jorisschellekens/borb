@@ -4,10 +4,12 @@
 """
 This implementation of WriteBaseTransformer is responsible for writing Decimal objects
 """
-from typing import Optional
+import typing
 
-from borb.io.read.types import AnyPDFType, Decimal
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 
 class NumberTransformer(Transformer):
@@ -36,7 +38,7 @@ class NumberTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Decimal to a byte stream

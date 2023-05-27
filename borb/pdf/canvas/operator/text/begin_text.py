@@ -38,4 +38,5 @@ class BeginTextObject(CanvasOperator):
         canvas.graphics_state.text_matrix = Matrix.identity_matrix()
         canvas.graphics_state.text_line_matrix = Matrix.identity_matrix()
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(BeginTextEvent())

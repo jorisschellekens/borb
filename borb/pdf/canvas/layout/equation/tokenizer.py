@@ -10,7 +10,8 @@ and so forth.
 """
 import typing
 
-from borb.pdf.canvas.layout.equation.token import Token, TokenType
+from borb.pdf.canvas.layout.equation.token import Token
+from borb.pdf.canvas.layout.equation.token import TokenType
 
 
 class Tokenizer:
@@ -327,8 +328,14 @@ class Tokenizer:
             # IF the token can not be interpreted as anything else
             # AND the previous token was a VARIABLE
             # THEN concatenate the token to the previous VARIABLE
-            if len(output) > 0 and output[-1]._type == TokenType.VARIABLE:
-                output[-1]._text += infix_expression[i]
+            if len(output) > 0 and output[-1].get_type() == TokenType.VARIABLE:
+                output[-1] = Token(
+                    is_left_associative=output[-1].get_is_left_associative(),
+                    number_of_arguments=output[-1].get_number_of_arguments(),
+                    precedence=output[-1].get_precedence(),
+                    text=output[-1].get_text() + infix_expression[i],
+                    type=output[-1].get_type(),
+                )
                 i += 1
                 continue
 
@@ -349,8 +356,13 @@ class Tokenizer:
                 or output[i - 1].get_type() == TokenType.OPERATOR
                 or output[i - 1].get_type() == TokenType.LEFT_PARENTHESIS
             ):
-                output[i]._number_of_arguments = 1
-                output[i]._precedence = 5
+                output[i] = Token(
+                    is_left_associative=True,
+                    number_of_arguments=1,
+                    precedence=5,
+                    text="-",
+                    type=TokenType.OPERATOR,
+                )
                 continue
 
         # return

@@ -4,10 +4,12 @@
 """
 This implementation of WriteBaseTransformer is responsible for writing Name objects
 """
-from typing import Optional
+import typing
 
-from borb.io.read.types import AnyPDFType, Name
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Name
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 
 class NameTransformer(Transformer):
@@ -36,7 +38,7 @@ class NameTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Name to a byte stream

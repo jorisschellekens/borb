@@ -6,15 +6,15 @@ This class converts Markdown to PDF
 """
 import typing
 import xml.etree.ElementTree as ET
-from lxml.etree import Element  # type: ignore [import]
 
+from lxml.etree import Element  # type: ignore [import]
 from lxml.etree import HTMLParser  # type: ignore [import]
 from markdown_it import MarkdownIt  # type: ignore[import]
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
-from borb.pdf.canvas.layout.emoji.emoji import Emoji, Emojis
+from borb.pdf.canvas.layout.emoji.emoji import Emojis
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.document.document import Document
 from borb.pdf.page.page_size import PageSize

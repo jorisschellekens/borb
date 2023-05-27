@@ -1,6 +1,4 @@
-import datetime
 import typing
-import unittest
 from decimal import Decimal
 from pathlib import Path
 
@@ -9,18 +7,18 @@ from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
-from borb.pdf.canvas.layout.table.table import Table, TableCell
+from borb.pdf.canvas.layout.table.table import Table
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.table.table_detection_by_lines import TableDetectionByLines
-from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
+from tests.test_case import TestCase
 
 
 class TableDefinition:
@@ -41,7 +39,7 @@ class TableDefinition:
         self._cell_definition = cell_definition
 
 
-class TestDetectTable(unittest.TestCase):
+class TestDetectTable(TestCase):
 
     # fmt: off
     TABLES_TO_GENERATE: typing.List[TableDefinition] = [TableDefinition(1, 1, [(1, 1)]),
@@ -54,24 +52,13 @@ class TestDetectTable(unittest.TestCase):
                                                         ]
     # fmt: on
 
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
     def _generate_table(self, table_definition: TableDefinition) -> Table:
         t: FlexibleColumnWidthTable = FlexibleColumnWidthTable(
             number_of_rows=table_definition._number_of_rows,
             number_of_columns=table_definition._number_of_columns,
         )
         for i, cd in enumerate(table_definition._cell_definition):
-            t.add(TableCell(Paragraph(str(i)), row_span=cd[0], col_span=cd[1]))
+            t.add(TableCell(Paragraph(str(i)), row_span=cd[0], column_span=cd[1]))
 
         # set padding
         t.set_padding_on_all_cells(Decimal(5), Decimal(5), Decimal(5), Decimal(5))
@@ -99,20 +86,9 @@ class TestDetectTable(unittest.TestCase):
 
             # add test information
             l.add(
-                FixedColumnWidthTable(number_of_columns=2, number_of_rows=3)
-                .add(Paragraph("Date", font="Helvetica-Bold"))
-                .add(Paragraph(datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-                .add(Paragraph("Test", font="Helvetica-Bold"))
-                .add(Paragraph(Path(__file__).stem))
-                .add(Paragraph("Description", font="Helvetica-Bold"))
-                .add(
-                    Paragraph(
-                        "This test creates a PDF with two Paragraph objects and a Table."
-                        "A subsequent test will attempt to find the Table."
-                    )
-                )
-                .set_padding_on_all_cells(
-                    Decimal(2), Decimal(2), Decimal(2), Decimal(2)
+                self.get_test_header(
+                    test_description="This test creates a PDF with two Paragraph objects and a Table."
+                    "A subsequent test will attempt to find the Table."
                 )
             )
 
@@ -145,24 +121,16 @@ class TestDetectTable(unittest.TestCase):
                 )
             )
 
-            # derive name
-            number_with_zero_prefixed: str = str(i)
-            while len(number_with_zero_prefixed) < 3:
-                number_with_zero_prefixed = "0" + number_with_zero_prefixed
-
-            # store
-            output_path: Path = self.output_dir / (
-                "input_%s.pdf" % number_with_zero_prefixed
-            )
-            with open(output_path, "wb") as pdf_file_handle:
+            output_file: Path = self.get_artifacts_directory() / ("input_%03d.pdf" % i)
+            with open(output_file, "wb") as pdf_file_handle:
                 PDF.dumps(pdf_file_handle, d)
-            check_pdf_using_validator(output_path)
+            self.check_pdf_using_validator(output_file)
 
     def test_find_table(self):
 
         input_files: typing.List[Path] = [
             x
-            for x in self.output_dir.iterdir()
+            for x in self.get_artifacts_directory().iterdir()
             if x.is_file() and x.name.startswith("input")
         ]
         for i, input_file in enumerate(input_files):
@@ -209,5 +177,5 @@ class TestDetectTable(unittest.TestCase):
                 PDF.dumps(output_file_handle, doc)
 
             # compare visually
-            compare_visually_to_ground_truth(output_file)
-            check_pdf_using_validator(output_file)
+            self.compare_visually_to_ground_truth(output_file)
+            self.check_pdf_using_validator(output_file)

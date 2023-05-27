@@ -13,7 +13,8 @@ import qrcode  # type: ignore [import]
 from PIL import Image as PILImage  # type: ignore [import]
 from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [import]
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
 

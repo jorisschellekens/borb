@@ -26,6 +26,13 @@ class Trie:
                 [len(v) for k, v in self._children.items()]
             )
 
+        def get_value(self) -> typing.Any:
+            """
+            This function returns the value of this TrieNode
+            :return:    the value of this TrieNode
+            """
+            return self._value
+
     #
     # CONSTRUCTOR
     #
@@ -42,12 +49,14 @@ class Trie:
         if n is None:
             return None
         for c in item:
+            # noinspection PyProtectedMember
             if c in n._children:
+                # noinspection PyProtectedMember
                 n = n._children[c]
             else:
                 return None
         assert n is not None, "unexpected error while performing __getitem__ on Trie"
-        return n._value
+        return n.get_value()
 
     def __len__(self) -> int:
         return 0 if self._root is None else len(self._root)
@@ -59,8 +68,11 @@ class Trie:
             n = self._root
         assert n is not None, "unexpected error while performing __setitem__ on Trie"
         for c in key:
+            # noinspection PyProtectedMember
             if c not in n._children:
+                # noinspection PyProtectedMember
                 n._children[c] = Trie.TrieNode()
+            # noinspection PyProtectedMember
             n = n._children[c]
         assert n is not None, "unexpected error while performing __setitem__ on Trie"
         n._value = value

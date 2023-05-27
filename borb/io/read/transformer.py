@@ -7,10 +7,10 @@ Add children to handle specific cases (transforming dictionaries, arrays, xref, 
 """
 import io
 import typing
-from typing import Any, Optional, Union
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.types import AnyPDFType, Reference
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Reference
 from borb.pdf.canvas.event.event_listener import EventListener
 
 
@@ -30,9 +30,11 @@ class ReadTransformerState:
 
     def __init__(
         self,
-        source: Optional[Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO]] = None,
-        tokenizer: Optional[HighLevelTokenizer] = None,
-        root_object: Optional[Any] = None,
+        source: typing.Optional[
+            typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO]
+        ] = None,
+        tokenizer: typing.Optional[HighLevelTokenizer] = None,
+        root_object: typing.Optional[typing.Any] = None,
         password: typing.Optional[str] = None,
     ):
         self.source = source
@@ -101,7 +103,8 @@ class Transformer:
         return self
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be transformed can be transformed by this ReadBaseTransformer
@@ -128,11 +131,11 @@ class Transformer:
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads an object from a byte stream.
         The object being read depends on the implementation of ReadBaseTransformer.

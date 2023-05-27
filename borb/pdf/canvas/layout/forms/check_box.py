@@ -10,15 +10,21 @@ import zlib
 from decimal import Decimal
 
 from borb.io.read.pdf_object import PDFObject
-from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, List as bList, Name, Stream, String
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List as bList
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 from borb.io.read.types import String as bString
-from borb.pdf.canvas.color.color import Color, HexColor, RGBColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.color.color import RGBColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.forms.form_field import FormField
+from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.page.page import Page
 
 

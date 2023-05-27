@@ -9,12 +9,17 @@ import zlib
 from decimal import Decimal
 
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, List, Name, Stream, String
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 from borb.io.write.conformance_level import ConformanceLevel
 from borb.pdf.canvas.layout.annotation.link_annotation import DestinationType
 from borb.pdf.document.name_tree import NameTree
 from borb.pdf.page.page import Page
-from borb.pdf.trailer.document_info import DocumentInfo, XMPDocumentInfo
+from borb.pdf.trailer.document_info import DocumentInfo
+from borb.pdf.trailer.document_info import XMPDocumentInfo
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 
 

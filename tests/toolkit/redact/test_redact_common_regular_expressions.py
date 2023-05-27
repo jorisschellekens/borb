@@ -1,7 +1,6 @@
+import typing
 import unittest
-from datetime import datetime
 from decimal import Decimal
-from pathlib import Path
 
 from borb.io.read.types import List
 from borb.pdf.canvas.color.color import X11Color
@@ -18,27 +17,13 @@ from borb.toolkit.redact.common_regular_expressions import CommonRegularExpressi
 from borb.toolkit.text.regular_expression_text_extraction import (
     RegularExpressionTextExtraction,
 )
+from tests.test_case import TestCase
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestRedactCommonRegularExpressions(unittest.TestCase):
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-    #
-    #   the following tests use the "Tj"
-    #
-
-    def test_write_document_001(self):
+class TestRedactCommonRegularExpressions(TestCase):
+    def test_create_dummy_pdf(self):
 
         # create document
         pdf = Document()
@@ -50,19 +35,11 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
         # add test information
         layout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with a table of (commonly deemed) sensitive information, such as social security number, email, etc. "
-                    "A subsequent test will then look for those patterns and redact them."
-                )
+            self.get_test_header(
+                test_description="This test creates a PDF with a table of (commonly deemed) sensitive information, "
+                "such as social security number, email, etc. "
+                "A subsequent test will then look for those patterns and redact them."
             )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         layout.add(
@@ -84,19 +61,17 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
             .add(Paragraph("078-05-1120"))
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
-
-        # attempt to store PDF
-        with open(self.output_dir / "output_001.pdf", "wb") as out_file_handle:
+        with open(self.get_first_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
 
-    def test_add_redact_annotation_001(self):
+    def test_add_redact_annotation_for_email(self):
 
         # attempt to read PDF
         doc = None
         ls = [
             RegularExpressionTextExtraction(CommonRegularExpression.EMAIL.value),
         ]
-        with open(self.output_dir / "output_001.pdf", "rb") as in_file_handle:
+        with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle, ls)
 
         for l in ls:
@@ -107,13 +82,15 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
             # fmt: on
 
         # attempt to store PDF
-        with open(self.output_dir / "output_002.pdf", "wb") as out_file_handle:
+        with open(self.get_second_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)
 
-    def test_apply_redact_annotation_001(self):
+    def test_apply_redact_annotation_for_email(self):
 
-        with open(self.output_dir / "output_002.pdf", "rb") as in_file_handle:
+        doc: typing.Optional[Document] = None
+        with open(self.get_second_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
+        assert doc is not None
 
         page: Page = doc.get_page(0)
         assert page is not None
@@ -125,5 +102,5 @@ class TestRedactCommonRegularExpressions(unittest.TestCase):
         doc.get_page(0).apply_redact_annotations()
 
         # attempt to store PDF
-        with open(self.output_dir / "output_003.pdf", "wb") as out_file_handle:
+        with open(self.get_third_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, doc)

@@ -7,7 +7,9 @@
 import random
 import typing
 from decimal import Decimal
-from math import cos, radians, sin
+from math import cos
+from math import radians
+from math import sin
 
 
 class BlobFactory:

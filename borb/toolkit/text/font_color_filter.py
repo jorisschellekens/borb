@@ -8,9 +8,11 @@
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, RGBColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import RGBColor
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 
 
 class FontColorFilter(EventListener):

@@ -10,7 +10,11 @@ specific to this type of annotation. Sound objects are discussed in 13.3, “Sou
 """
 from pathlib import Path
 
-from borb.io.read.types import Name, Dictionary, String, Boolean, Decimal as bDecimal
+from borb.io.read.types import Boolean
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation
 

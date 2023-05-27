@@ -22,7 +22,10 @@ can be subject to an implementation limit on the number of entries it can contai
 """
 import typing
 
-from borb.io.read.types import Dictionary, Name, List, String
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import String
 
 
 class NameTree:

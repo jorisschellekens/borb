@@ -7,11 +7,16 @@ This implementation of ReadBaseTransformer is responsible for reading a Function
 import io
 import typing
 from decimal import Decimal
-from typing import Any, Optional, Union
 
 from borb.io.filter.stream_decode_util import decode_stream
-from borb.io.read.transformer import ReadTransformerState, Transformer
-from borb.io.read.types import AnyPDFType, Dictionary, Function, Name, Reference, Stream
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Function
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 
 
@@ -33,7 +38,8 @@ class FunctionDictionaryTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be transformed is a Dictionary with /FunctionType key
@@ -47,11 +53,11 @@ class FunctionDictionaryTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads a Dictionary with /FunctionType key from a byte stream.
         """

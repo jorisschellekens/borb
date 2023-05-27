@@ -11,7 +11,8 @@ shows the annotation dictionary entries specific to this type of annotation.
 import enum
 import typing
 
-from borb.io.read.types import Name, Boolean
+from borb.io.read.types import Boolean
+from borb.io.read.types import Name
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation

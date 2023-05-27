@@ -6,16 +6,19 @@ This implementation of BaseTransformer is responsible for reading a Font object
 """
 import io
 import typing
-from typing import Any, Optional, Union
 
-from borb.io.read.transformer import ReadTransformerState, Transformer
-from borb.io.read.types import AnyPDFType, Dictionary, Stream
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Stream
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.font.composite_font.cid_font_type_0 import CIDType0Font
 from borb.pdf.canvas.font.composite_font.cid_font_type_2 import CIDType2Font
 from borb.pdf.canvas.font.composite_font.font_type_0 import Type0Font
 from borb.pdf.canvas.font.font import Font
-from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font, Type1Font
+from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
+from borb.pdf.canvas.font.simple_font.font_type_1 import Type1Font
 from borb.pdf.canvas.font.simple_font.font_type_3 import Type3Font
 from borb.pdf.canvas.font.simple_font.true_type_font import TrueTypeFont
 
@@ -42,7 +45,8 @@ class FontDictionaryTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be transformed is a /Font Dictionary
@@ -56,11 +60,11 @@ class FontDictionaryTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads a /Font Dictionary from a byte stream
         """
@@ -69,7 +73,7 @@ class FontDictionaryTransformer(Transformer):
         assert isinstance(object_to_transform, Dictionary)
         subtype_name = object_to_transform["Subtype"]
 
-        font_obj: Optional[Font] = None
+        font_obj: typing.Optional[Font] = None
 
         # TrueType Font
         if subtype_name == "TrueType":

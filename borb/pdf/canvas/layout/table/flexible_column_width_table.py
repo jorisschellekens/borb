@@ -10,7 +10,8 @@ import math
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.table.table import Table
@@ -90,7 +91,7 @@ class FlexibleColumnWidthTable(Table):
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
+            [(x.get_row_span() * x.get_column_span()) for x in self._content]
         )
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
@@ -135,30 +136,34 @@ class FlexibleColumnWidthTable(Table):
         #       they are at least as wide as the cell. Do the same for the maximum widths.
         #       If possible, widen all spanned columns by approximately the same amount.
         for table_cell in self._content:
-            if table_cell._col_span == 1:
+            if table_cell.get_column_span() == 1:
                 continue
             column_indices: typing.Set[int] = set(
-                [y for x, y in table_cell._table_coordinates]
+                [y for x, y in table_cell.get_table_coordinates()]
             )
             sum_of_min_col_spans: Decimal = Decimal(
                 sum([min_column_widths[x] for x in column_indices])
             )
-            assert table_cell._min_width is not None
-            if sum_of_min_col_spans < table_cell._min_width:
-                delta: Decimal = table_cell._min_width - sum_of_min_col_spans
+            assert table_cell.get_min_width() is not None
+            if sum_of_min_col_spans < table_cell.get_min_width():
+                delta: Decimal = table_cell.get_min_width() - sum_of_min_col_spans
                 min_column_widths = [
-                    w + (delta / table_cell._col_span) if i in column_indices else w
+                    w + (delta / table_cell.get_column_span())
+                    if i in column_indices
+                    else w
                     for i, w in enumerate(min_column_widths)
                 ]
 
             sum_of_max_col_spans: Decimal = Decimal(
                 sum([max_column_widths[x] for x in column_indices])
             )
-            assert table_cell._max_width is not None
-            if sum_of_max_col_spans < table_cell._max_width:
-                delta = table_cell._max_width - sum_of_max_col_spans
+            assert table_cell.get_max_width() is not None
+            if sum_of_max_col_spans < table_cell.get_max_width():
+                delta = table_cell.get_max_width() - sum_of_max_col_spans
                 max_column_widths = [
-                    w + (delta / table_cell._col_span) if i in column_indices else w
+                    w + (delta / table_cell.get_column_span())
+                    if i in column_indices
+                    else w
                     for i, w in enumerate(max_column_widths)
                 ]
 
@@ -208,22 +213,22 @@ class FlexibleColumnWidthTable(Table):
         ]
         for r in range(0, self._number_of_rows):
             prev_row_lboxes: typing.List[Rectangle] = []
-            for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
+            for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
 
                 # get coordinates of lower-left corner of this TableCell (in grid space)
                 # table keeps track of things in (row, column) style
                 # hence p[1], rather than p[0]
-                grid_x: int = min([p[1] for p in e._table_coordinates])
+                grid_x: int = min([p[1] for p in e.get_table_coordinates()])
 
                 # layout
-                prev_vertical_alignment = e._layout_element._vertical_alignment
-                e._layout_element._vertical_alignment = Alignment.TOP
+                prev_vertical_alignment = e.get_layout_element()._vertical_alignment
+                e.get_layout_element()._vertical_alignment = Alignment.TOP
                 prev_row_lboxes.append(
                     e.get_layout_box(
                         Rectangle(
                             grid_x_to_page_x[grid_x],
                             available_space.get_y(),
-                            grid_x_to_page_x[grid_x + e._col_span]
+                            grid_x_to_page_x[grid_x + e.get_column_span()]
                             - grid_x_to_page_x[grid_x],
                             max(
                                 grid_y_to_page_y[r] - available_space.get_y(),
@@ -232,7 +237,7 @@ class FlexibleColumnWidthTable(Table):
                         )
                     )
                 )
-                e._layout_element._vertical_alignment = prev_vertical_alignment
+                e.get_layout_element()._vertical_alignment = prev_vertical_alignment
 
             # keep track of the bottom of the previous (at this point current) row
             # this makes it easier to lay out the next row
@@ -242,15 +247,15 @@ class FlexibleColumnWidthTable(Table):
 
             # do a second pass, this time with the right vertical alignment
             # now that we know the tallest element (and thus the row height)
-            for e in [x for x in self._get_cells_at_row(r) if x._row_span == 1]:
-                grid_x: int = min([p[1] for p in e._table_coordinates])
-                if e._layout_element._vertical_alignment == Alignment.TOP:
+            for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
+                grid_x: int = min([p[1] for p in e.get_table_coordinates()])
+                if e.get_layout_element()._vertical_alignment == Alignment.TOP:
                     continue
                 e.get_layout_box(
                     Rectangle(
                         grid_x_to_page_x[grid_x],
                         new_y,
-                        grid_x_to_page_x[grid_x + e._col_span]
+                        grid_x_to_page_x[grid_x + e.get_column_span()]
                         - grid_x_to_page_x[grid_x],
                         row_height,
                     )
@@ -262,19 +267,19 @@ class FlexibleColumnWidthTable(Table):
     def _get_max_column_width(self, col: int) -> Decimal:
         widths: typing.List[Decimal] = []
         for table_cell in [
-            x for x in self._get_cells_at_column(col) if x._col_span == 1
+            x for x in self.get_cells_at_column(col) if x.get_column_span() == 1
         ]:
-            if table_cell._max_width is None:
+            if table_cell.get_max_width() is None:
                 widths.append(Decimal(2048))
                 continue
-            if table_cell._preferred_width is None:
-                widths.append(table_cell._max_width)
+            if table_cell.get_preferred_width() is None:
+                widths.append(table_cell.get_max_width())
                 continue
-            if table_cell._preferred_width < table_cell._max_width:
-                widths.append(table_cell._preferred_width)
+            if table_cell.get_preferred_width() < table_cell.get_max_width():
+                widths.append(table_cell.get_preferred_width())
                 continue
             # default
-            widths.append(table_cell._max_width)
+            widths.append(table_cell.get_max_width())
 
         # exception
         if len(widths) == 0:
@@ -286,22 +291,22 @@ class FlexibleColumnWidthTable(Table):
     def _get_min_column_width(self, col: int) -> Decimal:
         widths: typing.List[Decimal] = []
         for table_cell in [
-            x for x in self._get_cells_at_column(col) if x._col_span == 1
+            x for x in self.get_cells_at_column(col) if x.get_column_span() == 1
         ]:
-            if table_cell._min_width is None:
+            if table_cell.get_min_width() is None:
                 widths.append(Decimal(0))
                 continue
-            if table_cell._preferred_width is None:
-                assert table_cell._min_width is not None
-                widths.append(table_cell._min_width)
+            if table_cell.get_preferred_width() is None:
+                assert table_cell.get_min_width() is not None
+                widths.append(table_cell.get_min_width())
                 continue
-            if table_cell._preferred_width > table_cell._min_width:
-                assert table_cell._preferred_width is not None
-                widths.append(table_cell._preferred_width)
+            if table_cell.get_preferred_width() > table_cell.get_min_width():
+                assert table_cell.get_preferred_width() is not None
+                widths.append(table_cell.get_preferred_width())
                 continue
             # default
-            assert table_cell._min_width is not None
-            widths.append(table_cell._min_width)
+            assert table_cell.get_min_width() is not None
+            widths.append(table_cell.get_min_width())
 
         # exception
         if len(widths) == 0:
@@ -315,7 +320,7 @@ class FlexibleColumnWidthTable(Table):
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(
-            [(x._row_span * x._col_span) for x in self._content]
+            [(x.get_row_span() * x.get_column_span()) for x in self._content]
         )
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
@@ -326,11 +331,11 @@ class FlexibleColumnWidthTable(Table):
 
         # paint
         for e in self._content:
-            grid_x: int = min([p[1] for p in e._table_coordinates])
-            grid_y: int = min([p[0] for p in e._table_coordinates])
+            grid_x: int = min([p[1] for p in e.get_table_coordinates()])
+            grid_y: int = min([p[0] for p in e.get_table_coordinates()])
             x: Decimal = m[grid_x][grid_y][0]
-            y: Decimal = m[grid_x][grid_y + e._row_span][1]
-            w: Decimal = m[grid_x + e._col_span][grid_y][0] - x
+            y: Decimal = m[grid_x][grid_y + e.get_row_span()][1]
+            w: Decimal = m[grid_x + e.get_column_span()][grid_y][0] - x
             h: Decimal = m[grid_x][grid_y][1] - y
             cbox: Rectangle = Rectangle(x, y, w, h)
             e._set_layout_box(cbox)

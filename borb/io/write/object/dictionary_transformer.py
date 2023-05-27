@@ -6,12 +6,17 @@ This implementation of WriteBaseTransformer is responsible for writing Dictionar
 """
 import logging
 import typing
-from typing import Optional
 
 from PIL.Image import Image  # type: ignore [import]
 
-from borb.io.read.types import AnyPDFType, Dictionary, Element, List, Reference, Stream
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Element
+from borb.io.read.types import List
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +47,7 @@ class DictionaryTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a Dictionary to a byte stream

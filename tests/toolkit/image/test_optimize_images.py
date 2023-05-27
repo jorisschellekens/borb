@@ -5,28 +5,18 @@ from pathlib import Path
 from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.pdf import PDF
 from borb.toolkit.image.image_format_optimization import ImageFormatOptimization
+from tests.test_case import TestCase
 
 
-class TestOptimizeImages(unittest.TestCase):
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
+class TestOptimizeImages(TestCase):
     def test_optimize_images(self):
 
-        input_file: Path = Path(__file__).parent / "input_001.pdf"
+        input_file: Path = self.get_artifacts_directory() / "input_001.pdf"
         with open(input_file, "rb") as pdf_file_handle:
             l = ImageFormatOptimization()
             doc = PDF.loads(pdf_file_handle, [l])
 
-        output_file: Path = self.output_dir / "output_001.pdf"
+        output_file: Path = self.get_artifacts_directory() / "output_001.pdf"
         with open(output_file, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
 

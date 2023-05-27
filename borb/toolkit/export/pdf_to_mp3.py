@@ -12,13 +12,13 @@ from pathlib import Path
 
 from gtts import gTTS  # type: ignore [import]
 
-from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_paragraph_extraction import SimpleParagraphExtraction
 
@@ -84,7 +84,7 @@ class PDFToMP3(SimpleParagraphExtraction):
                 self._get_text_for_x(lbox),
             )
         # text of paragraph
-        text_to_speak_for_paragraph += paragraph._text
+        text_to_speak_for_paragraph += paragraph.get_text()
 
         # force period if needed
         if text_to_speak_for_paragraph[-1] not in ["?", "!", "."]:

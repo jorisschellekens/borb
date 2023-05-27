@@ -13,12 +13,15 @@ import io
 import logging
 import typing
 from decimal import Decimal
-from typing import Optional, Union
 
 from borb.io.filter.stream_decode_util import decode_stream
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.tokenize.low_level_tokenizer import TokenType
-from borb.io.read.types import AnyPDFType, Dictionary, Name, Reference, Stream
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +43,7 @@ class XREF(Dictionary):
     def __init__(self):
         super(XREF, self).__init__()
         self._entries: typing.List[Reference] = []
-        self._cache: typing.Dict[int, Union[AnyPDFType, None]] = {}
+        self._cache: typing.Dict[int, typing.Union[AnyPDFType, None]] = {}
 
     #
     # PRIVATE
@@ -58,7 +61,7 @@ class XREF(Dictionary):
 
     def _find_startxref_token(
         self,
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> int:
 
@@ -86,7 +89,7 @@ class XREF(Dictionary):
 
     def _seek_to_xref_token(
         self,
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ):
 
@@ -124,10 +127,10 @@ class XREF(Dictionary):
 
     def get_object(
         self,
-        indirect_reference: Union[Reference, int],
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        indirect_reference: typing.Union[Reference, int],
+        src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
-    ) -> Optional[AnyPDFType]:
+    ) -> typing.Optional[AnyPDFType]:
         """
         This function looks up an object in this XREF table.
         Objects can be looked up by Reference, or object number.

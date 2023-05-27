@@ -9,15 +9,18 @@ import logging
 import random
 import typing
 import xml.etree.ElementTree as ET
-from typing import Any, Optional
 
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, Name, Stream, String
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 from borb.io.write.conformance_level import ConformanceLevel
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.object.stream_transformer import StreamTransformer
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 from borb.license.version import Version
 from borb.pdf.document.document import Document
 from borb.pdf.trailer.document_info import XMPDocumentInfo
@@ -255,8 +258,8 @@ class InformationDictionaryTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Any,
-        context: Optional[WriteTransformerState] = None,
+        object_to_transform: typing.Any,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes an /Info Dictionary to a byte stream

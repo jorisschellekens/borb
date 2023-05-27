@@ -19,20 +19,21 @@ from typing import TYPE_CHECKING
 
 from borb.datastructure.disjoint_set import disjointset
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, List, Name, String
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.pdf.canvas.event.event_listener import Event
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
-from borb.toolkit.ocr.ocr_image_render_event_listener import (
-    OCREvent,
-    OCRImageRenderEventListener,
-)
+from borb.toolkit.ocr.ocr_image_render_event_listener import OCREvent
+from borb.toolkit.ocr.ocr_image_render_event_listener import OCRImageRenderEventListener
 
 EndDocumentEvent = type(None)
 if TYPE_CHECKING:
-    from borb.io.read.reference.xref_transformer import EndDocumentEvent
+    pass
 
 
 class OCRAsOptionalContentGroup(OCRImageRenderEventListener):

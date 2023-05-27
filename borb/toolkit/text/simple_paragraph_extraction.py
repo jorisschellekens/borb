@@ -9,7 +9,6 @@ import typing
 from decimal import Decimal
 
 from borb.datastructure.disjoint_set import disjointset
-from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -17,6 +16,7 @@ from borb.pdf.canvas.event.end_page_event import EndPageEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.toolkit.text.simple_line_of_text_extraction import SimpleLineOfTextExtraction
 
@@ -99,14 +99,14 @@ class SimpleParagraphExtraction(SimpleLineOfTextExtraction):
             lines_of_text = [x for x in line_of_text_partition]
 
             # determine text
-            txt = "".join([x._text + "\n" for x in lines_of_text])[:-1]
+            txt = "".join([x.get_text() + "\n" for x in lines_of_text])[:-1]
 
             # create / append paragraph
             p: LayoutElement = Paragraph(
                 text=txt,
-                font=lines_of_text[0]._font,
-                font_color=lines_of_text[0]._font_color,
-                font_size=lines_of_text[0]._font_size,
+                font=lines_of_text[0].get_font(),
+                font_color=lines_of_text[0].get_font_color(),
+                font_size=lines_of_text[0].get_font_size(),
             )
             p._previous_layout_box = Rectangle(
                 min([l.get_previous_layout_box().x for l in lines_of_text]),

@@ -10,7 +10,11 @@ import zlib
 from decimal import Decimal
 
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, List, Name, Stream, String
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation
@@ -98,6 +102,7 @@ class Page(Dictionary):
 
         # FreeTextAnnotation needs to embed resources in the Page
         if "Subtype" in annotation and annotation["Subtype"] == "FreeText":
+            # noinspection PyProtectedMember
             annotation._embed_font_in_page(self)  # type: ignore [attr-defined]
 
         # return

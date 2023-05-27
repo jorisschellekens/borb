@@ -5,10 +5,14 @@
 This implementation of WriteBaseTransformer is responsible for writing XREF objects
 """
 import typing
-from typing import Optional
 
-from borb.io.read.types import AnyPDFType, Decimal, Dictionary, Name, Reference
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 from borb.pdf.xref.xref import XREF
 
 
@@ -25,7 +29,7 @@ class XREFTransformer(Transformer):
     # PRIVATE
     #
 
-    def _section_xref(self, context: Optional[WriteTransformerState] = None):
+    def _section_xref(self, context: typing.Optional[WriteTransformerState] = None):
         assert (
             context is not None
         ), "A WriteTransformerState must be defined in order to write XREF objects."
@@ -83,7 +87,7 @@ class XREFTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes an XREF to a byte stream

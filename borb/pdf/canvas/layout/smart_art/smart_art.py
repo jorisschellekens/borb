@@ -14,21 +14,22 @@ import types
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.canvas.layout.table.table import Table, TableCell
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.layout_element import LayoutElement
+from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
+from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
-from borb.pdf.canvas.layout.list.list import List
-from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
-from borb.pdf.canvas.color.color import HexColor, Color
-from borb.pdf.canvas.layout.image.image import Image
-from borb.pdf.page.page import Page
-from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
-from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
-from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
+from borb.pdf.canvas.layout.table.table import TableCell
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
+from borb.pdf.page.page import Page
 
 
 class SmartArt:
@@ -77,7 +78,7 @@ class SmartArt:
                             font_size=font_size,
                             background_color=background_color,
                         ),
-                        col_span=2,
+                        column_span=2,
                         border_left=False,
                         border_top=(True if i != 0 else False),
                         border_bottom=(True if i != N - 1 else False),
@@ -118,7 +119,7 @@ class SmartArt:
                         ),
                         border_right=False,
                         border_bottom=(True if i != N - 1 else False),
-                        col_span=2,
+                        column_span=2,
                         background_color=background_color,
                         border_color=HexColor("FFFFFF"),
                         border_width=font_size / 2,
@@ -992,7 +993,7 @@ class SmartArt:
                         font_size=font_size,
                         background_color=background_color,
                     ),
-                    col_span=2,
+                    column_span=2,
                     border_right=False,
                     border_left=True,
                     border_top=(True if i != 0 else False),
@@ -1072,7 +1073,7 @@ class SmartArt:
                         border_bottom=False if j == number_of_rows - 1 else True,
                         border_width=font_size / 2,
                         border_color=HexColor("ffffff"),
-                        col_span=_cols(e),
+                        column_span=_cols(e),
                         background_color=c,
                     )
                 )

@@ -9,8 +9,8 @@ import copy
 import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal as oDecimal
-from math import ceil, floor
-from typing import Optional, Union
+from math import ceil
+from math import floor
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.postfix.postfix_eval import PostScriptEval
@@ -43,6 +43,9 @@ class Boolean(PDFObject):
         if isinstance(other, Boolean):
             return other._value == self._value
         return False
+
+    def __hash__(self):
+        return hash(self._value)
 
     def __str__(self):
         if self._value:
@@ -441,19 +444,35 @@ class Name(PDFObject):
         return False
 
     def __ge__(self, other):
-        return self._text >= other._text
+        if isinstance(other, Name):
+            return self._text >= other._text
+        if isinstance(other, str):
+            return self._text >= other
+        assert False
 
     def __gt__(self, other):
-        return self._text > other._text
+        if isinstance(other, Name):
+            return self._text > other._text
+        if isinstance(other, str):
+            return self._text > other
+        assert False
 
     def __hash__(self):
         return self._text.__hash__()
 
     def __le__(self, other):
-        return self._text <= other._text
+        if isinstance(other, Name):
+            return self._text <= other._text
+        if isinstance(other, str):
+            return self._text <= other
+        assert False
 
     def __lt__(self, other):
-        return self._text < other._text
+        if isinstance(other, Name):
+            return self._text < other._text
+        if isinstance(other, str):
+            return self._text < other
+        assert False
 
     def __str__(self):
         return self._text
@@ -487,13 +506,13 @@ class Reference(PDFObject):
 
     def __init__(
         self,
-        object_number: Optional[int] = None,
-        generation_number: Optional[int] = None,
-        parent_stream_object_number: Optional[int] = None,
-        index_in_parent_stream: Optional[int] = None,
-        byte_offset: Optional[int] = None,
+        object_number: typing.Optional[int] = None,
+        generation_number: typing.Optional[int] = None,
+        parent_stream_object_number: typing.Optional[int] = None,
+        index_in_parent_stream: typing.Optional[int] = None,
+        byte_offset: typing.Optional[int] = None,
         is_in_use: bool = True,
-        document: Optional["Document"] = None,  # type: ignore [name-defined]
+        document: typing.Optional["Document"] = None,  # type: ignore [name-defined]
     ):
         self.object_number = object_number
         self.generation_number = generation_number
@@ -713,7 +732,7 @@ class HexadecimalString(String):
     THAN SIGN (3Eh)).
     """
 
-    def __init__(self, text: str, encoding: Optional["Encoding"] = None):  # type: ignore [name-defined]
+    def __init__(self, text: str, encoding: typing.Optional["Encoding"] = None):  # type: ignore [name-defined]
         if len(text) % 2 == 1:
             text += "0"
         self.encoding = encoding
@@ -731,7 +750,7 @@ class HexadecimalString(String):
         return arr
 
 
-AnyPDFType = Union[
+AnyPDFType = typing.Union[
     Boolean,
     CanvasOperatorName,
     Decimal,

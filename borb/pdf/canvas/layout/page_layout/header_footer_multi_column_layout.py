@@ -10,9 +10,9 @@ which will do the actual rendering.
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
+from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.page.page import Page
 
 
@@ -111,7 +111,7 @@ class HeaderFooterMultiColumnLayout(MultiColumnLayout):
             self._header_height,
         )
         self._previous_element._previous_layout_box = (
-            self._previous_element._previous_paint_box
+            self._previous_element.get_previous_paint_box()
         )
 
     #

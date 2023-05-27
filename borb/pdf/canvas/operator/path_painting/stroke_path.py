@@ -37,6 +37,7 @@ class StrokePath(CanvasOperator):
         # notify listeners
         for el in event_listeners:
             for l in gs.path:
+                # noinspection PyProtectedMember
                 el._event_occurred(LineRenderEvent(gs, l))
 
         # clear path

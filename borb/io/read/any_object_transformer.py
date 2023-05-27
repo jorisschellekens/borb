@@ -7,7 +7,6 @@ other implementations of ReadBaseTransformer
 """
 import io
 import typing
-from typing import Any, Optional, Union
 
 from borb.io.read.font.font_dictionary_transformer import FontDictionaryTransformer
 from borb.io.read.function.function_dictionary_transformer import (
@@ -31,7 +30,8 @@ from borb.io.read.primitive.number_transformer import NumberTransformer
 from borb.io.read.primitive.string_transformer import StringTransformer
 from borb.io.read.reference.reference_transformer import ReferenceTransformer
 from borb.io.read.reference.xref_transformer import XREFTransformer
-from borb.io.read.transformer import ReadTransformerState, Transformer
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
 from borb.io.read.types import AnyPDFType
 from borb.pdf.canvas.event.event_listener import EventListener
 
@@ -83,7 +83,8 @@ class AnyObjectTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be transformed can be transformed by this ReadAnyObjectTransformer
@@ -92,11 +93,11 @@ class AnyObjectTransformer(Transformer):
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads an object from a byte stream.
         The object being read depends on the implementation of ReadAnyObjectTransformer.

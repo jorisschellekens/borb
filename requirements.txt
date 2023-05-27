@@ -1,5 +1,7 @@
-Pillow>=7.1.0
+cryptography>=37.0.4
 fonttools>=4.22.1
+lxml>=4.9.1
+Pillow>=7.1.0
 python-barcode>=0.13.1
 qrcode[pil]>=6.1
 requests>=2.24.0

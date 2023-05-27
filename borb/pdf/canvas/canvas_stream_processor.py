@@ -12,7 +12,9 @@ import time
 import typing
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.types import AnyPDFType, CanvasOperatorName, Dictionary
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import CanvasOperatorName
+from borb.io.read.types import Dictionary
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 from borb.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
 from borb.pdf.canvas.operator.color.set_cmyk_stroking import SetCMYKStroking
@@ -43,7 +45,11 @@ from borb.pdf.canvas.operator.marked_content.begin_marked_content_with_property_
 from borb.pdf.canvas.operator.marked_content.end_marked_content import EndMarkedContent
 from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import (
     AppendCubicBezierCurve1,
+)
+from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import (
     AppendCubicBezierCurve2,
+)
+from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import (
     AppendCubicBezierCurve3,
 )
 from borb.pdf.canvas.operator.path_construction.append_line_segment import (

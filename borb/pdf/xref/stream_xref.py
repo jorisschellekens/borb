@@ -6,12 +6,16 @@
     cross-reference table.
 """
 import io
+import typing
 from decimal import Decimal
-from typing import Optional, Union
 
 from borb.io.filter.stream_decode_util import decode_stream
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.types import Dictionary, List, Name, Reference, Stream
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
 from borb.pdf.xref.xref import XREF
 
 
@@ -31,7 +35,7 @@ class StreamXREF(XREF):
     # CONSTRUCTOR
     #
 
-    def __init__(self, initial_offset: Optional[int] = None):
+    def __init__(self, initial_offset: typing.Optional[int] = None):
         super().__init__()
         self._initial_offset = initial_offset
 
@@ -45,9 +49,9 @@ class StreamXREF(XREF):
 
     def read(
         self,
-        io_source: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        io_source: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tokenizer: HighLevelTokenizer,
-        initial_offset: Optional[int] = None,
+        initial_offset: typing.Optional[int] = None,
     ) -> "XREF":
         """
         This method attempts to read a stream XREF from the given io_source.

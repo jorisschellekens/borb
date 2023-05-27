@@ -9,18 +9,22 @@ while in English, any well-formed formula consisting of two expressions related 
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.layout.table.table import Table, TableCell
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.font.font import Font
+from borb.pdf.canvas.layout.equation.parser import Parser
+from borb.pdf.canvas.layout.equation.token import Token
+from borb.pdf.canvas.layout.equation.token import TokenType
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.layout_element import LayoutElement
+from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
+from borb.pdf.canvas.layout.table.table import Table
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.canvas.color.color import Color, HexColor
-from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
-from borb.pdf.canvas.font.font import Font
-from borb.pdf.canvas.layout.equation.parser import Parser
-from borb.pdf.canvas.layout.equation.token import Token, TokenType
-from borb.pdf.canvas.layout.layout_element import LayoutElement, Alignment
 
 
 class Equation(InlineFlow):

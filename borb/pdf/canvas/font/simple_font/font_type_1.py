@@ -13,18 +13,19 @@ from pathlib import Path
 
 from fontTools.afmLib import AFM  # type: ignore [import]
 from fontTools.agl import toUnicode  # type: ignore [import]
-from fontTools.cffLib import CFFFontSet, TopDict  # type: ignore [import]
+from fontTools.cffLib import CFFFontSet  # type: ignore [import]
+from fontTools.cffLib import TopDict
 
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, Name
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
 from borb.pdf.canvas.font.adobe_glyph_list import AdobeGlyphList
-from borb.pdf.canvas.font.adobe_standard_encoding import (
-    adobe_standard_decode,
-    adobe_standard_encode,
-)
+from borb.pdf.canvas.font.adobe_standard_encoding import adobe_standard_decode
+from borb.pdf.canvas.font.adobe_standard_encoding import adobe_standard_encode
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.simple_font import SimpleFont
-from borb.pdf.canvas.font.symbol_encoding import symbol_decode, zapfdingbats_decode
+from borb.pdf.canvas.font.symbol_encoding import symbol_decode
+from borb.pdf.canvas.font.symbol_encoding import zapfdingbats_decode
 
 logger = logging.getLogger(__name__)
 
@@ -440,6 +441,7 @@ class StandardType1Font(Type1Font):
 
             self[Name("Type")] = Name("Font")
             self[Name("Subtype")] = Name("Type1")
+            # noinspection PyProtectedMember
             self[Name("BaseFont")] = Name(self._afm._attrs["FontName"])
 
             self._character_identifier_to_unicode_lookup: typing.Dict[int, str] = {}
@@ -510,7 +512,9 @@ class StandardType1Font(Type1Font):
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
         """
+        # noinspection PyProtectedMember
         if "Ascender" in self._afm._attrs:
+            # noinspection PyProtectedMember
             return bDecimal(self._afm._attrs["Ascender"])
         return bDecimal(0)
 
@@ -519,7 +523,9 @@ class StandardType1Font(Type1Font):
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
         """
+        # noinspection PyProtectedMember
         if "Descender" in self._afm._attrs:
+            # noinspection PyProtectedMember
             return bDecimal(self._afm._attrs["Descender"])
         return bDecimal(0)
 
@@ -538,6 +544,7 @@ class StandardType1Font(Type1Font):
             ord(self._character_identifier_to_unicode_lookup[character_identifier]),
             None,
         )
+        # noinspection PyProtectedMember
         return bDecimal(self._afm._chars.get(name, default_tuple)[1])
 
     @staticmethod

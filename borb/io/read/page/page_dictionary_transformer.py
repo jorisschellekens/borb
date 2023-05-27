@@ -7,12 +7,15 @@ This implementation of ReadBaseTransformer is responsible for reading Page objec
 import io
 import typing
 import zlib
-from typing import Any, Dict, Optional, Union
 
-from borb.io.read.transformer import ReadTransformerState, Transformer
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, List, Name, Stream
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -39,22 +42,25 @@ class PageDictionaryTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be converted represents a /Page Dictionary
         """
         return (
-            isinstance(object, Dict) and "Type" in object and object["Type"] == "Page"
+            isinstance(object, typing.Dict)
+            and "Type" in object
+            and object["Type"] == "Page"
         )
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads a /Page Dictionary from a byte stream
         """
@@ -82,6 +88,7 @@ class PageDictionaryTransformer(Transformer):
 
         # send out BeginPageEvent
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(BeginPageEvent(page_out))
 
         # check whether `Contents` exists
@@ -118,6 +125,7 @@ class PageDictionaryTransformer(Transformer):
 
         # send out EndPageEvent
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(EndPageEvent(page_out))
 
         # return

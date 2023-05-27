@@ -7,22 +7,21 @@ Low-level tokenization aims to separate numbers, strings, names, comments, start
 The high-level tokenizer will use this first pass to then build complex objects (streams, dictionaries, etc)
 """
 import re
-from typing import Optional
+import typing
 
-from borb.io.read.tokenize.low_level_tokenizer import LowLevelTokenizer, TokenType
-from borb.io.read.types import (
-    AnyPDFType,
-    Boolean,
-    CanvasOperatorName,
-    Decimal,
-    Dictionary,
-    HexadecimalString,
-    List,
-    Name,
-    Reference,
-    Stream,
-    String,
-)
+from borb.io.read.tokenize.low_level_tokenizer import LowLevelTokenizer
+from borb.io.read.tokenize.low_level_tokenizer import TokenType
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Boolean
+from borb.io.read.types import CanvasOperatorName
+from borb.io.read.types import Decimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import HexadecimalString
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
+from borb.io.read.types import Stream
+from borb.io.read.types import String
 
 
 class HighLevelTokenizer(LowLevelTokenizer):
@@ -108,7 +107,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
         return out_dict
 
-    def read_indirect_object(self) -> Optional[AnyPDFType]:
+    def read_indirect_object(self) -> typing.Optional[AnyPDFType]:
         """
         This function processes the next tokens and returns an AnyPDFType.
         It fails and throws various errors if the next tokens do not represent an indirect pdf object.
@@ -154,7 +153,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # return
         return value
 
-    def read_indirect_reference(self) -> Optional[Reference]:
+    def read_indirect_reference(self) -> typing.Optional[Reference]:
         """
         This function processes the next tokens and returns an indirect reference.
         It fails and throws various errors if the next tokens do not represent an indirect reference.
@@ -194,7 +193,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
             generation_number=generation_number,
         )
 
-    def read_object(self, xref: Optional["XREF"] = None) -> Optional[AnyPDFType]:  # type: ignore [name-defined]
+    def read_object(self, xref: typing.Optional["XREF"] = None) -> typing.Optional[AnyPDFType]:  # type: ignore [name-defined]
         """
         This function processes the next tokens and returns an AnyPDFType.
         It fails and throws various errors if the next tokens do not represent a pdf object.
@@ -270,7 +269,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # default
         return None
 
-    def read_stream(self, xref: Optional["XREF"] = None) -> Optional[Stream]:  # type: ignore [name-defined]
+    def read_stream(self, xref: typing.Optional["XREF"] = None) -> typing.Optional[Stream]:  # type: ignore [name-defined]
         """
         This function processes the next tokens and returns a Stream.
         It fails and throws various errors if the next tokens do not represent a Stream.

@@ -15,14 +15,16 @@ from borb.datastructure.disjoint_set import disjointset
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.event.line_render_event import LineRenderEvent
 from borb.pdf.canvas.geometry.line_segment import LineSegment
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
-from borb.pdf.canvas.layout.table.table import Table, TableCell
+from borb.pdf.canvas.layout.table.table import Table
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 
 logger = logging.getLogger(__name__)
@@ -179,7 +181,7 @@ class TableDetectionByLines(EventListener):
             tc: TableCell = TableCell(
                 Paragraph(" "),
                 row_span=max_row - min_row + 1,
-                col_span=max_col - min_col + 1,
+                column_span=max_col - min_col + 1,
             )
 
             # set bounding_box
@@ -189,7 +191,7 @@ class TableDetectionByLines(EventListener):
                 xs[max_col + 1] - xs[min_col],
                 ys[max_row + 1] - ys[min_row],
             )
-            tc._previous_paint_box = tc._previous_layout_box
+            tc._previous_paint_box = tc.get_previous_layout_box()
 
             # add to Table
             table.add(tc)
@@ -286,7 +288,7 @@ class TableDetectionByLines(EventListener):
                     # determine table
                     table: Table = self._determine_table_cell_boundaries(v)
                     table._previous_layout_box = self._determine_table_bounding_box(v)
-                    table._previous_paint_box = table._previous_layout_box
+                    table._previous_paint_box = table.get_previous_layout_box()
 
                     # store
                     self._tables_per_page[self._current_page_number].append(table)

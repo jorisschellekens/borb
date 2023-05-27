@@ -10,7 +10,9 @@ import enum
 import math
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HSVColor, RGBColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HSVColor
+from borb.pdf.canvas.color.color import RGBColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.page.page import Page

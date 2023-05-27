@@ -1,282 +1,344 @@
-import unittest
-from datetime import datetime
-from pathlib import Path
-
-from borb.io.read.types import Decimal
-from borb.pdf import HexColor
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
-from borb.pdf.canvas.layout.table.table_util import TableUtil
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.document.document import Document
-from borb.pdf.page.page import Page
-from borb.pdf.pdf import PDF
-from tests.test_util import compare_visually_to_ground_truth, check_pdf_using_validator
+from borb.pdf import Document
+from borb.pdf import PDF
+from borb.pdf import Page
+from borb.pdf import PageLayout
+from borb.pdf import SingleColumnLayout
+from borb.pdf import TableUtil
+from tests.test_case import TestCase
 
 
-class TestAddTableUsingTableUtil(unittest.TestCase):
-    """
-    This test creates a PDF with a Table in it.
-    """
-
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-    def test_write_document_001(self):
-
-        # create document
-        pdf = Document()
-
-        # add page
-        page = Page()
-        pdf.add_page(page)
-
-        layout = SingleColumnLayout(page)
-
-        # write test information
+class TestAddTableUsingTableUtil(TestCase):
+    def test_add_fixed_column_width_table_using_table_util_2_by_3(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-                    font_color=HexColor("00ff00"),
-                )
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
             )
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with a Table in it. This table was creating using TableUtil."
-                )
-            )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], ["Sit", "Amet", "Consectetur"]],
+                header_row=False,
+                flexible_column_width=False,
+            )
+        )
+        with open(self.get_first_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_first_output_file())
+        self.check_pdf_using_validator(self.get_first_output_file())
 
-        # write Table
+    def test_add_fixed_column_width_table_using_table_util_3_by_3(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
         layout.add(
             TableUtil.from_2d_array(
                 [
-                    ["Country", "GDP"],
-                    ["United States", 93863.851],
-                    ["China", 19911.593],
-                    ["Japan", 4912.147],
-                    ["India", 3534.743],
+                    ["Lorem", "Ipsum", "Dolor"],
+                    ["Sit", "Amet", "Consectetur"],
+                    ["Adipiscing", "Sed", "Do"],
                 ],
+                flexible_column_width=False,
+                header_row=False,
+            )
+        )
+        with open(self.get_second_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_second_output_file())
+        self.check_pdf_using_validator(self.get_second_output_file())
+
+    def test_add_fixed_column_width_table_using_table_util_3_by_4(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [
+                    ["Lorem", "Ipsum", "Dolor", "Sit"],
+                    ["Amet", "Consectetur", "Adipiscing", "Sed"],
+                    ["Do", "Eiusmod", "Tempor", "Incididunt"],
+                ],
+                flexible_column_width=False,
+                header_row=False,
+            )
+        )
+        with open(self.get_third_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_third_output_file())
+        self.check_pdf_using_validator(self.get_third_output_file())
+
+    def test_add_fixed_column_width_table_using_table_util_with_header_row(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], ["Sit", "Amet", "Consectetur"]],
+                flexible_column_width=False,
                 header_row=True,
             )
         )
+        with open(self.get_fourth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_fourth_output_file())
+        self.check_pdf_using_validator(self.get_fourth_output_file())
 
-        # determine output location
-        out_file = self.output_dir / ("output_001.pdf")
-
-        # attempt to store PDF
-        with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf)
-
-        # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
-            PDF.loads(in_file_handle)
-
-        # compare visually
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
-
-    def test_write_document_002(self):
-
-        # create document
-        pdf = Document()
-
-        # add page
-        page = Page()
-        pdf.add_page(page)
-
-        layout = SingleColumnLayout(page)
-
-        # write test information
+    def test_add_fixed_column_width_table_using_table_util_with_header_column(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-                    font_color=HexColor("00ff00"),
-                )
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
             )
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with a Table in it. This table was creating using TableUtil."
-                )
-            )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
-
-        # write Table
         layout.add(
             TableUtil.from_2d_array(
-                [
-                    ["Country", "GDP"],
-                    ["United States", 93863.851],
-                    ["China", 19911.593],
-                    ["Japan", 4912.147],
-                    ["India", 3534.743],
-                ],
-                header_row=True,
-                round_to_n_digits=1,
-            )
-        )
-
-        # determine output location
-        out_file = self.output_dir / ("output_002.pdf")
-
-        # attempt to store PDF
-        with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf)
-
-        # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
-            PDF.loads(in_file_handle)
-
-        # compare visually
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
-
-    def test_write_document_003(self):
-
-        # create document
-        pdf = Document()
-
-        # add page
-        page = Page()
-        pdf.add_page(page)
-
-        layout = SingleColumnLayout(page)
-
-        # write test information
-        layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-                    font_color=HexColor("00ff00"),
-                )
-            )
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with a Table in it. This table was creating using TableUtil."
-                )
-            )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
-        )
-
-        # write Table
-        layout.add(
-            TableUtil.from_2d_array(
-                [
-                    ["Country", "GDP"],
-                    ["United States", 93863.851],
-                    ["China", 19911.593],
-                    ["Japan", 4912.147],
-                    ["India", 3534.743],
-                ],
+                [["Lorem", "Ipsum", "Dolor"], ["Sit", "Amet", "Consectetur"]],
+                flexible_column_width=False,
                 header_row=False,
                 header_col=True,
-                round_to_n_digits=1,
             )
         )
+        with open(self.get_fifth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_fifth_output_file())
+        self.check_pdf_using_validator(self.get_fifth_output_file())
 
-        # determine output location
-        out_file = self.output_dir / ("output_003.pdf")
-
-        # attempt to store PDF
-        with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf)
-
-        # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
-            PDF.loads(in_file_handle)
-
-        # compare visually
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
-
-    def test_write_document_004(self):
-
-        # create document
-        pdf = Document()
-
-        # add page
-        page = Page()
-        pdf.add_page(page)
-
-        layout = SingleColumnLayout(page)
-
-        # write test information
+    def test_add_fixed_column_width_table_using_table_util_with_rounding_to_2_digits(
+        self,
+    ):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-                    font_color=HexColor("00ff00"),
-                )
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
             )
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with a Table in it. This table was creating using TableUtil."
-                )
-            )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], [0.999, 3.1415, 2.7182]],
+                flexible_column_width=False,
+                header_row=False,
+                round_to_n_digits=2,
+            )
+        )
+        with open(self.get_sixth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_sixth_output_file())
+        self.check_pdf_using_validator(self.get_sixth_output_file())
 
-        # write Table
+    def test_add_fixed_column_width_table_using_table_util_with_rounding_to_3_digits(
+        self,
+    ):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FixedColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], [0.999, 3.1415, 2.7182]],
+                flexible_column_width=False,
+                header_row=False,
+                round_to_n_digits=3,
+            )
+        )
+        with open(self.get_seventh_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_seventh_output_file())
+        self.check_pdf_using_validator(self.get_seventh_output_file())
+
+    #
+    #
+    #
+
+    def test_add_flexible_column_width_table_using_table_util_2_by_3(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], ["Sit", "Amet", "Consectetur"]],
+                header_row=False,
+            )
+        )
+        with open(self.get_eight_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_eight_output_file())
+        self.check_pdf_using_validator(self.get_eight_output_file())
+
+    def test_add_flexible_column_width_table_using_table_util_3_by_3(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
         layout.add(
             TableUtil.from_2d_array(
                 [
-                    ["Country", "GDP"],
-                    ["United States", 93863.851],
-                    ["China", 19911.593],
-                    ["Japan", 4912.147],
-                    ["India", 3534.743],
+                    ["Lorem", "Ipsum", "Dolor"],
+                    ["Sit", "Amet", "Consectetur"],
+                    ["Adipiscing", "Sed", "Do"],
                 ],
                 header_row=False,
-                header_col=False,
-                round_to_n_digits=1,
             )
         )
+        with open(self.get_nineth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_nineth_output_file())
+        self.check_pdf_using_validator(self.get_nineth_output_file())
 
-        # determine output location
-        out_file = self.output_dir / ("output_004.pdf")
+    def test_add_flexible_column_width_table_using_table_util_3_by_4(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [
+                    ["Lorem", "Ipsum", "Dolor", "Sit"],
+                    ["Amet", "Consectetur", "Adipiscing", "Sed"],
+                    ["Do", "Eiusmod", "Tempor", "Incididunt"],
+                ],
+                header_row=False,
+            )
+        )
+        with open(self.get_tenth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_tenth_output_file())
+        self.check_pdf_using_validator(self.get_tenth_output_file())
 
-        # attempt to store PDF
-        with open(out_file, "wb") as in_file_handle:
-            PDF.dumps(in_file_handle, pdf)
+    def test_add_flexible_column_width_table_using_table_util_with_header_row(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], ["Sit", "Amet", "Consectetur"]],
+                header_row=True,
+            )
+        )
+        with open(self.get_eleventh_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_eleventh_output_file())
+        self.check_pdf_using_validator(self.get_eleventh_output_file())
 
-        # attempt to re-open PDF
-        with open(out_file, "rb") as in_file_handle:
-            PDF.loads(in_file_handle)
+    def test_add_flexible_column_width_table_using_table_util_with_header_column(self):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], ["Sit", "Amet", "Consectetur"]],
+                header_row=False,
+                header_col=True,
+            )
+        )
+        with open(self.get_twelfth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_twelfth_output_file())
+        self.check_pdf_using_validator(self.get_twelfth_output_file())
 
-        # compare visually
-        compare_visually_to_ground_truth(out_file)
-        check_pdf_using_validator(out_file)
+    def test_add_flexible_column_width_table_using_table_util_with_rounding_to_2_digits(
+        self,
+    ):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], [0.999, 3.1415, 2.7182]],
+                header_row=False,
+                round_to_n_digits=2,
+            )
+        )
+        with open(self.get_thirteenth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_thirteenth_output_file())
+        self.check_pdf_using_validator(self.get_thirteenth_output_file())
+
+    def test_add_flexible_column_width_table_using_table_util_with_rounding_to_3_digits(
+        self,
+    ):
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(
+            TableUtil.from_2d_array(
+                [["Lorem", "Ipsum", "Dolor"], [0.999, 3.1415, 2.7182]],
+                header_row=False,
+                round_to_n_digits=3,
+            )
+        )
+        with open(self.get_fourteenth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_fourteenth_output_file())
+        self.check_pdf_using_validator(self.get_fourteenth_output_file())

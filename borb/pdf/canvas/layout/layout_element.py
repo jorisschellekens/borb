@@ -9,7 +9,8 @@ import typing
 from decimal import Decimal
 from enum import Enum
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.line_art.blob_factory import BlobFactory
 

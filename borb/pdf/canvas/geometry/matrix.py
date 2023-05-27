@@ -7,7 +7,6 @@ symbols, or expressions, arranged in rows and columns.
 """
 import typing
 from decimal import Decimal
-from typing import List
 
 
 class Matrix:
@@ -45,7 +44,7 @@ class Matrix:
         ]
         return m
 
-    def __getitem__(self, item) -> List[Decimal]:
+    def __getitem__(self, item) -> typing.List[Decimal]:
         return self.mtx[item]
 
     def __str__(self):

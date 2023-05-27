@@ -1,0 +1,56 @@
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@600;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #95c2de;
+    }
+
+    .mainbox {
+      background-color: #95c2de;
+      margin: auto;
+      height: 600px;
+      width: 600px;
+      position: relative;
+    }
+
+    .err {
+      color: #ffffff;
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 3rem;
+      position:absolute;
+      left: 20%;
+      top: 8%;
+    }
+
+    .msg {
+      text-align: center;
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.6rem;
+      position:absolute;
+      left: 16%;
+      top: 45%;
+      width: 75%;
+    }
+
+    a {
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="mainbox">
+    <div class="err">Incompetech is currently offline</div>
+    <div class="msg">
+      <p>
+        Server issues have interrupted the site.
+      <p>
+      <p>
+        We are working on getting things up and running again as soon as possible,
+	and hope to be back shortly.
+      </p>
+      <p>Sorry for the inconvenience</p>
+    </div>
+  </div>
+</html>

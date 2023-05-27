@@ -8,7 +8,8 @@ are used by which Font. This is particularly useful when performing Font subsett
 import typing
 
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
-from borb.pdf.canvas.event.event_listener import EventListener, Event
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.font.font import Font
 
 

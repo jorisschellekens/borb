@@ -9,15 +9,15 @@ RedactAnnotation to remove the text, and Paragraph to re-insert replacement text
 import typing
 from decimal import Decimal
 
-from borb.pdf.document.document import Document
-from borb.pdf.canvas.layout.text.paragraph import Paragraph
-from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.page.page import Page
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.redact_annotation import RedactAnnotation
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.document.document import Document
+from borb.pdf.page.page import Page
 
 
 class SimpleFindReplace:

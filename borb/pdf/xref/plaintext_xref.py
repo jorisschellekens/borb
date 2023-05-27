@@ -6,11 +6,13 @@
     that the entire file need not be read to locate any particular object.
 """
 import io
-from typing import List, Optional, Union
+import typing
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.tokenize.low_level_tokenizer import TokenType
-from borb.io.read.types import Dictionary, Name, Reference
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
 from borb.pdf.xref.xref import XREF
 
 
@@ -48,9 +50,9 @@ class PlainTextXREF(XREF):
 
     def _read_section(
         self,
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
-    ) -> List[Reference]:
+    ) -> typing.List[Reference]:
 
         tokens = [tok.next_non_comment_token() for _ in range(0, 2)]
         assert tokens[0] is not None
@@ -93,7 +95,7 @@ class PlainTextXREF(XREF):
 
     def _read_trailer(
         self,
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> Dictionary:
 
@@ -129,9 +131,9 @@ class PlainTextXREF(XREF):
 
     def read(
         self,
-        src: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
+        src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
-        initial_offset: Optional[int] = None,
+        initial_offset: typing.Optional[int] = None,
     ) -> "XREF":
         """
         This method attempts to read a plaintext XREF from the given io_source.

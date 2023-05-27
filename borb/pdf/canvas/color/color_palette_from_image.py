@@ -11,7 +11,10 @@ from decimal import Decimal
 from pathlib import Path
 
 from PIL.Image import Image as pImage
-from borb.pdf import Image as bImage, RGBColor, HexColor
+
+from borb.pdf.canvas.color.color import HexColor
+from borb.pdf.canvas.color.color import RGBColor
+from borb.pdf.canvas.layout.image.image import Image as bImage
 
 
 class ColorPaletteFromImage:
@@ -49,8 +52,8 @@ class ColorPaletteFromImage:
         img.force_load_image()
 
         # resize
-        assert isinstance(img._image, pImage)
-        img_in: pImage = img._image
+        assert isinstance(img.get_PIL_image(), pImage)
+        img_in: pImage = img.get_PIL_image()
         while img_in.width > 128 and img_in.height > 128:
             img_in = img_in.resize((img_in.width // 2, img_in.height // 2))
 

@@ -12,7 +12,10 @@ import typing
 
 import PIL  # type: ignore [import]
 
-from borb.io.read.types import AnyPDFType, Dictionary, Name, Stream
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -54,6 +57,7 @@ class Do(CanvasOperator):
         # render Image objects
         if isinstance(xobject, PIL.Image.Image):
             for l in event_listeners:
+                # noinspection PyProtectedMember
                 l._event_occurred(
                     ImageRenderEvent(
                         graphics_state=canvas.graphics_state, image=xobject

@@ -11,7 +11,11 @@ from borb.io.filter.ascii85_decode import ASCII85Decode
 from borb.io.filter.flate_decode import FlateDecode
 from borb.io.filter.lzw_decode import LZWDecode
 from borb.io.filter.run_length_decode import RunLengthDecode
-from borb.io.read.types import Decimal, Dictionary, List, Name, Stream
+from borb.io.read.types import Decimal
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
 
 
 def decode_stream(s: Stream) -> Stream:

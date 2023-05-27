@@ -9,7 +9,8 @@ note. Table 181 shows the annotation dictionary entries specific to this type of
 import enum
 import typing
 
-from borb.io.read.types import Name, Decimal as bDecimal
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import Name
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.annotation.annotation import Annotation

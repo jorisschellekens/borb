@@ -12,7 +12,8 @@ import logging
 import typing
 
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
-from borb.io.read.types import Reference, Name
+from borb.io.read.types import Name
+from borb.io.read.types import Reference
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
 from borb.pdf.xref.xref import XREF
 

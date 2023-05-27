@@ -4,10 +4,13 @@
 """
 This implementation of WriteBaseTransformer is responsible for writing String objects
 """
-from typing import Optional
+import typing
 
-from borb.io.read.types import AnyPDFType, HexadecimalString, String
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import HexadecimalString
+from borb.io.read.types import String
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 
 
 class StringTransformer(Transformer):
@@ -36,7 +39,7 @@ class StringTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a String object to a byte stream

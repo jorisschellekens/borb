@@ -9,7 +9,8 @@ the sequence.
 
 import typing
 
-from borb.io.read.types import AnyPDFType, Name
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Name
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
 

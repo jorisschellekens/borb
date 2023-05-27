@@ -9,20 +9,18 @@ import re
 import typing
 from decimal import Decimal
 from functools import cmp_to_key
-from typing import List
 
-from borb.pdf.canvas.color.color import Color
-from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
+from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
-from borb.pdf.canvas.event.chunk_of_text_render_event import (
-    ChunkOfTextRenderEvent,
-    LeftToRightComparator,
-)
+from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
+from borb.pdf.canvas.event.chunk_of_text_render_event import LeftToRightComparator
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.geometry.rectangle import Rectangle
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
 

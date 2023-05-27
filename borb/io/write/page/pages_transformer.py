@@ -7,9 +7,10 @@ for writing Dictionary objects of /Type /Pages
 """
 import logging
 import typing
-from typing import Optional
 
-from borb.io.read.types import AnyPDFType, Dictionary, Name, Reference
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Dictionary
+from borb.io.read.types import Name
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.transformer import WriteTransformerState
 
@@ -43,7 +44,7 @@ class PagesTransformer(DictionaryTransformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes a /Pages Dictionary to a byte stream

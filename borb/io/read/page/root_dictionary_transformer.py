@@ -6,11 +6,13 @@ This implementation of ReadBaseTransformer is responsible for reading the /Catal
 """
 import io
 import typing
-from typing import Any, Dict, List, Optional, Union
 
 from borb.io.read.object.dictionary_transformer import DictionaryTransformer
-from borb.io.read.transformer import ReadTransformerState, Transformer
-from borb.io.read.types import AnyPDFType, Decimal, Dictionary
+from borb.io.read.transformer import ReadTransformerState
+from borb.io.read.transformer import Transformer
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal
+from borb.io.read.types import Dictionary
 from borb.io.read.types import List as bList
 from borb.io.read.types import Name
 from borb.pdf.canvas.event.event_listener import EventListener
@@ -46,7 +48,7 @@ class RootDictionaryTransformer(Transformer):
                 and "Type" in obj
                 and obj["Type"] == "Pages"
                 and "Kids" in obj
-                and isinstance(obj["Kids"], List)
+                and isinstance(obj["Kids"], typing.List)
             ):
                 for k in obj["Kids"]:
                     stack_to_handle.append(k)
@@ -66,24 +68,25 @@ class RootDictionaryTransformer(Transformer):
     #
 
     def can_be_transformed(
-        self, object: Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType]
+        self,
+        object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
         This function returns True if the object to be converted represents a /Catalog Dictionary
         """
         return (
-            isinstance(object, Dict)
+            isinstance(object, typing.Dict)
             and "Type" in object
             and object["Type"] == "Catalog"
         )
 
     def transform(
         self,
-        object_to_transform: Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
-        parent_object: Any,
-        context: Optional[ReadTransformerState] = None,
+        object_to_transform: typing.Union[io.BufferedIOBase, io.RawIOBase, AnyPDFType],
+        parent_object: typing.Any,
+        context: typing.Optional[ReadTransformerState] = None,
         event_listeners: typing.List[EventListener] = [],
-    ) -> Any:
+    ) -> typing.Any:
         """
         This function reads a /Catalog Dictionary from a byte stream
         """
@@ -92,7 +95,7 @@ class RootDictionaryTransformer(Transformer):
         # fmt: on
 
         # convert using Dictionary transformer
-        transformed_root_dictionary: Optional[Dictionary] = None
+        transformed_root_dictionary: typing.Optional[Dictionary] = None
         for t in self.get_root_transformer().get_children():
             if isinstance(t, DictionaryTransformer):
                 transformed_root_dictionary = t.transform(

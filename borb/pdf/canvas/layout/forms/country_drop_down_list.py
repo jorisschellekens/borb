@@ -6,10 +6,11 @@ This implementation of FormField represents a drop down list that is pre-filled 
 """
 import typing
 
-from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.io.read.types import Decimal
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.forms.drop_down_list import DropDownList
+from borb.pdf.canvas.layout.layout_element import Alignment
 
 
 class CountryDropDownList(DropDownList):

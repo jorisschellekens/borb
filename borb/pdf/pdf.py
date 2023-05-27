@@ -10,7 +10,6 @@
 """
 import io
 import typing
-from typing import List, Union
 
 from borb.io.read.any_object_transformer import (
     AnyObjectTransformer as ReadAnyObjectTransformer,
@@ -55,7 +54,7 @@ class PDF:
 
     @staticmethod
     def dumps(
-        file: Union[io.BufferedIOBase, io.RawIOBase],
+        file: typing.Union[io.BufferedIOBase, io.RawIOBase],
         document: Document,
     ) -> None:
         """
@@ -73,8 +72,8 @@ class PDF:
 
     @staticmethod
     def loads(
-        file: Union[io.BufferedIOBase, io.RawIOBase],
-        event_listeners: List[EventListener] = [],
+        file: typing.Union[io.BufferedIOBase, io.RawIOBase],
+        event_listeners: typing.List[EventListener] = [],
         password: typing.Optional[str] = None,
     ) -> Document:
         """

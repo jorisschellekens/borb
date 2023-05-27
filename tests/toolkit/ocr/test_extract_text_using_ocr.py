@@ -4,34 +4,24 @@ from pathlib import Path
 
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
+from tests.test_case import TestCase
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestExtractTextUsingOCR(unittest.TestCase):
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
+class TestExtractTextUsingOCR(TestCase):
     @unittest.skip
     def test_write_ocr_as_optional_content_group(self):
         from borb.toolkit.ocr.ocr_as_optional_content_group import (
             OCRAsOptionalContentGroup,
         )
 
-        input_file: Path = Path(__file__).parent / "input_001.pdf"
+        input_file: Path = self.get_artifacts_directory() / "input_001.pdf"
         tesseract_data_dir: Path = Path.home() / Path("Downloads/tessdata-main/")
         with open(input_file, "rb") as pdf_file_handle:
             l = OCRAsOptionalContentGroup(tesseract_data_dir)
             doc = PDF.loads(pdf_file_handle, [l])
-        with open(self.output_dir / "output_001.pdf", "wb") as pdf_file_handle:
+        with open(self.get_first_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
 
     @unittest.skip
@@ -39,7 +29,7 @@ class TestExtractTextUsingOCR(unittest.TestCase):
 
         # extract text from document
         l = SimpleTextExtraction()
-        with open(self.output_dir / "output_001.pdf", "rb") as pdf_file_handle:
+        with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             PDF.loads(pdf_file_handle, [l])
         txt: str = l.get_text_for_page(0)
 

@@ -1,41 +1,26 @@
 import re
+import typing
 import unittest
-from datetime import datetime
 from decimal import Decimal
-from pathlib import Path
 
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import (
-    FixedColumnWidthTable as Table,
-)
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
 from borb.toolkit.text.simple_text_extraction import SimpleTextExtraction
-from tests.test_util import check_pdf_using_validator
+from tests.test_case import TestCase
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestExtractText(unittest.TestCase):
+class TestExtractText(TestCase):
     """
     This test attempts to extract the text of each PDF in the corpus
     """
 
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
-        # find output dir
-        p: Path = Path(__file__).parent
-        while "output" not in [x.stem for x in p.iterdir() if x.is_dir()]:
-            p = p.parent
-        p = p / "output"
-        self.output_dir = Path(p, Path(__file__).stem.replace(".py", ""))
-        if not self.output_dir.exists():
-            self.output_dir.mkdir()
-
-    def test_write_document_001(self):
+    def test_create_dummy_pdf(self):
 
         # create document
         pdf = Document()
@@ -47,19 +32,10 @@ class TestExtractText(unittest.TestCase):
         # add test information
         layout = SingleColumnLayout(page)
         layout.add(
-            Table(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
-            .add(Paragraph(datetime.now().strftime("%d/%m/%Y, %H:%M:%S")))
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(Path(__file__).stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(
-                Paragraph(
-                    "This test creates a PDF with an empty Page, and a Paragraph of text. "
-                    "A subsequent test will attempt to extract all the text from this PDF."
-                )
+            self.get_test_header(
+                test_description="This test creates a PDF with an empty Page, and a Paragraph of text. "
+                "A subsequent test will attempt to extract all the text from this PDF."
             )
-            .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 
         layout.add(
@@ -81,18 +57,18 @@ class TestExtractText(unittest.TestCase):
         )
 
         # attempt to store PDF
-        out_file: Path = self.output_dir / "output_001.pdf"
-        with open(out_file, "wb") as out_file_handle:
+        with open(self.get_first_output_file(), "wb") as out_file_handle:
             PDF.dumps(out_file_handle, pdf)
-        check_pdf_using_validator(out_file)
+        self.check_pdf_using_validator(self.get_first_output_file())
 
-    def test_extract_text_from_document_001(self):
+    def test_extract_text(self):
 
-        doc = None
+        doc: typing.Optional[None] = None
         l = SimpleTextExtraction()
-        with open(self.output_dir / "output_001.pdf", "rb") as file_handle:
+        with open(self.get_first_output_file(), "rb") as file_handle:
             doc = PDF.loads(file_handle, [l])
 
+        assert doc is not None
         page_content: str = l.get_text()[0]
 
         ground_truth: str = """
@@ -105,36 +81,6 @@ class TestExtractText(unittest.TestCase):
 
         for w in re.split("[^a-zA-Z]+", ground_truth):
             assert w in page_content, "Word '%s' not found in extracted text" % w
-
-    def test_write_document_002(self):
-        # create document
-        pdf = Document()
-
-        # add page(s)
-        for s in ["Lorem Ipsum", "Dolor Sit Amet"]:
-            page = Page()
-            pdf.add_page(page)
-            layout = SingleColumnLayout(page)
-            layout.add(Paragraph(s))
-
-        # attempt to store PDF
-        out_file: Path = self.output_dir / "output_002.pdf"
-        with open(out_file, "wb") as out_file_handle:
-            PDF.dumps(out_file_handle, pdf)
-        check_pdf_using_validator(out_file)
-
-    def test_extract_text_from_document_002(self):
-
-        doc = None
-        l = SimpleTextExtraction()
-        with open(self.output_dir / "output_002.pdf", "rb") as file_handle:
-            doc = PDF.loads(file_handle, [l])
-
-        page_content_0: str = l.get_text()[0]
-        assert page_content_0 == "Lorem Ipsum"
-
-        page_content_1: str = l.get_text()[1]
-        assert page_content_1 == "Dolor Sit Amet"
 
 
 if __name__ == "__main__":

@@ -22,8 +22,10 @@ import typing
 from hashlib import sha256
 from pathlib import Path
 
-from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.asymmetric import rsa
 
 from borb.license.uuid import UUID
 
@@ -55,10 +57,42 @@ class License:
     #
 
     @staticmethod
-    def _create(
+    def _create_key_pair(
+        private_key_file: Path = Path(__file__).parent / "private_key.pem",
+        public_key_file: Path = Path(__file__).parent / "public_key.pem",
+    ):
+
+        # Generate a new RSA private key
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+        )
+
+        # Serialize the private key to PEM format and save to file
+        with open(private_key_file, "wb") as f:
+            f.write(
+                private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.PKCS8,
+                    encryption_algorithm=serialization.NoEncryption(),
+                )
+            )
+
+        # Serialize the public key to PEM format and save to file
+        public_key = private_key.public_key()
+        with open(public_key_file, "wb") as f:
+            f.write(
+                public_key.public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PublicFormat.SubjectPublicKeyInfo,
+                )
+            )
+
+    @staticmethod
+    def _create_license(
         company: str = "",
         output_file: Path = Path(__file__).parent / "license_key.json",
-        private_key_file: Path = Path("home/joris/borb_license_private_key.pem"),
+        private_key_file: Path = Path("/home/joris/borb_license_private_key.pem"),
         user_id: str = UUID.get(),
         valid_from_in_ms: int = int(datetime.datetime.now().timestamp() * 1000),
         valid_until_in_ms: int = int(datetime.datetime.now().timestamp() * 1000)
@@ -243,3 +277,12 @@ class License:
 
         # default
         return False
+
+
+if __name__ == "__main__":
+    # noinspection PyProtectedMember
+    License._create_license(
+        company="borb (EZ)",
+        output_file=Path("/home/joris/Code/borb-dev/tests/license/artifacts_test_register_license/license.json"),
+        user_id="Joris Schellekens",
+    )

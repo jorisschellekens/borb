@@ -5,10 +5,11 @@
 This implementation of WriteBaseTransformer is responsible for writing ASCII art in every PDF
 """
 import typing
-from typing import Optional
 
-from borb.io.read.types import AnyPDFType, Stream
-from borb.io.write.transformer import Transformer, WriteTransformerState
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Stream
+from borb.io.write.transformer import Transformer
+from borb.io.write.transformer import WriteTransformerState
 from borb.license.version import Version
 
 
@@ -43,7 +44,7 @@ class VersionAsCommentTransformer(Transformer):
     def transform(
         self,
         object_to_transform: AnyPDFType,
-        context: Optional[WriteTransformerState] = None,
+        context: typing.Optional[WriteTransformerState] = None,
     ):
         """
         This method writes ASCII art to a byte stream

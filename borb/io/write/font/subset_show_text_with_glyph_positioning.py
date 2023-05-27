@@ -6,15 +6,12 @@ Show one or more text strings, allowing individual glyph positioning. Each
 element of array shall be either a string or a number.
 """
 import typing
-from typing import List
 
-from borb.io.read.types import (
-    AnyPDFType,
-    Name,
-    String,
-    HexadecimalString,
-    Decimal as bDecimal,
-)
+from borb.io.read.types import AnyPDFType
+from borb.io.read.types import Decimal as bDecimal
+from borb.io.read.types import HexadecimalString
+from borb.io.read.types import Name
+from borb.io.read.types import String
 from borb.io.write.font.copy_command_operator import CopyCommandOperator
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
@@ -75,7 +72,7 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
         Invoke the TJ operator
         """
 
-        assert isinstance(operands[0], List), "Operand 0 of TJ must be a List"
+        assert isinstance(operands[0], typing.List), "Operand 0 of TJ must be a List"
         canvas = canvas_stream_processor.get_canvas()
 
         # handle Font being a Name (optimization)

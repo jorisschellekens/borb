@@ -13,7 +13,8 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWid
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
-from borb.pdf.canvas.layout.table.table import TableCell, Table
+from borb.pdf.canvas.layout.table.table import Table
+from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 
 
@@ -37,6 +38,7 @@ class TableUtil:
     @staticmethod
     def from_2d_array(
         data: typing.List[typing.List[typing.Any]],
+        font_size: Decimal = Decimal(12),
         header_row: bool = True,
         header_col: bool = False,
         round_to_n_digits: typing.Optional[int] = None,
@@ -91,11 +93,11 @@ class TableUtil:
                 p: typing.Optional[TableCell] = None
                 if (i == 0 and header_row) or (j == 0 and header_col):
                     p = TableCell(
-                        Paragraph(s, font_size=Decimal(12), font="Helvetica-Bold"),
+                        Paragraph(s, font_size=font_size, font="Helvetica-Bold"),
                         background_color=HexColor("f1f3f4"),
                     )
                 else:
-                    p = TableCell(Paragraph(s, font_size=Decimal(12), font="Helvetica"))
+                    p = TableCell(Paragraph(s, font_size=font_size, font="Helvetica"))
                 t.add(p)
 
         # padding

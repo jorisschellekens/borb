@@ -33,4 +33,5 @@ class EndTextObject(CanvasOperator):
         canvas.graphics_state.text_matrix = None
         canvas.graphics_state.text_line_matrix = None
         for l in event_listeners:
+            # noinspection PyProtectedMember
             l._event_occurred(EndTextEvent())

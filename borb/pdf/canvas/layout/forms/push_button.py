@@ -9,9 +9,15 @@ import zlib
 from decimal import Decimal
 
 from borb.io.read.pdf_object import PDFObject
+from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
-from borb.io.read.types import Dictionary, Name, List, String, Stream, Boolean
-from borb.pdf.canvas.color.color import HexColor, Color
+from borb.io.read.types import Dictionary
+from borb.io.read.types import List
+from borb.io.read.types import Name
+from borb.io.read.types import Stream
+from borb.io.read.types import String
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.forms.form_field import FormField
@@ -36,6 +42,10 @@ class PushButton(FormField):
         border_bottom: bool = True,
         border_color: Color = HexColor("767676"),
         border_left: bool = True,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
+        border_radius_top_left: Decimal = Decimal(0),
+        border_radius_top_right: Decimal = Decimal(0),
         border_right: bool = True,
         border_top: bool = True,
         border_width: Decimal = Decimal(1),
@@ -58,10 +68,10 @@ class PushButton(FormField):
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
-            border_radius_bottom_left=Decimal(0),
-            border_radius_bottom_right=Decimal(0),
-            border_radius_top_left=Decimal(0),
-            border_radius_top_right=Decimal(0),
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,

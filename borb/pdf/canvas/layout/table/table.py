@@ -9,9 +9,11 @@ import copy
 import typing
 from decimal import Decimal
 
-from borb.pdf.canvas.color.color import Color, HexColor
+from borb.pdf.canvas.color.color import Color
+from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.layout_element import Alignment, LayoutElement
+from borb.pdf.canvas.layout.layout_element import Alignment
+from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.page.page import Page
 
 
@@ -28,7 +30,7 @@ class TableCell(LayoutElement):
         self,
         layout_element: LayoutElement,
         row_span: int = 1,
-        col_span: int = 1,
+        column_span: int = 1,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = True,
         border_color: Color = HexColor("000000"),
@@ -74,12 +76,12 @@ class TableCell(LayoutElement):
         # fmt: off
         self._layout_element = layout_element
         assert row_span >= 1
-        assert col_span >= 1
+        assert column_span >= 1
         # fmt: on
 
         # grid coordinates taken up by the TableCell
         self._row_span = row_span
-        self._col_span = col_span
+        self._column_span = column_span
         self._table_coordinates: typing.List[typing.Tuple[int, int]] = []
 
         # width of the TableCell
@@ -193,6 +195,13 @@ class TableCell(LayoutElement):
     # PUBLIC
     #
 
+    def get_column_span(self) -> int:
+        """
+        This function returns the column span. This specifies the number of columns a cell should span.
+        :return:    The column span
+        """
+        return self._column_span
+
     def get_layout_box(self, available_space: Rectangle):
         """
         This function returns the previous result of layout
@@ -201,6 +210,77 @@ class TableCell(LayoutElement):
         if self._forced_layout_box is not None:
             return self._forced_layout_box
         return super(TableCell, self).get_layout_box(available_space)
+
+    def get_layout_element(self) -> LayoutElement:
+        """
+        This function returns the LayoutElement in this TableCell
+        :return:    the LayoutElement inside this TableCell
+        """
+        return self._layout_element
+
+    def get_max_width(self) -> typing.Optional[Decimal]:
+        """
+        This function returns the maximum width this TableCell (determined by the LayoutElement inside it).
+        This function returns None if the maximum width has not yet been determined.
+        :return:    the maximum width of this TableCell
+        """
+        return self._max_width
+
+    def get_max_height(self) -> typing.Optional[Decimal]:
+        """
+        This function returns the maximum height this TableCell (determined by the LayoutElement inside it).
+        This function returns None if the maximum height has not yet been determined.
+        :return:    the maximum height of this TableCell
+        """
+        return self._max_height
+
+    def get_min_width(self) -> typing.Optional[Decimal]:
+        """
+        This function returns the minimum width this TableCell (determined by the LayoutElement inside it).
+        This function returns None if the minimum width has not yet been determined.
+        :return:    the minimum width of this TableCell
+        """
+        return self._min_width
+
+    def get_min_height(self) -> typing.Optional[Decimal]:
+        """
+        This function returns the minimum height this TableCell (determined by the LayoutElement inside it).
+        This function returns None if the minimum height has not yet been determined.
+        :return:    the minimum height of this TableCell
+        """
+        return self._min_height
+
+    def get_preferred_height(self) -> typing.Optional[Decimal]:
+        """
+        This function returns the preferred height of this TableCell (determined by a previous run of the LayoutElement framework).
+        This function returns None if the preferred height has not yet been determined.
+        :return:    the preferred height of this TableCell
+        """
+        return self._preferred_height
+
+    def get_preferred_width(self) -> typing.Optional[Decimal]:
+        """
+        This function returns the preferred width of this TableCell (determined by a previous run of the LayoutElement framework).
+        This function returns None if the preferred width has not yet been determined.
+        :return:    the preferred width of this TableCell
+        """
+        return self._preferred_width
+
+    def get_row_span(self) -> int:
+        """
+        This function returns the row span. This specifies the number of rows a cell should span.
+        :return:    The row span
+        """
+        return self._row_span
+
+    def get_table_coordinates(self) -> typing.List[typing.Tuple[int, int]]:
+        """
+        This function returns the coordinates (in the Table) of this TableCell.
+        These coordinates may be a single typing.Tuple[int, int] or a typing.List of such
+        tuples in case of row/column span.
+        :return:    the table coordinates
+        """
+        return self._table_coordinates
 
 
 class Table(LayoutElement):
@@ -276,25 +356,17 @@ class Table(LayoutElement):
     def _get_cells_at(self, row: int, column: int) -> typing.Optional[TableCell]:
         for t in self._content:
             if (
-                len([p for p in t._table_coordinates if p[0] == row and p[1] == column])
+                len(
+                    [
+                        p
+                        for p in t.get_table_coordinates()
+                        if p[0] == row and p[1] == column
+                    ]
+                )
                 > 0
             ):
                 return t
         return None
-
-    def _get_cells_at_column(self, column: int) -> typing.List[TableCell]:
-        out: typing.List[TableCell] = []
-        for t in self._content:
-            if len([p for p in t._table_coordinates if p[1] == column]) > 0:
-                out.append(t)
-        return out
-
-    def _get_cells_at_row(self, row: int) -> typing.List[TableCell]:
-        out: typing.List[TableCell] = []
-        for t in self._content:
-            if len([p for p in t._table_coordinates if p[0] == row]) > 0:
-                out.append(t)
-        return out
 
     #
     # PUBLIC
@@ -311,10 +383,11 @@ class Table(LayoutElement):
             layout_element = TableCell(layout_element)
 
         # add content
+        assert isinstance(layout_element, TableCell)
         self._content.append(layout_element)
 
         # set font_size
-        inner_layout_element: LayoutElement = layout_element._layout_element
+        inner_layout_element: LayoutElement = layout_element.get_layout_element()
         if self._font_size is None:
             self._font_size = inner_layout_element.get_font_size()
 
@@ -323,15 +396,19 @@ class Table(LayoutElement):
             [
                 x
                 for x in range(0, self._number_of_rows)
-                if sum([y._col_span for y in self._get_cells_at_row(x)])
+                if sum([y.get_column_span() for y in self.get_cells_at_row(x)])
                 < self._number_of_columns
             ]
         )
         # check which columns are already occupied in the current row
         occupied_cols_in_row: typing.List[int] = []
-        for c in self._get_cells_at_row(first_incomplete_row):
+        for c in self.get_cells_at_row(first_incomplete_row):
             occupied_cols_in_row.extend(
-                [x[1] for x in c._table_coordinates if x[0] == first_incomplete_row]
+                [
+                    x[1]
+                    for x in c.get_table_coordinates()
+                    if x[0] == first_incomplete_row
+                ]
             )
         # the first empty column is the lowest number that does not appear in occupied_cols_in_row
         first_empty_column: int = min(
@@ -343,8 +420,8 @@ class Table(LayoutElement):
         )
 
         # set _table_coordinates
-        for i in range(0, layout_element._row_span):
-            for j in range(0, layout_element._col_span):
+        for i in range(0, layout_element.get_row_span()):
+            for j in range(0, layout_element.get_column_span()):
                 layout_element._table_coordinates.append(
                     (first_incomplete_row + i, first_empty_column + j)
                 )
@@ -370,7 +447,7 @@ class Table(LayoutElement):
             header_row_color = even_row_color
         assert header_row_color is not None
         for r in range(0, self._number_of_rows):
-            for tc in self._get_cells_at_row(r):
+            for tc in self.get_cells_at_row(r):
                 if r == 0:
                     tc._background_color = header_row_color
                 else:
@@ -379,6 +456,44 @@ class Table(LayoutElement):
                     else:
                         tc._background_color = odd_row_color
         return self
+
+    def get_cells_at_column(self, column: int) -> typing.List[TableCell]:
+        """
+        This function returns all TableCell elements at a given column
+        :param column:  the specified column
+        :return:        all TableCell elements at the given column
+        """
+        out: typing.List[TableCell] = []
+        for t in self._content:
+            if len([p for p in t.get_table_coordinates() if p[1] == column]) > 0:
+                out.append(t)
+        return out
+
+    def get_cells_at_row(self, row: int) -> typing.List[TableCell]:
+        """
+        This function returns all TableCell elements at a given row
+        :param row:  the specified row
+        :return:        all TableCell elements at the given row
+        """
+        out: typing.List[TableCell] = []
+        for t in self._content:
+            if len([p for p in t.get_table_coordinates() if p[0] == row]) > 0:
+                out.append(t)
+        return out
+
+    def get_number_of_columns(self) -> int:
+        """
+        This function returns the number of columns in this Table
+        :return:    the number of columns
+        """
+        return self._number_of_columns
+
+    def get_number_of_rows(self) -> int:
+        """
+        This function returns the number of rows in this Table
+        :return:    the number of rows
+        """
+        return self._number_of_rows
 
     def internal_borders(self) -> "Table":
         """
@@ -390,13 +505,13 @@ class Table(LayoutElement):
             tc._border_right = True
             tc._border_bottom = True
             tc._border_left = True
-        for c in self._get_cells_at_row(0):
+        for c in self.get_cells_at_row(0):
             c._border_top = False
-        for c in self._get_cells_at_row(self._number_of_rows - 1):
+        for c in self.get_cells_at_row(self._number_of_rows - 1):
             c._border_bottom = False
-        for c in self._get_cells_at_column(0):
+        for c in self.get_cells_at_column(0):
             c._border_left = False
-        for c in self._get_cells_at_column(self._number_of_columns - 1):
+        for c in self.get_cells_at_column(self._number_of_columns - 1):
             c._border_right = False
         return self
 
@@ -413,13 +528,13 @@ class Table(LayoutElement):
         except for the borders that form the outside edge of the Table
         """
         self.no_borders()
-        for c in self._get_cells_at_row(0):
+        for c in self.get_cells_at_row(0):
             c._border_top = True
-        for c in self._get_cells_at_row(self._number_of_rows - 1):
+        for c in self.get_cells_at_row(self._number_of_rows - 1):
             c._border_bottom = True
-        for c in self._get_cells_at_column(0):
+        for c in self.get_cells_at_column(0):
             c._border_left = True
-        for c in self._get_cells_at_column(self._number_of_columns - 1):
+        for c in self.get_cells_at_column(self._number_of_columns - 1):
             c._border_right = True
         return self
 

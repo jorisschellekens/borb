@@ -10,19 +10,18 @@ from functools import cmp_to_key
 
 from borb.datastructure.disjoint_set import disjointset
 from borb.io.read.types import Decimal
-from borb.pdf.document.document import Document
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
-from borb.pdf.canvas.event.chunk_of_text_render_event import (
-    ChunkOfTextRenderEvent,
-    LeftToRightComparator,
-)
+from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
+from borb.pdf.canvas.event.chunk_of_text_render_event import LeftToRightComparator
 from borb.pdf.canvas.event.end_page_event import EndPageEvent
-from borb.pdf.canvas.event.event_listener import Event, EventListener
+from borb.pdf.canvas.event.event_listener import Event
+from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.text.line_of_text import LineOfText
+from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
 
@@ -57,8 +56,8 @@ class SimpleLineOfTextExtraction(EventListener):
             for c1 in chunks_of_text_disjoint_set:
                 if c0 == c1:
                     continue
-                r0 = c0._baseline_bounding_box
-                r1 = c1._baseline_bounding_box
+                r0 = c0.get_baseline()
+                r1 = c1.get_baseline()
                 if r0.y != r1.y:
                     continue
                 gap = max(r1.x - (r0.x + r0.width), r0.x - (r1.x + r1.width))
@@ -83,34 +82,34 @@ class SimpleLineOfTextExtraction(EventListener):
             txt = ""
             for i, c in enumerate(chunks_of_text):
                 if i == 0:
-                    txt += c._text
+                    txt += c.get_text()
                     continue
                 # decide whether we need to insert space or not
-                gap = c._baseline_bounding_box.x - (
-                    chunks_of_text[i - 1]._baseline_bounding_box.x
-                    + chunks_of_text[i - 1]._baseline_bounding_box.width
+                gap = c.get_baseline().get_x() - (
+                    chunks_of_text[i - 1].get_baseline().get_x()
+                    + chunks_of_text[i - 1].get_baseline().get_width()
                 )
                 space_gap = chunks_of_text[
                     i - 1
                 ].get_space_character_width_estimate_in_user_space()
                 if gap > space_gap:
                     txt += " "
-                txt += c._text
+                txt += c.get_text()
 
             # build LineOfText
             l: LayoutElement = LineOfText(
                 text=txt,
-                font=chunks_of_text[0]._font,
-                font_size=chunks_of_text[0]._font_size,
-                font_color=chunks_of_text[0]._font_color,
+                font=chunks_of_text[0].get_font(),
+                font_size=chunks_of_text[0].get_font_size(),
+                font_color=chunks_of_text[0].get_font_color(),
             )
             l._previous_layout_box = Rectangle(
-                chunks_of_text[0]._baseline_bounding_box.x,
-                chunks_of_text[0]._baseline_bounding_box.y,
-                chunks_of_text[-1]._baseline_bounding_box.x
-                + chunks_of_text[-1]._baseline_bounding_box.width
-                - chunks_of_text[0]._baseline_bounding_box.x,
-                chunks_of_text[0]._baseline_bounding_box.height,
+                chunks_of_text[0].get_baseline().get_x(),
+                chunks_of_text[0].get_baseline().get_y(),
+                chunks_of_text[-1].get_baseline().get_x()
+                + chunks_of_text[-1].get_baseline().get_width()
+                - chunks_of_text[0].get_baseline().get_x(),
+                chunks_of_text[0].get_baseline().get_height(),
             )
             assert isinstance(l, LineOfText)
             lines_of_text.append(l)

@@ -4,9 +4,9 @@
 """
     This module contains the build information for this project
 """
-from borb.license.version import Version
 import setuptools
 
+from borb.license.version import Version
 
 # open readme
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -14,12 +14,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 # requirements
 required = [
-    "fonttools>=4.22.1",  # TTF fonts
-    "Pillow>=7.1.0",  # image processing
-    "python-barcode>=0.13.1",  # generating barcodes
-    "qrcode[pil]>=6.1",  # generating QR codes
-    "requests>=2.24.0",  # generating images from a URL
-    "setuptools>=51.1.1",  # standard
+    "cryptography>=37.0.4",     # license handling
+    "fonttools>=4.22.1",        # TTF fonts
+    "lxml>=4.9.1",              # XML processing
+    "Pillow>=7.1.0",            # image processing
+    "python-barcode>=0.13.1",   # generating barcodes
+    "qrcode[pil]>=6.1",         # generating QR codes
+    "requests>=2.24.0",         # generating images from a URL
+    "setuptools>=51.1.1",       # standard
 ]
 
 setuptools.setup(

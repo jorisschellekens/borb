@@ -6,7 +6,6 @@ This class represents the meta-information belonging to a PDF document
 """
 import typing
 from decimal import Decimal
-from typing import List, Optional
 
 from borb.io.read.types import Name
 from borb.io.write.conformance_level import ConformanceLevel
@@ -42,7 +41,7 @@ class DocumentInfo:
         # TODO
         return True
 
-    def get_author(self) -> Optional[str]:
+    def get_author(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The name of the person who created the document.
         """
@@ -61,9 +60,10 @@ class DocumentInfo:
         This ConformanceLevel only applies to Document instances that were created by borb.
         :return:    the ConformanceLevel to be used when writing the PDF
         """
+        # noinspection PyProtectedMember
         return self._document._conformance_level_upon_create
 
-    def get_creation_date(self) -> Optional[str]:
+    def get_creation_date(self) -> typing.Optional[str]:
         """
         (Optional) The date and time the document was created, in human-
         readable form (see 7.9.4, “Dates”).
@@ -73,7 +73,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_creator(self) -> Optional[str]:
+    def get_creator(self) -> typing.Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
         the name of the conforming product that created the original document
@@ -84,13 +84,13 @@ class DocumentInfo:
         except:
             return None
 
-    def get_file_size(self) -> Optional[Decimal]:
+    def get_file_size(self) -> typing.Optional[Decimal]:
         """
         This function returns the filesize (in bytes) of this Document
         """
         return self._document.get("FileSize", None)
 
-    def get_ids(self) -> Optional[List[str]]:
+    def get_ids(self) -> typing.Optional[typing.List[str]]:
         """
         File identifiers shall be defined by the optional ID entry in a PDF file’s trailer dictionary (see 7.5.5, “File Trailer”).
         The ID entry is optional but should be used. The value of this entry shall be an array of two byte strings. The
@@ -109,7 +109,7 @@ class DocumentInfo:
             return self._document["XRef"]["Trailer"]["ID"]
         return None
 
-    def get_keywords(self) -> Optional[str]:
+    def get_keywords(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) Keywords associated with the document.
         """
@@ -118,7 +118,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_language(self) -> Optional[str]:
+    def get_language(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.4) A language identifier that shall specify the
         natural language for all text in the document except where
@@ -131,7 +131,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_modification_date(self) -> Optional[str]:
+    def get_modification_date(self) -> typing.Optional[str]:
         """
         Required if PieceInfo is present in the document catalogue;
         otherwise optional; PDF 1.1) The date and time the document was
@@ -142,7 +142,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_number_of_pages(self) -> Optional[Decimal]:
+    def get_number_of_pages(self) -> typing.Optional[Decimal]:
         """
         This function returns the number of pages in the Document
         """
@@ -161,7 +161,7 @@ class DocumentInfo:
             if "Name" in x
         ]
 
-    def get_producer(self) -> Optional[str]:
+    def get_producer(self) -> typing.Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
         the name of the conforming product that converted it to PDF.
@@ -171,7 +171,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_subject(self) -> Optional[str]:
+    def get_subject(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The subject of the document.
         """
@@ -180,7 +180,7 @@ class DocumentInfo:
         except:
             return None
 
-    def get_title(self) -> Optional[str]:
+    def get_title(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The document’s title.
         """
@@ -259,7 +259,7 @@ class XMPDocumentInfo(DocumentInfo):
     # PUBLIC
     #
 
-    def get_author(self) -> Optional[str]:
+    def get_author(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The name of the person who created the document.
         """
@@ -272,7 +272,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_creation_date(self) -> Optional[str]:
+    def get_creation_date(self) -> typing.Optional[str]:
         """
         (Optional) The date and time the document was created, in human-
         readable form (see 7.9.4, “Dates”).
@@ -295,7 +295,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_creator(self) -> Optional[str]:
+    def get_creator(self) -> typing.Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
         the name of the conforming product that created the original document
@@ -319,7 +319,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_document_id(self) -> Optional[str]:
+    def get_document_id(self) -> typing.Optional[str]:
         """
         The common identifier for all versions and renditions of a document.
         It should be based on a UUID; see Document and Instance IDs.
@@ -333,7 +333,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_instance_id(self) -> Optional[str]:
+    def get_instance_id(self) -> typing.Optional[str]:
         """
         An identifier for a specific incarnation of a document, updated each time a file is saved.
         It should be based on a UUID; see Document and Instance IDs.
@@ -347,7 +347,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_keywords(self) -> Optional[str]:
+    def get_keywords(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) Keywords associated with the document.
         """
@@ -369,7 +369,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_metadata_date(self) -> Optional[str]:
+    def get_metadata_date(self) -> typing.Optional[str]:
         """
         (Optional) The date and time the metadata for this document was created, in human-
         readable form (see 7.9.4, “Dates”).
@@ -383,7 +383,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_modification_date(self) -> Optional[str]:
+    def get_modification_date(self) -> typing.Optional[str]:
         """
         Required if PieceInfo is present in the document catalogue;
         otherwise optional; PDF 1.1) The date and time the document was
@@ -407,7 +407,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_original_document_id(self) -> Optional[str]:
+    def get_original_document_id(self) -> typing.Optional[str]:
         """
         Refer to Part 1, Data Model, Serialization, and Core Properties, for definition.
         """
@@ -420,7 +420,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_producer(self) -> Optional[str]:
+    def get_producer(self) -> typing.Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
         the name of the conforming product that converted it to PDF.
@@ -443,7 +443,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_publisher(self) -> Optional[str]:
+    def get_publisher(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The name of the person/software who/which published the document.
         """
@@ -456,7 +456,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_subject(self) -> Optional[str]:
+    def get_subject(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The subject of the document.
         """
@@ -469,7 +469,7 @@ class XMPDocumentInfo(DocumentInfo):
         except:
             return None
 
-    def get_title(self) -> Optional[str]:
+    def get_title(self) -> typing.Optional[str]:
         """
         (Optional; PDF 1.1) The document’s title.
         """
