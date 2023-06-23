@@ -15,6 +15,7 @@ from borb.io.write.document.information_dictionary_transformer import (
     InformationDictionaryTransformer,
 )
 from borb.io.write.image.image_transformer import ImageTransformer
+from borb.io.write.image.rgba_image_transformer import RGBAImageTransformer
 from borb.io.write.object.array_transformer import ArrayTransformer
 from borb.io.write.object.dictionary_transformer import DictionaryTransformer
 from borb.io.write.object.stream_transformer import StreamTransformer
@@ -59,6 +60,7 @@ class AnyObjectTransformer(Transformer):
         self.add_child_transformer(ArrayTransformer())
         self.add_child_transformer(StreamTransformer())
         self.add_child_transformer(DictionaryTransformer())
+        self.add_child_transformer(RGBAImageTransformer())
         self.add_child_transformer(ImageTransformer())
         self.add_child_transformer(XMPTransformer())
         # primitives

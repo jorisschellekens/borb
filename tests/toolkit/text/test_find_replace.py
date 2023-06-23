@@ -66,7 +66,9 @@ class TestFindReplace(TestCase):
         assert doc is not None
 
         # find/replace
-        doc = SimpleFindReplace.sub("elit", "oled", doc)
+        doc = SimpleFindReplace.sub(
+            pattern="elit", repl="oled", doc=doc, repl_font_size=Decimal(7)
+        )
 
         # attempt to store PDF
         with open(self.get_second_output_file(), "wb") as out_file_handle:
@@ -82,7 +84,9 @@ class TestFindReplace(TestCase):
         assert doc is not None
 
         # find/replace
-        doc = SimpleFindReplace.sub("elit", "elit", doc)
+        doc = SimpleFindReplace.sub(
+            pattern="elit", repl="elit", doc=doc, repl_font_size=Decimal(7)
+        )
 
         # attempt to store PDF
         with open(self.get_third_output_file(), "wb") as out_file_handle:
@@ -99,7 +103,11 @@ class TestFindReplace(TestCase):
 
         # find/replace
         doc = SimpleFindReplace.sub(
-            "elit", "oled", doc, repl_font_color=HexColor("ff0000")
+            pattern="elit",
+            repl="oled",
+            doc=doc,
+            repl_font_size=Decimal(7),
+            repl_font_color=HexColor("ff0000"),
         )
 
         # attempt to store PDF
@@ -121,7 +129,7 @@ class TestFindReplace(TestCase):
             "oled",
             doc,
             repl_font=StandardType1Font("Courier"),
-            repl_font_size=Decimal(9),
+            repl_font_size=Decimal(6.125),
         )
 
         # attempt to store PDF

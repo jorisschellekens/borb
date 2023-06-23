@@ -60,7 +60,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_first_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_first_output_file())
-        self.compare_visually_to_ground_truth(self.get_first_output_file())
+        self.compare_visually_to_ground_truth(self.get_first_output_file(), 0.00065)
 
     def test_add_3d_density_plot_using_borders(self):
         pdf: Document = Document()
@@ -84,7 +84,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_second_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_second_output_file())
-        self.compare_visually_to_ground_truth(self.get_second_output_file())
+        self.compare_visually_to_ground_truth(self.get_second_output_file(), 0.00065)
 
         TestAdd3DDensityPlot.DENSITY_PLOT._border_top = False
         TestAdd3DDensityPlot.DENSITY_PLOT._border_right = False
@@ -110,7 +110,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_third_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_third_output_file())
-        self.compare_visually_to_ground_truth(self.get_third_output_file())
+        self.compare_visually_to_ground_truth(self.get_third_output_file(), 0.00065)
         TestAdd3DDensityPlot.DENSITY_PLOT._horizontal_alignment = Alignment.LEFT
 
     def test_add_3d_density_plot_using_horizontal_alignment_centered(self):
@@ -128,7 +128,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_fourth_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_fourth_output_file())
-        self.compare_visually_to_ground_truth(self.get_fourth_output_file())
+        self.compare_visually_to_ground_truth(self.get_fourth_output_file(), 0.00065)
         TestAdd3DDensityPlot.DENSITY_PLOT._horizontal_alignment = Alignment.LEFT
 
     def test_add_3d_density_plot_using_horizontal_alignment_right(self):
@@ -146,7 +146,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_fifth_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_fifth_output_file())
-        self.compare_visually_to_ground_truth(self.get_fifth_output_file())
+        self.compare_visually_to_ground_truth(self.get_fifth_output_file(), 0.00065)
         TestAdd3DDensityPlot.DENSITY_PLOT._horizontal_alignment = Alignment.LEFT
 
     def test_add_orderedlist_of_3d_density_plots(self):
@@ -168,7 +168,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_sixth_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_sixth_output_file())
-        self.compare_visually_to_ground_truth(self.get_sixth_output_file())
+        self.compare_visually_to_ground_truth(self.get_sixth_output_file(), 0.00065)
 
     def test_add_unorderedlist_of_3d_density_plots(self):
         pdf: Document = Document()
@@ -189,7 +189,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_seventh_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_seventh_output_file())
-        self.compare_visually_to_ground_truth(self.get_seventh_output_file())
+        self.compare_visually_to_ground_truth(self.get_seventh_output_file(), 0.00065)
 
     def test_add_table_of_3d_density_plots(self):
         pdf: Document = Document()
@@ -211,7 +211,7 @@ class TestAdd3DDensityPlot(TestCase):
         with open(self.get_eight_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
         self.check_pdf_using_validator(self.get_eight_output_file())
-        self.compare_visually_to_ground_truth(self.get_eight_output_file())
+        self.compare_visually_to_ground_truth(self.get_eight_output_file(), 0.00065)
 
 
 if __name__ == "__main__":

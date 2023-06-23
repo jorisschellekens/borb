@@ -6,6 +6,7 @@ from pathlib import Path
 import requests
 
 from borb.pdf import Document
+from borb.pdf import Lipsum
 from borb.pdf import PDF
 from borb.pdf import Page
 from borb.pdf import PageLayout
@@ -69,12 +70,9 @@ class TestTextWrappingPerformance(TestCase):
             print("%d\t%f" % (i, avg))
 
             # check
-            assert (
-                avg < expected_avg + 2
-            ), "Expected Paragraph layout to take max. %f seconds, it took %f" % (
-                expected_avg,
-                avg,
-            )
+            # fmt: off
+            assert (avg < expected_avg + 2), "Expected Paragraph layout to take max. %f seconds, it took %f" % (expected_avg, avg)
+            # fmt: on
 
             # write
             output_file: Path = self.get_artifacts_directory() / ("output_%d.pdf" % i)

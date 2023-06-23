@@ -167,7 +167,9 @@ class ShowTextMod(CanvasOperator):
 
         # write every glyph
         jump_from_redacted: bool = False
-        for evt in ChunkOfTextRenderEvent(canvas.graphics_state, operands[0]).split_on_glyphs():
+        for evt in ChunkOfTextRenderEvent(
+            canvas.graphics_state, operands[0]
+        ).split_on_glyphs():
 
             letter_should_be_redacted: bool = any(
                 [
@@ -176,7 +178,9 @@ class ShowTextMod(CanvasOperator):
                 ]
             )
             graphics_state = canvas_stream_processor.get_canvas().graphics_state
-            event_bounding_box: typing.Optional[Rectangle] = evt.get_previous_layout_box()
+            event_bounding_box: typing.Optional[
+                Rectangle
+            ] = evt.get_previous_layout_box()
             assert event_bounding_box is not None
             w: Decimal = event_bounding_box.get_width()
 

@@ -25,6 +25,7 @@ class TestMultiColumnLayoutIsCopiedToNextPage(TestCase):
                 test_description="This test sets a MultiColumnLayout to a PDF with 1 column"
             )
         )
+        random.seed(0)
         for s in [
             Lipsum.generate_arthur_conan_doyle_text(random.choice([5, 6, 7]))
             for _ in range(0, 16)
@@ -43,9 +44,11 @@ class TestMultiColumnLayoutIsCopiedToNextPage(TestCase):
         layout = MultiColumnLayout(page, number_of_columns=2)
         layout.add(
             self.get_test_header(
-                test_description="This test sets a MultiColumnLayout to a PDF with 2 column"
+                test_description="This test sets a MultiColumnLayout to a PDF with 2 column",
+                font_size=Decimal(8),
             )
         )
+        random.seed(0)
         for s in [
             Lipsum.generate_arthur_conan_doyle_text(random.choice([5, 6, 7]))
             for _ in range(0, 16)
@@ -64,9 +67,11 @@ class TestMultiColumnLayoutIsCopiedToNextPage(TestCase):
         layout = MultiColumnLayout(page, number_of_columns=3)
         layout.add(
             self.get_test_header(
-                test_description="This test sets a MultiColumnLayout to a PDF with 3 columns"
+                test_description="This test sets a MultiColumnLayout to a PDF with 3 columns",
+                font_size=Decimal(6),
             )
         )
+        random.seed(0)
         for s in [
             Lipsum.generate_arthur_conan_doyle_text(random.choice([5, 6, 7]))
             for _ in range(0, 16)

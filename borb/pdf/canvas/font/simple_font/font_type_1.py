@@ -366,14 +366,14 @@ class Type1Font(SimpleFont):
         ]:
             try:
                 if self["Encoding"] == "WinAnsiEncoding":
-                    return int(unicode.encode("cp1252"))
+                    return int(unicode.encode("cp1252")[0])
                 elif self["Encoding"] == "MacRomanEncoding":
-                    return int(unicode.encode("mac-roman"))
+                    return int(unicode.encode("mac-roman")[0])
                 elif self["Encoding"] == "MacExpertEncoding":
                     # TODO replace by actual MacExpertEncoding
-                    return int(unicode.encode("mac-roman"))
+                    return int(unicode.encode("mac-roman")[0])
                 elif self["Encoding"] == "StandardEncoding":
-                    return int(adobe_standard_encode(unicode))
+                    return int(adobe_standard_encode(unicode)[0])
             except:
                 return None
 

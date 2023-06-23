@@ -85,12 +85,12 @@ class TestAddFlowchartShapes(TestCase):
         )
 
         # captions
-        t.add(Paragraph("Process"))
-        t.add(Paragraph("Decision"))
-        t.add(Paragraph("Document"))
-        t.add(Paragraph("Predefined Document"))
-        t.add(Paragraph("Multiple Documents"))
-        t.add(Paragraph("Data"))
+        t.add(Paragraph("Process", font_size=Decimal(10)))
+        t.add(Paragraph("Decision", font_size=Decimal(10)))
+        t.add(Paragraph("Document", font_size=Decimal(10)))
+        t.add(Paragraph("Predefined Document", font_size=Decimal(10)))
+        t.add(Paragraph("Multiple Documents", font_size=Decimal(10)))
+        t.add(Paragraph("Data", font_size=Decimal(10)))
 
         # second row of shapes
         t.add(
@@ -141,12 +141,12 @@ class TestAddFlowchartShapes(TestCase):
         )
 
         # captions
-        t.add(Paragraph("Predefined Process"))
-        t.add(Paragraph("Stored Data"))
-        t.add(Paragraph("Internal Storage"))
-        t.add(Paragraph("Sequential Data"))
-        t.add(Paragraph("Direct Data"))
-        t.add(Paragraph("Manual Input"))
+        t.add(Paragraph("Predefined Process", font_size=Decimal(10)))
+        t.add(Paragraph("Stored Data", font_size=Decimal(10)))
+        t.add(Paragraph("Internal Storage", font_size=Decimal(10)))
+        t.add(Paragraph("Sequential Data", font_size=Decimal(10)))
+        t.add(Paragraph("Direct Data", font_size=Decimal(10)))
+        t.add(Paragraph("Manual Input", font_size=Decimal(10)))
 
         # third row of shapes
         t.add(
@@ -205,12 +205,12 @@ class TestAddFlowchartShapes(TestCase):
         )
 
         # captions
-        t.add(Paragraph("Manual Operation"))
-        t.add(Paragraph("Card"))
-        t.add(Paragraph("Paper Tape"))
-        t.add(Paragraph("Display"))
-        t.add(Paragraph("Preparation"))
-        t.add(Paragraph("Loop Limit"))
+        t.add(Paragraph("Manual Operation", font_size=Decimal(10)))
+        t.add(Paragraph("Card", font_size=Decimal(10)))
+        t.add(Paragraph("Paper Tape", font_size=Decimal(10)))
+        t.add(Paragraph("Display", font_size=Decimal(10)))
+        t.add(Paragraph("Preparation", font_size=Decimal(10)))
+        t.add(Paragraph("Loop Limit", font_size=Decimal(10)))
 
         # fourth row of shapes
         t.add(
@@ -269,12 +269,12 @@ class TestAddFlowchartShapes(TestCase):
         )
 
         # captions
-        t.add(Paragraph("Termination"))
-        t.add(Paragraph("Collate"))
-        t.add(Paragraph("Delay"))
-        t.add(Paragraph("Extract"))
-        t.add(Paragraph("Merge"))
-        t.add(Paragraph("Or"))
+        t.add(Paragraph("Termination", font_size=Decimal(10)))
+        t.add(Paragraph("Collate", font_size=Decimal(10)))
+        t.add(Paragraph("Delay", font_size=Decimal(10)))
+        t.add(Paragraph("Extract", font_size=Decimal(10)))
+        t.add(Paragraph("Merge", font_size=Decimal(10)))
+        t.add(Paragraph("Or", font_size=Decimal(10)))
 
         # fifth row of shapes
         t.add(
@@ -333,12 +333,12 @@ class TestAddFlowchartShapes(TestCase):
         )
 
         # captions
-        t.add(Paragraph("Sort"))
-        t.add(Paragraph("Summing Junction"))
-        t.add(Paragraph("Database"))
-        t.add(Paragraph("On Page Reference"))
-        t.add(Paragraph("Off Page Reference"))
-        t.add(Paragraph("Process ISO 9000"))
+        t.add(Paragraph("Sort", font_size=Decimal(10)))
+        t.add(Paragraph("Summing Junction", font_size=Decimal(10)))
+        t.add(Paragraph("Database", font_size=Decimal(10)))
+        t.add(Paragraph("On Page Reference", font_size=Decimal(10)))
+        t.add(Paragraph("Off Page Reference", font_size=Decimal(10)))
+        t.add(Paragraph("Process ISO 9000", font_size=Decimal(10)))
 
         t.set_padding_on_all_cells(Decimal(10), Decimal(10), Decimal(10), Decimal(10))
         layout.add(t)

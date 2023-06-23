@@ -283,6 +283,8 @@ if __name__ == "__main__":
     # noinspection PyProtectedMember
     License._create_license(
         company="borb (EZ)",
-        output_file=Path("/home/joris/Code/borb-dev/tests/license/artifacts_test_register_license/license.json"),
+        output_file=Path(
+            "/home/joris/Code/borb-dev/tests/license/artifacts_test_register_license/license.json"
+        ),
         user_id="Joris Schellekens",
     )

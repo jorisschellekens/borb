@@ -80,7 +80,15 @@ class TestCase(unittest.TestCase):
     def get_fifteenth_output_file(self) -> Path:
         return self.get_artifacts_directory() / "output_015.pdf"
 
-    def get_test_header(self, test_description: str = "") -> LayoutElement:
+    @staticmethod
+    def _trim_text(s: str, n: int = 38) -> str:
+        if len(s) < n:
+            return s
+        return s[0 : (n - 4) // 2] + " .. " + s[-((n - 4) // 2) :]
+
+    def get_test_header(
+        self, test_description: str = "", font_size: Decimal = Decimal(12)
+    ) -> LayoutElement:
 
         # determine __file__ from calling code
         inherited_test_file: Path = Path(
@@ -90,17 +98,22 @@ class TestCase(unittest.TestCase):
         # return
         return (
             FixedColumnWidthTable(number_of_columns=2, number_of_rows=3)
-            .add(Paragraph("Date", font="Helvetica-Bold"))
+            .add(Paragraph("Date", font="Helvetica-Bold", font_size=font_size))
             .add(
                 Paragraph(
                     datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
                     font_color=HexColor("00ff00"),
+                    font_size=font_size,
                 )
             )
-            .add(Paragraph("Test", font="Helvetica-Bold"))
-            .add(Paragraph(inherited_test_file.stem))
-            .add(Paragraph("Description", font="Helvetica-Bold"))
-            .add(Paragraph(test_description))
+            .add(Paragraph("Test", font="Helvetica-Bold", font_size=font_size))
+            .add(
+                Paragraph(
+                    TestCase._trim_text(inherited_test_file.stem), font_size=font_size
+                )
+            )
+            .add(Paragraph("Description", font="Helvetica-Bold", font_size=font_size))
+            .add(Paragraph(test_description, font_size=font_size))
             .set_padding_on_all_cells(Decimal(2), Decimal(2), Decimal(2), Decimal(2))
         )
 

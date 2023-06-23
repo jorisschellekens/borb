@@ -125,12 +125,10 @@ class FlexibleColumnWidthTable(Table):
         # 2.    For each column, determine a maximum and minimum column width from the cells that span only that column.
         #       The minimum is that required by the cell with the largest minimum cell width (or the column 'width', whichever is larger).
         #       The maximum is that required by the cell with the largest maximum cell width (or the column 'width', whichever is larger).
-        min_column_widths: typing.List[Decimal] = [
-            self._get_min_column_width(i) for i in range(0, self._number_of_columns)
-        ]
-        max_column_widths: typing.List[Decimal] = [
-            self._get_max_column_width(i) for i in range(0, self._number_of_columns)
-        ]
+        # fmt: off
+        min_column_widths: typing.List[Decimal] = [self._get_min_column_width(i) for i in range(0, self._number_of_columns)]
+        max_column_widths: typing.List[Decimal] = [self._get_max_column_width(i) for i in range(0, self._number_of_columns)]
+        # fmt: on
 
         # 3.    For each cell that spans more than one column, increase the minimum widths of the columns it spans so that together,
         #       they are at least as wide as the cell. Do the same for the maximum widths.

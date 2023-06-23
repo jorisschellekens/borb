@@ -36,7 +36,7 @@ class TestAddEmoji(TestCase):
             # add Emoji
             layout.add(
                 self.get_test_header(
-                    f"This test writes a PDF containing a single emoji, {e.name}. It does so for every emoji."
+                    f"This test writes a PDF containing a single emoji, {e.name.replace('_', ' ')}. It does so for every emoji."
                 )
             )
             layout.add(e.value)
@@ -86,6 +86,32 @@ class TestAddEmoji(TestCase):
             PDF.dumps(pdf_file_handle, pdf)
         self.compare_visually_to_ground_truth(self.get_second_output_file())
         self.check_pdf_using_validator(self.get_second_output_file())
+
+    def test_add_3_emoji(self):
+
+        # create empty document
+        pdf: Document = Document()
+        page: Page = Page()
+        pdf.add_page(page)
+        layout = SingleColumnLayout(page)
+
+        # add content
+        layout.add(
+            self.get_test_header(
+                "This tests creates a PDF with 3 emoji in it."
+            )
+        )
+
+        # add emoji
+        layout.add(Emojis.A.value)
+        layout.add(Emojis.AB.value)
+        layout.add(Emojis.ABC.value)
+
+        # write
+        with open(self.get_third_output_file(), "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+        self.compare_visually_to_ground_truth(self.get_third_output_file())
+        self.check_pdf_using_validator(self.get_third_output_file())
 
     def test_add_emoji_to_heterogeneousparagraph(self):
         pass

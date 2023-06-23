@@ -69,7 +69,6 @@ class UsageStatistics:
             "event": event,
             "license_valid_from_in_ms": License.get_valid_from_in_ms(),
             "license_valid_until_in_ms": License.get_valid_until_in_ms(),
-            "machine_id": UsageStatistics._get_machine_id(),
             "number_of_pages": number_of_pages,
             "sys_platform": sys.platform,
             "utc_time_in_ms": int(datetime.now(timezone.utc).timestamp() * 1000),

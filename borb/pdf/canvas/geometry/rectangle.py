@@ -37,6 +37,13 @@ class Rectangle:
     # PRIVATE
     #
 
+    def __hash__(self):
+        attr_hash_for_layout: int = 1927868237
+        for a in [int(self.x), int(self.y), int(self.width), int(self.height)]:
+            h: int = hash(a)
+            attr_hash_for_layout ^= (h ^ (h << 16) ^ 89869747) * 3644798167
+        return attr_hash_for_layout * 69069 + 907133923
+
     #
     # PUBLIC
     #

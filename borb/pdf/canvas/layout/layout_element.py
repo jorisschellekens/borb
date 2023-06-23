@@ -556,28 +556,14 @@ class LayoutElement:
         if self._border_bottom:
             vertical_border_width += self._border_width
 
+        # fmt: off
         cbox_available_space: Rectangle = Rectangle(
-            available_space.get_x()
-            + self._padding_left
-            + (self._border_width if self._border_left else Decimal(0)),
-            available_space.get_y()
-            + self._padding_bottom
-            + (self._border_width if self._border_bottom else Decimal(0)),
-            max(
-                Decimal(0),
-                available_space.get_width()
-                - self._padding_left
-                - self._padding_right
-                - horizontal_border_width,
-            ),
-            max(
-                Decimal(0),
-                available_space.get_height()
-                - self._padding_top
-                - self._padding_bottom
-                - vertical_border_width,
-            ),
+            available_space.get_x() + self._padding_left + (self._border_width if self._border_left else Decimal(0)),
+            available_space.get_y() + self._padding_bottom + (self._border_width if self._border_bottom else Decimal(0)),
+            max(Decimal(0), available_space.get_width() - self._padding_left - self._padding_right - horizontal_border_width),
+            max(Decimal(0), available_space.get_height() - self._padding_top - self._padding_bottom - vertical_border_width),
         )
+        # fmt: on
 
         # determine content_box
         cbox: Rectangle = self._get_content_box(cbox_available_space)
@@ -603,22 +589,14 @@ class LayoutElement:
             cbox.x += delta_x
 
         # paint the background first
+        # fmt: off
         bgbox: Rectangle = Rectangle(
-            cbox.get_x()
-            - self._padding_left
-            - (self._border_width if self._border_left else Decimal(0)),
-            cbox.get_y()
-            - self._padding_bottom
-            - (self._border_width if self._border_bottom else Decimal(0)),
-            cbox.get_width()
-            + self._padding_left
-            + self._padding_right
-            + horizontal_border_width,
-            cbox.get_height()
-            + self._padding_top
-            + self._padding_bottom
-            + vertical_border_width,
+            cbox.get_x() - self._padding_left - (self._border_width if self._border_left else Decimal(0)),
+            cbox.get_y() - self._padding_bottom - (self._border_width if self._border_bottom else Decimal(0)),
+            cbox.get_width() + self._padding_left + self._padding_right + horizontal_border_width,
+            cbox.get_height() + self._padding_top + self._padding_bottom + vertical_border_width,
         )
+        # fmt: on
         self._paint_background(page, bgbox)
 
         # paint the borders

@@ -171,6 +171,7 @@ class Image(LayoutElement):
 
         # self._image should be a PIL Image by now
         assert isinstance(self._image, PILImage.Image)
+        # self._image = self._image.resize(size=(int(self._width), int(self._height)))
         PDFObject.add_pdf_object_methods(self._image)
 
         # set width / height

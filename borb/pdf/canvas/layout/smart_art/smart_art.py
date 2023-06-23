@@ -880,11 +880,20 @@ class SmartArt:
         assert len(text) > 0
         assert font_size > 0
         table: FlexibleColumnWidthTable = FlexibleColumnWidthTable(
-            number_of_columns=4, number_of_rows=3
+            number_of_columns=4, number_of_rows=1
         )
 
         # row 1
-        table.add(Paragraph(" "))
+        table.add(
+            ConnectedShape(
+                LineArtFactory.arrow_up(
+                    Rectangle(Decimal(0), Decimal(0), Decimal(32), Decimal(32))
+                ),
+                stroke_color=background_color,
+                fill_color=background_color,
+                vertical_alignment=Alignment.MIDDLE,
+            )
+        )
         table.add(
             TableCell(
                 Paragraph(
@@ -893,7 +902,6 @@ class SmartArt:
                     font_color=font_color,
                     background_color=background_color,
                 ),
-                row_span=3,
                 border_radius_bottom_left=Decimal(20),
                 background_color=background_color,
             )
@@ -906,21 +914,8 @@ class SmartArt:
                     font_color=font_color,
                     background_color=foreground_color,
                 ),
-                row_span=3,
                 border_radius_top_right=Decimal(20),
                 background_color=foreground_color,
-            )
-        )
-        table.add(Paragraph(" "))
-
-        # row 2
-        table.add(
-            ConnectedShape(
-                LineArtFactory.arrow_up(
-                    Rectangle(Decimal(0), Decimal(0), Decimal(32), Decimal(32))
-                ),
-                stroke_color=background_color,
-                fill_color=background_color,
             )
         )
         table.add(
@@ -930,12 +925,9 @@ class SmartArt:
                 ),
                 stroke_color=foreground_color,
                 fill_color=foreground_color,
+                vertical_alignment=Alignment.MIDDLE,
             )
         )
-
-        # row 3
-        table.add(Paragraph(" "))
-        table.add(Paragraph(" "))
 
         # set global properties
         table.set_padding_on_all_cells(font_size, font_size, font_size, font_size)

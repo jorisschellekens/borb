@@ -13,9 +13,7 @@ class TestAddSmartArtOpposingIdeas(TestCase):
         page: Page = Page()
         doc.add_page(page)
         layout: PageLayout = SingleColumnLayout(page)
-        layout.add(
-            self.get_test_header(test_description="This test adds SmartArt to a PDF.")
-        )
+        layout.add(self.get_test_header(test_description="This test adds SmartArt to a PDF."))
         layout.add(
             SmartArt.opposing_ideas(
                 [
