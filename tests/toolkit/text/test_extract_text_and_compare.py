@@ -5,8 +5,6 @@ import typing
 import unittest
 from pathlib import Path
 
-import matplotlib.pyplot as plt
-
 from borb.pdf.pdf import PDF
 from borb.toolkit import SimpleTextExtraction
 
@@ -35,7 +33,6 @@ class TestExtractTextAndCompare(unittest.TestCase):
         random.shuffle(pdfs)
         pdfs = pdfs[0:10]
         self._test_list_of_documents(pdfs)
-        plt.close("all")
 
     @unittest.skip
     def test_open_100_documents(self):
@@ -50,7 +47,6 @@ class TestExtractTextAndCompare(unittest.TestCase):
         random.shuffle(pdfs)
         pdfs = pdfs[0:100]
         self._test_list_of_documents(pdfs)
-        plt.close("all")
 
     @unittest.skip
     def test_open_500_documents(self):
@@ -65,7 +61,6 @@ class TestExtractTextAndCompare(unittest.TestCase):
         random.shuffle(pdfs)
         pdfs = pdfs[0:500]
         self._test_list_of_documents(pdfs)
-        plt.close("all")
 
     def _test_list_of_documents(self, documents: typing.List[Path]):
         self.TIMING_INFORMATION = {}

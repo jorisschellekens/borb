@@ -35,9 +35,11 @@ class TestExportMarkdownToPDF(TestCase):
             width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
         )
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayout(
-            page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
-        )
+        layout: PageLayout = SingleColumnLayoutWithOverflow(page)
+        layout._margin_top = Decimal(12)
+        layout._margin_right = Decimal(0)
+        layout.margin_bottom = Decimal(12)
+        layout._margin_left = Decimal(0)
 
         # path to _font
         font_path: Path = self.get_artifacts_directory() / "SimHei.ttf"
@@ -122,9 +124,11 @@ class TestExportMarkdownToPDF(TestCase):
             width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
         )
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayoutWithOverflow(
-            page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
-        )
+        layout: PageLayout = SingleColumnLayoutWithOverflow(page)
+        layout._margin_top = Decimal(12)
+        layout._margin_right = Decimal(0)
+        layout.margin_bottom = Decimal(12)
+        layout._margin_left = Decimal(0)
         layout.add(MarkdownToPDF.convert_markdown_to_layout_element(txt))
 
         # store

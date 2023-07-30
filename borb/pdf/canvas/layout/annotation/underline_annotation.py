@@ -31,7 +31,6 @@ class UnderlineAnnotation(Annotation):
     def __init__(
         self, bounding_box: Rectangle, stroke_color: Color = HexColor("faed27")
     ):
-
         super(UnderlineAnnotation, self).__init__(
             bounding_box=bounding_box, color=stroke_color
         )

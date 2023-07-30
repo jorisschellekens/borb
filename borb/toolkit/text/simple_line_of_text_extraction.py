@@ -45,7 +45,6 @@ class SimpleLineOfTextExtraction(EventListener):
     #
 
     def _end_page(self, page: Page):
-
         # build initial disjointset
         chunks_of_text_disjoint_set = disjointset()
         for x in self._chunks_of_text:

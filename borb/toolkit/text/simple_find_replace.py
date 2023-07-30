@@ -63,7 +63,6 @@ class SimpleFindReplace:
         else:
             page_range = [x for x in page_range if x >= 0 and x < number_of_pages]
         for page_nr in page_range:
-
             # insert redaction annotations
             page: Page = doc.get_page(page_nr)
             for pdf_match in matches_per_page[page_nr]:
@@ -81,7 +80,6 @@ class SimpleFindReplace:
 
             # insert new text (helvetica)
             for pdf_match in matches_per_page[page_nr]:
-
                 # bounding box
                 # fmt: off
                 bb_x: Decimal = pdf_match.get_bounding_boxes()[0].get_x()

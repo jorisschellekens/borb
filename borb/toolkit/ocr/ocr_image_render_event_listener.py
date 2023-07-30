@@ -151,7 +151,6 @@ class OCRImageRenderEventListener(EventListener):
             return
 
         if isinstance(event, ImageRenderEvent):
-
             data = pytesseract.image_to_data(
                 event.get_image(),
                 lang="eng",
@@ -164,7 +163,6 @@ class OCRImageRenderEventListener(EventListener):
 
             number_of_boxes: int = len(data["level"])
             for i in range(0, number_of_boxes):
-
                 x: Decimal = Decimal(data["left"][i])
                 # tesseract considers (LEFT, TOP) to be the origin
                 # PDF prefers (LEFT, BOTTOM)
@@ -226,7 +224,6 @@ class OCRImageRenderEventListener(EventListener):
         image: PILImage,  # type: ignore[valid-type]
         image_bounding_box: Rectangle,
     ) -> RGBColor:
-
         # build empty PILImage
         text_image: PILImage = PILImage.new(  # type: ignore[valid-type]
             "RGB",

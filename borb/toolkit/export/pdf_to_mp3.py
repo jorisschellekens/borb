@@ -69,7 +69,6 @@ class PDFToMP3(SimpleParagraphExtraction):
     def _get_text_for_paragraph(
         self, paragraph: Paragraph, paragraph_number: int, page_number: int
     ):
-
         # text to speak
         text_to_speak_for_paragraph = ""
 

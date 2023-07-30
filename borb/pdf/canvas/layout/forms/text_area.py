@@ -114,7 +114,6 @@ class TextArea(FormField):
         )
 
     def _init_widget_dictionary(self, page: Page, layout_box: Rectangle) -> None:
-
         if self._widget_dictionary is not None:
             return
 
@@ -211,7 +210,6 @@ class TextArea(FormField):
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
     def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
-
         # determine layout rectangle
         cbox: Rectangle = self._get_content_box(available_space)
 

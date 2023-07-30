@@ -29,7 +29,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 
 from borb.license.uuid import UUID
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class License:
@@ -61,7 +61,6 @@ class License:
         private_key_file: Path = Path(__file__).parent / "private_key.pem",
         public_key_file: Path = Path(__file__).parent / "public_key.pem",
     ):
-
         # Generate a new RSA private key
         private_key = rsa.generate_private_key(
             public_exponent=65537,
@@ -98,7 +97,6 @@ class License:
         valid_until_in_ms: int = int(datetime.datetime.now().timestamp() * 1000)
         + 7 * 24 * 60 * 60 * 1000,
     ) -> None:
-
         # set up dictionary
         # fmt: off
         license_dict: typing.Dict[str, str] = {
@@ -219,7 +217,6 @@ class License:
         assert key_dir.exists()
         assert key_dir.is_dir()
         for public_key_file in [key_dir / "public_key_001.pem"]:
-
             # read key
             with open(public_key_file, "rb") as f:
                 public_key = serialization.load_pem_public_key(f.read())

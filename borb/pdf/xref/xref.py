@@ -64,7 +64,6 @@ class XREF(Dictionary):
         src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> int:
-
         # measure file length
         src.seek(0, io.SEEK_END)
         file_length: int = src.tell()
@@ -92,7 +91,6 @@ class XREF(Dictionary):
         src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ):
-
         # find "startxref" text
         start_of_xref_token_byte_offset = self._find_startxref_token(src, tok)
         assert start_of_xref_token_byte_offset != -1, "startxref not found in PDF"
@@ -186,7 +184,6 @@ class XREF(Dictionary):
             indirect_reference.parent_stream_object_number is not None
             and indirect_reference.index_in_parent_stream is not None
         ):
-
             stream_object = self.get_object(
                 indirect_reference.parent_stream_object_number, src, tok
             )

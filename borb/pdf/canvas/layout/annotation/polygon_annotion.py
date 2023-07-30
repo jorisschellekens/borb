@@ -34,7 +34,6 @@ class PolygonAnnotation(Annotation):
         points: typing.List[typing.Tuple[Decimal, Decimal]],
         stroke_color: Color = HexColor("000000"),
     ):
-
         # must be at least 3 points
         assert len(points) >= 3
 

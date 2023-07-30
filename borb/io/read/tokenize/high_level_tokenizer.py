@@ -86,7 +86,6 @@ class HighLevelTokenizer(LowLevelTokenizer):
 
         out_dict = Dictionary()
         while True:
-
             # attempt to read name token
             token = self.next_non_comment_token()
             assert token is not None

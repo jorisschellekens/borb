@@ -1,7 +1,5 @@
 import unittest
 
-import nltk
-
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
@@ -13,8 +11,6 @@ from borb.toolkit.text.text_rank_keyword_extraction import TextRankKeywordExtrac
 from borb.toolkit.text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
 from tests.test_case import TestCase
 
-nltk.download("punkt")
-nltk.download("averaged_perceptron_tagger")
 
 unittest.TestLoader.sortTestMethodsUsing = None
 

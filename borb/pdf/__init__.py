@@ -71,6 +71,7 @@ from .canvas.layout.image.barcode import Barcode
 from .canvas.layout.image.barcode import BarcodeType
 from .canvas.layout.image.chart import Chart
 from .canvas.layout.image.image import Image
+from .canvas.layout.image.watermark import Watermark
 from .canvas.layout.layout_element import Alignment
 
 # List

@@ -55,7 +55,6 @@ class Subsetter:
     def _modify_page_content_stream(
         page: Page, old_fonts: typing.List[Font], new_fonts: typing.List[Font]
     ):
-
         # build CanvasStreamProcessor
         csp = CanvasStreamProcessor(page, Canvas(), [])
 
@@ -122,7 +121,6 @@ class Subsetter:
 
         subset_fonts: typing.List[Font] = []
         for old_font in fonts_to_be_subset:
-
             # get DecodedBytes
             font_file_bytes_001 = old_font["DescendantFonts"][0]["FontDescriptor"][
                 "FontFile2"

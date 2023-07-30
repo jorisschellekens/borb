@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from borb.io.read.types import Decimal
-from borb.pdf import Page
+from borb.pdf import Page, SingleColumnLayoutWithOverflow
 from borb.pdf import PageLayout
 from borb.pdf import SingleColumnLayout
 from borb.pdf.document.document import Document
@@ -55,7 +55,9 @@ class TestExportHTMLToPDF(TestCase):
 
     def test_example_008(self):
         self._export_html_to_pdf(
-            self.get_artifacts_directory() / "example_html_input_008.html"
+            self.get_artifacts_directory() / "example_html_input_008.html",
+            width=PageSize.A3_LANDSCAPE.value[0],
+            height=PageSize.A3_LANDSCAPE.value[1],
         )
 
     def test_example_009(self):
@@ -94,7 +96,12 @@ class TestExportHTMLToPDF(TestCase):
             self.get_artifacts_directory() / "example_html_input_015.html"
         )
 
-    def _export_html_to_pdf(self, input_file: Path):
+    def _export_html_to_pdf(
+        self,
+        input_file: Path,
+        width: Decimal = PageSize.A4_PORTRAIT.value[0],
+        height: Decimal = PageSize.A4_PORTRAIT.value[1],
+    ):
 
         txt: str = ""
         with open(input_file, "r") as fh:
@@ -102,13 +109,13 @@ class TestExportHTMLToPDF(TestCase):
 
         # convert
         document: Document = Document()
-        page: Page = Page(
-            width=PageSize.A4_PORTRAIT.value[0], height=PageSize.A4_PORTRAIT.value[1]
-        )
+        page: Page = Page(width=width, height=height)
         document.add_page(page)
-        layout: PageLayout = SingleColumnLayout(
-            page, vertical_margin=Decimal(0), horizontal_margin=Decimal(12)
-        )
+        layout: PageLayout = SingleColumnLayoutWithOverflow(page)
+        layout._margin_top = Decimal(12)
+        layout._margin_right = Decimal(0)
+        layout.margin_bottom = Decimal(12)
+        layout._margin_left = Decimal(0)
         layout.add(HTMLToPDF.convert_html_to_layout_element(txt))
 
         # store

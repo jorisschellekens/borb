@@ -1,6 +1,6 @@
 import random
 
-from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from borb.pdf import SingleColumnLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.lipsum.lipsum import Lipsum
 from borb.pdf.document.document import Document

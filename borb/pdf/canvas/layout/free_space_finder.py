@@ -123,7 +123,6 @@ class FreeSpaceFinder(EventListener):
     #
 
     def _event_occurred(self, event: Event) -> None:
-
         # BeginPageEvent
         if isinstance(event, BeginPageEvent):
             self._page_number += 1

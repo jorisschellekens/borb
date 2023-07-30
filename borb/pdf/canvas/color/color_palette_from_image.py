@@ -25,9 +25,9 @@ class ColorPaletteFromImage:
 
     @staticmethod
     def _dist(c0: str, c1: str) -> float:
-        r_delta = (int(c0[1:3], 16) - int(c1[1:3], 16)) ** 2 / (255**2)
-        g_delta = (int(c0[3:5], 16) - int(c1[3:5], 16)) ** 2 / (255**2)
-        b_delta = (int(c0[5:7], 16) - int(c1[5:7], 16)) ** 2 / (255**2)
+        r_delta = (int(c0[1:3], 16) - int(c1[1:3], 16)) ** 2 / (255 ** 2)
+        g_delta = (int(c0[3:5], 16) - int(c1[3:5], 16)) ** 2 / (255 ** 2)
+        b_delta = (int(c0[5:7], 16) - int(c1[5:7], 16)) ** 2 / (255 ** 2)
         return math.sqrt(r_delta + g_delta + b_delta) / math.sqrt(3)
 
     @staticmethod
@@ -75,20 +75,14 @@ class ColorPaletteFromImage:
         )
         compressed_histogram: typing.List[typing.Tuple[str, int]] = []
         while len(sorted_histogram) > 0:
+            # fmt: off
             c0, f0 = sorted_histogram[0]
             sorted_histogram.pop(0)
-            similar_colors_and_frequencies = [
-                t
-                for t in sorted_histogram
-                if ColorPaletteFromImage._dist(c0, t[0]) < 0.15 and t[1] < f0
-            ]
+            similar_colors_and_frequencies = [t for t in sorted_histogram if ColorPaletteFromImage._dist(c0, t[0]) < 0.15 and t[1] < f0]
             similar_colors = [t[0] for t in similar_colors_and_frequencies]
-            compressed_histogram += [
-                (c0, f0 + sum([t[1] for t in similar_colors_and_frequencies] + [0]))
-            ]
-            sorted_histogram = [
-                t for t in sorted_histogram if t[0] not in similar_colors
-            ]
+            compressed_histogram += [(c0, f0 + sum([t[1] for t in similar_colors_and_frequencies] + [0]))]
+            sorted_histogram = [t for t in sorted_histogram if t[0] not in similar_colors]
+            # fmt: on
 
         # return
         colors_out: typing.List[HexColor] = [

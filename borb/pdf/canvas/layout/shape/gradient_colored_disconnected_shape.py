@@ -89,7 +89,6 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
         )
 
     def _paint_content_box(self, page: Page, bounding_box: Rectangle) -> None:
-
         # translate points to fit in box
         self.move_to(
             bounding_box.x, bounding_box.y + bounding_box.height - self.get_height()

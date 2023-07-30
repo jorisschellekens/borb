@@ -120,7 +120,6 @@ class StreamXREF(XREF):
 
             bptr = 0
             for i in range(0, length):
-
                 # object number
                 object_number = start + i
 

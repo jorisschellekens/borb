@@ -261,7 +261,6 @@ class CanvasStreamProcessor:
         time_per_operator: typing.Dict[str, float] = {}
         calls_per_operator: typing.Dict[str, int] = {}
         while canvas_tokenizer.tell() != length:
-
             # attempt to read object
             tell_before: int = canvas_tokenizer.tell()
             obj = canvas_tokenizer.read_object()

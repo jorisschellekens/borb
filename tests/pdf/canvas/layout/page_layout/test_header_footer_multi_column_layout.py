@@ -1,12 +1,10 @@
 import random
 from decimal import Decimal
 
+from borb.pdf import MultiColumnLayout
 from borb.pdf import PageLayout
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.page_layout.header_footer_multi_column_layout import (
-    HeaderFooterMultiColumnLayout,
-)
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.lipsum.lipsum import Lipsum
 from borb.pdf.document.document import Document
@@ -55,12 +53,17 @@ class TestHeaderFooterMultiColumnLayout(TestCase):
         pdf.add_page(page)
 
         # init layout
-        l: PageLayout = HeaderFooterMultiColumnLayout(
+        w: Decimal = page.get_page_info().get_width()
+        h: Decimal = page.get_page_info().get_height()
+        l: PageLayout = MultiColumnLayout(
             page,
-            vertical_margin=Decimal(12),
-            number_of_columns=1,
-            header_callable=self._add_header,
-            footer_callable=self._add_footer,
+            column_widths=[w * Decimal(0.8)],
+            margin_top=Decimal(0.1) * h,
+            margin_right=Decimal(0.1) * w,
+            margin_bottom=Decimal(0.1) * h,
+            margin_left=Decimal(0.1) * w,
+            header_paint_method=self._add_header,
+            footer_paint_method=self._add_footer,
         )
 
         # add content
@@ -84,11 +87,16 @@ class TestHeaderFooterMultiColumnLayout(TestCase):
         pdf.add_page(page)
 
         # init layout
-        l: PageLayout = HeaderFooterMultiColumnLayout(
+        w: Decimal = page.get_page_info().get_width()
+        h: Decimal = page.get_page_info().get_height()
+        l: PageLayout = MultiColumnLayout(
             page,
-            vertical_margin=Decimal(12),
-            number_of_columns=1,
-            header_callable=self._add_header,
+            column_widths=[w * Decimal(0.8)],
+            margin_top=Decimal(0.1) * h,
+            margin_right=Decimal(0.1) * w,
+            margin_bottom=Decimal(0.1) * h,
+            margin_left=Decimal(0.1) * w,
+            header_paint_method=self._add_header,
         )
 
         # add content
@@ -112,11 +120,16 @@ class TestHeaderFooterMultiColumnLayout(TestCase):
         pdf.add_page(page)
 
         # init layout
-        l: PageLayout = HeaderFooterMultiColumnLayout(
+        w: Decimal = page.get_page_info().get_width()
+        h: Decimal = page.get_page_info().get_height()
+        l: PageLayout = MultiColumnLayout(
             page,
-            vertical_margin=Decimal(12),
-            number_of_columns=1,
-            footer_callable=self._add_footer,
+            column_widths=[w * Decimal(0.8)],
+            margin_top=Decimal(0.1) * h,
+            margin_right=Decimal(0.1) * w,
+            margin_bottom=Decimal(0.1) * h,
+            margin_left=Decimal(0.1) * w,
+            footer_paint_method=self._add_footer,
         )
 
         # add content

@@ -33,7 +33,6 @@ class ImageTransformer(Transformer):
     #
 
     def _convert_to_rgb_mode(self, image: PILImage.Image) -> PILImage.Image:
-
         # build image_out
         image_out: PILImage.Image = image
 

@@ -87,7 +87,6 @@ class FixedColumnWidthTable(Table):
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(
@@ -108,7 +107,6 @@ class FixedColumnWidthTable(Table):
     def _get_grid_coordinates(
         self, available_space: Rectangle
     ) -> typing.List[typing.List[typing.Tuple[Decimal, Decimal]]]:
-
         # normalize column widths
         self._column_widths = [
             x / sum(self._column_widths) for x in self._column_widths
@@ -134,7 +132,6 @@ class FixedColumnWidthTable(Table):
             # we temporarily change every LayoutElement's vertical alignment
             # then we reset it to its previous value
             for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
-
                 # get coordinates of lower-left corner of this TableCell (in grid space)
                 # table keeps track of things in (row, column) style
                 # hence p[1], rather than p[0]
@@ -188,7 +185,6 @@ class FixedColumnWidthTable(Table):
         return [[(x, y) for y in grid_y_to_page_y] for x in grid_x_to_page_x]
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
-
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(

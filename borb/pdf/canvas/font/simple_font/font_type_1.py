@@ -65,7 +65,6 @@ class Type1Font(SimpleFont):
         return Type1Font()
 
     def _read_encoding_with_differences(self) -> None:
-
         # check whether we've been here before
         if len(self._unicode_lookup_to_character_identifier) > 0:
             return
@@ -155,7 +154,6 @@ class Type1Font(SimpleFont):
         }
 
     def _read_encoding_with_unclear_glyph_names(self):
-
         # figure out how many characters we'll need to calculate
         # fmt: off
         assert "FirstChar" in self, "Type1Font must have a /FirstChar entry"

@@ -114,7 +114,6 @@ class InformationDictionaryTransformer(Transformer):
         return timestamp_str
 
     def _update_info_dictionary(self, info_dictionary: Dictionary) -> Dictionary:
-
         # set CreationDate
         # fmt: off
         if "CreationDate" not in info_dictionary:
@@ -288,7 +287,6 @@ class InformationDictionaryTransformer(Transformer):
         # fmt: on
 
         if needs_xmp_metadata:
-
             # write XMP /Metadata
             xmp_metadata_stream: Stream = self._write_xmp_metadata_stream(
                 new_info_dictionary,

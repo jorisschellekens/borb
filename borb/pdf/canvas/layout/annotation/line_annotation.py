@@ -38,7 +38,6 @@ class LineAnnotation(Annotation):
         right_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
         stroke_color: Color = HexColor("000000"),
     ):
-
         x = min([start_point[0], end_point[0]])
         y = min([start_point[1], end_point[1]])
         w = max([start_point[0], end_point[0]]) - x

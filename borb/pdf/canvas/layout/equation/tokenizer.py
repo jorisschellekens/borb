@@ -37,7 +37,6 @@ class Tokenizer:
         # process expression
         i: int = 0
         while i < len(infix_expression):
-
             #
             # SPACE
             #

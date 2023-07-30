@@ -96,11 +96,7 @@ class TestAddEmoji(TestCase):
         layout = SingleColumnLayout(page)
 
         # add content
-        layout.add(
-            self.get_test_header(
-                "This tests creates a PDF with 3 emoji in it."
-            )
-        )
+        layout.add(self.get_test_header("This tests creates a PDF with 3 emoji in it."))
 
         # add emoji
         layout.add(Emojis.A.value)

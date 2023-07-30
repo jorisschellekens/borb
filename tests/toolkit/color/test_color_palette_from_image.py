@@ -37,7 +37,7 @@ class TestColorPaletteFromImage(TestCase):
             )
         )
 
-        image_url: str = "https://images.unsplash.com/photo-1674159438102-b2167a502697?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8"
+        image_url: str = "https://images.unsplash.com/photo-1674159438102-b2167a502697"
         l.add(
             Image(
                 image_url,

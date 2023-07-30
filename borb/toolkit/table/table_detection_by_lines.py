@@ -56,7 +56,6 @@ class TableDetectionByLines(EventListener):
     def _determine_number_of_rows_and_columns(
         self, lines_in_table: typing.List[LineSegment]
     ) -> typing.Tuple[int, int]:
-
         # keep track of unique xs / ys (to derive number of rows/cols)
         unique_xs: typing.Set[int] = set()
         unique_ys: typing.Set[int] = set()
@@ -77,7 +76,6 @@ class TableDetectionByLines(EventListener):
     def _determine_table_bounding_box(
         self, lines_in_table: typing.List[LineSegment]
     ) -> Rectangle:
-
         # determine bounding box
         min_x: Decimal = lines_in_table[0].x0
         max_x: Decimal = lines_in_table[0].x0
@@ -95,7 +93,6 @@ class TableDetectionByLines(EventListener):
     def _determine_table_cell_boundaries(
         self, lines_in_table: typing.List[LineSegment]
     ) -> Table:
-
         # keep track of unique xs / ys (to derive number of rows/cols)
         unique_xs: typing.Set[int] = set()
         unique_ys: typing.Set[int] = set()
@@ -122,7 +119,6 @@ class TableDetectionByLines(EventListener):
 
         for c in range(0, len(xs) - 1):
             for r in range(0, len(ys) - 1):
-
                 if c + 2 < len(xs):
                     logger.debug(
                         "attempting to merge [%d %d] with its right neighbour" % (r, c)
@@ -204,7 +200,6 @@ class TableDetectionByLines(EventListener):
         return Decimal(math.sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2))
 
     def _event_occurred(self, event: Event) -> None:
-
         # BeginPageEvent
         if isinstance(event, BeginPageEvent):
             self._current_page_number += 1
@@ -234,7 +229,6 @@ class TableDetectionByLines(EventListener):
                 ds.add(l)
             for l0 in self._lines_per_page[self._current_page_number]:
                 for l1 in self._lines_per_page[self._current_page_number]:
-
                     if l0 == l1:
                         continue
                     if ds.find(l0) == ds.find(l1):
@@ -284,7 +278,6 @@ class TableDetectionByLines(EventListener):
             for _, v in clusters_of_lines.items():
                 r, c = self._determine_number_of_rows_and_columns(v)
                 if r * c >= 2:
-
                     # determine table
                     table: Table = self._determine_table_cell_boundaries(v)
                     table._previous_layout_box = self._determine_table_bounding_box(v)

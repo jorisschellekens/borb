@@ -40,6 +40,7 @@ class PDFMatch:
         re_match: re.Match,
         glyph_bounding_boxes: typing.List["Rectangle"],
         font_color: Color,
+        font_name: str,
         font_size: Decimal,
         page_nr: int,
     ):
@@ -47,6 +48,7 @@ class PDFMatch:
         assert page_nr >= 0
         self._page_nr: int = page_nr
         self._font_color: Color = font_color
+        self._font_name: str = font_name
         self._font_size: Decimal = font_size
         self._glyph_bounding_boxes: typing.List["Rectangle"] = glyph_bounding_boxes
         self._re_match: re.Match = re_match
@@ -139,6 +141,13 @@ class PDFMatch:
         """
         return self._font_color
 
+    def get_font_name(self) -> str:
+        """
+        This function returns the name of the Font in which the text was written that matched the regular expression
+        :return:    the font_name in which the text was written
+        """
+        return self._font_name
+
     def get_font_size(self) -> Decimal:
         """
         This function returns the font_size in which the text was written that matched the regular expression
@@ -215,7 +224,6 @@ class RegularExpressionTextExtraction(EventListener):
         self._current_page += 1
 
     def _end_page(self, page: Page):
-
         # get ChunkOfTextRenderEvent objects on page
         tris: typing.List[ChunkOfTextRenderEvent] = (
             self._text_render_info_events_per_page[self._current_page]
@@ -240,7 +248,6 @@ class RegularExpressionTextExtraction(EventListener):
         last_baseline_right = tris[0].get_baseline().x
         text = ""
         for t in tris:
-
             chunk_of_text_bounding_box: typing.Optional[
                 Rectangle
             ] = t.get_previous_layout_box()
@@ -298,14 +305,15 @@ class RegularExpressionTextExtraction(EventListener):
             # extend collection
             self._matches_per_page[self._current_page].append(
                 PDFMatch(
-                    m,
-                    [
-                        x.get_previous_layout_box()  # type: ignore [misc]
+                    re_match=m,
+                    glyph_bounding_boxes=[
+                        x.get_previous_layout_box()
                         for x in tris[tri_start_index : (tri_stop_index + 1)]
                     ],
-                    tris[tri_start_index].get_font_color(),
-                    tris[tri_start_index].get_font_size(),
-                    self._current_page,
+                    font_color=tris[tri_start_index].get_font_color(),
+                    font_name=tris[tri_start_index].get_font().get_font_name() or "",
+                    font_size=tris[tri_start_index].get_font_size(),
+                    page_nr=self._current_page,
                 )
             )
 
@@ -318,7 +326,6 @@ class RegularExpressionTextExtraction(EventListener):
             self._end_page(event.get_page())
 
     def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
-
         # init if needed
         if self._current_page not in self._text_render_info_events_per_page:
             self._text_render_info_events_per_page[self._current_page] = []
@@ -350,7 +357,6 @@ class RegularExpressionTextExtraction(EventListener):
         out: typing.Dict[int, typing.List[PDFMatch]] = {}
         number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
         for page_nr in range(0, number_of_pages):
-
             # get Page object
             page: Page = pdf.get_page(page_nr)
             page_source: io.BytesIO = io.BytesIO(page["Contents"]["DecodedBytes"])

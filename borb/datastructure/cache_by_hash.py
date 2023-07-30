@@ -21,7 +21,6 @@ def cached_by_hash(func):
     """
 
     def _inner(*args, **kwargs):
-
         # add attribute to store cached value
         field_name_for_cached_val: str = "_cache_for_" + func.__name__
         field_name_for_cache_hit_rate: str = "_cache_for_" + func.__name__ + "_hit_rate"

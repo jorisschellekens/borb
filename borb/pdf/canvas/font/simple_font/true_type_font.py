@@ -157,7 +157,6 @@ class TrueTypeFont(Type1Font):
 
     @staticmethod
     def _get_font_descriptor(ttf_font_file: TTFont) -> Dictionary:
-
         # fmt: off
         font_descriptor: Dictionary = Dictionary()
         font_descriptor[Name("Type")] = Name("FontDescriptor")

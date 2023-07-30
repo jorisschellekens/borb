@@ -145,7 +145,6 @@ class TableCell(LayoutElement):
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         if self._forced_layout_box is not None:
-
             horizontal_border_width: Decimal = Decimal(0)
             if self._border_left:
                 horizontal_border_width += self._border_width

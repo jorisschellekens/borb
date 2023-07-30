@@ -87,27 +87,26 @@ class PDFToJPG(PDFToSVG):
                     ttf_font_files.append(f)
 
         # find family of fonts
-        for c in ["LiberationSans", "LiberationMono"]:
-            suffixes = ["-Regular", "-Italic", "-Bold", "-BoldItalic"]
-            all_fonts_present = all(
-                [
-                    y in [x.name for x in ttf_font_files]
-                    for y in [c + x + ".ttf" for x in suffixes]
-                ]
-            )
+        for c in ["LiberationSans", "LiberationMono", "arial"]:
+            # fmt: off
+            suffixes: typing.List[str] = ["-Regular", "-Italic", "-Bold", "-BoldItalic"]
+            all_fonts_present = all([y in [x.name for x in ttf_font_files]for y in [c + x + ".ttf" for x in suffixes]])
             if all_fonts_present:
-                self._regular_font = [
-                    x for x in ttf_font_files if x.name.endswith(c + "-Regular.ttf")
-                ][0]
-                self._bold_font = [
-                    x for x in ttf_font_files if x.name.endswith(c + "-Bold.ttf")
-                ][0]
-                self._italic_font = [
-                    x for x in ttf_font_files if x.name.endswith(c + "-Italic.ttf")
-                ][0]
-                self._bold_italic_font = [
-                    x for x in ttf_font_files if x.name.endswith(c + "-BoldItalic.ttf")
-                ][0]
+                self._regular_font = [x for x in ttf_font_files if x.name.endswith(c + "-Regular.ttf")][0]
+                self._bold_font = [x for x in ttf_font_files if x.name.endswith(c + "-Bold.ttf")][0]
+                self._italic_font = [x for x in ttf_font_files if x.name.endswith(c + "-Italic.ttf")][0]
+                self._bold_italic_font = [x for x in ttf_font_files if x.name.endswith(c + "-BoldItalic.ttf")][0]
+            # fmt: on
+
+            # fmt: off
+            suffixes = ["", "i", "bd", "bi"]
+            all_fonts_present = all([y in [x.name for x in ttf_font_files]for y in [c + x + ".ttf" for x in suffixes]])
+            if all_fonts_present:
+                self._regular_font = [x for x in ttf_font_files if x.name.endswith(c + ".ttf")][0]
+                self._bold_font = [x for x in ttf_font_files if x.name.endswith(c + "bd.ttf")][0]
+                self._italic_font = [x for x in ttf_font_files if x.name.endswith(c + "i.ttf")][0]
+                self._bold_italic_font = [x for x in ttf_font_files if x.name.endswith(c + "bi.ttf")][0]
+            # fmt: on
 
     def _render_image(
         self,

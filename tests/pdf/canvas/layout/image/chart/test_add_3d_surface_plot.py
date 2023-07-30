@@ -43,7 +43,7 @@ class TestAdd3DSurfacePlot(TestCase):
 
             # Make the plot
             fig = MatPlotLibPlot.figure(dpi=600)
-            ax = fig.gca(projection="3d")
+            ax = fig.add_subplot(projection="3d")
             ax.plot_trisurf(df["Y"], df["X"], df["Z"], cmap="Blues", linewidth=0.2)
 
             # Set the angle of the camera

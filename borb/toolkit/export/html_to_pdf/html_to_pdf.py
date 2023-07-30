@@ -611,7 +611,6 @@ class HTMLToPDF:
 
     @staticmethod
     def _process_inline_element(e: ET.Element, c: Context) -> LayoutElement:
-
         # <span class="emoji"></span>
         chunks: typing.List[LayoutElement] = []
         if e.tag == "span" and (
@@ -873,7 +872,6 @@ class HTMLToPDF:
 
     @staticmethod
     def _process_table_element_002(e: ET.Element, c: Context) -> LayoutElement:
-
         # count rows / cols
         nrows_001: int = len([x for x in e if x.tag == "tr"])
         ncols_001: int = len(
@@ -945,19 +943,26 @@ class HTMLToPDF:
         src: str = e.attrib["src"]
 
         # attempt to get a frame
-        import cv2  # type: ignore [import]
+        try:
+            import cv2  # type: ignore [import]
+            import tempfile
 
-        video_capture = cv2.VideoCapture(src)
-        success, nd_array_image = video_capture.read()
+            video_capture = cv2.VideoCapture(src)
+            success, nd_array_image = video_capture.read()
+            tmp_file: Path = Path(tempfile.NamedTemporaryFile(suffix=".jpg").name)
+            cv2.imwrite(str(tmp_file), nd_array_image)
+            return Image(tmp_file, width=w, height=h)
+        except:
+            logger.warning(
+                "Unable to retrieve frame for <video> element, defaulting to empty Image."
+            )
+            from PIL import Image as pImage
 
-        # write to temporary file
-        import tempfile
-
-        tmp_file: Path = Path(tempfile.NamedTemporaryFile(suffix=".jpg").name)
-        cv2.imwrite(str(tmp_file), nd_array_image)
-
-        # build an Image
-        return Image(tmp_file, width=w, height=h)
+            return Image(
+                pImage.new(mode="RGB", size=(int(w), int(h)), color=(113, 121, 126)),
+                width=w,
+                height=h,
+            )
 
     #
     # public methods

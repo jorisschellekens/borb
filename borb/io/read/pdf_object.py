@@ -35,7 +35,6 @@ class PDFObject:
 
     @staticmethod
     def _to_json(self, memo_dict={}) -> typing.Any:
-
         # bool
         if isinstance(self, bool):
             return self

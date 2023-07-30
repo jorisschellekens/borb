@@ -37,7 +37,6 @@ class CatalogTransformer(DictionaryTransformer):
     #
 
     def _build_rgb_outputintent_dictionary(self, root_dictionary: Dictionary) -> None:
-
         # TODO check if exists already
 
         # read color profile bytes

@@ -97,7 +97,6 @@ class PostScriptEval:
 
         i: int = 0
         while i < len(s):
-
             # whitespace
             if s[i] in " \n\t":
                 i += 1

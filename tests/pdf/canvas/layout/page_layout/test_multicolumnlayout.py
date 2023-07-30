@@ -7,6 +7,9 @@ from borb.pdf import MultiColumnLayout
 from borb.pdf import PDF
 from borb.pdf import Page
 from borb.pdf import Paragraph
+from borb.pdf import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import ThreeColumnLayout
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import TwoColumnLayout
 from borb.pdf.page.page_size import PageSize
 from tests.test_case import TestCase
 
@@ -16,7 +19,7 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
-        layout = MultiColumnLayout(page, number_of_columns=1)
+        layout = SingleColumnLayout(page)
         layout.add(
             self.get_test_header(
                 test_description="This test sets a MultiColumnLayout to a PDF with 1 column"
@@ -41,7 +44,7 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
-        layout = MultiColumnLayout(page, number_of_columns=2)
+        layout = TwoColumnLayout(page)
         layout.add(
             self.get_test_header(
                 test_description="This test sets a MultiColumnLayout to a PDF with 2 columns",
@@ -63,10 +66,19 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
+        w = page.get_page_info().get_width()
+        h = page.get_page_info().get_height()
         layout = MultiColumnLayout(
             page,
-            number_of_columns=2,
-            inter_column_margin=PageSize.A4_PORTRAIT.value[0] * Decimal(0.10),
+            column_widths=[
+                w * Decimal(0.70) * Decimal(0.5),
+                w * Decimal(0.70) * Decimal(0.5),
+            ],
+            margin_top=h * Decimal(0.1),
+            margin_right=w * Decimal(0.1),
+            margin_bottom=h * Decimal(0.1),
+            margin_left=w * Decimal(0.1),
+            inter_column_margins=[w * Decimal(0.1)],
         )
         layout.add(
             self.get_test_header(
@@ -89,10 +101,19 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
+        w = page.get_page_info().get_width()
+        h = page.get_page_info().get_height()
         layout = MultiColumnLayout(
             page,
-            number_of_columns=2,
-            inter_column_margin=PageSize.A4_PORTRAIT.value[0] * Decimal(0.15),
+            column_widths=[
+                w * Decimal(0.65) * Decimal(0.5),
+                w * Decimal(0.65) * Decimal(0.5),
+            ],
+            margin_top=h * Decimal(0.1),
+            margin_right=w * Decimal(0.1),
+            margin_bottom=h * Decimal(0.1),
+            margin_left=w * Decimal(0.1),
+            inter_column_margins=[w * Decimal(0.15)],
         )
         layout.add(
             self.get_test_header(
@@ -115,10 +136,19 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
+        w = page.get_page_info().get_width()
+        h = page.get_page_info().get_height()
         layout = MultiColumnLayout(
             page,
-            number_of_columns=2,
-            inter_column_margin=PageSize.A4_PORTRAIT.value[0] * Decimal(0.20),
+            column_widths=[
+                w * Decimal(0.60) * Decimal(0.5),
+                w * Decimal(0.60) * Decimal(0.5),
+            ],
+            margin_top=h * Decimal(0.1),
+            margin_right=w * Decimal(0.1),
+            margin_bottom=h * Decimal(0.1),
+            margin_left=w * Decimal(0.1),
+            inter_column_margins=[w * Decimal(0.20)],
         )
         layout.add(
             self.get_test_header(
@@ -145,7 +175,7 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
-        layout = MultiColumnLayout(page, number_of_columns=3)
+        layout = ThreeColumnLayout(page)
         layout.add(
             self.get_test_header(
                 test_description="This test sets a MultiColumnLayout to a PDF with 3 columns",
@@ -167,10 +197,20 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
+        w = page.get_page_info().get_width()
+        h = page.get_page_info().get_height()
         layout = MultiColumnLayout(
             page,
-            number_of_columns=3,
-            inter_column_margin=PageSize.A4_PORTRAIT.value[0] * Decimal(0.10),
+            column_widths=[
+                w * Decimal(0.60) / Decimal(3),
+                w * Decimal(0.60) / Decimal(3),
+                w * Decimal(0.60) / Decimal(3),
+            ],
+            margin_top=h * Decimal(0.1),
+            margin_right=w * Decimal(0.1),
+            margin_bottom=h * Decimal(0.1),
+            margin_left=w * Decimal(0.1),
+            inter_column_margins=[w * Decimal(0.10), w * Decimal(0.10)],
         )
         layout.add(
             self.get_test_header(
@@ -193,10 +233,20 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
+        w = page.get_page_info().get_width()
+        h = page.get_page_info().get_height()
         layout = MultiColumnLayout(
             page,
-            number_of_columns=3,
-            inter_column_margin=PageSize.A4_PORTRAIT.value[0] * Decimal(0.15),
+            column_widths=[
+                w * Decimal(0.50) / Decimal(3),
+                w * Decimal(0.50) / Decimal(3),
+                w * Decimal(0.50) / Decimal(3),
+            ],
+            margin_top=h * Decimal(0.1),
+            margin_right=w * Decimal(0.1),
+            margin_bottom=h * Decimal(0.1),
+            margin_left=w * Decimal(0.1),
+            inter_column_margins=[w * Decimal(0.15), w * Decimal(0.15)],
         )
         layout.add(
             self.get_test_header(
@@ -219,10 +269,20 @@ class TestMultiColumnLayout(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
+        w = page.get_page_info().get_width()
+        h = page.get_page_info().get_height()
         layout = MultiColumnLayout(
             page,
-            number_of_columns=3,
-            inter_column_margin=PageSize.A4_PORTRAIT.value[0] * Decimal(0.20),
+            column_widths=[
+                w * Decimal(0.40) / Decimal(3),
+                w * Decimal(0.40) / Decimal(3),
+                w * Decimal(0.40) / Decimal(3),
+            ],
+            margin_top=h * Decimal(0.1),
+            margin_right=w * Decimal(0.1),
+            margin_bottom=h * Decimal(0.1),
+            margin_left=w * Decimal(0.1),
+            inter_column_margins=[w * Decimal(0.20), w * Decimal(0.20)],
         )
         layout.add(
             self.get_test_header(

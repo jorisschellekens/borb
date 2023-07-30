@@ -54,7 +54,6 @@ class LineArtFactory:
         # 263, 487 r 25 s 17
         line_segments = []
         for x, y in [(269, 73), (85, 170), (237, 228), (475, 280), (263, 487)]:
-
             # calculate points of a circle
             circle_segments = []
             for i in range(0, 360):

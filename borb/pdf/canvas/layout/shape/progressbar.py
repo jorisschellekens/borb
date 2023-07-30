@@ -97,7 +97,6 @@ class ProgressBar(LayoutElement):
         )
 
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore[name-defined]
-
         # draw rectangle background
         fill_rgb = (self._fill_color or HexColor("f0f0f0")).to_rgb()
         content = " q %f %f %f RG %f %f %f rg 0.1 w " % (

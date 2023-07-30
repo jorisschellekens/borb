@@ -296,7 +296,6 @@ class LayoutElement:
             and self._border_radius_bottom_left == 0
             and self._border_radius_bottom_right == 0
         ):
-
             # fmt: off
             content = """
                 q %f %f %f rg %f %f m

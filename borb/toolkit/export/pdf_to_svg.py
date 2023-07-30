@@ -53,7 +53,6 @@ class PDFToSVG(EventListener):
     def _begin_page(
         self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
     ) -> None:
-
         # init svg image
         ET.register_namespace("", "http://www.w3.org/2000/svg")
         svg_element = ET.Element("svg")

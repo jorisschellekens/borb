@@ -48,7 +48,6 @@ class Page(Dictionary):
     #
 
     def _initialize_page_content_stream(self) -> "Page":  # type: ignore[name-defined]
-
         # build content stream object
         if "Contents" not in self:
             content_stream = Stream()

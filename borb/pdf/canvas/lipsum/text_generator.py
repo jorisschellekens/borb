@@ -55,7 +55,6 @@ class TextGenerator:
         return True
 
     def _train_using_project_gutenberg(self, gutenberg_url: str) -> "TextGenerator":
-
         training_text: str = requests.get(gutenberg_url).text
 
         # trim header:
@@ -77,7 +76,6 @@ class TextGenerator:
         self._token_frequency = {}
         self._markov_model = {}
         for i in range(0, len(tokens) - 2):
-
             # get token, set/create ID
             t0: str = tokens[i].strip(" \n\t")
             if not TextGenerator._is_valid_token(t0):
@@ -133,7 +131,6 @@ class TextGenerator:
         while len(
             sentence_being_built
         ) < min_sentence_length or not sentence_being_built[-1].endswith("."):
-
             # init
             if len(sentence_being_built) == 0:
                 seed: typing.Tuple[int, int] = random.choice(

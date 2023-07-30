@@ -121,7 +121,6 @@ class HeterogeneousParagraph(Paragraph):
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-
         # useful
         EMPTY_RECTANGLE: Rectangle = Rectangle(
             Decimal(0), Decimal(0), Decimal(0), Decimal(0)
@@ -175,7 +174,6 @@ class HeterogeneousParagraph(Paragraph):
         )
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
-
         # lines of text
         lines_of_text: typing.List[
             typing.List[LayoutElement]
@@ -190,7 +188,6 @@ class HeterogeneousParagraph(Paragraph):
     def _split_to_lines_of_chunks_of_text(
         self, available_space: Rectangle
     ) -> typing.List[typing.List[LayoutElement]]:
-
         # useful
         EMPTY_RECTANGLE: Rectangle = Rectangle(
             Decimal(0), Decimal(0), Decimal(0), Decimal(0)

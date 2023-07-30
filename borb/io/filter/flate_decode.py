@@ -95,7 +95,6 @@ class FlateDecode:
         bytes_after_predictor = []
         pos = 0
         while pos + bytes_per_row <= len(bytes_after_zlib):
-
             # Read the filter type byte and a row of data
             filter_type = bytes_after_zlib[pos]
             pos += 1

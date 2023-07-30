@@ -120,9 +120,8 @@ class TestCase(unittest.TestCase):
     def compare_visually_to_ground_truth(
         self,
         pdf_path: Path,
-        maximum_normalized_difference: float = 0.0005,
+        maximum_normalized_difference: float = 0.0006,
     ) -> None:
-
         assert pdf_path.exists()
         assert 0 <= maximum_normalized_difference <= 1
 

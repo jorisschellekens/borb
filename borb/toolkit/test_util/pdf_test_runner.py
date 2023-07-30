@@ -68,7 +68,6 @@ class PDFTestRunner:
         report_name: Path,
         open_when_finished: bool,
     ) -> None:
-
         # sort tests
         PDFTestRunner._test_statuses.sort(
             key=lambda x: x.get_file() + "/" + x.get_class_name() + "/" + x.get_method()

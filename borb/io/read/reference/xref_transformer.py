@@ -115,6 +115,7 @@ class XREFTransformer(Transformer):
                 most_recent_xref = StreamXREF()
                 assert most_recent_xref is not None
                 most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+                print("reading another xref")
                 most_recent_xref.read(src, tok, initial_offset)
                 if "XRef" in doc:
                     doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
@@ -157,7 +158,6 @@ class XREFTransformer(Transformer):
 
     @staticmethod
     def _remove_prefix(context: ReadTransformerState) -> None:
-
         assert context is not None
         assert context.source is not None
         assert context.tokenizer is not None
@@ -249,7 +249,6 @@ class XREFTransformer(Transformer):
 
         # check for password protected PDF
         if "Trailer" in xref and "Encrypt" in xref["Trailer"]:
-
             # transform /Encrypt dictionary
             # fmt: off
             xref["Trailer"][Name("Encrypt")] = self.get_root_transformer().transform(xref["Trailer"]["Encrypt"], xref["Trailer"], context, event_listeners)

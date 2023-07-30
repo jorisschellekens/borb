@@ -87,7 +87,6 @@ class FlexibleColumnWidthTable(Table):
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(
@@ -212,7 +211,6 @@ class FlexibleColumnWidthTable(Table):
         for r in range(0, self._number_of_rows):
             prev_row_lboxes: typing.List[Rectangle] = []
             for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
-
                 # get coordinates of lower-left corner of this TableCell (in grid space)
                 # table keeps track of things in (row, column) style
                 # hence p[1], rather than p[0]
@@ -314,7 +312,6 @@ class FlexibleColumnWidthTable(Table):
         return max(widths)
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
-
         # fill table
         number_of_cells: int = self._number_of_rows * self._number_of_columns
         empty_cells: int = number_of_cells - sum(

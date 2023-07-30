@@ -114,7 +114,6 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
             if k not in out:
                 out[k] = []
             for w, tf in v.items():
-
                 # check minimum_term_frequency
                 if tf < self._minimum_term_frequency:
                     continue

@@ -62,7 +62,6 @@ class Type0Font(Font):
 
         # pseudo match
         if cmap_name not in predefined_cmaps:
-
             if cmap_name == "Adobe-Identity-UCS2":
                 # fmt: off
                 logger.info("Encoding Adobe-Identity-UCS2 was specified, using Adobe-Identity-H in stead")
@@ -160,7 +159,6 @@ class Type0Font(Font):
             )
 
         if Name("Encoding") in self:
-
             # a) Map the character code to a character identifier (CID) according to the font’s CMap.
             cid: typing.Optional[int] = None
             if isinstance(self["Encoding"], Name):

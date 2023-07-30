@@ -108,7 +108,6 @@ class CheckBox(FormField):
         )
 
     def _init_widget_dictionary(self, page: Page, layout_box: Rectangle) -> None:
-
         if self._widget_dictionary is not None:
             return
 
@@ -225,7 +224,6 @@ class CheckBox(FormField):
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
-
         # init self._widget_dictionary
         self._init_widget_dictionary(page, content_box)
 

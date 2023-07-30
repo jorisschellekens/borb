@@ -45,7 +45,6 @@ class SimpleTextExtraction(EventListener):
         self._current_page += 1
 
     def _end_page(self, page: Page):
-
         # get TextRenderInfo objects on page
         tris = (
             self._text_render_info_per_page[self._current_page]
@@ -69,7 +68,6 @@ class SimpleTextExtraction(EventListener):
         last_baseline_right = tris[0].get_baseline().x
         text = ""
         for t in tris:
-
             # add newline if needed
             if abs(t.get_baseline().y - last_baseline_bottom) > 10 and len(text) > 0:
                 if text.endswith(" "):
@@ -108,7 +106,6 @@ class SimpleTextExtraction(EventListener):
             self._end_page(event.get_page())
 
     def _render_text(self, text_render_info: ChunkOfTextRenderEvent):
-
         # init if needed
         if self._current_page not in self._text_render_info_per_page:
             self._text_render_info_per_page[self._current_page] = []

@@ -3,6 +3,9 @@ from decimal import Decimal
 
 from borb.pdf import Lipsum
 from borb.pdf import MultiColumnLayout
+from borb.pdf import SingleColumnLayout
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import ThreeColumnLayout
+from borb.pdf.canvas.layout.page_layout.multi_column_layout import TwoColumnLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
@@ -19,7 +22,7 @@ class TestMultiColumnLayoutIsCopiedToNextPage(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
-        layout = MultiColumnLayout(page, number_of_columns=1)
+        layout = SingleColumnLayout(page)
         layout.add(
             self.get_test_header(
                 test_description="This test sets a MultiColumnLayout to a PDF with 1 column"
@@ -41,7 +44,7 @@ class TestMultiColumnLayoutIsCopiedToNextPage(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
-        layout = MultiColumnLayout(page, number_of_columns=2)
+        layout = TwoColumnLayout(page)
         layout.add(
             self.get_test_header(
                 test_description="This test sets a MultiColumnLayout to a PDF with 2 column",
@@ -64,7 +67,7 @@ class TestMultiColumnLayoutIsCopiedToNextPage(TestCase):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
-        layout = MultiColumnLayout(page, number_of_columns=3)
+        layout = ThreeColumnLayout(page)
         layout.add(
             self.get_test_header(
                 test_description="This test sets a MultiColumnLayout to a PDF with 3 columns",

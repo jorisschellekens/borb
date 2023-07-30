@@ -122,7 +122,6 @@ class Image(LayoutElement):
             return Name("Im%d" % image_index)
 
     def _paint_content_box(self, page: Page, bounding_box: Rectangle):
-
         # add image to resources
         self.force_load_image()
         image_resource_name = self._get_image_resource_name(self._image, page)

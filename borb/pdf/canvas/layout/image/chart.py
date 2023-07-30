@@ -5,6 +5,7 @@
 This implementation of LayoutElement represents a Chart
 """
 import io
+import logging
 import typing
 from decimal import Decimal
 
@@ -14,6 +15,8 @@ from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
+
+logger = logging.getLogger(__name__)
 
 
 class Chart(Image):
@@ -51,6 +54,15 @@ class Chart(Image):
         vertical_alignment: Alignment = Alignment.TOP,
         width: typing.Optional[Decimal] = None,
     ):
+        # try setting the dpi
+        try:
+            chart.dpi = max(600, chart.dpi)
+        except:
+            logger.info(
+                "Unable to set matplotlib.pyplot.dpi, the Chart may be low-res."
+            )
+            pass
+
         # chart to image
         byte_buffer = io.BytesIO()
         chart.savefig(byte_buffer, format="png")

@@ -70,7 +70,6 @@ class TextRankKeywordExtraction(SimpleTextExtraction):
         # turn txt into lines
         lines = [x for x in re.split("\n*[.?!]+\n*", txt) if len(x) != 0]
         for line in lines:
-
             # split
             tokens: typing.List[str] = [
                 x for x in re.split("[^A-Z]+", line.upper()) if len(x) > 3

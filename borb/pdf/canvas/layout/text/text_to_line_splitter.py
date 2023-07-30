@@ -91,14 +91,12 @@ class TextToLineSplitter:
 
         # main loop
         while len(tokens) > 0:
-
             # initial estimate
             tokens_in_line: typing.List[str] = []
             while (
                 len(tokens)
                 and sum([len(x) for x in tokens_in_line]) < chars_per_line_estimate
             ):
-
                 # IF the first token is a space (and we are not respecting spaces)
                 # THEN drop the space character
                 if (
@@ -129,9 +127,7 @@ class TextToLineSplitter:
             # THEN  add more tokens from "tokens" until text just fits
             #       update estimate
             if free_line_width > 0:
-
                 while free_line_width > 0 and len(tokens) > 0:
-
                     future_tokens_in_line: typing.List[str] = tokens_in_line + [
                         tokens[0]
                     ]
@@ -155,7 +151,6 @@ class TextToLineSplitter:
                 #
 
                 if hyphenation is not None and len(tokens) > 0:
-
                     token_parts: typing.List[str] = hyphenation.hyphenate(
                         tokens[0]
                     ).split(chr(173))
@@ -163,7 +158,6 @@ class TextToLineSplitter:
 
                     # check every split
                     for i in range(1, len(token_parts) + 1):
-
                         future_tokens_in_line: typing.List[str] = (
                             tokens_in_line
                             + token_parts[:i]
@@ -210,9 +204,7 @@ class TextToLineSplitter:
             # THEN  put tokens back until free_line_width >= 0
             #       update estimate
             if free_line_width < 0:
-
                 while free_line_width < 0:
-
                     # move token back to "tokens"
                     tokens.insert(0, tokens_in_line[-1])
                     tokens_in_line.pop(-1)
@@ -228,7 +220,6 @@ class TextToLineSplitter:
                 #
 
                 if hyphenation is not None and len(tokens) > 0:
-
                     token_parts: typing.List[str] = hyphenation.hyphenate(
                         tokens[0]
                     ).split(chr(173))
@@ -236,7 +227,6 @@ class TextToLineSplitter:
 
                     # check every split
                     for i in range(1, len(token_parts) + 1):
-
                         future_tokens_in_line: typing.List[str] = (
                             tokens_in_line
                             + token_parts[:i]

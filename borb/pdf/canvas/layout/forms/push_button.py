@@ -202,7 +202,6 @@ class PushButton(FormField):
         catalog["AcroForm"]["Fields"].append(self._widget_dictionary)
 
     def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
-
         # init self._widget_dictionary
         self._init_widget_dictionary(page)
 
@@ -302,7 +301,6 @@ class JavaScriptPushButton(PushButton):
     #
 
     def _init_widget_dictionary(self, page: Page) -> None:
-
         # call to super
         super(JavaScriptPushButton, self)._init_widget_dictionary(page)
 

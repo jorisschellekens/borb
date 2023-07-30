@@ -154,9 +154,8 @@ class ChunkOfText(LayoutElement):
         return s
 
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
-
         # color
-        assert self._font
+        assert self._font is not None
         rgb_color = self._font_color.to_rgb()
 
         # line height

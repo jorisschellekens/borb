@@ -29,7 +29,6 @@ class RootDictionaryTransformer(Transformer):
     #
 
     def _re_order_pages(self, root_dictionary: dict) -> None:
-
         # list to hold Page objects (in order)
         pages_in_order: typing.List[Page] = []
 

@@ -84,7 +84,6 @@ class List(LayoutElement):
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
-
         # determine font_size from item
         font_size: typing.Optional[Decimal] = None
         try:

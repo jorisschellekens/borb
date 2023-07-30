@@ -103,7 +103,6 @@ class Parser:
         args: typing.List[Token] = []
         postfix: typing.List[Token] = Parser._to_postfix(s)
         for i, t in enumerate(postfix):
-
             if t.get_type() == TokenType.NUMBER:
                 args += [t]
                 continue

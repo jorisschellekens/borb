@@ -8,11 +8,9 @@ This includes; ChunkOfText, LineOfText, Paragraph and Heading
 import typing
 from decimal import Decimal
 
-from borb.datastructure.cache_by_hash import cached_by_hash
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
-from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.hyphenation.hyphenation import Hyphenation
 from borb.pdf.canvas.layout.layout_element import Alignment
@@ -145,7 +143,6 @@ class Paragraph(LineOfText):
         return attr_hash_for_layout * 69069 + 907133923
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-
         # This code gets screwed over by cached_by_hash
         # TODO: investigate
 
@@ -214,7 +211,6 @@ class Paragraph(LineOfText):
         )
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
-
         # ensure everything is initialized
         self._get_content_box(available_space)
 

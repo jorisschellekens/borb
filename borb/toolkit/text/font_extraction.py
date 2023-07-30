@@ -32,7 +32,6 @@ class FontExtraction(EventListener):
     #
 
     def _begin_page(self, event: BeginPageEvent):
-
         # update page number
         self._current_page += 1
         self._fonts_per_page[self._current_page] = []

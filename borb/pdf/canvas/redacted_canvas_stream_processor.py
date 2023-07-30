@@ -170,7 +170,6 @@ class ShowTextMod(CanvasOperator):
         for evt in ChunkOfTextRenderEvent(
             canvas.graphics_state, operands[0]
         ).split_on_glyphs():
-
             letter_should_be_redacted: bool = any(
                 [
                     x.intersects(evt.get_previous_layout_box())
@@ -281,7 +280,6 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
                 for evt in ChunkOfTextRenderEvent(
                     canvas.graphics_state, obj
                 ).split_on_glyphs():
-
                     letter_should_be_redacted: bool = any(
                         [
                             x.intersects(evt.get_previous_layout_box())
@@ -322,7 +320,6 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
 
             # process Decimal objects
             if isinstance(obj, Decimal):
-
                 # calculate the adjustment
                 assert isinstance(obj, Decimal)
                 gs = canvas.graphics_state

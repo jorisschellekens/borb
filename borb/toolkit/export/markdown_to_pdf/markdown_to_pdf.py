@@ -38,7 +38,6 @@ class MarkdownToPDF:
     def _replace_github_flavored_emoji(
         e: Element, parents: typing.List[Element] = []
     ) -> Element:
-
         # do not modify emoji elements themselves
         if e.tag == "span" and "emoji" in e.get("class", "").split(" "):
             return e

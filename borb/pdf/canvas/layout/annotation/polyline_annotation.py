@@ -55,7 +55,6 @@ class PolylineAnnotation(Annotation):
         left_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
         right_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
     ):
-
         # must be at least 3 points
         assert len(points) >= 3
 

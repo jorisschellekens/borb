@@ -33,7 +33,6 @@ class InlineFlow(LayoutElement):
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
-
         # all lines
         layout_lines: typing.List[typing.List[LayoutElement]] = [[]]
         layout_lines_height: typing.List[Decimal] = [Decimal(0)]

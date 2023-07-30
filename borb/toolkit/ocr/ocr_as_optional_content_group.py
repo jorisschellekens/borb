@@ -13,7 +13,6 @@ import typing
 import zlib
 from decimal import Decimal
 from pathlib import Path
-
 # FIX: circular imports (2/2)
 from typing import TYPE_CHECKING
 
@@ -61,7 +60,6 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
     def _add_ocr_optional_content_group(self, document: Document) -> None:
         # add OCProperties to Document (if needed)
         if "OCProperties" not in document["XRef"]["Trailer"]["Root"]:
-
             # The optional OCProperties entry in the document catalog (see 7.7.2, "Document Catalog") shall contain, when
             # present, the optional content properties dictionary, which contains a list of all the optional content groups in the
             # document, as well as information about the default and alternate configurations for optional content.

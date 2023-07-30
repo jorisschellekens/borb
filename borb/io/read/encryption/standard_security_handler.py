@@ -40,7 +40,6 @@ class StandardSecurityHandler:
         owner_password: typing.Optional[str] = None,
         user_password: typing.Optional[str] = None,
     ):
-
         # (Optional) A code specifying the algorithm to be used in encrypting and
         # decrypting the document:
         # 0 An algorithm that is undocumented. This value shall not be used.

@@ -71,7 +71,6 @@ class Do(CanvasOperator):
             and "Subtype" in xobject
             and xobject["Subtype"] == "Form"
         ):
-
             # execute XObject
             xobject_resources: Dictionary = (
                 xobject["Resources"] if "Resources" in xobject else {}

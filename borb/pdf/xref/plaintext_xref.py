@@ -53,7 +53,6 @@ class PlainTextXREF(XREF):
         src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> typing.List[Reference]:
-
         tokens = [tok.next_non_comment_token() for _ in range(0, 2)]
         assert tokens[0] is not None
         assert tokens[1] is not None
@@ -98,7 +97,6 @@ class PlainTextXREF(XREF):
         src: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO],
         tok: HighLevelTokenizer,
     ) -> Dictionary:
-
         # return None if there is no trailer
         token = tok.next_non_comment_token()
         assert token is not None

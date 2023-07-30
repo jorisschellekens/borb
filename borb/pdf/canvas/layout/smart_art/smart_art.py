@@ -27,6 +27,8 @@ from borb.pdf.canvas.layout.table.flexible_column_width_table import (
     FlexibleColumnWidthTable,
 )
 from borb.pdf.canvas.layout.table.table import TableCell
+from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
+from borb.pdf.canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.page.page import Page
@@ -336,7 +338,6 @@ class SmartArt:
 
             # add <empty> + <arrow down>
             if len(elements_to_add) > 0:
-
                 # add arrow down
                 if filling_left_to_right:
                     for _ in range(0, ncols * 2 - 2):
@@ -1077,6 +1078,61 @@ class SmartArt:
 
         # table
         return table
+
+    @staticmethod
+    def tags(
+        s: typing.List[str],
+        foreground_color: Color = HexColor("#6CAE75"),
+        background_color: Color = HexColor("#8BBD8B"),
+        font_color: Color = HexColor("#FFFFFF"),
+        font_size: Decimal = Decimal(12),
+    ) -> LayoutElement:
+        """
+
+        :param s:                   the typing.List[str] to be converted to tags
+        :param foreground_color:    the foreground_color (unused)
+        :param background_color:    the background_color of the tags
+        :param font_color:          the font_color of the tags
+        :param font_size:           the font_size of the tags
+        :return:
+        """
+
+        # get unique list of tags
+        uniq = []
+        for x in s:
+            if x.upper() not in [y.upper() for y in uniq]:
+                uniq.append(x)
+        uniq.sort()
+
+        # build typing.List[ChunkOfText]
+        chunks: typing.List[ChunkOfText] = []
+        for t in uniq:
+            chunks.append(
+                ChunkOfText(
+                    t,
+                    font_size=font_size,
+                    font_color=font_color,
+                    background_color=background_color,
+                    border_color=background_color,
+                    border_top=True,
+                    border_right=True,
+                    border_bottom=True,
+                    border_left=True,
+                    border_radius_top_right=Decimal(5),
+                    border_radius_bottom_right=Decimal(5),
+                    border_radius_bottom_left=Decimal(5),
+                    border_radius_top_left=Decimal(5),
+                    padding_top=Decimal(2),
+                    padding_right=Decimal(2),
+                    padding_bottom=Decimal(0),
+                    padding_left=Decimal(2),
+                )
+            )
+            chunks.append(ChunkOfText(" ", font_size=font_size))
+        chunks = chunks[:-1]
+
+        # return
+        return HeterogeneousParagraph(chunks)
 
     @staticmethod
     def vertical_bullet_list(

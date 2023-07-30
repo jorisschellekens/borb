@@ -32,25 +32,8 @@ class RGBAImageTransformer(Transformer):
     # PRIVATE
     #
 
-    #
-    # PUBLIC
-    #
-
-    def can_be_transformed(self, any: AnyPDFType):
-        """
-        This function returns True if the object to be converted represents an Image object
-        """
-        return isinstance(any, PILImage.Image) and any.mode == "RGBA"
-
-    @staticmethod
-    def _rgb_array(image: PILImage.Image) -> bytes:
-        s0 = [(r, g, b) for r, g, b, a in image.getdata()]
-        s1 = [x for x in itertools.chain(*s0)]
-        return bytes(s1)
-
     @staticmethod
     def _construct_smask_stream(image: PILImage.Image) -> Stream:
-
         # get raw <alpha> bytes
         w: int = image.width
         h: int = image.height
@@ -71,6 +54,22 @@ class RGBAImageTransformer(Transformer):
         out[Name("Type")] = Name("XObject")
         out[Name("Width")] = bDecimal(w)
         return out
+
+    @staticmethod
+    def _rgb_array(image: PILImage.Image) -> bytes:
+        s0 = [(r, g, b) for r, g, b, a in image.getdata()]
+        s1 = [x for x in itertools.chain(*s0)]
+        return bytes(s1)
+
+    #
+    # PUBLIC
+    #
+
+    def can_be_transformed(self, any: AnyPDFType):
+        """
+        This function returns True if the object to be converted represents an Image object
+        """
+        return isinstance(any, PILImage.Image) and any.mode == "RGBA"
 
     def transform(
         self,

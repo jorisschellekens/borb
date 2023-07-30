@@ -112,7 +112,6 @@ class ConnectedShape(LayoutElement):
         )
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
-
         # translate points to fit in box
         self.move_to(
             available_space.get_x(),

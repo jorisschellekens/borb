@@ -64,7 +64,6 @@ class NameTree:
         pass
 
     def _put_new(self, parent: Dictionary, key: str, value: typing.Any):
-
         kid = Dictionary()
         kid[Name("F")] = String(key)
         kid[Name("Limits")] = List()

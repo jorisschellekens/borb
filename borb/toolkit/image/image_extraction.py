@@ -50,7 +50,6 @@ class ImageExtraction(EventListener):
             self._render_image(event)
 
     def _render_image(self, image_render_event: "ImageRenderEvent"):
-
         # init if needed
         if self._current_page not in self._image_render_info_per_page:
             self._image_render_info_per_page[self._current_page] = []

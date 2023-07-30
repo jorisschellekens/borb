@@ -53,7 +53,6 @@ class HorizontalRule(LayoutElement):
         )
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
-
         # write l operator
         rgb_color: RGBColor = self._line_color.to_rgb()
         content = " q %f %f %f RG %f %f m %f %f l s Q " % (

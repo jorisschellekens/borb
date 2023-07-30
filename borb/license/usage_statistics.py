@@ -9,6 +9,7 @@ where development effort needs to be spent, etc
 import json
 import sys
 import threading
+import time
 import typing
 from datetime import datetime
 from datetime import timezone
@@ -31,6 +32,9 @@ class UsageStatistics:
     # fmt: off
     _ENABLED: bool = True
     _ENDPOINT_URL: str = "https://cztmincfqq4fobtt6c7ect7gli0isbwx.lambda-url.us-east-1.on.aws/"
+    _FAIR_USE_LAST_INVOCATION_NUMBER_OF_DOCUMENTS: int = 0
+    _FAIR_USE_LAST_INVOCATION_TIMESTAMP_IN_MS: int = 0
+    _FAIR_USE_MAXIMUM_NUMBER_OF_DOCUMENTS_PER_MINUTE: int = 100
     # fmt: on
 
     #
@@ -42,6 +46,37 @@ class UsageStatistics:
     #
 
     @staticmethod
+    def _display_fair_use_warning() -> None:
+
+        # never display this warning to a licensed user
+        if License.get_user_id() is not None:
+            return
+
+        # fmt: off
+        UsageStatistics._FAIR_USE_LAST_INVOCATION_NUMBER_OF_DOCUMENTS = 0
+        print("\u001b[48;2;241;205;48mDear user,\n\n"
+              "We noticed that you have exceeded the threshold of 100 documents per minute\n"
+              "while using our Python PDF library. We're thrilled that our library is\n"
+              "proving to be useful in your application!\n\n"
+              "However, we want to bring to your attention the licensing terms of our\n"
+              "library. It is dual licensed under AGPLv3 (GNU Affero General Public License,\n"
+              "version 3) and a commercial license.\n\n"
+              "If you are using our library for personal or non-commercial projects, you can\n"
+              "continue to do so under the terms of the AGPLv3 license. We appreciate your\n"
+              "support of open-source software.\n\n"
+              "However, if you are using our library in a commercial setting, offering\n"
+              "services or products to third parties, or if your usage does not abide by the\n"
+              "AGPLv3 conditions, you are required to obtain a commercial license from us.\n"
+              "This commercial license ensures compliance with the legal requirements and\n"
+              "supports the ongoing development and maintenance of the library.\n\n"
+              "To obtain a commercial license or discuss your licensing options, please \n"
+              "contact our sales team at https://borb-pdf.com. We value your \n"
+              "support and contributions to our library, and we hope to continue providing \n"
+              "you with excellent features and support.\n\n"
+              "Thank you for your attention and understanding.\n\u001b[0m")
+        # fmt: on
+
+    @staticmethod
     def _get_machine_id() -> typing.Optional[str]:
         return MachineID.get()
 
@@ -51,7 +86,6 @@ class UsageStatistics:
 
     @staticmethod
     def _send_usage_statistics_in_thread(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
-
         # get number_of_pages
         number_of_pages: int = 0
         try:
@@ -116,8 +150,35 @@ class UsageStatistics:
         :param document     the Document being processed
         :return:        None
         """
+
+        # easy exit
         if not UsageStatistics._ENABLED:
             return
+
+        # update FAIR_USE counters
+        now_in_ms: int = int(time.time() * 1000)
+        delta_in_ms: int = (
+            now_in_ms - UsageStatistics._FAIR_USE_LAST_INVOCATION_TIMESTAMP_IN_MS
+        )
+        if (
+            delta_in_ms
+            > (1000 * 60)
+            / UsageStatistics._FAIR_USE_MAXIMUM_NUMBER_OF_DOCUMENTS_PER_MINUTE
+        ):
+            UsageStatistics._FAIR_USE_LAST_INVOCATION_TIMESTAMP_IN_MS = now_in_ms
+            UsageStatistics._FAIR_USE_LAST_INVOCATION_NUMBER_OF_DOCUMENTS = 1
+        else:
+            UsageStatistics._FAIR_USE_LAST_INVOCATION_TIMESTAMP_IN_MS = now_in_ms
+            UsageStatistics._FAIR_USE_LAST_INVOCATION_NUMBER_OF_DOCUMENTS += 1
+
+        # notification
+        if (
+            UsageStatistics._FAIR_USE_LAST_INVOCATION_NUMBER_OF_DOCUMENTS
+            >= UsageStatistics._FAIR_USE_MAXIMUM_NUMBER_OF_DOCUMENTS_PER_MINUTE
+        ):
+            UsageStatistics._display_fair_use_warning()
+
+        # send in Thread
         try:
             threading.Thread(
                 target=UsageStatistics._send_usage_statistics_in_thread,

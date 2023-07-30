@@ -26,16 +26,6 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
     # CONSTRUCTOR
     #
 
-    def __init__(
-        self,
-        page: "Page",  # type: ignore [name-defined]
-        horizontal_margin: typing.Optional[Decimal] = None,
-        vertical_margin: typing.Optional[Decimal] = None,
-    ):
-        super(SingleColumnLayoutWithOverflow, self).__init__(
-            page, horizontal_margin, vertical_margin
-        )
-
     #
     # PRIVATE
     #
@@ -47,6 +37,7 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         assert isinstance(layout_element, Table)
         layout_element._previous_layout_box = None
         layout_element._previous_paint_box = None
+
         # noinspection PyProtectedMember
         for tc in layout_element._content:
             tc._previous_layout_box = None
@@ -66,11 +57,11 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
     def _split_table(
         self, layout_element: LayoutElement, available_height: Decimal
     ) -> typing.List[LayoutElement]:
-
-        # find out at which row we ought to split the Table
         from borb.pdf.canvas.layout.table.table import Table
 
         assert isinstance(layout_element, Table)
+
+        # find out at which row we ought to split the Table
         best_row_for_split: typing.Optional[int] = None
         for i in range(0, layout_element.get_number_of_rows()):
             if any([x.get_row_span() != 1 for x in layout_element.get_cells_at_row(i)]):
@@ -138,60 +129,87 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         ]:
             return super(SingleColumnLayout, self).add(layout_element)
 
-        # previous element is used to determine the paragraph spacing
-        assert self._page_height is not None
-        assert self._page_width is not None
-        previous_element_margin_bottom: Decimal = Decimal(0)
-        previous_element_y = self._page_height - self._vertical_margin_top
-        if self._previous_element is not None:
-            previous_element_y = (
-                self._previous_element.get_previous_layout_box().get_y()
+        # get the dimensions of the Page
+        page_width: typing.Optional[Decimal] = self._page.get_page_info().get_width()
+        page_height: typing.Optional[Decimal] = self._page.get_page_info().get_height()
+        assert page_width is not None
+        assert page_height is not None
+
+        # IF there is a previous LayoutElement,
+        # THEN we use that to determine max y-coordinate
+        max_y: Decimal = page_height - self._margin_top
+        min_y: Decimal = self._margin_bottom
+        if self._previous_layout_element is not None:
+            max_y = self._previous_layout_element.get_previous_layout_box().get_y()
+            max_y -= super()._calculate_leading_between(
+                self._previous_layout_element, layout_element
             )
-            previous_element_margin_bottom = self._previous_element.get_margin_bottom()
+            max_y -= max(
+                self._previous_layout_element.get_margin_bottom(),
+                layout_element.get_margin_top(),
+            )
 
-        # calculate next available height
-        available_height: Decimal = (
-            previous_element_y
-            - self._vertical_margin_bottom
-            - self._get_margin_between_elements(self._previous_element, layout_element)
-            - max(previous_element_margin_bottom, layout_element.get_margin_top())
-            - layout_element.get_margin_bottom()
-        )
+        # calculate the height available for the LayoutElement
+        available_height: Decimal = max_y - min_y
 
-        # switch to new column if needed
-        assert self._page_height
+        # IF the available height is insufficient
+        # THEN switch to a new column and try again
         if available_height < 0:
             self.switch_to_next_column()
             return self.add(layout_element)
 
-        # ask LayoutElement to fit
-        lbox: Rectangle = layout_element.get_layout_box(
-            Rectangle(
-                self._horizontal_margin + layout_element.get_margin_left(),
-                Decimal(0),
-                self._column_width
-                - layout_element.get_margin_right()
-                - layout_element.get_margin_left(),
-                available_height,
-            )
+        # calculate the available space (as a Rectangle) for the LayoutElement
+        # fmt: off
+        available_box: Rectangle = Rectangle(
+            self._margin_left + sum(self._column_widths[0:self._active_column]) + sum(self._inter_column_margins[0:self._active_column]) + layout_element.get_margin_left(),
+            min_y,
+            self._column_widths[self._active_column] - layout_element.get_margin_right() - layout_element.get_margin_left(),
+            available_height
         )
-        if lbox.get_height() <= available_height:
+        # fmt: on
+
+        # calculate the layout_box of the LayoutElement
+        layout_box = layout_element.get_layout_box(available_box)
+
+        # IF the layout_box is wider than the column
+        # THEN raise an assert
+        if round(layout_box.get_width(), 2) > round(
+            self._column_widths[self._active_column], 2
+        ):
+            # fmt: off
+            assert False, f"{layout_element.__class__.__name__} is too wide to fit inside column / page. Needed {round(layout_box.get_width())} pts, only {round(available_box.get_width())} pts available."
+            # fmt: on
+
+        # IF the layout_box fits inside the column
+        # THEN delegate to super
+        if round(layout_box.get_height(), 2) <= round(available_box.get_height(), 2):
             return super(SingleColumnLayout, self).add(layout_element)
 
-        # split Table
-        if layout_element.__class__.__name__ in [
-            "FlexibleColumnWidthTable",
-            "FixedColumnWidthTable",
-        ]:
-            for t in self._split_table(layout_element, available_height):
-                super(SingleColumnLayoutWithOverflow, self).add(t)
+        # IF the layout_box is taller than the column
+        # THEN raise an assert
+        else:
+            if self._previous_layout_element is not None:
+                self.switch_to_next_column()
+                return self.add(layout_element)
 
-        # split BlockFlow
-        if layout_element.__class__.__name__ in [
-            "BlockFlow",
-        ]:
-            for t in self._split_blockflow(layout_element, available_height):
-                super(SingleColumnLayoutWithOverflow, self).add(t)
+            # IF the LayoutElement is a Table
+            # THEN split the Table
+            if layout_element.__class__.__name__ in [
+                "FlexibleColumnWidthTable",
+                "FixedColumnWidthTable",
+            ]:
+                for t in self._split_table(layout_element, available_height):
+                    super(SingleColumnLayoutWithOverflow, self).add(t)
+                return self
 
-        # return
-        return self
+            # IF the LayoutElement is a BlockFlow
+            # THEN split the BlockFlow
+            if layout_element.__class__.__name__ in ["BlockFlow"]:
+                for t in self._split_blockflow(layout_element, available_height):
+                    super(SingleColumnLayoutWithOverflow, self).add(t)
+                return self
+
+            # the LayoutElement can not fit
+            # fmt: off
+            assert False, f"{layout_element.__class__.__name__} is too tall to fit inside column / page. Needed {round(layout_box.get_height())} pts, only {round(available_box.get_height())} pts available."
+            # fmt: on

@@ -140,7 +140,7 @@ class DefaultTestRenderer(TestRenderer):
         return "%dm %ds %dms" % (a, b, c)
 
     @staticmethod
-    def _truncate_str(s: str, n: int = 16) -> str:
+    def _truncate_str(s: str, n: int = 10) -> str:
         if len(s) <= n:
             return s
         return "..." + s[(-n + 3) :]
@@ -341,13 +341,23 @@ class DefaultTestRenderer(TestRenderer):
         if self._current_page is None:
             self._current_page = Page()
             d.add_page(self._current_page)
-            self._current_page_layout = SingleColumnLayout(
-                self._current_page,
-                vertical_margin=PageSize.A4_PORTRAIT.value[1]
-                * DefaultTestRenderer.VERTICAL_MARGIN,
-                horizontal_margin=PageSize.A4_PORTRAIT.value[0]
-                * DefaultTestRenderer.HORIZONTAL_MARGIN,
+            self._current_page_layout = SingleColumnLayout(self._current_page)
+            self._current_page_layout._margin_top = (
+                PageSize.A4_PORTRAIT.value[1] * DefaultTestRenderer.VERTICAL_MARGIN
             )
+            self._current_page_layout._margin_right = (
+                PageSize.A4_PORTRAIT.value[0] * DefaultTestRenderer.HORIZONTAL_MARGIN
+            )
+            self._current_page_layout._margin_bottom = (
+                PageSize.A4_PORTRAIT.value[1] * DefaultTestRenderer.VERTICAL_MARGIN
+            )
+            self._current_page_layout._margin_left = (
+                PageSize.A4_PORTRAIT.value[0] * DefaultTestRenderer.HORIZONTAL_MARGIN
+            )
+            self._current_page_layout._column_widths = [
+                PageSize.A4_PORTRAIT.value[0]
+                * (1 - 2 * DefaultTestRenderer.HORIZONTAL_MARGIN)
+            ]
 
         # shorthand for truncation function
         truncate = lambda x: DefaultTestRenderer._truncate_str(x)
@@ -450,13 +460,13 @@ class DefaultTestRenderer(TestRenderer):
         d.add_page(page)
 
         # set PageLayout
-        layout: PageLayout = SingleColumnLayout(
-            page,
-            vertical_margin=PageSize.A4_PORTRAIT.value[1]
-            * DefaultTestRenderer.VERTICAL_MARGIN,
-            horizontal_margin=PageSize.A4_PORTRAIT.value[0]
-            * DefaultTestRenderer.HORIZONTAL_MARGIN,
-        )
+        # fmt: off
+        layout: PageLayout = SingleColumnLayout(page)
+        layout._margin_top = (PageSize.A4_PORTRAIT.value[1] * DefaultTestRenderer.HORIZONTAL_MARGIN)
+        layout._margin_right = (PageSize.A4_PORTRAIT.value[0] * DefaultTestRenderer.VERTICAL_MARGIN)
+        layout._margin_bottom = (PageSize.A4_PORTRAIT.value[1] * DefaultTestRenderer.HORIZONTAL_MARGIN)
+        layout._margin_left = (PageSize.A4_PORTRAIT.value[0] * DefaultTestRenderer.VERTICAL_MARGIN)
+        # fmt: on
 
         # add Paragraph
         layout.add(

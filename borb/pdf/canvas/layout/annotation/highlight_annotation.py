@@ -29,7 +29,6 @@ class HighlightAnnotation(Annotation):
     #
 
     def __init__(self, bounding_box: Rectangle, color: Color = HexColor("faed27")):
-
         # create generic annotation
         super(HighlightAnnotation, self).__init__(
             bounding_box=bounding_box, color=color
