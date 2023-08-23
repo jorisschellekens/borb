@@ -52,23 +52,46 @@ class TableDetectionByLines(EventListener):
     #
     # PRIVATE
     #
+    def _determine_sorted_lines_end_points(
+            self, lines_in_table: typing.List[LineSegment]
+    ) -> typing.Tuple[typing.List[Decimal], typing.List[Decimal]]:
+        # take out of all xs / ys
+        whole_xs: typing.List[Decimal] = []
+        whole_ys: typing.List[Decimal] = []
+
+        for l in lines_in_table:
+            whole_xs.append(Decimal(l.x0))
+            whole_xs.append(Decimal(l.x1))
+            whole_ys.append(Decimal(l.y0))
+            whole_ys.append(Decimal(l.y1))
+
+        min_dist = Decimal(1)
+        # filter xs / ys based on distance
+        filtered_xs: typing.List[Decimal] = []
+        filtered_ys: typing.List[Decimal] = []
+
+        for x in sorted(whole_xs):
+            if not filtered_xs or x - filtered_xs[-1] > min_dist:
+                filtered_xs.append(x)
+
+        for y in sorted(whole_ys):
+            if not filtered_ys or y - filtered_ys[-1] > min_dist:
+                filtered_ys.append(y)
+
+        return filtered_xs, filtered_ys
+    #
+    # PRIVATE
+    #
 
     def _determine_number_of_rows_and_columns(
         self, lines_in_table: typing.List[LineSegment]
     ) -> typing.Tuple[int, int]:
-        # keep track of unique xs / ys (to derive number of rows/cols)
-        unique_xs: typing.Set[int] = set()
-        unique_ys: typing.Set[int] = set()
-
-        for l in lines_in_table:
-            unique_xs.add(int(l.x0))
-            unique_xs.add(int(l.x1))
-            unique_ys.add(int(l.y0))
-            unique_ys.add(int(l.y1))
+        # determine the end point of the lines
+        xs, ys = self._determine_sorted_lines_end_points(lines_in_table)
 
         # determine number of rows/cols
-        number_of_rows: int = len(unique_ys) - 1
-        number_of_cols: int = len(unique_xs) - 1
+        number_of_rows: int = len(xs) - 1
+        number_of_cols: int = len(ys) - 1
 
         # return
         return number_of_rows, number_of_cols
@@ -93,23 +116,14 @@ class TableDetectionByLines(EventListener):
     def _determine_table_cell_boundaries(
         self, lines_in_table: typing.List[LineSegment]
     ) -> Table:
-        # keep track of unique xs / ys (to derive number of rows/cols)
-        unique_xs: typing.Set[int] = set()
-        unique_ys: typing.Set[int] = set()
-
-        for l in lines_in_table:
-            unique_xs.add(int(l.x0))
-            unique_xs.add(int(l.x1))
-            unique_ys.add(int(l.y0))
-            unique_ys.add(int(l.y1))
+        # determine the end points of the lines
+        xs: typing.List[Decimal]
+        ys: typing.List[Decimal]
+        xs, ys = self._determine_sorted_lines_end_points(lines_in_table)
 
         # determine number of rows and cols
-        number_of_rows: int = len(unique_ys) - 1
-        number_of_cols: int = len(unique_xs) - 1
-
-        # sort unique_xs and unique_ys
-        xs: typing.List[Decimal] = sorted([Decimal(x) for x in unique_xs])
-        ys: typing.List[Decimal] = sorted([Decimal(y) for y in unique_ys])
+        number_of_rows: int = len(xs) - 1
+        number_of_cols: int = len(ys) - 1
 
         # find neighbouring cells and join wherever appropriate
         ds: disjointset = disjointset()
