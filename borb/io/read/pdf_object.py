@@ -125,7 +125,7 @@ class PDFObject:
             list_out: typing.List[typing.Any] = []
             memo_dict[id(self)] = list_out
             for v in self:
-                list_out += [PDFObject._to_json(v, memo_dict)]
+                list_out.append(PDFObject._to_json(v, memo_dict))
             return list_out
 
         # Reference

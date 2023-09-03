@@ -13,6 +13,7 @@ import typing
 import zlib
 from decimal import Decimal
 from pathlib import Path
+
 # FIX: circular imports (2/2)
 from typing import TYPE_CHECKING
 

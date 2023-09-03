@@ -49,11 +49,11 @@ class Tokenizer:
             #
 
             if infix_expression[i] == "(":
-                output += [Token(text="(", type=TokenType.LEFT_PARENTHESIS)]
+                output.append(Token(text="(", type=TokenType.LEFT_PARENTHESIS))
                 i += 1
                 continue
             if infix_expression[i] == ")":
-                output += [Token(text=")", type=TokenType.RIGHT_PARENTHESIS)]
+                output.append(Token(text=")", type=TokenType.RIGHT_PARENTHESIS))
                 i += 1
                 continue
 
@@ -62,7 +62,7 @@ class Tokenizer:
             #
 
             if infix_expression[i] == "±":
-                output += [
+                output.append(
                     Token(
                         text="±",
                         type=TokenType.OPERATOR,
@@ -70,11 +70,11 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
             if infix_expression[i] == "+":
-                output += [
+                output.append(
                     Token(
                         text="+",
                         type=TokenType.OPERATOR,
@@ -82,11 +82,11 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
             if infix_expression[i] == "-":
-                output += [
+                output.append(
                     Token(
                         text="-",
                         type=TokenType.OPERATOR,
@@ -94,11 +94,11 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
             if infix_expression[i] == "*":
-                output += [
+                output.append(
                     Token(
                         text="*",
                         type=TokenType.OPERATOR,
@@ -106,11 +106,11 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
             if infix_expression[i] == "/":
-                output += [
+                output.append(
                     Token(
                         text="/",
                         type=TokenType.OPERATOR,
@@ -118,7 +118,7 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
 
@@ -127,7 +127,7 @@ class Tokenizer:
             #
 
             if infix_expression[i:].startswith("!="):
-                output += [
+                output.append(
                     Token(
                         text="≠",
                         type=TokenType.OPERATOR,
@@ -135,12 +135,12 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 2
                 continue
 
             if infix_expression[i:].startswith(">="):
-                output += [
+                output.append(
                     Token(
                         text="≥",
                         type=TokenType.OPERATOR,
@@ -148,12 +148,12 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 2
                 continue
 
             if infix_expression[i:].startswith("<="):
-                output += [
+                output.append(
                     Token(
                         text="≤",
                         type=TokenType.OPERATOR,
@@ -161,12 +161,12 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 2
                 continue
 
             if infix_expression[i] == ">":
-                output += [
+                output.append(
                     Token(
                         text=">",
                         type=TokenType.OPERATOR,
@@ -174,12 +174,12 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
 
             if infix_expression[i] == "<":
-                output += [
+                output.append(
                     Token(
                         text="<",
                         type=TokenType.OPERATOR,
@@ -187,12 +187,12 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
 
             if infix_expression[i] == "=":
-                output += [
+                output.append(
                     Token(
                         text="=",
                         type=TokenType.OPERATOR,
@@ -200,7 +200,7 @@ class Tokenizer:
                         is_left_associative=True,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
 
@@ -209,7 +209,7 @@ class Tokenizer:
             #
 
             if infix_expression[i] == "^":
-                output += [
+                output.append(
                     Token(
                         text="^",
                         type=TokenType.OPERATOR,
@@ -217,11 +217,11 @@ class Tokenizer:
                         is_left_associative=False,
                         number_of_arguments=2,
                     )
-                ]
+                )
                 i += 1
                 continue
             if infix_expression[i] == "²":
-                output += [
+                output.append(
                     Token(
                         text="^",
                         type=TokenType.OPERATOR,
@@ -229,12 +229,12 @@ class Tokenizer:
                         is_left_associative=False,
                         number_of_arguments=2,
                     )
-                ]
-                output += [Token(text="2", type=TokenType.NUMBER)]
+                )
+                output.append(Token(text="2", type=TokenType.NUMBER))
                 i += 1
                 continue
             if infix_expression[i] == "³":
-                output += [
+                output.append(
                     Token(
                         text="^",
                         type=TokenType.OPERATOR,
@@ -242,12 +242,12 @@ class Tokenizer:
                         is_left_associative=False,
                         number_of_arguments=2,
                     )
-                ]
-                output += [Token(text="3", type=TokenType.NUMBER)]
+                )
+                output.append(Token(text="3", type=TokenType.NUMBER))
                 i += 1
                 continue
             if infix_expression[i:].startswith("sqrt"):
-                output += [
+                output.append(
                     Token(
                         text="sqrt",
                         type=TokenType.FUNCTION,
@@ -255,7 +255,7 @@ class Tokenizer:
                         is_left_associative=False,
                         number_of_arguments=1,
                     )
-                ]
+                )
                 i += 4
                 continue
             #
@@ -263,39 +263,39 @@ class Tokenizer:
             #
 
             if infix_expression[i:].startswith("sin"):
-                output += [
+                output.append(
                     Token(text="sin", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
             if infix_expression[i:].startswith("cos"):
-                output += [
+                output.append(
                     Token(text="cos", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
             if infix_expression[i:].startswith("tan"):
-                output += [
+                output.append(
                     Token(text="tan", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
             if infix_expression[i:].startswith("cot"):
-                output += [
+                output.append(
                     Token(text="cot", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
             if infix_expression[i:].startswith("sec"):
-                output += [
+                output.append(
                     Token(text="sec", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
             if infix_expression[i:].startswith("csc"):
-                output += [
+                output.append(
                     Token(text="csc", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
 
@@ -304,9 +304,9 @@ class Tokenizer:
             #
 
             if infix_expression[i:].startswith("abs"):
-                output += [
+                output.append(
                     Token(text="abs", type=TokenType.FUNCTION, number_of_arguments=1)
-                ]
+                )
                 i += 3
                 continue
 
@@ -320,7 +320,7 @@ class Tokenizer:
                     j < len(infix_expression) and infix_expression[j] in "0123456789."
                 ):
                     j += 1
-                output += [Token(text=infix_expression[i:j], type=TokenType.NUMBER)]
+                output.append(Token(text=infix_expression[i:j], type=TokenType.NUMBER))
                 i = j
                 continue
 
@@ -341,7 +341,7 @@ class Tokenizer:
             # IF the token can not be interpreted as anything else
             # AND there is no previous token
             # THEN mark the token as a variable
-            output += [Token(text=infix_expression[i], type=TokenType.VARIABLE)]
+            output.append(Token(text=infix_expression[i], type=TokenType.VARIABLE))
             i += 1
 
         # fix unary minus

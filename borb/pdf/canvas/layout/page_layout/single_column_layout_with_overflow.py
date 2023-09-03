@@ -62,18 +62,23 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         assert isinstance(layout_element, Table)
 
         # find out at which row we ought to split the Table
+        top_y: typing.Optional[Decimal] = None
         best_row_for_split: typing.Optional[int] = None
         for i in range(0, layout_element.get_number_of_rows()):
-            if any([x.get_row_span() != 1 for x in layout_element.get_cells_at_row(i)]):
-                continue
             prev_layout_box: typing.Optional[
                 Rectangle
             ] = layout_element.get_cells_at_row(i)[0].get_previous_layout_box()
+            if top_y is None or top_y < (
+                prev_layout_box.get_y() + prev_layout_box.get_height()
+            ):
+                top_y = prev_layout_box.get_y() + prev_layout_box.get_height()
+            assert top_y is not None
+            if any([x.get_row_span() != 1 for x in layout_element.get_cells_at_row(i)]):
+                continue
             assert prev_layout_box is not None
             y: Decimal = prev_layout_box.get_y()
-            if y < 0:
-                continue
-            if y < available_height:
+            h: Decimal = round(top_y - y, 2)
+            if h < available_height:
                 best_row_for_split = i
 
         # unable to split

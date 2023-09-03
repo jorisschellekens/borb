@@ -168,16 +168,16 @@ class LayoutElement:
                 :-6
             ]
         if self._border_left and self._border_radius_top_left == 0:
-            points += [(xll, yur - self._border_radius_top_left)]
-            points += [(xll, yur)]
+            points.append((xll, yur - self._border_radius_top_left))
+            points.append((xll, yur))
         if self._border_top and self._border_radius_top_left == 0:
-            points += [(xll + self._border_radius_top_left, yur)]
+            points.append((xll + self._border_radius_top_left, yur))
 
         # top
         if self._border_top:
-            points += [(xur - self._border_radius_top_right, yur)]
+            points.append((xur - self._border_radius_top_right, yur))
         else:
-            points += [None]
+            points.append(None)
 
         # top right arc
         if (
@@ -194,15 +194,15 @@ class LayoutElement:
                 2,
             )[:-6]
         if self._border_top and self._border_radius_top_right == 0:
-            points += [(xur, yur)]
+            points.append((xur, yur))
         if self._border_right and self._border_radius_top_right == 0:
-            points += [(xur, yur - self._border_radius_top_right)]
+            points.append((xur, yur - self._border_radius_top_right))
 
         # right
         if self._border_right:
             points += [(xur, yll + self._border_radius_bottom_right)]
         else:
-            points += [None]
+            points.append(None)
 
         # bottom right arc
         if (
@@ -219,15 +219,15 @@ class LayoutElement:
                 2,
             )[:-6]
         if self._border_right and self._border_radius_bottom_right == 0:
-            points += [(xur, yll)]
+            points.append((xur, yll))
         if self._border_bottom and self._border_radius_bottom_right == 0:
-            points += [(xur - self._border_radius_bottom_right, yll)]
+            points.append((xur - self._border_radius_bottom_right, yll))
 
         # bottom
         if self._border_bottom:
-            points += [(xll + self._border_radius_bottom_left, yll)]
+            points.append((xll + self._border_radius_bottom_left, yll))
         else:
-            points += [None]
+            points.append(None)
 
         # bottom left arc
         if (
@@ -244,15 +244,15 @@ class LayoutElement:
                 2,
             )[:-6]
         if self._border_bottom and self._border_radius_bottom_left == 0:
-            points += [(xll, yll)]
+            points.append((xll, yll))
         if self._border_left and self._border_radius_bottom_left == 0:
-            points += [(xll, yll + self._border_radius_bottom_right)]
+            points.append((xll, yll + self._border_radius_bottom_right))
 
         # left
         if self._border_left:
-            points += [(xll, yur - self._border_radius_top_left)]
+            points.append((xll, yur - self._border_radius_top_left))
         else:
-            points += [None]
+            points.append(None)
 
         # return
         return points

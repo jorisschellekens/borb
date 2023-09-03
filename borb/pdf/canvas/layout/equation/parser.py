@@ -28,13 +28,13 @@ class Parser:
         operators: typing.List[Token] = []
         for i, t in enumerate(tokens):
             if t.get_type() == TokenType.NUMBER:
-                postfix += [t]
+                postfix.append(t)
                 continue
             if t.get_type() == TokenType.VARIABLE:
-                postfix += [t]
+                postfix.append(t)
                 continue
             if t.get_type() == TokenType.FUNCTION:
-                operators += [t]
+                operators.append(t)
                 continue
             if t.get_type() == TokenType.OPERATOR:
                 while (
@@ -48,20 +48,20 @@ class Parser:
                         )
                     )
                 ):
-                    postfix += [operators[-1]]
+                    postfix.append(operators[-1])
                     operators.pop(-1)
-                operators += [t]
+                operators.append(t)
                 continue
             if t.get_type() == TokenType.COMMA:
                 while (
                     len(operators) > 0
                     and operators[-1].get_type() != TokenType.LEFT_PARENTHESIS
                 ):
-                    postfix += [operators[-1]]
+                    postfix.append(operators[-1])
                     operators.pop(-1)
                 continue
             if t.get_type() == TokenType.LEFT_PARENTHESIS:
-                operators += [t]
+                operators.append(t)
                 continue
             if t.get_type() == TokenType.RIGHT_PARENTHESIS:
                 assert len(operators) > 0
@@ -69,7 +69,7 @@ class Parser:
                     len(operators) > 0
                     and operators[-1].get_type() != TokenType.LEFT_PARENTHESIS
                 ):
-                    postfix += [operators[-1]]
+                    postfix.append(operators[-1])
                     operators.pop(-1)
                 assert len(operators) > 0
                 assert operators[-1].get_type() == TokenType.LEFT_PARENTHESIS
@@ -78,7 +78,7 @@ class Parser:
                     len(operators) > 0
                     and operators[-1].get_type() == TokenType.FUNCTION
                 ):
-                    postfix += [operators[-1]]
+                    postfix.append(operators[-1])
                     operators.pop(-1)
                 continue
 
@@ -87,7 +87,7 @@ class Parser:
         #   {assert the operator on top of the stack is not a (left) parenthesis}
         #   pop the operator from the operator stack onto the output queue
         while len(operators) > 0:
-            postfix += [operators[-1]]
+            postfix.append(operators[-1])
             operators.pop(-1)
 
         # return
@@ -104,29 +104,29 @@ class Parser:
         postfix: typing.List[Token] = Parser._to_postfix(s)
         for i, t in enumerate(postfix):
             if t.get_type() == TokenType.NUMBER:
-                args += [t]
+                args.append(t)
                 continue
 
             if t.get_type() == TokenType.VARIABLE:
-                args += [t]
+                args.append(t)
                 continue
 
             if t.get_type() == TokenType.OPERATOR:
                 assert len(args) >= t.get_number_of_arguments()
                 for _ in range(0, t.get_number_of_arguments()):
                     # noinspection PyProtectedMember
-                    t._children += [args[-1]]
+                    t._children.append(args[-1])
                     args.pop(-1)
-                args += [t]
+                args.append(t)
                 continue
 
             if t.get_type() == TokenType.FUNCTION:
                 assert len(args) >= t.get_number_of_arguments()
                 for _ in range(0, t.get_number_of_arguments()):
                     # noinspection PyProtectedMember
-                    t._children += [args[-1]]
+                    t._children.append(args[-1])
                     args.pop(-1)
-                args += [t]
+                args.append(t)
                 continue
 
         # check
