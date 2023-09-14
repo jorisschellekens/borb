@@ -131,8 +131,8 @@ class TableDetectionByLines(EventListener):
             for j in range(0, number_of_cols):
                 ds.add((i, j))
 
-        for c in range(0, len(xs) - 1):
-            for r in range(0, len(ys) - 1):
+        for c in range(0, number_of_cols):
+            for r in range(0, number_of_rows):
                 if c + 2 < len(xs):
                     logger.debug(
                         "attempting to merge [%d %d] with its right neighbour" % (r, c)
