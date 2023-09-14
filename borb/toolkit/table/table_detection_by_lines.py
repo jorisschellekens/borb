@@ -183,9 +183,7 @@ class TableDetectionByLines(EventListener):
             # check whether all areas are rectangular
             for i in range(min_col, max_col):
                 for j in range(min_row, max_row):
-                    assert (
-                        j * number_of_rows + i
-                    ) in v, "Non-rectangular area detected in table."
+                    assert (i, j) in v, "Non-rectangular area detected in table."
 
             # create TableCell
             tc: TableCell = TableCell(
