@@ -122,8 +122,8 @@ class TableDetectionByLines(EventListener):
         xs, ys = self._determine_sorted_lines_end_points(lines_in_table)
 
         # determine number of rows and cols
-        number_of_rows: int = len(xs) - 1
-        number_of_cols: int = len(ys) - 1
+        number_of_rows: int = len(ys) - 1
+        number_of_cols: int = len(xs) - 1
 
         # find neighbouring cells and join wherever appropriate
         ds: disjointset = disjointset()
