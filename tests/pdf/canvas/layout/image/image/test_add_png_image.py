@@ -72,12 +72,12 @@ class TestAddImage(TestCase):
         with open(self.get_first_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, pdf)
 
+        # restore
+        RGBAImageTransformer.can_be_transformed = prev_can_be_transformed
+
         # compare
         self.compare_visually_to_ground_truth(self.get_first_output_file())
         self.check_pdf_using_validator(self.get_first_output_file())
-
-        # restore
-        RGBAImageTransformer.can_be_transformed = prev_can_be_transformed
 
     def test_add_image_002(self):
         # create document

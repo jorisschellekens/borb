@@ -3,7 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from borb.pdf import ConnectedShape
-from borb.pdf.canvas.color.color import X11Color
+from borb.pdf import HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
@@ -154,7 +154,7 @@ class TestDetectTable(TestCase):
                 r = t.get_previous_layout_box().grow(Decimal(5))
                 ConnectedShape(
                     LineArtFactory.rectangle(r),
-                    stroke_color=X11Color("Red"),
+                    stroke_color=HexColor("ff0000"),
                     fill_color=None,
                 ).paint(doc.get_page(0), r)
 
@@ -163,8 +163,8 @@ class TestDetectTable(TestCase):
                     r = r.shrink(Decimal(2))
                     ConnectedShape(
                         LineArtFactory.rectangle(r),
-                        stroke_color=X11Color("Green"),
-                        fill_color=X11Color("Green"),
+                        stroke_color=HexColor("00ff00"),
+                        fill_color=HexColor("00ff00"),
                     ).paint(doc.get_page(0), r)
 
             # determine output name

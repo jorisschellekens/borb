@@ -5,7 +5,6 @@
 This class represents a common base for all LayoutElement implementations
 that attempt to represent tabular data.
 """
-import copy
 import typing
 from decimal import Decimal
 
@@ -100,48 +99,6 @@ class TableCell(LayoutElement):
     #
     # PRIVATE
     #
-
-    def _calculate_min_and_max_layout_box(self) -> None:
-        lbox_max: Rectangle = self.get_layout_box(
-            Rectangle(Decimal(0), Decimal(0), Decimal(2048), Decimal(2048))
-        )
-        upper_bound_lbox_min: Rectangle = copy.deepcopy(lbox_max)
-        lower_bound_lbox_min: Rectangle = copy.deepcopy(
-            Rectangle(
-                lbox_max.get_x(), lbox_max.get_y(), Decimal(1), lbox_max.get_height()
-            )
-        )
-        lbox_min: typing.Optional[Rectangle] = None
-        while (
-            abs(upper_bound_lbox_min.get_width() - lower_bound_lbox_min.get_width()) > 1
-        ):
-            midpoint_lbox_min: Rectangle = Rectangle(
-                upper_bound_lbox_min.get_x(),
-                upper_bound_lbox_min.get_y(),
-                (upper_bound_lbox_min.get_width() + lower_bound_lbox_min.get_width())
-                / 2,
-                upper_bound_lbox_min.get_height(),
-            )
-            try:
-                lbox_tmp: Rectangle = self.get_layout_box(midpoint_lbox_min)
-                lbox_min = lbox_tmp
-                if lbox_tmp.get_width() > midpoint_lbox_min.get_width():
-                    lower_bound_lbox_min = midpoint_lbox_min
-                else:
-                    upper_bound_lbox_min = midpoint_lbox_min
-            except:
-                lower_bound_lbox_min = midpoint_lbox_min
-                continue
-
-        # set properties
-        if lbox_min is None:
-            lbox_min = lbox_max
-        self._min_height = lbox_max.get_height()
-        self._min_width = lbox_min.get_width()
-        self._max_height = lbox_min.get_height()
-        self._max_width = lbox_max.get_width()
-
-        # return
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         if self._forced_layout_box is not None:

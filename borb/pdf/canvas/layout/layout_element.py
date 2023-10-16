@@ -168,16 +168,16 @@ class LayoutElement:
                 :-6
             ]
         if self._border_left and self._border_radius_top_left == 0:
-            points.append((xll, yur - self._border_radius_top_left))
-            points.append((xll, yur))
+            points += [(xll, yur - self._border_radius_top_left)]
+            points += [(xll, yur)]
         if self._border_top and self._border_radius_top_left == 0:
-            points.append((xll + self._border_radius_top_left, yur))
+            points += [(xll + self._border_radius_top_left, yur)]
 
         # top
         if self._border_top:
-            points.append((xur - self._border_radius_top_right, yur))
+            points += [(xur - self._border_radius_top_right, yur)]
         else:
-            points.append(None)
+            points += [None]
 
         # top right arc
         if (
@@ -194,15 +194,15 @@ class LayoutElement:
                 2,
             )[:-6]
         if self._border_top and self._border_radius_top_right == 0:
-            points.append((xur, yur))
+            points += [(xur, yur)]
         if self._border_right and self._border_radius_top_right == 0:
-            points.append((xur, yur - self._border_radius_top_right))
+            points += [(xur, yur - self._border_radius_top_right)]
 
         # right
         if self._border_right:
             points += [(xur, yll + self._border_radius_bottom_right)]
         else:
-            points.append(None)
+            points += [None]
 
         # bottom right arc
         if (
@@ -219,15 +219,15 @@ class LayoutElement:
                 2,
             )[:-6]
         if self._border_right and self._border_radius_bottom_right == 0:
-            points.append((xur, yll))
+            points += [(xur, yll)]
         if self._border_bottom and self._border_radius_bottom_right == 0:
-            points.append((xur - self._border_radius_bottom_right, yll))
+            points += [(xur - self._border_radius_bottom_right, yll)]
 
         # bottom
         if self._border_bottom:
-            points.append((xll + self._border_radius_bottom_left, yll))
+            points += [(xll + self._border_radius_bottom_left, yll)]
         else:
-            points.append(None)
+            points += [None]
 
         # bottom left arc
         if (
@@ -244,15 +244,15 @@ class LayoutElement:
                 2,
             )[:-6]
         if self._border_bottom and self._border_radius_bottom_left == 0:
-            points.append((xll, yll))
+            points += [(xll, yll)]
         if self._border_left and self._border_radius_bottom_left == 0:
-            points.append((xll, yll + self._border_radius_bottom_right))
+            points += [(xll, yll + self._border_radius_bottom_right)]
 
         # left
         if self._border_left:
-            points.append((xll, yur - self._border_radius_top_left))
+            points += [(xll, yur - self._border_radius_top_left)]
         else:
-            points.append(None)
+            points += [None]
 
         # return
         return points
@@ -421,6 +421,135 @@ class LayoutElement:
         """
         return self._font_size or Decimal(0)
 
+    def get_golden_ratio_landscape_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the layout box that fits this LayoutElement
+        and whose ratio of dimensions (width / height) are closest to the golden ratio.
+        :return:    the layout box (in landscape mode) with ratio closest to the golden ratio
+        """
+
+        # define golden ratio and its inverse
+        GOLDEN_RATIO: Decimal = Decimal(1.618)
+        INVERSE_GOLDEN_RATIO = Decimal(1) / GOLDEN_RATIO
+
+        # keep track of best landscape box
+        best_landscape_box: typing.Optional[Rectangle] = None
+
+        # try all possible widths
+        for w in range(0, 2048, 10):
+            try:
+                # try layout with the given width
+                landscape_box: Rectangle = self.get_layout_box(
+                    Rectangle(
+                        Decimal(0),
+                        Decimal(0),
+                        Decimal(w),
+                        Decimal(w) * INVERSE_GOLDEN_RATIO,
+                    )
+                )
+
+                # IF the width goes out of bounds
+                # THEN go to the next iteration (hopefully allowing the LayoutElement to fit)
+                if landscape_box.get_width() > w:
+                    continue
+
+                # IF we didn't have a best landscape_box yet
+                # THEN whatever we have now is best
+                if best_landscape_box is None:
+                    best_landscape_box = landscape_box
+                    continue
+
+                # calculate the current ratio (width / height)
+                ratio: Decimal = landscape_box.get_width() / landscape_box.get_height()
+                best_ratio: Decimal = (
+                    best_landscape_box.get_width() / best_landscape_box.get_height()
+                )
+                if abs(ratio - GOLDEN_RATIO) < abs(best_ratio - GOLDEN_RATIO):
+                    best_landscape_box = landscape_box
+                    continue
+
+                # current_ratio will only every increase
+                # as soon as we go above the GOLDEN_RATIO we exit the loop
+                if ratio > GOLDEN_RATIO:
+                    break
+
+            except:
+                pass
+
+        # return
+        return best_landscape_box
+
+    def get_golden_ratio_portrait_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the layout box that fits this LayoutElement
+        and whose ratio of dimensions (height / width) are closest to the golden ratio.
+        :return:    the layout box (in portrait mode) with ratio closest to the golden ratio
+        """
+
+        # define golden ratio and its inverse
+        GOLDEN_RATIO: Decimal = Decimal(1.618)
+        INVERSE_GOLDEN_RATIO = Decimal(1) / GOLDEN_RATIO
+
+        # keep track of best landscape box
+        best_portrait_box: typing.Optional[Rectangle] = None
+
+        # try all possible widths
+        for h in range(0, 2048, 10):
+            try:
+                # try layout with the given width
+                portrait_box: Rectangle = self.get_layout_box(
+                    Rectangle(
+                        Decimal(0),
+                        Decimal(0),
+                        Decimal(h * INVERSE_GOLDEN_RATIO),
+                        Decimal(h),
+                    )
+                )
+
+                # IF the width goes out of bounds
+                # THEN go to the next iteration (hopefully allowing the LayoutElement to fit)
+                if portrait_box.get_height() > h:
+                    continue
+
+                # IF we didn't have a best portrait_box yet
+                # THEN whatever we have now is best
+                if best_portrait_box is None:
+                    best_portrait_box = portrait_box
+                    continue
+
+                # calculate the current ratio (width / height)
+                ratio: Decimal = portrait_box.get_height() / portrait_box.get_width()
+                best_ratio: Decimal = (
+                    best_portrait_box.get_height() / best_portrait_box.get_width()
+                )
+                if abs(ratio - GOLDEN_RATIO) < abs(best_ratio - GOLDEN_RATIO):
+                    best_portrait_box = portrait_box
+                    continue
+
+                # current_ratio will only every increase
+                # as soon as we go above the GOLDEN_RATIO we exit the loop
+                if ratio < GOLDEN_RATIO:
+                    break
+
+            except:
+                pass
+
+        # return
+        return best_portrait_box
+
+    def get_largest_landscape_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the largest (in landscape mode) box that will fit this LayoutElement.
+        For most (all) LayoutElements, this also ought to be the layout box with the smallest height, and largest width.
+        :return:    the largest layout box (in landscape mode)
+        """
+        try:
+            return self.get_layout_box(
+                Rectangle(Decimal(0), Decimal(0), Decimal(2048), Decimal(2048))
+            )
+        except:
+            return None
+
     def get_layout_box(self, available_space: Rectangle):
         """
         This function returns the previous result of layout
@@ -532,6 +661,32 @@ class LayoutElement:
         :return:    the Rectangle that was the result of the previous paint operation
         """
         return self._previous_paint_box
+
+    def get_smallest_landscape_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the smallest (in landscape mode) box that will fit this LayoutElement.
+        For most (all) LayoutElements, this also ought to be the layout box with the smallest width, and largest height.
+        :return:    the smallest layout box (in landscape mode)
+        """
+        max_width: Decimal = Decimal(2048)
+        min_width: Decimal = Decimal(0)
+        midpoint_width: Decimal = (max_width + min_width) / Decimal(2)
+        landscape_box: typing.Optional[Rectangle] = None
+        while abs(max_width - min_width) > Decimal(1):
+            try:
+                landscape_box: Rectangle = self.get_layout_box(
+                    Rectangle(Decimal(0), Decimal(0), midpoint_width, Decimal(2048))
+                )
+                if landscape_box.get_width() > midpoint_width:
+                    min_width = midpoint_width
+                else:
+                    max_width = midpoint_width
+                midpoint_width = (max_width + min_width) / Decimal(2)
+            except:
+                break
+
+        # return
+        return landscape_box
 
     def paint(self, page: "Page", available_space: Rectangle) -> None:  # type: ignore[name-defined]
         """

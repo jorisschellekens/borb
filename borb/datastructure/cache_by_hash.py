@@ -47,7 +47,6 @@ def cached_by_hash(func):
                 field_name_for_cache_hit_rate,
                 (prev_hit_rate[0] + 1, prev_hit_rate[1]),
             )
-            # print(args[0].__class__.__name__ + "::" + func.__name__ + " (cached)")
             return copy.deepcopy(val1)
 
         # set

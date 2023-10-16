@@ -69,7 +69,6 @@ class PageDictionaryTransformer(Transformer):
             return object_to_transform
 
         # convert dictionary like structure
-        print("reading page")
         page_out = Page()
         page_out.set_parent(parent_object)
 

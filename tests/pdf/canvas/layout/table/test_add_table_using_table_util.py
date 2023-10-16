@@ -342,3 +342,26 @@ class TestAddTableUsingTableUtil(TestCase):
             PDF.dumps(fh, doc)
         self.compare_visually_to_ground_truth(self.get_fourteenth_output_file())
         self.check_pdf_using_validator(self.get_fourteenth_output_file())
+
+    def test_add_table_from_pandas_dataframe_using_table_util(self):
+
+        # Import pandas package
+        import pandas as pd
+
+        data = pd.read_csv("https://media.geeksforgeeks.org/wp-content/uploads/nba.csv")
+        data = data[0:10]
+
+        doc: Document = Document()
+        page: Page = Page()
+        doc.add_page(page)
+        layout: PageLayout = SingleColumnLayout(page)
+        layout.add(
+            self.get_test_header(
+                test_description="This test adds a FlexibleColumnWidthTable to a PDF using the TableUtil."
+            )
+        )
+        layout.add(TableUtil.from_pandas_dataframe(data))
+        with open(self.get_fifteenth_output_file(), "wb") as fh:
+            PDF.dumps(fh, doc)
+        self.compare_visually_to_ground_truth(self.get_fifteenth_output_file())
+        self.check_pdf_using_validator(self.get_fifteenth_output_file())

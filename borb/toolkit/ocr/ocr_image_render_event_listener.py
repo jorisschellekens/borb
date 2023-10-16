@@ -203,7 +203,7 @@ class OCRImageRenderEventListener(EventListener):
                     ),
                     0,
                 )
-                font_color: RGBColor = self._get_font_color(
+                font_color: Color = self._get_font_color(
                     text_in_bounding_box, event.get_image(), image_bounding_box
                 )
                 self._ocr_text_occurred(
@@ -223,7 +223,7 @@ class OCRImageRenderEventListener(EventListener):
         text: str,
         image: PILImage,  # type: ignore[valid-type]
         image_bounding_box: Rectangle,
-    ) -> RGBColor:
+    ) -> Color:
         # build empty PILImage
         text_image: PILImage = PILImage.new(  # type: ignore[valid-type]
             "RGB",

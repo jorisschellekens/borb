@@ -11,7 +11,6 @@ from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.layout_element import LayoutElement
@@ -106,7 +105,7 @@ class DisconnectedShape(LayoutElement):
         )
 
         # write content
-        stroke_rgb = (self._stroke_color or X11Color("Black")).to_rgb()
+        stroke_rgb = (self._stroke_color or HexColor("000000")).to_rgb()
         content = "q %f %f %f RG %d w " % (
             float(stroke_rgb.red),
             float(stroke_rgb.green),

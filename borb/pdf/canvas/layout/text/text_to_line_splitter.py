@@ -279,5 +279,13 @@ class TextToLineSplitter:
                 # move to next iteration
                 continue
 
+        # IF we do not respect spaces
+        # THEN remove any trailing spaces from each line
+        # (this has a huge impact on text that is aligned JUSTIFIED)
+        if not respect_spaces:
+            for i in range(0, len(out)):
+                while len(out) > 0 and out[i][-1] == " ":
+                    out[i] = out[i][:-1]
+
         # return
         return ["".join(l) for l in out]

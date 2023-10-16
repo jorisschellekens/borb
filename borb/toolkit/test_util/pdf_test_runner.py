@@ -90,7 +90,6 @@ class PDFTestRunner:
             [x for x in set([x.get_file() for x in PDFTestRunner._test_statuses])]
         )
         for i, class_name in enumerate(file_name_sorted):
-            print("building class level results %d/%d" % (i + 1, len(file_name_sorted)))
             logger.debug(
                 "building class level results %d/%d" % (i + 1, len(file_name_sorted))
             )
@@ -121,7 +120,7 @@ class PDFTestRunner:
     def set_up(
         test_case: unittest.TestCase,
         report_name: Path = Path(
-            "Test Report %s.pdf" % datetime.datetime.now().strftime("%H:%M:%S")
+            "Test Report %s.pdf" % datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         ),
     ):
         """

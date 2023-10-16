@@ -242,10 +242,11 @@ class Document(Dictionary):
             return children
 
         # DFS outline(s)
+        # fmt: off
         outlines_done: typing.List[typing.Tuple[int, Dictionary]] = []
-        outlines_todo: typing.List[typing.Tuple[int, Dictionary]] = [
-            (-1, outline_dictionary)
-        ]
+        outlines_todo: typing.List[typing.Tuple[int, Dictionary]] = [(-1, outline_dictionary)]
+        # fmt: on
+
         while len(outlines_todo) > 0:
             t = outlines_todo[0]
             outlines_done.append(t)
@@ -254,29 +255,32 @@ class Document(Dictionary):
                 outlines_todo.append((t[0] + 1, c))
 
         # find parent
-        parent = [x[1] for x in outlines_done if x[0] == level - 1][-1]
+        parent_level = max([x[0] for x in outlines_done if x[0] < level])
+        parent_outline_dictionary = [
+            x[1] for x in outlines_done if x[0] == parent_level
+        ][-1]
 
         # update sibling-linking
-        if "Last" in parent:
-            sibling = parent["Last"]
+        if "Last" in parent_outline_dictionary:
+            sibling = parent_outline_dictionary["Last"]
             sibling[Name("Next")] = outline
 
         # update parent-linking
-        outline[Name("Parent")] = parent
-        if "First" not in parent:
-            parent[Name("First")] = outline
-        if "Count" not in parent:
-            parent[Name("Count")] = bDecimal(0)
-        parent[Name("Last")] = outline
+        outline[Name("Parent")] = parent_outline_dictionary
+        if "First" not in parent_outline_dictionary:
+            parent_outline_dictionary[Name("First")] = outline
+        if "Count" not in parent_outline_dictionary:
+            parent_outline_dictionary[Name("Count")] = bDecimal(0)
+        parent_outline_dictionary[Name("Last")] = outline
 
-        # update count
-        outline_to_update_count = parent
-        while outline_to_update_count:
-            outline_to_update_count[Name("Count")] = bDecimal(
-                outline_to_update_count["Count"] + Decimal(1)
+        # update count (traversing up the tree)
+        outline_dictionary_to_update = parent_outline_dictionary
+        while outline_dictionary_to_update:
+            outline_dictionary_to_update[Name("Count")] = bDecimal(
+                outline_dictionary_to_update["Count"] + Decimal(1)
             )
-            if "Parent" in outline_to_update_count:
-                outline_to_update_count = outline_to_update_count["Parent"]
+            if "Parent" in outline_dictionary_to_update:
+                outline_dictionary_to_update = outline_dictionary_to_update["Parent"]
             else:
                 break
 

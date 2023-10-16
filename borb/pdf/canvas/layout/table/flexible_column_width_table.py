@@ -119,7 +119,15 @@ class FlexibleColumnWidthTable(Table):
         #       Also, calculate the "maximum" cell width of each cell:
         #       formatting the content without breaking lines other than where explicit line breaks occur.
         for t in self._content:
-            t._calculate_min_and_max_layout_box()
+            r0: typing.Optional[Rectangle] = t.get_largest_landscape_box()
+            assert r0 is not None
+            t._max_width = r0.get_width()
+            t._min_height = r0.get_height()
+
+            r1: typing.Optional[Rectangle] = t.get_smallest_landscape_box()
+            assert r1 is not None
+            t._min_width = r1.get_width()
+            t._max_height = r1.get_height()
 
         # 2.    For each column, determine a maximum and minimum column width from the cells that span only that column.
         #       The minimum is that required by the cell with the largest minimum cell width (or the column 'width', whichever is larger).

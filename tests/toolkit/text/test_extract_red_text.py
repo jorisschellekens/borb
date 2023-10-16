@@ -3,7 +3,6 @@ import unittest
 from decimal import Decimal
 
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
@@ -73,7 +72,7 @@ class TestExtractRedText(TestCase):
     def test_extract_red_paragraph(self):
 
         doc = None
-        l0 = FontColorFilter(X11Color("Red"), Decimal(0.1))
+        l0 = FontColorFilter(HexColor("ff0000"), Decimal(0.1))
         l1 = SimpleTextExtraction()
         l0.add_listener(l1)
 

@@ -16,7 +16,9 @@ class TestSingleColumnLayoutWithOverflow(TestCase):
 
         layout: SingleColumnLayoutWithOverflow = SingleColumnLayoutWithOverflow(page)
 
-        table: FixedColumnWidthTable = FixedColumnWidthTable(number_of_columns=5, number_of_rows=50)
+        table: FixedColumnWidthTable = FixedColumnWidthTable(
+            number_of_columns=5, number_of_rows=50
+        )
 
         table.add(Paragraph("Header 1", font="Helvetica-bold"))
         table.add(Paragraph("Header 2", font="Helvetica-bold"))

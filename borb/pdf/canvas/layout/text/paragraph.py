@@ -200,9 +200,6 @@ class Paragraph(LineOfText):
         self._previous_lines_of_text = lines_of_text
 
         # determine content box
-        # print(f"Paragraph::_get_content_box")
-        # print(f"\t{available_space.get_x()} {available_space.get_y()} {available_space.get_width()} {available_space.get_height()}")
-        # print(f"\t{available_space.get_x()} {available_space.get_y() + available_space.get_height() - h} {w} {h}")
         return Rectangle(
             available_space.get_x(),
             available_space.get_y() + available_space.get_height() - h,

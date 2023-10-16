@@ -87,15 +87,9 @@ class InlineFlow(LayoutElement):
 
     @staticmethod
     def _get_min_content_box(e: LayoutElement) -> Rectangle:
-        from borb.pdf.canvas.layout.table.table import TableCell
-
-        c: TableCell = TableCell(e)
-        c._calculate_min_and_max_layout_box()
-        w: typing.Optional[Decimal] = c.get_min_width()
-        h: typing.Optional[Decimal] = c.get_max_height()
-        assert w is not None
-        assert h is not None
-        return Rectangle(Decimal(0), Decimal(0), w, h)
+        r0: typing.Optional[Rectangle] = e.get_smallest_landscape_box()
+        assert r0 is not None
+        return r0
 
     def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore [name-defined]
         for e in self._content:

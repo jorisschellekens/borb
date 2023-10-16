@@ -9,7 +9,6 @@ from decimal import Decimal
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
-from borb.pdf.canvas.color.color import X11Color
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.list.list import List
@@ -98,7 +97,7 @@ class OrderedList(List):
         return ChunkOfText(
             text=str(item_index + 1) + ".",
             font_size=font_size or Decimal(12),
-            font_color=font_color or X11Color("Black"),
+            font_color=font_color or HexColor("000000"),
         )
 
     #

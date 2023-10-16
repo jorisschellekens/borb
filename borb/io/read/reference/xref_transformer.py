@@ -115,7 +115,6 @@ class XREFTransformer(Transformer):
                 most_recent_xref = StreamXREF()
                 assert most_recent_xref is not None
                 most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
-                print("reading another xref")
                 most_recent_xref.read(src, tok, initial_offset)
                 if "XRef" in doc:
                     doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
