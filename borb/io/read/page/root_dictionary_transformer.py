@@ -11,7 +11,7 @@ from borb.io.read.object.dictionary_transformer import DictionaryTransformer
 from borb.io.read.transformer import ReadTransformerState
 from borb.io.read.transformer import Transformer
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary
 from borb.io.read.types import List as bList
 from borb.io.read.types import Name
@@ -56,7 +56,7 @@ class RootDictionaryTransformer(Transformer):
         root_dictionary["Pages"][Name("Kids")] = bList()
         for p in pages_in_order:
             root_dictionary["Pages"]["Kids"].append(p)
-        root_dictionary["Pages"][Name("Count")] = Decimal(len(pages_in_order))
+        root_dictionary["Pages"][Name("Count")] = bDecimal(len(pages_in_order))
 
     #
     # PRIVATE

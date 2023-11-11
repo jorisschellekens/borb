@@ -6,10 +6,13 @@ It has some convenience methods that allow you to specify how the object
 should be persisted, as well as some methods to traverse the object-graph.
 """
 import copy
+import decimal
 import typing
 from types import MethodType
 
 import PIL
+
+import borb.io.read.types
 
 
 class PDFObject:
@@ -40,27 +43,19 @@ class PDFObject:
             return self
 
         # Boolean
-        from borb.io.read.types import Boolean
-
-        if isinstance(self, Boolean):
+        if isinstance(self, borb.io.read.types.Boolean):
             return bool(self)
 
         # CanvasOperatorName
-        from borb.io.read.types import CanvasOperatorName
-
-        if isinstance(self, CanvasOperatorName):
+        if isinstance(self, borb.io.read.types.CanvasOperatorName):
             return str(self)
 
         # (borb) Decimal
-        from borb.io.read.types import Decimal
-
-        if isinstance(self, Decimal):
+        if isinstance(self, borb.io.read.types.Decimal):
             return float(self)
 
         # (decimal) Decimal
-        from decimal import Decimal as oDecimal
-
-        if isinstance(self, oDecimal):
+        if isinstance(self, decimal.Decimal):
             return float(self)
 
         # float, int
@@ -72,9 +67,7 @@ class PDFObject:
             return str(self)
 
         # Dictionary
-        from borb.io.read.types import Dictionary
-
-        if isinstance(self, Dictionary):
+        if isinstance(self, borb.io.read.types.Dictionary):
             out: typing.Dict[str, typing.Any] = {}
             memo_dict[id(self)] = out
             for k, v in self.items():
@@ -90,17 +83,13 @@ class PDFObject:
             return dict_out
 
         # Element
-        from borb.io.read.types import Element
-
-        if isinstance(self, Element):
+        if isinstance(self, borb.io.read.types.Element):
             from borb.io.read.types import ET
 
             return str(ET.tostring(self))
 
         # Name
-        from borb.io.read.types import Name
-
-        if isinstance(self, Name):
+        if isinstance(self, borb.io.read.types.Name):
             return str(self)
 
         # Stream
@@ -110,18 +99,14 @@ class PDFObject:
         # DUPLICATE: Dictionary
 
         # String
-        from borb.io.read.types import String
-
-        if isinstance(self, String):
+        if isinstance(self, borb.io.read.types.String):
             return str(self)
 
         # HexadecimalString
         # DUPLICATE: String
 
         # List
-        from borb.io.read.types import List
-
-        if isinstance(self, List):
+        if isinstance(self, borb.io.read.types.List):
             list_out: typing.List[typing.Any] = []
             memo_dict[id(self)] = list_out
             for v in self:
@@ -129,9 +114,7 @@ class PDFObject:
             return list_out
 
         # Reference
-        from borb.io.read.types import Reference
-
-        if isinstance(self, Reference):
+        if isinstance(self, borb.io.read.types.Reference):
             return "%d %d R" % (self.generation_number or 0, self.object_number or 0)
 
         # PIL.Image.Image

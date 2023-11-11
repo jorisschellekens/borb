@@ -1,7 +1,8 @@
 include borb/io/write/document/resources/*.icm
+include borb/license/public_keys/*.pem
 include borb/pdf/canvas/font/composite_font/cmaps/*
 include borb/pdf/canvas/font/simple_font/afm/*.afm
 include borb/pdf/canvas/layout/emoji/resources/*.png
+include borb/pdf/canvas/layout/geography/geojson/*.geojson
 include borb/pdf/canvas/layout/hyphenation/resources/*.json
 include borb/pdf/canvas/lipsum/resources/*.json
-include borb/license/public_keys/*.pem

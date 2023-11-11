@@ -239,7 +239,7 @@ class RegularExpressionTextExtraction(EventListener):
             return
 
         # sort according to comparator
-        sorted(tris, key=cmp_to_key(LeftToRightComparator.cmp))
+        tris = sorted(tris, key=cmp_to_key(LeftToRightComparator.cmp))
 
         poss = []
 

@@ -5,9 +5,9 @@
 This implementation of WriteBaseTransformer is responsible for writing Decimal objects
 """
 import typing
+from decimal import Decimal
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal
 from borb.io.write.transformer import Transformer
 from borb.io.write.transformer import WriteTransformerState
 

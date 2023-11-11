@@ -14,7 +14,7 @@ from borb.io.read.tokenize.low_level_tokenizer import TokenType
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Boolean
 from borb.io.read.types import CanvasOperatorName
-from borb.io.read.types import Decimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary
 from borb.io.read.types import HexadecimalString
 from borb.io.read.types import List
@@ -237,7 +237,7 @@ class HighLevelTokenizer(LowLevelTokenizer):
         # numbers
         if token.get_token_type() == TokenType.NUMBER:
             self.seek(self.tell() + len(token.get_text()))
-            return Decimal(Decimal(token.get_text()))
+            return bDecimal(token.get_text())
 
         # boolean
         if token.get_token_type() == TokenType.OTHER and token.get_text() in [

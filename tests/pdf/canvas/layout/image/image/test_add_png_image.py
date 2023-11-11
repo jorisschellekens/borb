@@ -57,16 +57,16 @@ class TestAddImage(TestCase):
             border_left=True,
         )
 
+        # add (obj) Image
+        page_layout.add(obj_img)
+
         # add text under image
         text_under: str = "".join(["1 " for _ in range(0, 256)])[:-1]
         Paragraph(
             text_under,
-            font_size=Decimal(8),
+            font_size=Decimal(7.925),
             horizontal_alignment=Alignment.CENTERED,
-        ).paint(page, Rectangle(64, 544, 128, 128))
-
-        # add (obj) Image
-        page_layout.add(obj_img)
+        ).paint(page, obj_img.get_previous_paint_box())
 
         # write
         with open(self.get_first_output_file(), "wb") as pdf_file_handle:
@@ -109,16 +109,16 @@ class TestAddImage(TestCase):
             border_left=True,
         )
 
+        # add (obj) Image
+        page_layout.add(obj_img)
+
         # add text under image
         text_under: str = "".join(["1 " for _ in range(0, 256)])[:-1]
         Paragraph(
             text_under,
-            font_size=Decimal(8),
+            font_size=Decimal(7.925),
             horizontal_alignment=Alignment.CENTERED,
-        ).paint(page, Rectangle(64, 544, 128, 128))
-
-        # add (obj) Image
-        page_layout.add(obj_img)
+        ).paint(page, obj_img.get_previous_paint_box())
 
         # write
         with open(self.get_second_output_file(), "wb") as pdf_file_handle:

@@ -6,10 +6,10 @@
 """
 import io
 import typing
+from decimal import Decimal
 from functools import cmp_to_key
 
 from borb.datastructure.disjoint_set import disjointset
-from borb.io.read.types import Decimal
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
@@ -75,7 +75,9 @@ class SimpleLineOfTextExtraction(EventListener):
             chunks_of_text: typing.List[ChunkOfTextRenderEvent] = [
                 x for x in chunks_of_text_partition
             ]
-            sorted(chunks_of_text, key=cmp_to_key(LeftToRightComparator.cmp))
+            chunks_of_text = sorted(
+                chunks_of_text, key=cmp_to_key(LeftToRightComparator.cmp)
+            )
 
             # determine text
             txt = ""

@@ -14,7 +14,7 @@ from borb.io.read.encryption.rc4 import RC4
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Boolean
-from borb.io.read.types import Decimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary
 from borb.io.read.types import HexadecimalString
 from borb.io.read.types import Name
@@ -56,7 +56,7 @@ class StandardSecurityHandler:
         # in the document, using the rules specified by the CF, StmF, and StrF entries.
         # The default value if this entry is omitted shall be 0, but when present should be a
         # value of 1 or greater.
-        self._v = int(encryption_dictionary.get("V", Decimal(0)))
+        self._v = int(encryption_dictionary.get("V", bDecimal(0)))
 
         # (Required) A 32-byte string, based on the user password, that shall be
         # used in determining whether to prompt the user for a password and, if so,
@@ -102,13 +102,13 @@ class StandardSecurityHandler:
         # (Optional; PDF 1.4; only if V is 2 or 3) The length of the encryption key, in bits.
         # The value shall be a multiple of 8, in the range 40 to 128. Default value: 40.
         # fmt: off
-        self._key_length: int = int(encryption_dictionary.get("Length", Decimal(40)))
+        self._key_length: int = int(encryption_dictionary.get("Length", bDecimal(40)))
         assert self._key_length % 8 == 0, "The length of the encryption key, in bits must be a multiple of 8."
         # fmt: on
 
         # (Required) A number specifying which revision of the standard security
         # handler shall be used to interpret this dictionary
-        self._revision: int = int(encryption_dictionary.get("R", Decimal(0)))
+        self._revision: int = int(encryption_dictionary.get("R", bDecimal(0)))
 
         # (Optional; meaningful only when the value of V is 4; PDF 1.5) Indicates
         # whether the document-level metadata stream (see 14.3.2, "Metadata

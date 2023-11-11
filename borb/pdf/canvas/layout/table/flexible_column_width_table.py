@@ -6,7 +6,6 @@ This class represents a Table with columns that will assume
 a width based on their contents. It tries to emulate the behaviour
 of <table> elements in HTML
 """
-import math
 import typing
 from decimal import Decimal
 
@@ -104,7 +103,7 @@ class FlexibleColumnWidthTable(Table):
         return Rectangle(
             available_space.get_x(),
             min_y,
-            Decimal(math.ceil(max_x - min_x)),
+            Decimal(max_x - min_x),
             max_y - min_y,
         )
 
@@ -189,14 +188,15 @@ class FlexibleColumnWidthTable(Table):
                 if column_widths[i] < max_column_widths[i]
             ]
         )
+        delta: Decimal = Decimal(1)
         while (
-            sum(column_widths) + number_of_expandable_columns
-            < available_space.get_width()
+            round(sum(column_widths) + number_of_expandable_columns * delta, 2)
+            <= round(available_space.get_width(), 2)
             and number_of_expandable_columns > 0
         ):
             for i in range(0, len(column_widths)):
                 if column_widths[i] < max_column_widths[i]:
-                    column_widths[i] += Decimal(1)
+                    column_widths[i] += delta
             number_of_expandable_columns = sum(
                 [
                     1

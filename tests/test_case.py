@@ -80,6 +80,24 @@ class TestCase(unittest.TestCase):
     def get_fifteenth_output_file(self) -> Path:
         return self.get_artifacts_directory() / "output_015.pdf"
 
+    def get_sixteenth_output_file(self) -> Path:
+        return self.get_artifacts_directory() / "output_016.pdf"
+
+    def get_seventeenth_output_file(self) -> Path:
+        return self.get_artifacts_directory() / "output_017.pdf"
+
+    def get_eighteenth_output_file(self) -> Path:
+        return self.get_artifacts_directory() / "output_018.pdf"
+
+    def get_nineteenth_output_file(self) -> Path:
+        return self.get_artifacts_directory() / "output_019.pdf"
+
+    def get_twentieth_output_file(self) -> Path:
+        return self.get_artifacts_directory() / "output_020.pdf"
+
+    def get_umpteenth_output_file(self, nr: int) -> Path:
+        return self.get_artifacts_directory() / f"output_{nr:02d}.pdf"
+
     @staticmethod
     def _trim_text(s: str, n: int = 38) -> str:
         if len(s) < n:

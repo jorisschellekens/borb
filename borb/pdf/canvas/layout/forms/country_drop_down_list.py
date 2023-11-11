@@ -5,8 +5,8 @@
 This implementation of FormField represents a drop down list that is pre-filled with countries.
 """
 import typing
+from decimal import Decimal
 
-from borb.io.read.types import Decimal
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.forms.drop_down_list import DropDownList

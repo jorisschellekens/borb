@@ -225,6 +225,13 @@ class Paragraph(LineOfText):
             next_mcid: int = 0
             page.append_to_content_stream("\n/Standard <</MCID %d>>\nBDC\n" % next_mcid)
 
+        # check whether it can be painted
+        if round(available_space.get_height(), 2) < round(
+            line_height * len(self._previous_lines_of_text), 2
+        ):
+            self._split_text(available_space)
+            assert False
+
         # call paint on all LineOfText objects
         assert self._previous_lines_of_text is not None
         for i, l in enumerate(self._previous_lines_of_text):

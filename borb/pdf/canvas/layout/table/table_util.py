@@ -6,9 +6,9 @@ This class contains utility methods for using the Table classes in borb.
 """
 import numbers
 import typing
+from decimal import Decimal
 
-from borb.io.read.types import Decimal
-from borb.pdf import Color
+from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.canvas.layout.table.flexible_column_width_table import (

@@ -5,8 +5,8 @@ This class is responsible for splitting text (to be fit into a Paragraph)
 """
 import re
 import typing
+from decimal import Decimal
 
-from borb.io.read.types import Decimal
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.glyph_line import GlyphLine
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -42,9 +42,11 @@ class TextToLineSplitter:
         :return:
 
         """
-        # trivial case
+        # trivial case(s)
         if text == "":
             return [""]
+        if text == " ":
+            return [" "] if respect_spaces else [""]
 
         # handle newlines
         if "\n" in text:
@@ -286,6 +288,12 @@ class TextToLineSplitter:
             for i in range(0, len(out)):
                 while len(out) > 0 and out[i][-1] == " ":
                     out[i] = out[i][:-1]
+
+        # IF we do not respect newlines
+        # THEN remove any trailing newlines
+        if not respect_newlines:
+            while len(out) > 0 and len(out[-1]) == 1 and out[-1][-1] == "":
+                out.pop(-1)
 
         # return
         return ["".join(l) for l in out]

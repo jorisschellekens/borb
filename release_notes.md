@@ -1,18 +1,10 @@
 
 # :mega: borb release notes
 
-- Added some utility methods in `LayoutElement`
-  - `get_golden_ratio_landscape_box`
-  - `get_golden_ratio_portrait_box`
-  - `get_largest_landscape_box`
-  - `get_smallest_landscape_box`
-- Removed `_calculate_min_and_max_layout_box` from `TableCell`
-- Added tests for `get_golden_ratio_landscape_box`
-- Added tests for `get_golden_ratio_portrait_box`
-- Added utility class `A4PortraitTemplate`
-  - This class represents an `A4_PORTRAIT` `Document`
-  - It contains methods that allow you to directly add content to it
-  - All the content-adding methods have sensible defaults (`font`, `font_size`, `font_color`, etc)
-  - This class has a utility method to immediately `save` the `Document`
-- Added tests for `A4PortraitTemplate`
-- Fixed small bug in `add_outline` in `Document`
+- Added pretty much all the `LayoutElement` implementations to the easy imports.
+- Added a `LayoutElement` called `Map` with implementations `MapOfEurope`, `MapOfTheUnitedStates` and `MapOfTheWorld`. These `LayoutElement` instances draw a map of their respective territories, and allow you to mark one or multiple components with a different `fill_color`, `stroke_color` and `line_width`.
+- Fixed tests related to unsplash API.
+- Added tests for `A4PortraitTemplate`.
+- Added tests for `A42ColumnPortraitTemplate`.
+- Added tests for `SlideTemplate`.
+- Added `TestCreateFullSlideTemplate`. Check out this `TestCase` if you want a concrete example of how to use `SlideTemplate` to produce a beautiful slideshow in PDF.

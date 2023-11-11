@@ -12,7 +12,7 @@ explicitly by using Tf before any text is shown.
 import typing
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 
@@ -46,7 +46,7 @@ class SetFontAndSize(CanvasOperator):
 
         # font size
         font_size = operands[1]
-        assert isinstance(font_size, Decimal)
+        assert isinstance(font_size, bDecimal)
 
         # set state
         canvas = canvas_stream_processor.get_canvas()

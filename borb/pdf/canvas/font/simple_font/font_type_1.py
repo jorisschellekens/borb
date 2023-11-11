@@ -543,7 +543,11 @@ class StandardType1Font(Type1Font):
             None,
         )
         # noinspection PyProtectedMember
-        return bDecimal(self._afm._chars.get(name, default_tuple)[1])
+        if name in self._afm._chars:
+            return bDecimal(self._afm._chars.get(name)[1])
+        if f"a{character_identifier}" in self._afm._chars:
+            return bDecimal(self._afm._chars.get(f"a{character_identifier}")[1])
+        return default_tuple[1]
 
     @staticmethod
     def is_standard_14_font_name(font_name: str) -> bool:

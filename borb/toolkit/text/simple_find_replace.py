@@ -104,7 +104,15 @@ class SimpleFindReplace:
                         font_size=repl_font_size,
                         font_color=repl_font_color,
                         horizontal_alignment=repl_font_horizontal_alignment,
-                    ).paint(page, Rectangle(bb_x, bb_y + Decimal(1), bb_w, bb_h))
+                    ).paint(
+                        page,
+                        Rectangle(
+                            bb_x - Decimal(0.5),
+                            bb_y - Decimal(0.5),
+                            bb_w + Decimal(1),
+                            bb_h + Decimal(1),
+                        ),
+                    )
 
         # return
         return doc

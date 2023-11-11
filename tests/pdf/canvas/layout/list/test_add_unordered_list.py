@@ -29,11 +29,23 @@ class TestAddUnorderedList(TestCase):
         )
         layout.add(
             UnorderedList()
-            .add(Paragraph(text="Lorem Ipsum Dolor Sit Amet Consectetur Nunc"))
-            .add(Paragraph(text="Ipsum"))
-            .add(Paragraph(text="Dolor"))
-            .add(Paragraph(text="Sit"))
-            .add(Paragraph(text="Amet"))
+            .add(
+                Paragraph(
+                    text="Lorem Ipsum Dolor Sit Amet Consectetur Nunc",
+                    border_top=True,
+                    border_bottom=True,
+                )
+            )
+            .add(Paragraph(text="Ipsum", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Dolor", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Sit", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Amet", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Dolor", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Sit", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Amet", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Dolor", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Sit", border_top=True, border_bottom=True))
+            .add(Paragraph(text="Amet", border_top=True, border_bottom=True))
         )
         with open(self.get_first_output_file(), "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)

@@ -19,6 +19,15 @@ class TestAddUnsplashImage(TestCase):
     """
 
     def test_add_unsplash_image(self):
+
+        # set unsplash API key
+        try:
+            from tests.borb_secrets import populate_keyring
+
+            populate_keyring()
+        except:
+            pass
+
         # create document
         pdf: Document = Document()
         page: Page = Page()
@@ -42,6 +51,15 @@ class TestAddUnsplashImage(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_add_orderedlist_of_unsplash_images(self):
+
+        # set unsplash API key
+        try:
+            from tests.borb_secrets import populate_keyring
+
+            populate_keyring()
+        except:
+            pass
+
         # create document
         pdf: Document = Document()
         page: Page = Page()
@@ -80,6 +98,15 @@ class TestAddUnsplashImage(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_add_unorderedlist_of_unsplash_images(self):
+
+        # set unsplash API key
+        try:
+            from tests.borb_secrets import populate_keyring
+
+            populate_keyring()
+        except:
+            pass
+
         # create document
         pdf: Document = Document()
         page: Page = Page()
@@ -118,6 +145,15 @@ class TestAddUnsplashImage(TestCase):
         self.check_pdf_using_validator(self.get_third_output_file())
 
     def test_add_table_of_unsplash_images(self):
+
+        # set unsplash API key
+        try:
+            from tests.borb_secrets import populate_keyring
+
+            populate_keyring()
+        except:
+            pass
+
         # create document
         pdf: Document = Document()
         page: Page = Page()

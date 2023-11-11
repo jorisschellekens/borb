@@ -67,7 +67,7 @@ class TestFindReplace(TestCase):
 
         # find/replace
         doc = SimpleFindReplace.sub(
-            pattern="elit", repl="oled", doc=doc, repl_font_size=Decimal(7)
+            pattern="elit", repl="oled", doc=doc, repl_font_size=Decimal(6.80)
         )
 
         # attempt to store PDF
@@ -85,7 +85,7 @@ class TestFindReplace(TestCase):
 
         # find/replace
         doc = SimpleFindReplace.sub(
-            pattern="elit", repl="elit", doc=doc, repl_font_size=Decimal(7)
+            pattern="elit", repl="elit", doc=doc, repl_font_size=Decimal(6.5)
         )
 
         # attempt to store PDF
@@ -106,7 +106,7 @@ class TestFindReplace(TestCase):
             pattern="elit",
             repl="oled",
             doc=doc,
-            repl_font_size=Decimal(7),
+            repl_font_size=Decimal(6.80),
             repl_font_color=HexColor("ff0000"),
         )
 

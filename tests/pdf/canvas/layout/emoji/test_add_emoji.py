@@ -20,6 +20,26 @@ class TestAddEmoji(TestCase):
     This test creates a PDF with an Image in it, this Image is a ScreenShot
     """
 
+    def test_add_single_emoji_001(self):
+
+        # create empty document
+        pdf: Document = Document()
+        page: Page = Page()
+        pdf.add_page(page)
+        layout = SingleColumnLayout(page)
+
+        # add Emoji
+        layout.add(
+            self.get_test_header(
+                f"This test writes a PDF containing a single emoji, {Emojis.SMILE.name}. It does so for every emoji."
+            )
+        )
+        layout.add(Emojis.SMILE.value)
+
+        # write
+        with open(self.get_first_output_file(), "wb") as pdf_file_handle:
+            PDF.dumps(pdf_file_handle, pdf)
+
     def test_add_single_emoji(self):
 
         for e in Emojis:

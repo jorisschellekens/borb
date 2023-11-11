@@ -61,7 +61,7 @@ class List(LayoutElement):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
-            font_size=Decimal(12),
+            font_size=None,
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
             margin_left=margin_left,
@@ -73,8 +73,8 @@ class List(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        self._bullet_margin: Decimal = Decimal(20)
         self._items: typing.List[LayoutElement] = []
+        self._bullet_margin: typing.Optional[Decimal] = None
 
     #
     # PRIVATE
@@ -102,10 +102,22 @@ class List(LayoutElement):
             font_size=font_size or Decimal(12),
             font_color=font_color or HexColor("000000"),
             font="Zapfdingbats",
+            padding_right=font_size,
             vertical_alignment=Alignment.TOP,
         )
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+
+        # determine how much room should be reserved for bullets
+        for i, e in enumerate(self._items):
+            bullet_width: Decimal = (
+                self._get_bullet_layout_element(item_index=i, item=e)
+                .get_layout_box(available_space=available_space)
+                .get_width()
+            )
+            if self._bullet_margin is None or bullet_width > self._bullet_margin:
+                self._bullet_margin = bullet_width
+
         previous_layout_box: typing.Optional[Rectangle] = None
         min_x: typing.Optional[Decimal] = None
         min_y: typing.Optional[Decimal] = None
@@ -200,15 +212,13 @@ class List(LayoutElement):
             e.paint(page, previous_layout_box)
 
             # paint bullet
-            self._get_bullet_layout_element(index, e).paint(
-                page,
-                Rectangle(
-                    available_space.get_x(),
-                    previous_layout_box.get_y(),
-                    self._bullet_margin,
-                    previous_layout_box.get_height(),
-                ),
+            bullet_item_box: Rectangle = Rectangle(
+                available_space.get_x(),
+                previous_layout_box.get_y(),
+                self._bullet_margin,
+                previous_layout_box.get_height(),
             )
+            self._get_bullet_layout_element(index, e).paint(page, bullet_item_box)
 
     #
     # PUBLIC

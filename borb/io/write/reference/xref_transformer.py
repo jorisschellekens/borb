@@ -7,7 +7,7 @@ This implementation of WriteBaseTransformer is responsible for writing XREF obje
 import typing
 
 from borb.io.read.types import AnyPDFType
-from borb.io.read.types import Decimal
+from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary
 from borb.io.read.types import Name
 from borb.io.read.types import Reference
@@ -121,7 +121,7 @@ class XREFTransformer(Transformer):
         if ("Trailer" in object_to_transform and "Size" in object_to_transform["Trailer"]):
             trailer_out[Name("Size")] = object_to_transform["Trailer"]["Size"]
         else:
-            trailer_out[Name("Size")] = Decimal(0)  # we'll recalculate this later anyway
+            trailer_out[Name("Size")] = bDecimal(0)  # we'll recalculate this later anyway
         # fmt: on
 
         # /ID
@@ -160,7 +160,7 @@ class XREFTransformer(Transformer):
                     )
 
         # update /Size
-        trailer_out[Name("Size")] = Decimal(
+        trailer_out[Name("Size")] = bDecimal(
             sum([len(v) for k, v in context.indirect_objects_by_hash.items()]) + 1
         )
 

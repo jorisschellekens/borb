@@ -721,6 +721,15 @@ class LayoutElement:
 
         # determine content_box
         cbox: Rectangle = self._get_content_box(cbox_available_space)
+        if round(cbox.get_height(), 2) > round(cbox_available_space.get_height(), 2):
+            # fmt: off
+            assert False, f"{self.__class__.__name__} is too tall to fit inside column / page. Needed {round(cbox.get_height(), 2)} pts, only {round(cbox_available_space.get_height(), 2)} pts available."
+            # fmt: on
+        if round(cbox.get_width(), 2) > round(cbox_available_space.get_width(), 2):
+            # fmt: off
+            self._get_content_box(cbox_available_space)
+            assert False, f"{self.__class__.__name__} is too wide to fit inside column / page. Needed {round(cbox.get_width(), 2)} pts, only {round(cbox_available_space.get_width(), 2)} pts available."
+            # fmt: on
 
         # take into account vertical_alignment
         delta_x: Decimal = Decimal(0)

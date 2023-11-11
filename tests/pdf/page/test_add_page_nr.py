@@ -14,7 +14,6 @@ from tests.test_case import TestCase
 
 
 class TestAddPageNr(TestCase):
-
     def test_add_page_nr(self):
 
         doc: Document = Document()
@@ -42,14 +41,19 @@ class TestAddPageNr(TestCase):
 
             # add page nr
             # do this in the utmost right corner
-            Paragraph(f"page {page_nr+1} out of {number_of_pages}",
-                      horizontal_alignment=Alignment.RIGHT,
-                      vertical_alignment=Alignment.BOTTOM).paint(page, Rectangle(
-                page.get_page_info().get_width() - Decimal(100),
-                Decimal(0),
-                Decimal(100),
-                Decimal(20)
-            ))
+            Paragraph(
+                f"page {page_nr+1} out of {number_of_pages}",
+                horizontal_alignment=Alignment.RIGHT,
+                vertical_alignment=Alignment.BOTTOM,
+            ).paint(
+                page,
+                Rectangle(
+                    page.get_page_info().get_width() - Decimal(100),
+                    Decimal(0),
+                    Decimal(100),
+                    Decimal(20),
+                ),
+            )
 
         # save
         with open(self.get_first_output_file(), "wb") as in_file_handle:
