@@ -1,6 +1,5 @@
 cryptography>=41.0.1
-fonttools>=4.40.0
-lxml>=4.9.2
+fonttools>=4.38.0
 Pillow==9.5.0
 python-barcode>=0.14.0
 qrcode[pil]>=6.1

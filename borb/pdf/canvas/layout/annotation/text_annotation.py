@@ -50,8 +50,8 @@ class TextAnnotation(Annotation):
         bounding_box: Rectangle,
         contents: str,
         color: typing.Optional[Color] = None,
-        text_annotation_icon: TextAnnotationIconType = TextAnnotationIconType.COMMENT,
         open: typing.Optional[bool] = None,
+        text_annotation_icon: TextAnnotationIconType = TextAnnotationIconType.COMMENT,
     ):
         super(TextAnnotation, self).__init__(
             bounding_box=bounding_box, contents=contents, color=color

@@ -28,6 +28,11 @@ def decode_stream(s: Stream) -> Stream:
     assert ("Bytes" in s), "decode_stream only works on Stream objects with a `Bytes` key."
     # fmt: on
 
+    # IF stream already has /DecodedBytes
+    # THEN return stream
+    if "DecodedBytes" in s:
+        return s
+
     # determine filter(s) to apply
     filters: typing.List[str] = []
     if "Filter" in s:

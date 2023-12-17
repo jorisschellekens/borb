@@ -28,8 +28,6 @@ class MapOfTheWorld(Map):
 
     def __init__(
         self,
-        fill_color: typing.Optional[Color] = None,
-        stroke_color: typing.Optional[Color] = None,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
@@ -41,6 +39,7 @@ class MapOfTheWorld(Map):
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
+        fill_color: typing.Optional[Color] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         line_width: Decimal = Decimal(1),
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
@@ -51,6 +50,7 @@ class MapOfTheWorld(Map):
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
+        stroke_color: typing.Optional[Color] = None,
         vertical_alignment: Alignment = Alignment.TOP,
     ):
         # init
@@ -58,8 +58,6 @@ class MapOfTheWorld(Map):
             geojson_file=(Path(__file__).parent / "geojson")
             / "map_of_the_world.geojson",
             name_key="name",
-            fill_color=fill_color,
-            stroke_color=stroke_color,
             background_color=background_color,
             border_bottom=border_bottom,
             border_color=border_color,
@@ -71,6 +69,7 @@ class MapOfTheWorld(Map):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            fill_color=fill_color,
             horizontal_alignment=horizontal_alignment,
             line_width=line_width,
             margin_bottom=margin_bottom,
@@ -81,5 +80,6 @@ class MapOfTheWorld(Map):
             padding_left=padding_left,
             padding_right=padding_right,
             padding_top=padding_top,
+            stroke_color=stroke_color,
             vertical_alignment=vertical_alignment,
         )

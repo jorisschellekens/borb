@@ -45,9 +45,10 @@ class Token:
     #
 
     def __init__(self, byte_offset: int, token_type: TokenType, bts: bytes):
+        # TODO: sort args
+        self._bytes: bytes = bts
         self._byte_offset: int = byte_offset
         self._token_type: TokenType = token_type
-        self._bytes: bytes = bts
 
     #
     # PRIVATE
@@ -99,8 +100,8 @@ class LowLevelTokenizer:
     def __init__(self, io_source):
         self._io_source = io_source
         # fmt: off
-        self._is_pseudo_digit = {b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9', b'+', b'-', b'.'}.__contains__
         self._is_delimiter = {b'\x00', b'\t', b'\n', b'\r', b'\x0c', b" ", b'%', b'(', b')', b'/', b'<', b'>', b'[', b']'}.__contains__
+        self._is_pseudo_digit = {b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9', b'+', b'-', b'.'}.__contains__
         self._is_whitespace = {b'\x00', b'\t', b'\n', b'\r', b'\x0c', b' '}.__contains__
         # fmt: on
 

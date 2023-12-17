@@ -76,6 +76,8 @@ class TextField(FormField):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=font_color,
             font_size=font_size,
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
@@ -88,7 +90,6 @@ class TextField(FormField):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        self._font_color = font_color
         self._value: str = value
         self._default_value: str = default_value
         self._field_name: typing.Optional[str] = field_name

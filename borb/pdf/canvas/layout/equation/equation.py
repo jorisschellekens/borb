@@ -9,6 +9,7 @@ while in English, any well-formed formula consisting of two expressions related 
 import typing
 from decimal import Decimal
 
+# fmt: off
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
@@ -18,13 +19,14 @@ from borb.pdf.canvas.layout.equation.token import TokenType
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
-from borb.pdf.canvas.layout.table.flexible_column_width_table import (
-    FlexibleColumnWidthTable,
-)
+from borb.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+
+
+# fmt: on
 
 
 class Equation(InlineFlow):
@@ -42,56 +44,56 @@ class Equation(InlineFlow):
     def __init__(
         self,
         text: str,
-        font: typing.Union[Font, str] = "Helvetica",
-        font_size: Decimal = Decimal(12),
-        vertical_alignment: Alignment = Alignment.TOP,
-        horizontal_alignment: Alignment = Alignment.LEFT,
-        font_color: Color = HexColor("000000"),
-        border_top: bool = False,
-        border_right: bool = False,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
+        border_color: Color = HexColor("000000"),
         border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
         border_radius_top_left: Decimal = Decimal(0),
         border_radius_top_right: Decimal = Decimal(0),
-        border_radius_bottom_right: Decimal = Decimal(0),
-        border_radius_bottom_left: Decimal = Decimal(0),
-        border_color: Color = HexColor("000000"),
+        border_right: bool = False,
+        border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
-        padding_bottom: Decimal = Decimal(0),
-        padding_left: Decimal = Decimal(0),
-        margin_top: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
+        font: typing.Union[Font, str] = "Helvetica",
+        font_color: Color = HexColor("000000"),
+        font_size: Decimal = Decimal(12),
+        horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
-        background_color: typing.Optional[Color] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(Equation, self).__init__()
-        self._font = font
-        self._font_size = font_size
-        self._vertical_alignment = vertical_alignment
-        self._horizontal_alignment = horizontal_alignment
-        self._font_color = font_color
-        self._border_top = border_top
-        self._border_right = border_right
+        self._background_color = background_color
         self._border_bottom = border_bottom
+        self._border_color = border_color
         self._border_left = border_left
+        self._border_radius_bottom_left = border_radius_bottom_left
+        self._border_radius_bottom_right = border_radius_bottom_right
         self._border_radius_top_left = border_radius_top_left
         self._border_radius_top_right = border_radius_top_right
-        self._border_radius_bottom_right = border_radius_bottom_right
-        self._border_radius_bottom_left = border_radius_bottom_left
-        self._border_color = border_color
+        self._border_right = border_right
+        self._border_top = border_top
         self._border_width = border_width
-        self._padding_top = padding_top
-        self._padding_right = padding_right
-        self._padding_bottom = padding_bottom
-        self._padding_left = padding_left
-        self._margin_top = margin_top
-        self._margin_right = margin_right
+        self._font = font
+        self._font_color = font_color
+        self._font_size = font_size
+        self._horizontal_alignment = horizontal_alignment
         self._margin_bottom = margin_bottom
         self._margin_left = margin_left
-        self._background_color = background_color
+        self._margin_right = margin_right
+        self._margin_top = margin_top
+        self._padding_bottom = padding_bottom
+        self._padding_left = padding_left
+        self._padding_right = padding_right
+        self._padding_top = padding_top
+        self._vertical_alignment = vertical_alignment
         self.add(
             self._build(
                 Parser.to_abstract_syntax_tree(text),

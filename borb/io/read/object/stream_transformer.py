@@ -67,6 +67,11 @@ class StreamTransformer(Transformer):
                 v = xref.get_object(v, context.source, context.tokenizer)
                 object_to_transform[k] = v
 
+        # IF context.security_handler is present
+        # THEN apply decryption
+        if context.security_handler is not None:
+            object_to_transform = context.security_handler.decrypt(object_to_transform)
+
         # apply filter(s)
         object_to_transform = decode_stream(object_to_transform)
 

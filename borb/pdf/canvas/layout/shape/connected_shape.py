@@ -31,8 +31,6 @@ class ConnectedShape(LayoutElement):
     def __init__(
         self,
         points: typing.List[typing.Tuple[Decimal, Decimal]],
-        fill_color: typing.Optional[Color],
-        stroke_color: typing.Optional[Color],
         auto_close_shape: bool = False,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
@@ -45,6 +43,7 @@ class ConnectedShape(LayoutElement):
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
+        fill_color: typing.Optional[Color] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         line_width: Decimal = Decimal(1),
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
@@ -55,6 +54,7 @@ class ConnectedShape(LayoutElement):
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
+        stroke_color: typing.Optional[Color] = None,
         vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(ConnectedShape, self).__init__(
@@ -69,6 +69,8 @@ class ConnectedShape(LayoutElement):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=HexColor("#000000"),
             font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,

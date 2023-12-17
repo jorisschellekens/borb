@@ -11,13 +11,12 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
+# fmt: off
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.geography.map_of_europe import MapOfEurope
-from borb.pdf.canvas.layout.geography.map_of_the_united_states import (
-    MapOfTheUnitedStates,
-)
+from borb.pdf.canvas.layout.geography.map_of_the_united_states import MapOfTheUnitedStates
 from borb.pdf.canvas.layout.geography.map_of_the_world import MapOfTheWorld
 from borb.pdf.canvas.layout.image.barcode import Barcode
 from borb.pdf.canvas.layout.image.barcode import BarcodeType
@@ -31,11 +30,15 @@ from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWid
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.table.table_util import TableUtil
+from borb.pdf.canvas.layout.text.codeblock_with_syntax_highlighting import CodeBlockWithSyntaxHighlighting
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+
+
+# fmt: on
 
 
 class SlideTemplate:
@@ -417,6 +420,97 @@ class SlideTemplate:
                 Decimal(0), Decimal(0), Decimal(950), Decimal(540)
             ),
         )
+        return self
+
+    def add_code_and_text_slide(
+        self,
+        code: str,
+        subtitle: typing.Optional[str] = None,
+        text: typing.Optional[str] = None,
+        title: typing.Optional[str] = None,
+    ):
+        """
+        This function adds a slide to this SlideTemplate containing a block of code (on the left side)
+        and a title, subtitle and text (on the right side)
+        :param code         the code to be displayed
+        :param subtitle:    the subtitle
+        :param text:        the title
+        :param title:       the text
+        :return:            self
+        """
+
+        # create blank slide
+        s: Page = self._split_in_half_slide(subtitle=subtitle, text=text, title=title)
+
+        # add CodeBlockWithSyntaxHighlighting
+        for font_size in range(
+            SlideTemplate.BIG_NUMBER_TEXT_FONTSIZE_MAX,
+            SlideTemplate.BIG_NUMBER_TEXT_FONTSIZE_STEP,
+            -SlideTemplate.BIG_NUMBER_TEXT_FONTSIZE_STEP,
+        ):
+            try:
+                CodeBlockWithSyntaxHighlighting(
+                    code,
+                    horizontal_alignment=Alignment.CENTERED,
+                    vertical_alignment=Alignment.MIDDLE,
+                    padding_top=Decimal(540 // 10),
+                    padding_right=Decimal(540 // 10),
+                    padding_bottom=Decimal(540 // 10),
+                    padding_left=Decimal(540 // 10),
+                    font_size=Decimal(font_size),
+                    font_color=SlideTemplate.ACCENT_COLOR,
+                ).paint(
+                    page=s,
+                    available_space=Rectangle(
+                        Decimal(0), Decimal(0), Decimal(950 // 2), Decimal(540)
+                    ),
+                )
+                break
+            except:
+                pass
+
+        # return
+        return self
+
+    def add_code_slide(self, code: str) -> "SlideTemplate":
+        """
+        This function adds a slide to this SlideTemplate containing a block of code
+        as big as it can be, centered horizontally and vertically on the page
+        :param big_number:  the code to be added
+        :return:            self
+        """
+
+        # create blank slide
+        s: Page = self._blank_slide()
+
+        # add CodeBlockWithSyntaxHighlighting
+        for font_size in range(
+            SlideTemplate.BIG_NUMBER_TEXT_FONTSIZE_MAX,
+            SlideTemplate.BIG_NUMBER_TEXT_FONTSIZE_STEP,
+            -SlideTemplate.BIG_NUMBER_TEXT_FONTSIZE_STEP,
+        ):
+            try:
+                CodeBlockWithSyntaxHighlighting(
+                    code,
+                    horizontal_alignment=Alignment.CENTERED,
+                    vertical_alignment=Alignment.MIDDLE,
+                    padding_top=Decimal(540 // 10),
+                    padding_right=Decimal(540 // 10),
+                    padding_bottom=Decimal(540 // 10),
+                    padding_left=Decimal(540 // 10),
+                    font_size=Decimal(font_size),
+                    font_color=SlideTemplate.ACCENT_COLOR,
+                ).paint(
+                    page=s,
+                    available_space=Rectangle(
+                        Decimal(0), Decimal(0), Decimal(950), Decimal(540)
+                    ),
+                )
+                break
+            except:
+                pass
+
+        # return
         return self
 
     def add_image_and_text_slide(

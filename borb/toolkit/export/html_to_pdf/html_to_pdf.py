@@ -10,10 +10,7 @@ import xml.etree.ElementTree as ET
 from decimal import Decimal
 from pathlib import Path
 
-# noinspection PyProtectedMember
-from lxml.etree import HTMLParser  # type: ignore [import]
-from lxml.etree import _Comment
-
+# fmt: off
 from borb.io.read.types import Dictionary
 from borb.io.read.types import Name
 from borb.io.read.types import String
@@ -30,18 +27,18 @@ from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.block_flow import BlockFlow
 from borb.pdf.canvas.layout.page_layout.inline_flow import InlineFlow
 from borb.pdf.canvas.layout.page_layout.page_layout import PageLayout
-from borb.pdf.canvas.layout.page_layout.single_column_layout_with_overflow import (
-    SingleColumnLayoutWithOverflow,
-)
-from borb.pdf.canvas.layout.table.flexible_column_width_table import (
-    FlexibleColumnWidthTable,
-)
+from borb.pdf.canvas.layout.page_layout.single_column_layout_with_overflow import SingleColumnLayoutWithOverflow
+from borb.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.heterogeneous_paragraph import LineBreakChunk
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.xref.plaintext_xref import PlainTextXREF
+
+# noinspection PyProtectedMember
+
+# fmt: on
 
 logger = logging.getLogger(__name__)
 
@@ -231,6 +228,8 @@ class HTMLToPDF:
             block_layout_element.add(tmp_value)
 
         # process children
+        from lxml.etree import _Comment
+
         for child_element in e:
             if isinstance(child_element, _Comment):
                 continue
@@ -637,6 +636,8 @@ class HTMLToPDF:
                 chunks.extend([HTMLToPDF._build_chunk_of_text(w, c) for w in ws])
 
         # children
+        from lxml.etree import _Comment
+
         for child_element in e:
             if isinstance(child_element, _Comment):
                 continue
@@ -944,7 +945,7 @@ class HTMLToPDF:
 
         # attempt to get a frame
         try:
-            import cv2  # type: ignore [import]
+            import cv2
             import tempfile
 
             video_capture = cv2.VideoCapture(src)
@@ -990,6 +991,8 @@ class HTMLToPDF:
         """
 
         # convert str to ET.Element
+        from lxml.etree import HTMLParser
+
         root_element: typing.Optional[ET.Element] = None
         if isinstance(html, str):
             root_element = ET.fromstring(html, HTMLParser())
@@ -1034,6 +1037,8 @@ class HTMLToPDF:
         layout: PageLayout = SingleColumnLayoutWithOverflow(page)
 
         # parse HTML
+        from lxml.etree import HTMLParser
+
         root_element: typing.Optional[ET.Element] = None
         if isinstance(html, str):
             root_element = ET.fromstring(html, HTMLParser())

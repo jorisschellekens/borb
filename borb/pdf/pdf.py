@@ -11,17 +11,17 @@
 import io
 import typing
 
-from borb.io.read.any_object_transformer import (
-    AnyObjectTransformer as ReadAnyObjectTransformer,
-)
+# fmt: off
+from borb.io.read.any_object_transformer import AnyObjectTransformer as ReadAnyObjectTransformer
 from borb.io.read.transformer import ReadTransformerState
-from borb.io.write.any_object_transformer import (
-    AnyObjectTransformer as WriteAnyObjectTransformer,
-)
+from borb.io.write.any_object_transformer import AnyObjectTransformer as WriteAnyObjectTransformer
 from borb.io.write.transformer import WriteTransformerState
 from borb.license.usage_statistics import UsageStatistics
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.document.document import Document
+
+
+# fmt: on
 
 
 class PDF:
@@ -60,7 +60,7 @@ class PDF:
         """
         This function writes a Document to a byte-stream output (which may be presented as an io.BufferedIOBase o io.RawIOBase)
         """
-        UsageStatistics.send_usage_statistics("PDF.dumps", document)
+        UsageStatistics.send_usage_statistics(document=document, event="PDF.dumps")
         WriteAnyObjectTransformer().transform(
             object_to_transform=document,
             context=WriteTransformerState(
@@ -86,5 +86,5 @@ class PDF:
             context=ReadTransformerState(password=password),
             event_listeners=event_listeners,
         )
-        UsageStatistics.send_usage_statistics("PDF.loads", document)
+        UsageStatistics.send_usage_statistics(document=document, event="PDF.loads")
         return document

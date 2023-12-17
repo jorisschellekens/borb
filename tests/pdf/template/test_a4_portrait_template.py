@@ -184,3 +184,10 @@ class TestA4PortraitTemplate(TestCase):
         ).save(self.get_umpteenth_output_file(21))
         self.compare_visually_to_ground_truth(self.get_umpteenth_output_file(21))
         self.check_pdf_using_validator(self.get_umpteenth_output_file(21))
+
+    def test_add_code(self):
+        A4PortraitTemplate().add_code(
+            """def main():\n    print("Hello World!")\n\nif __name__ == "__main__":\n    main()"""
+        ).save(self.get_umpteenth_output_file(22))
+        self.compare_visually_to_ground_truth(self.get_umpteenth_output_file(22))
+        self.check_pdf_using_validator(self.get_umpteenth_output_file(22))

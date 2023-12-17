@@ -7,6 +7,7 @@ element of array shall be either a string or a number.
 """
 import typing
 
+# fmt: off
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import HexadecimalString
@@ -14,9 +15,10 @@ from borb.io.read.types import Name
 from borb.io.read.types import String
 from borb.io.write.font.copy_command_operator import CopyCommandOperator
 from borb.pdf.canvas.font.font import Font
-from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
-    ShowTextWithGlyphPositioning,
-)
+from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import ShowTextWithGlyphPositioning
+
+
+# fmt: on
 
 
 class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):

@@ -61,10 +61,10 @@ class RedactAnnotation(Annotation):
         self,
         bounding_box: Rectangle,
         fill_color: typing.Optional[Color] = None,
-        stroke_color: typing.Optional[Color] = None,
-        stroke_width: Decimal = Decimal(1),
         overlay_text: typing.Optional[str] = None,
         repeat_overlay_text: typing.Optional[bool] = None,
+        stroke_color: typing.Optional[Color] = None,
+        stroke_width: Decimal = Decimal(1),
     ):
         super(RedactAnnotation, self).__init__(bounding_box=bounding_box)
 

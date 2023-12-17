@@ -104,7 +104,7 @@ class Lipsum:
     @staticmethod
     def generate_emily_bronte_text(number_of_sentences: int = 5) -> str:
         """
-        This function produces Emily Bronte styled lorem ipsum text
+        This function produces Emily Brontë styled lorem ipsum text
         :param number_of_sentences:         the number of sentences to be produced
         :return:                            lorem ipsum text
         """

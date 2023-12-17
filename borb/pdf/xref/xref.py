@@ -185,7 +185,12 @@ class XREF(Dictionary):
             and indirect_reference.index_in_parent_stream is not None
         ):
             stream_object = self.get_object(
-                indirect_reference.parent_stream_object_number, src, tok
+                Reference(
+                    object_number=indirect_reference.parent_stream_object_number,
+                    generation_number=indirect_reference.generation_number,
+                ),
+                src,
+                tok,
             )
             assert isinstance(stream_object, Stream)
             assert "Length" in stream_object

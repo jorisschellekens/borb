@@ -9,15 +9,12 @@ import typing
 from decimal import Decimal
 from pathlib import Path
 
-from borb.pdf import FlexibleColumnWidthTable
-from borb.pdf import TableCell
+# fmt: off
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.geography.map_of_europe import MapOfEurope
-from borb.pdf.canvas.layout.geography.map_of_the_united_states import (
-    MapOfTheUnitedStates,
-)
+from borb.pdf.canvas.layout.geography.map_of_the_united_states import MapOfTheUnitedStates
 from borb.pdf.canvas.layout.geography.map_of_the_world import MapOfTheWorld
 from borb.pdf.canvas.layout.image.barcode import Barcode
 from borb.pdf.canvas.layout.image.barcode import BarcodeType
@@ -28,14 +25,20 @@ from borb.pdf.canvas.layout.list.ordered_list import OrderedList
 from borb.pdf.canvas.layout.list.unordered_list import UnorderedList
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import TwoColumnLayout
-from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
+from borb.pdf.canvas.layout.shape.connected_shape import ConnectedShape
+from borb.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.table_util import TableUtil
+from borb.pdf.canvas.layout.text.codeblock_with_syntax_highlighting import CodeBlockWithSyntaxHighlighting
 from borb.pdf.canvas.layout.text.heading import Heading
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+from borb.pdf.canvas.line_art.line_art_factory import LineArtFactory
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 from borb.pdf.pdf import PDF
+
+
+# fmt: on
 
 
 class A4PortraitTemplate:
@@ -96,6 +99,39 @@ class A4PortraitTemplate:
     #
     # PRIVATE
     #
+
+    def _add_page_numbers(self) -> None:
+        N: int = int(
+            self._document.get_document_info().get_number_of_pages() or Decimal(0)
+        )
+        for i in range(0, N):
+            s: Page = self._document.get_page(i)
+            # add blue square
+            ConnectedShape(
+                LineArtFactory.rectangle(
+                    Rectangle(Decimal(595 - 47), Decimal(0), Decimal(47), Decimal(47))
+                ),
+                stroke_color=A4PortraitTemplate.ACCENT_COLOR,
+                fill_color=A4PortraitTemplate.ACCENT_COLOR,
+            ).paint(
+                page=s,
+                available_space=Rectangle(
+                    Decimal(595 - 47), Decimal(0), Decimal(47), Decimal(47)
+                ),
+            )
+            # add Paragraph
+            Paragraph(
+                f"{i+1}",
+                font_size=Decimal(10),
+                font_color=A4PortraitTemplate.LIGHT_GRAY_COLOR,
+                horizontal_alignment=Alignment.CENTERED,
+                vertical_alignment=Alignment.MIDDLE,
+            ).paint(
+                page=s,
+                available_space=Rectangle(
+                    Decimal(595 - 47), Decimal(0), Decimal(47), Decimal(47)
+                ),
+            )
 
     #
     # PUBLIC
@@ -161,6 +197,25 @@ class A4PortraitTemplate:
         )
         self._layout.switch_to_next_page()
         self._page = self._layout.get_page()
+        return self
+
+    def add_code(self, code: str) -> "A4PortraitTemplate":
+        """
+        This function adds a CodeBlockWithSyntaxHighlighting to this A4PortraitTemplate
+        :param code:    the code to be added
+        :return:        self
+        """
+        self._layout.add(
+            CodeBlockWithSyntaxHighlighting(
+                code,
+                font_size=Decimal(8),
+                padding_top=Decimal(8),
+                padding_right=Decimal(8),
+                padding_bottom=Decimal(8),
+                padding_left=Decimal(8),
+                horizontal_alignment=Alignment.CENTERED,
+            )
+        )
         return self
 
     def add_h1(self, text: str) -> "A4PortraitTemplate":
@@ -681,6 +736,7 @@ class A4PortraitTemplate:
         and returning its bytes.
         :return:    the bytes representing this A4PortraitTemplate
         """
+        self._add_page_numbers()
         buffer = io.BytesIO()
         PDF.dumps(buffer, self._document)
         buffer.seek(0)
@@ -692,6 +748,7 @@ class A4PortraitTemplate:
         :param path_or_str:     the path or str representing the location at which to store this A4PortraitTemplate
         :return:                self
         """
+        self._add_page_numbers()
         with open(path_or_str, "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, self._document)
         return self

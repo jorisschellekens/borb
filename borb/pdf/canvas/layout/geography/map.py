@@ -32,8 +32,6 @@ class Map(Shapes):
         self,
         geojson_file: Path,
         name_key: str,
-        fill_color: typing.Optional[Color] = None,
-        stroke_color: typing.Optional[Color] = None,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
@@ -45,6 +43,7 @@ class Map(Shapes):
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
+        fill_color: typing.Optional[Color] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         line_width: Decimal = Decimal(1),
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
@@ -55,6 +54,7 @@ class Map(Shapes):
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
+        stroke_color: typing.Optional[Color] = None,
         vertical_alignment: Alignment = Alignment.TOP,
     ):
 
@@ -64,7 +64,7 @@ class Map(Shapes):
         # fmt: on
 
         # read map
-        with (open(geojson_file, "r") as json_file_handle):
+        with open(geojson_file, "r") as json_file_handle:
             geo_json_data = json.loads(json_file_handle.read())
             for feature_dict in geo_json_data["features"]:
                 iso3_key: str = feature_dict["properties"].get(name_key, None)
@@ -93,8 +93,6 @@ class Map(Shapes):
         # init
         super(Map, self).__init__(
             shapes=all_shapes,
-            fill_color=fill_color,
-            stroke_color=stroke_color,
             background_color=background_color,
             border_bottom=border_bottom,
             border_color=border_color,
@@ -106,6 +104,7 @@ class Map(Shapes):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            fill_color=fill_color,
             horizontal_alignment=horizontal_alignment,
             line_width=line_width,
             margin_bottom=margin_bottom,
@@ -116,6 +115,7 @@ class Map(Shapes):
             padding_left=padding_left,
             padding_right=padding_right,
             padding_top=padding_top,
+            stroke_color=stroke_color,
             vertical_alignment=vertical_alignment,
         )
 

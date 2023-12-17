@@ -27,9 +27,9 @@ class PDFObject:
     #
 
     def __init__(self):
-        self._parent: typing.Optional["PDFObject"] = None
         self._is_inline: bool = False
         self._is_unique: bool = False
+        self._parent: typing.Optional["PDFObject"] = None
         self._reference: typing.Optional["Reference"] = None
 
     #

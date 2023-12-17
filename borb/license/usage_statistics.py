@@ -85,7 +85,10 @@ class UsageStatistics:
         return License.get_user_id() or PersistentRandomUserID.get()
 
     @staticmethod
-    def _send_usage_statistics_in_thread(event: str, document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
+    def _send_usage_statistics_in_thread(
+        document: typing.Optional["Document"] = None,
+        event: str = "",
+    ) -> None:  # type: ignore[name-defined]
         # get number_of_pages
         number_of_pages: int = 0
         try:
@@ -143,7 +146,10 @@ class UsageStatistics:
         UsageStatistics._ENABLED = True
 
     @staticmethod
-    def send_usage_statistics(event: str = "", document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
+    def send_usage_statistics(
+        document: typing.Optional["Document"] = None,
+        event: str = "",
+    ) -> None:  # type: ignore[name-defined]
         """
         This method sends the usage statistics to the borb license server
         :param event:       the event that is to be registered
@@ -182,10 +188,7 @@ class UsageStatistics:
         try:
             threading.Thread(
                 target=UsageStatistics._send_usage_statistics_in_thread,
-                args=(
-                    event,
-                    document,
-                ),
+                args=(document, event),
             ).start()
         except:
             pass

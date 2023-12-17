@@ -42,7 +42,7 @@ class StrikeOutAnnotation(Annotation):
         super(StrikeOutAnnotation, self).__init__(bounding_box=bounding_box)
 
         # (Required) The type of annotation that this dictionary describes; shall
-        # be Redact for a redaction annotation.
+        # be StrikeOut for a strikeout annotation.
         self[Name("Subtype")] = Name("StrikeOut")
 
         # (Optional; PDF 1.2) An appearance dictionary specifying how the

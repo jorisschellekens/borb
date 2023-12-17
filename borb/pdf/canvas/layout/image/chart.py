@@ -69,9 +69,6 @@ class Chart(Image):
         byte_buffer.seek(0)
 
         super(Chart, self).__init__(
-            image=PILImage.open(byte_buffer),
-            width=width,
-            height=height,
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
@@ -82,7 +79,9 @@ class Chart(Image):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            height=height,
             horizontal_alignment=horizontal_alignment,
+            image=PILImage.open(byte_buffer),
             margin_bottom=margin_bottom if margin_bottom is not None else Decimal(5),
             margin_left=margin_left if margin_left is not None else Decimal(5),
             margin_right=margin_right if margin_right is not None else Decimal(5),
@@ -92,6 +91,7 @@ class Chart(Image):
             padding_right=padding_right,
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
+            width=width,
         )
 
     #

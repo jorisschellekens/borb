@@ -43,6 +43,7 @@ class TestAddScreenShot(TestCase):
                 width=Decimal(256),
                 height=Decimal(256),
                 horizontal_alignment=Alignment.CENTERED,
+                x_display=":0",
             )
         )
 

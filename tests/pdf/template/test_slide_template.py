@@ -336,3 +336,21 @@ class TestSlideTemplate(TestCase):
         ).save(self.get_umpteenth_output_file(33))
         self.compare_visually_to_ground_truth(self.get_umpteenth_output_file(33))
         self.check_pdf_using_validator(self.get_umpteenth_output_file(33))
+
+    def test_add_code_and_text_slide(self):
+        random.seed(0)
+        SlideTemplate().add_code_and_text_slide(
+            code="""def main():\n    print("Hello World!")\n\nif __name__ == "__main__":\n    main()""",
+            subtitle="Dolor Sit Amet",
+            text=Lipsum.generate_lipsum_text(5),
+            title="Lorem Ipsum",
+        ).save(self.get_umpteenth_output_file(34))
+        self.compare_visually_to_ground_truth(self.get_umpteenth_output_file(34))
+        self.check_pdf_using_validator(self.get_umpteenth_output_file(34))
+
+    def test_add_code_slide(self):
+        SlideTemplate().add_code_slide(
+            code="""def main():\n    print("Hello World!")\n\nif __name__ == "__main__":\n    main()""",
+        ).save(self.get_umpteenth_output_file(35))
+        self.compare_visually_to_ground_truth(self.get_umpteenth_output_file(35))
+        self.check_pdf_using_validator(self.get_umpteenth_output_file(35))

@@ -11,6 +11,7 @@ import os
 import time
 import typing
 
+# fmt: off
 from borb.io.read.tokenize.high_level_tokenizer import HighLevelTokenizer
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import CanvasOperatorName
@@ -19,82 +20,51 @@ from borb.pdf.canvas.operator.canvas_operator import CanvasOperator
 from borb.pdf.canvas.operator.color.set_cmyk_non_stroking import SetCMYKNonStroking
 from borb.pdf.canvas.operator.color.set_cmyk_stroking import SetCMYKStroking
 from borb.pdf.canvas.operator.color.set_color_non_stroking import SetColorNonStroking
-from borb.pdf.canvas.operator.color.set_color_space_non_stroking import (
-    SetColorSpaceNonStroking,
-)
-from borb.pdf.canvas.operator.color.set_color_space_stroking import (
-    SetColorSpaceStroking,
-)
+from borb.pdf.canvas.operator.color.set_color_space_non_stroking import SetColorSpaceNonStroking
+from borb.pdf.canvas.operator.color.set_color_space_stroking import SetColorSpaceStroking
 from borb.pdf.canvas.operator.color.set_color_stroking import SetColorStroking
 from borb.pdf.canvas.operator.color.set_gray_non_stroking import SetGrayNonStroking
 from borb.pdf.canvas.operator.color.set_gray_stroking import SetGrayStroking
 from borb.pdf.canvas.operator.color.set_rgb_non_stroking import SetRGBNonStroking
 from borb.pdf.canvas.operator.color.set_rgb_stroking import SetRGBStroking
-from borb.pdf.canvas.operator.compatibility.begin_compatibility_section import (
-    BeginCompatibilitySection,
-)
-from borb.pdf.canvas.operator.compatibility.end_compatibility_section import (
-    EndCompatibilitySection,
-)
-from borb.pdf.canvas.operator.marked_content.begin_marked_content import (
-    BeginMarkedContent,
-)
-from borb.pdf.canvas.operator.marked_content.begin_marked_content_with_property_list import (
-    BeginMarkedContentWithPropertyList,
-)
+from borb.pdf.canvas.operator.compatibility.begin_compatibility_section import BeginCompatibilitySection
+from borb.pdf.canvas.operator.compatibility.end_compatibility_section import EndCompatibilitySection
+from borb.pdf.canvas.operator.marked_content.begin_marked_content import BeginMarkedContent
+from borb.pdf.canvas.operator.marked_content.begin_marked_content_with_property_list import \
+    BeginMarkedContentWithPropertyList
 from borb.pdf.canvas.operator.marked_content.end_marked_content import EndMarkedContent
-from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import (
-    AppendCubicBezierCurve1,
-)
-from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import (
-    AppendCubicBezierCurve2,
-)
-from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import (
-    AppendCubicBezierCurve3,
-)
-from borb.pdf.canvas.operator.path_construction.append_line_segment import (
-    AppendLineSegment,
-)
+from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import AppendCubicBezierCurve1
+from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import AppendCubicBezierCurve2
+from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import AppendCubicBezierCurve3
+from borb.pdf.canvas.operator.path_construction.append_line_segment import AppendLineSegment
 from borb.pdf.canvas.operator.path_construction.begin_subpath import BeginSubpath
 from borb.pdf.canvas.operator.path_construction.close_subpath import CloseSubpath
-from borb.pdf.canvas.operator.path_painting.close_and_stroke_path import (
-    CloseAndStrokePath,
-)
+from borb.pdf.canvas.operator.path_painting.close_and_stroke_path import CloseAndStrokePath
 from borb.pdf.canvas.operator.path_painting.stroke_path import StrokePath
-from borb.pdf.canvas.operator.state.modify_transformation_matrix import (
-    ModifyTransformationMatrix,
-)
+from borb.pdf.canvas.operator.state.modify_transformation_matrix import ModifyTransformationMatrix
 from borb.pdf.canvas.operator.state.pop_graphics_state import PopGraphicsState
 from borb.pdf.canvas.operator.state.push_graphics_state import PushGraphicsState
 from borb.pdf.canvas.operator.state.set_line_width import SetLineWidth
 from borb.pdf.canvas.operator.text.begin_text import BeginTextObject
 from borb.pdf.canvas.operator.text.end_text import EndTextObject
 from borb.pdf.canvas.operator.text.move_text_position import MoveTextPosition
-from borb.pdf.canvas.operator.text.move_text_position_set_leading import (
-    MoveTextPositionSetLeading,
-)
+from borb.pdf.canvas.operator.text.move_text_position_set_leading import MoveTextPositionSetLeading
 from borb.pdf.canvas.operator.text.move_to_next_line import MoveToNextLine
-from borb.pdf.canvas.operator.text.move_to_next_line_show_text import (
-    MoveToNextLineShowText,
-)
+from borb.pdf.canvas.operator.text.move_to_next_line_show_text import MoveToNextLineShowText
 from borb.pdf.canvas.operator.text.set_character_spacing import SetCharacterSpacing
 from borb.pdf.canvas.operator.text.set_font_and_size import SetFontAndSize
-from borb.pdf.canvas.operator.text.set_horizontal_text_scaling import (
-    SetHorizontalScaling,
-)
-from borb.pdf.canvas.operator.text.set_spacing_move_to_next_line_show_text import (
-    SetSpacingMoveToNextLineShowText,
-)
+from borb.pdf.canvas.operator.text.set_horizontal_text_scaling import SetHorizontalScaling
+from borb.pdf.canvas.operator.text.set_spacing_move_to_next_line_show_text import SetSpacingMoveToNextLineShowText
 from borb.pdf.canvas.operator.text.set_text_leading import SetTextLeading
 from borb.pdf.canvas.operator.text.set_text_matrix import SetTextMatrix
 from borb.pdf.canvas.operator.text.set_text_rendering_mode import SetTextRenderingMode
 from borb.pdf.canvas.operator.text.set_text_rise import SetTextRise
 from borb.pdf.canvas.operator.text.set_word_spacing import SetWordSpacing
 from borb.pdf.canvas.operator.text.show_text import ShowText
-from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import (
-    ShowTextWithGlyphPositioning,
-)
+from borb.pdf.canvas.operator.text.show_text_with_glyph_positioning import ShowTextWithGlyphPositioning
 from borb.pdf.canvas.operator.xobject.do import Do
+
+# fmt: on
 
 logger = logging.getLogger(__name__)
 

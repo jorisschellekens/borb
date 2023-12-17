@@ -7,7 +7,7 @@ having to specify coordinates.
 """
 import logging
 import typing
-from _decimal import Decimal
+from decimal import Decimal
 
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
@@ -121,7 +121,7 @@ class MultiColumnLayout(PageLayout):
     def _calculate_leading_between(e0: LayoutElement, e1: LayoutElement) -> Decimal:
         if e0 is None or e1 is None:
             return Decimal(0)
-        from borb.pdf import ChunkOfText
+        from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
         if isinstance(e0, ChunkOfText) or isinstance(e1, ChunkOfText):
             return max(
@@ -146,7 +146,7 @@ class MultiColumnLayout(PageLayout):
 
         # IF the element being added is a Watermark
         # THEN just paint it (all over the Page)
-        from borb.pdf import Watermark
+        from borb.pdf.canvas.layout.image.watermark import Watermark
 
         if isinstance(layout_element, Watermark):
             layout_element.paint(self._page, None)

@@ -64,14 +64,14 @@ class TestStandardSecurityHandler(unittest.TestCase):
 
         # build Stream object
         stream_object: Stream = Stream().set_reference(Reference(51, 0))
-        stream_object[Name("DecodedBytes")] = stream_bytes
+        stream_object[Name("Bytes")] = stream_bytes
 
         # decrypt object
-        ssh._decrypt_data(stream_object)
+        ssh.decrypt(stream_object)
 
         # check content
         decrypted_stream_content: str = str(
-            stream_object[Name("DecodedBytes")], encoding="utf8"
+            stream_object[Name("Bytes")], encoding="utf8"
         )
         assert decrypted_stream_content.startswith(
             '<?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>'

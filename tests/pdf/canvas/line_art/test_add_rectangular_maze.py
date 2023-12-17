@@ -17,9 +17,13 @@ class TestAddRectangularMaze(TestCase):
     This test creates a PDF with a dragon-curve in it.
     """
 
-    def _write_maze(self, width: int, height: int) -> DisconnectedShape:
+    def _write_maze(
+        self,
+        height: int,
+        width: int,
+    ) -> DisconnectedShape:
         return DisconnectedShape(
-            RectangularMazeFactory.rectangular_maze(width, height),
+            RectangularMazeFactory.rectangular_maze(height, width),
             stroke_color=HexColor("f1cd2e"),
             line_width=Decimal(1),
         )
@@ -52,7 +56,7 @@ class TestAddRectangularMaze(TestCase):
             )
         )
         random.seed(2048)
-        layout.add(self._write_maze(10, 20))
+        layout.add(self._write_maze(20, 10))
         with open(self.get_second_output_file(), "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
         self.compare_visually_to_ground_truth(self.get_second_output_file())
@@ -69,7 +73,7 @@ class TestAddRectangularMaze(TestCase):
             )
         )
         random.seed(2048)
-        layout.add(self._write_maze(20, 10))
+        layout.add(self._write_maze(10, 20))
         with open(self.get_third_output_file(), "wb") as in_file_handle:
             PDF.dumps(in_file_handle, pdf)
         self.compare_visually_to_ground_truth(self.get_third_output_file())

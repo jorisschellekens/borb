@@ -1,7 +1,6 @@
 import unittest
 
 from borb.datastructure.str_trie import Trie
-from borb.toolkit import PDFTestRunner
 
 
 class TestTrie(unittest.TestCase):
@@ -9,9 +8,6 @@ class TestTrie(unittest.TestCase):
     This test checks some of the functionalities of the Trie datastructure.
     Tries are used in the hyphenation algorithm.
     """
-
-    def setUp(self) -> None:
-        PDFTestRunner.set_up(self)
 
     def test_trie_len(self):
 

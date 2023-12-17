@@ -110,10 +110,49 @@ class ReferenceTransformer(Transformer):
         src = context.source
         tok = context.tokenizer
 
-        # get reference
+        # IF the reference points to a parent object
+        # THEN explicitly resolve that parent and add it to the XREF cache
+        # this ensures these references are handled WITH decryption rather than simply being looked up
+        # by the XREF
+        matching_ref_in_xref: typing.Optional[Reference] = next(
+            iter(
+                [
+                    r
+                    for r in xref._entries
+                    if r.object_number == object_to_transform.object_number
+                ]
+            ),
+            None,
+        )
+        if (
+            matching_ref_in_xref is not None
+            and matching_ref_in_xref.parent_stream_object_number is not None
+        ):
+            parent_reference: Reference = Reference(
+                object_number=matching_ref_in_xref.parent_stream_object_number,
+                generation_number=matching_ref_in_xref.generation_number,
+            )
+            xref._cache[parent_reference.object_number] = self.transform(
+                parent_reference,
+                parent_object=parent_object,
+                context=context,
+                event_listeners=[],
+            )
+
+        # get referenced object from XREF
         referenced_object = xref.get_object(object_to_transform, src, tok)
         if referenced_object is None:
             return None
+
+        # set reference on referenced object
+        # this ensures we can decrypt the object if needed
+        try:
+            referenced_object.set_reference(object_to_transform)
+        except:
+            logger.debug(
+                "Unable to set reference on object %s" % str(referenced_object)
+            )
+            pass
 
         # transform
         assert referenced_object is not None
@@ -127,7 +166,7 @@ class ReferenceTransformer(Transformer):
         if transformed_referenced_object is not None:
             self._cache[object_to_transform] = transformed_referenced_object
 
-        # set reference
+        # set reference on transformed object
         try:
             transformed_referenced_object.set_reference(object_to_transform)
         except:

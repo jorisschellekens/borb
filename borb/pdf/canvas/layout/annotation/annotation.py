@@ -33,11 +33,11 @@ class Annotation(Dictionary):
     def __init__(
         self,
         bounding_box: Rectangle,
-        contents: typing.Optional[str] = None,
+        border_width: typing.Optional[Decimal] = None,
         color: typing.Optional[Color] = None,
+        contents: typing.Optional[str] = None,
         horizontal_corner_radius: typing.Optional[Decimal] = None,
         vertical_corner_radius: typing.Optional[Decimal] = None,
-        border_width: typing.Optional[Decimal] = None,
     ):
         super(Annotation, self).__init__()
 

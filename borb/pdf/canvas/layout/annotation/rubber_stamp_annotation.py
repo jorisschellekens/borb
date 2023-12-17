@@ -51,9 +51,9 @@ class RubberStampAnnotation(Annotation):
     def __init__(
         self,
         bounding_box: Rectangle,
-        name: RubberStampAnnotationIconType = RubberStampAnnotationIconType.DRAFT,
-        contents: typing.Optional[str] = None,
         color: typing.Optional[Color] = None,
+        contents: typing.Optional[str] = None,
+        name: RubberStampAnnotationIconType = RubberStampAnnotationIconType.DRAFT,
     ):
         super(RubberStampAnnotation, self).__init__(
             bounding_box=bounding_box, contents=contents, color=color

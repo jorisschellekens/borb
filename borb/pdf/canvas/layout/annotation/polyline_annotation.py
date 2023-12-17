@@ -24,16 +24,16 @@ class LineEndStyleType(enum.Enum):
     This Enum represents all possible line end styles
     """
 
-    SQUARE = Name("Square")
-    CIRCLE = Name("Circle")
-    DIAMOND = Name("Diamond")
-    OPEN_ARROW = Name("OpenArrow")
-    CLOSED_ARROW = Name("ClosedArrow")
-    NONE = Name("None")
     BUTT = Name("Butt")
-    RIGHT_OPEN_ARROW = Name("ROpenArrow")
+    CIRCLE = Name("Circle")
+    CLOSED_ARROW = Name("ClosedArrow")
+    DIAMOND = Name("Diamond")
+    NONE = Name("None")
+    OPEN_ARROW = Name("OpenArrow")
     RIGHT_CLOSED_ARROW = Name("RClosedArrow")
+    RIGHT_OPEN_ARROW = Name("ROpenArrow")
     SLASH = Name("Slash")
+    SQUARE = Name("Square")
 
 
 class PolylineAnnotation(Annotation):
@@ -50,10 +50,10 @@ class PolylineAnnotation(Annotation):
     def __init__(
         self,
         points: typing.List[typing.Tuple[Decimal, Decimal]],
-        stroke_color: typing.Optional[Color] = HexColor("000000"),
         fill_color: typing.Optional[Color] = None,
         left_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
         right_line_end_style: LineEndStyleType = LineEndStyleType.NONE,
+        stroke_color: typing.Optional[Color] = HexColor("000000"),
     ):
         # must be at least 3 points
         assert len(points) >= 3

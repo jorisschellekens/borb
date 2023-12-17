@@ -28,8 +28,6 @@ class TableCell(LayoutElement):
     def __init__(
         self,
         layout_element: LayoutElement,
-        row_span: int = 1,
-        column_span: int = 1,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = True,
         border_color: Color = HexColor("000000"),
@@ -41,12 +39,14 @@ class TableCell(LayoutElement):
         border_right: bool = True,
         border_top: bool = True,
         border_width: Decimal = Decimal(1),
+        column_span: int = 1,
         padding_bottom: Decimal = Decimal(0),
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
         preferred_height: typing.Optional[Decimal] = None,
         preferred_width: typing.Optional[Decimal] = None,
+        row_span: int = 1,
     ):
         super(TableCell, self).__init__(
             background_color=background_color,
@@ -60,6 +60,8 @@ class TableCell(LayoutElement):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",  # not used
+            font_color=HexColor("#000000"),  # not used
             font_size=Decimal(12),  # not used
             horizontal_alignment=Alignment.JUSTIFIED,  # not used
             margin_bottom=Decimal(0),  # not used

@@ -47,7 +47,7 @@ class LineBreakChunk(ChunkOfText):
 class HeterogeneousParagraph(Paragraph):
     """
     This implementation of LayoutElement represents a heterogeneous collection of ChunkOfText elements.
-    Furthermore (like Paragraph), this element has a default top- and bottom margin.
+    Furthermore, (like Paragraph), this element has a default top- and bottom margin.
     e.g. a Paragraph where one or more words are in bold (but not all of them)
     """
 
@@ -60,57 +60,59 @@ class HeterogeneousParagraph(Paragraph):
         chunks_of_text: typing.List[
             typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]
         ] = [],
-        vertical_alignment: Alignment = Alignment.TOP,
-        horizontal_alignment: Alignment = Alignment.LEFT,
-        text_alignment: Alignment = Alignment.LEFT,
-        border_top: bool = False,
-        border_right: bool = False,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
+        border_color: Color = HexColor("000000"),
         border_left: bool = False,
+        border_radius_bottom_left: Decimal = Decimal(0),
+        border_radius_bottom_right: Decimal = Decimal(0),
         border_radius_top_left: Decimal = Decimal(0),
         border_radius_top_right: Decimal = Decimal(0),
-        border_radius_bottom_right: Decimal = Decimal(0),
-        border_radius_bottom_left: Decimal = Decimal(0),
-        border_color: Color = HexColor("000000"),
+        border_right: bool = False,
+        border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        padding_top: Decimal = Decimal(0),
-        padding_right: Decimal = Decimal(0),
-        padding_bottom: Decimal = Decimal(0),
-        padding_left: Decimal = Decimal(0),
-        margin_top: typing.Optional[Decimal] = None,
-        margin_right: typing.Optional[Decimal] = None,
+        fixed_leading: typing.Optional[Decimal] = None,
+        horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = None,
         margin_left: typing.Optional[Decimal] = None,
-        fixed_leading: typing.Optional[Decimal] = None,
+        margin_right: typing.Optional[Decimal] = None,
+        margin_top: typing.Optional[Decimal] = None,
         multiplied_leading: typing.Optional[Decimal] = None,
-        background_color: typing.Optional[Color] = None,
+        padding_bottom: Decimal = Decimal(0),
+        padding_left: Decimal = Decimal(0),
+        padding_right: Decimal = Decimal(0),
+        padding_top: Decimal = Decimal(0),
+        respect_newlines_in_text: bool = False,
+        text_alignment: Alignment = Alignment.LEFT,
+        vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(HeterogeneousParagraph, self).__init__(
+            background_color=background_color,
+            border_bottom=border_bottom,
+            border_color=border_color,
+            border_left=border_left,
+            border_radius_bottom_left=border_radius_bottom_left,
+            border_radius_bottom_right=border_radius_bottom_right,
+            border_radius_top_left=border_radius_top_left,
+            border_radius_top_right=border_radius_top_right,
+            border_right=border_right,
+            border_top=border_top,
+            border_width=border_width,
+            fixed_leading=fixed_leading,
+            horizontal_alignment=horizontal_alignment,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+            margin_top=margin_top,
+            multiplied_leading=multiplied_leading,
+            padding_bottom=padding_bottom,
+            padding_left=padding_left,
+            padding_right=padding_right,
+            padding_top=padding_top,
+            respect_newlines_in_text=respect_newlines_in_text,
             text="",
             text_alignment=text_alignment,
             vertical_alignment=vertical_alignment,
-            horizontal_alignment=horizontal_alignment,
-            border_top=border_top,
-            border_right=border_right,
-            border_bottom=border_bottom,
-            border_left=border_left,
-            border_radius_top_left=border_radius_top_left,
-            border_radius_top_right=border_radius_top_right,
-            border_radius_bottom_right=border_radius_bottom_right,
-            border_radius_bottom_left=border_radius_bottom_left,
-            border_color=border_color,
-            border_width=border_width,
-            padding_top=padding_top,
-            padding_right=padding_right,
-            padding_bottom=padding_bottom,
-            padding_left=padding_left,
-            margin_top=margin_top,
-            margin_right=margin_right,
-            margin_bottom=margin_bottom,
-            margin_left=margin_left,
-            fixed_leading=fixed_leading,
-            multiplied_leading=multiplied_leading,
-            background_color=background_color,
         )
         # fmt: off
         self._chunks_of_text: typing.List[typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]] = chunks_of_text
@@ -260,9 +262,11 @@ class HeterogeneousParagraph(Paragraph):
                     available_space.get_height(),
                 )
             ).get_width()
-            if (line_width + w > available_space.get_width()) or (
-                isinstance(c1, LineBreakChunk)
-            ):
+            # IF the line would be too wide AND we are not respecting newlines
+            # THEN split the line
+            if (
+                line_width + w > available_space.get_width()
+            ) and not self._respect_newlines_in_text:
                 # get ready for next line
                 lines.append(copy.deepcopy(line))
                 next_x = available_space.get_x() + w
@@ -272,10 +276,22 @@ class HeterogeneousParagraph(Paragraph):
                 c1._previous_layout_box.x = available_space.get_x()
                 line = [c1]
                 continue
-            else:
-                next_x += w
-                line_width += w
-                line.append(c1)
+            # IF we encounter an explicit break (by means of LineBreakChunk)
+            # THEN split the line
+            if isinstance(c1, LineBreakChunk):
+                # get ready for next line
+                lines.append(copy.deepcopy(line))
+                next_x = available_space.get_x() + w
+                line_width = w
+                # fix the one element that does not fit
+                assert c1._previous_layout_box is not None
+                c1._previous_layout_box.x = available_space.get_x()
+                line = [c1]
+                continue
+            # default behaviour: continue building the line
+            next_x += w
+            line_width += w
+            line.append(c1)
         if len(line) > 0:
             lines.append(copy.deepcopy(line))
 

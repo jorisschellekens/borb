@@ -36,12 +36,12 @@ class UnderlineAnnotation(Annotation):
         )
 
         # (Required) The type of annotation that this dictionary describes; shall
-        # be Redact for a redaction annotation.
+        # be Underline for a underline annotation.
         self[Name("Subtype")] = Name("Underline")
 
         # (Required) An array of 8 × n numbers specifying the coordinates of n
         # quadrilaterals in default user space. Each quadrilateral shall
-        # encompasses a word or group of contiguous words in the text
+        # encompass a word or group of contiguous words in the text
         # underlying the annotation. The coordinates for each quadrilateral shall
         # be given in the order
         self[Name("QuadPoints")] = List()
