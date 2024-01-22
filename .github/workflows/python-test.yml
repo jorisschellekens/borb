@@ -1,6 +1,6 @@
-name: Test Against Multiple Python Versions
+name: All Test(s) Against Multiple Python Versions
 
-on: [push]
+on: []
 
 jobs:
   build:
