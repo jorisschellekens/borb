@@ -39,7 +39,7 @@ class CheckBox(FormField):
 
     def __init__(
         self,
-        # background_color: typing.Optional[Color] = None,
+        background_color: typing.Optional[Color] = None,
         border_bottom: bool = True,
         border_color: Color = HexColor("808080"),
         border_left: bool = True,
@@ -65,7 +65,7 @@ class CheckBox(FormField):
         vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(CheckBox, self).__init__(
-            # background_color=background_color,
+            background_color=background_color,
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
@@ -76,6 +76,8 @@ class CheckBox(FormField):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=font_color,
             font_size=font_size,
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
@@ -88,9 +90,6 @@ class CheckBox(FormField):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        assert font_size is None or font_size >= 0
-        self._font_size: Decimal = font_size
-        self._font_color = font_color
         self._field_name: typing.Optional[str] = field_name
         self._widget_dictionary: typing.Optional[Dictionary] = None
 

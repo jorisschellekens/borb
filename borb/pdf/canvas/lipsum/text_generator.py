@@ -24,12 +24,12 @@ class TextGenerator:
     #
 
     def __init__(self):
-        self._token_ids: typing.Dict[str, int] = {}
-        self._rev_token_ids: typing.Dict[int, str] = {}
-        self._token_frequency: typing.Dict[int, int] = {}
         self._markov_model: typing.Dict[
             typing.Tuple[int, int], typing.Dict[int, int]
         ] = {}
+        self._rev_token_ids: typing.Dict[int, str] = {}
+        self._token_frequency: typing.Dict[int, int] = {}
+        self._token_ids: typing.Dict[str, int] = {}
 
     #
     # PRIVATE

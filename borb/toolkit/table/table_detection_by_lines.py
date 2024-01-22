@@ -11,6 +11,7 @@ import math
 import typing
 from decimal import Decimal
 
+# fmt: off
 from borb.datastructure.disjoint_set import disjointset
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
@@ -20,12 +21,12 @@ from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.event.line_render_event import LineRenderEvent
 from borb.pdf.canvas.geometry.line_segment import LineSegment
 from borb.pdf.canvas.geometry.rectangle import Rectangle
-from borb.pdf.canvas.layout.table.flexible_column_width_table import (
-    FlexibleColumnWidthTable,
-)
+from borb.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+
+# fmt: on
 
 logger = logging.getLogger(__name__)
 

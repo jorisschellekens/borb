@@ -53,6 +53,8 @@ class LayoutElement:
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
+        font: typing.Union["Font", str] = "Helvetica",
+        font_color: Color = HexColor("#000000"),
         font_size: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
@@ -98,7 +100,9 @@ class LayoutElement:
         self._border_width = border_width
         self._border_color = border_color
 
-        # font_size
+        # font, font_color, font_size
+        self._font = font
+        self._font_color = font_color
         self._font_size = font_size
 
         # margin

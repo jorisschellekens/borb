@@ -8,15 +8,17 @@ import numbers
 import typing
 from decimal import Decimal
 
+# fmt: off
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
-from borb.pdf.canvas.layout.table.flexible_column_width_table import (
-    FlexibleColumnWidthTable,
-)
+from borb.pdf.canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
 from borb.pdf.canvas.layout.table.table import Table
 from borb.pdf.canvas.layout.table.table import TableCell
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
+
+
+# fmt: on
 
 
 class TableUtil:

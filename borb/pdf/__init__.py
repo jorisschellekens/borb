@@ -42,7 +42,7 @@
     address: joris.schellekens.1989@gmail.com
 """
 
-# color
+# fmt: off
 from .canvas.color.color import CMYKColor
 from .canvas.color.color import Color
 from .canvas.color.color import GrayColor
@@ -53,14 +53,10 @@ from .canvas.color.color import RGBColor
 from .canvas.color.color import X11Color
 from .canvas.color.farrow_and_ball import FarrowAndBall
 from .canvas.color.pantone import Pantone
-
-# annotation
 from .canvas.layout.annotation.annotation import Annotation
 from .canvas.layout.annotation.caret_annotation import CaretAnnotation
 from .canvas.layout.annotation.circle_annotation import CircleAnnotation
-from .canvas.layout.annotation.file_attachment_annotation import (
-    FileAttachmentAnnotation,
-)
+from .canvas.layout.annotation.file_attachment_annotation import FileAttachmentAnnotation
 from .canvas.layout.annotation.free_text_annotation import FreeTextAnnotation
 from .canvas.layout.annotation.highlight_annotation import HighlightAnnotation
 from .canvas.layout.annotation.ink_annotation import InkAnnotation
@@ -85,15 +81,9 @@ from .canvas.layout.annotation.trap_net_annotation import TrapNetAnnotation
 from .canvas.layout.annotation.underline_annotation import UnderlineAnnotation
 from .canvas.layout.annotation.watermark_annotation import WatermarkAnnotation
 from .canvas.layout.annotation.widget_annotation import WidgetAnnotation
-
-# emoji
 from .canvas.layout.emoji.emoji import Emoji
 from .canvas.layout.emoji.emoji import Emojis
-
-# equation
 from .canvas.layout.equation.equation import Equation
-
-# forms
 from .canvas.layout.forms.check_box import CheckBox
 from .canvas.layout.forms.country_drop_down_list import CountryDropDownList
 from .canvas.layout.forms.drop_down_list import DropDownList
@@ -102,16 +92,10 @@ from .canvas.layout.forms.push_button import JavaScriptPushButton
 from .canvas.layout.forms.push_button import PushButton
 from .canvas.layout.forms.text_area import TextArea
 from .canvas.layout.forms.text_field import TextField
-
-# geography
 from .canvas.layout.geography.map_of_europe import MapOfEurope
 from .canvas.layout.geography.map_of_the_united_states import MapOfTheUnitedStates
 from .canvas.layout.geography.map_of_the_world import MapOfTheWorld
-
-# hyphenation
 from .canvas.layout.hyphenation.hyphenation import Hyphenation
-
-# image
 from .canvas.layout.image.barcode import Barcode
 from .canvas.layout.image.barcode import BarcodeType
 from .canvas.layout.image.chart import Chart
@@ -119,63 +103,43 @@ from .canvas.layout.image.image import Image
 from .canvas.layout.image.screenshot import ScreenShot
 from .canvas.layout.image.unsplash import Unsplash
 from .canvas.layout.image.watermark import Watermark
-
-# layout
 from .canvas.layout.layout_element import Alignment
-
-# list
 from .canvas.layout.list.list import List
 from .canvas.layout.list.ordered_list import OrderedList
 from .canvas.layout.list.roman_numeral_ordered_list import RomanNumeralOrderedList
 from .canvas.layout.list.unordered_list import UnorderedList
-
-# page_layout
-# fmt: off
 from .canvas.layout.page_layout.block_flow import BlockFlow
 from .canvas.layout.page_layout.inline_flow import InlineFlow
 from .canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
 from .canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
 from .canvas.layout.page_layout.page_layout import PageLayout
 from .canvas.layout.page_layout.single_column_layout_with_overflow import SingleColumnLayoutWithOverflow
-# shape
 from .canvas.layout.shape.connected_shape import ConnectedShape
 from .canvas.layout.shape.disconnected_shape import DisconnectedShape
-from .canvas.layout.shape.gradient_colored_disconnected_shape import (
-    GradientColoredDisconnectedShape,
-)
+from .canvas.layout.shape.gradient_colored_disconnected_shape import GradientColoredDisconnectedShape
 from .canvas.layout.shape.progressbar import ProgressBar
 from .canvas.layout.shape.progressbar import ProgressSquare
 from .canvas.layout.shape.shapes import Shapes
-# smart_art
 from .canvas.layout.smart_art.smart_art import SmartArt
-# table
 from .canvas.layout.table.fixed_column_width_table import FixedColumnWidthTable
 from .canvas.layout.table.flexible_column_width_table import FlexibleColumnWidthTable
 from .canvas.layout.table.table import Table
 from .canvas.layout.table.table import TableCell
 from .canvas.layout.table.table_util import TableUtil
-# text
 from .canvas.layout.text.chunk_of_text import ChunkOfText
 from .canvas.layout.text.codeblock import CodeBlock
+from .canvas.layout.text.codeblock_with_syntax_highlighting import CodeBlockWithSyntaxHighlighting
 from .canvas.layout.text.heading import Heading
 from .canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from .canvas.layout.text.line_of_text import LineOfText
 from .canvas.layout.text.paragraph import Paragraph
-# line_art
 from .canvas.line_art.line_art_factory import LineArtFactory
-# lipsum
 from .canvas.lipsum.lipsum import Lipsum
-# document
 from .document.document import Document
-# page
 from .page.page import Page
-# pdf
 from .pdf import PDF
-# template
 from .template.a4_2_column_portrait_template import A42ColumnPortraitTemplate
 from .template.a4_portrait_template import A4PortraitTemplate
-# template
 from .template.a4_portrait_template import A4PortraitTemplate
 from .template.slide_template import SlideTemplate
-
 # fmt: on

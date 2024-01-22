@@ -76,13 +76,14 @@ class GlyphLine:
         word_spacing: Decimal = Decimal(0),
         horizontal_scaling: Decimal = Decimal(100),
     ):
+        # TODO: sort args
         assert isinstance(font, Font)
-        self._glyphs: typing.List[Glyph] = glyphs
+        self._character_spacing = character_spacing
         self._font = font
         self._font_size = font_size
-        self._character_spacing = character_spacing
-        self._word_spacing = word_spacing
+        self._glyphs: typing.List[Glyph] = glyphs
         self._horizontal_scaling = horizontal_scaling
+        self._word_spacing = word_spacing
 
     #
     # PRIVATE
@@ -133,6 +134,7 @@ class GlyphLine:
         :param horizontal_scaling:  the horizontal scaling factor (100 represents no zoom)
         :return:                    a GlyphLine
         """
+        # TODO: sort args
         glyphs: typing.List[Glyph] = []
         i: int = 0
         while i < len(text):
@@ -193,6 +195,7 @@ class GlyphLine:
         :param horizontal_scaling:  the horizontal scaling factor (100 represents no zoom)
         :return:                    a GlyphLine
         """
+        # TODO: sort args
         character_ids: typing.List[int] = [
             font.unicode_to_character_identifier(c) or 0 for c in text
         ]

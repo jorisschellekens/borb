@@ -49,8 +49,6 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
     ):
         super(GradientColoredDisconnectedShape, self).__init__(
             lines=shape._lines,
-            stroke_color=shape._stroke_color,
-            line_width=shape._line_width,
             background_color=shape._background_color,
             border_bottom=shape._border_bottom,
             border_color=shape._border_color,
@@ -63,6 +61,7 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
             border_top=shape._border_top,
             border_width=shape._border_width,
             horizontal_alignment=shape._horizontal_alignment,
+            line_width=shape._line_width,
             margin_bottom=shape._margin_bottom,
             margin_left=shape._margin_left,
             margin_right=shape._margin_right,
@@ -71,6 +70,7 @@ class GradientColoredDisconnectedShape(DisconnectedShape):
             padding_left=shape._padding_left,
             padding_right=shape._padding_right,
             padding_top=shape._padding_top,
+            stroke_color=shape._stroke_color,
             vertical_alignment=shape._vertical_alignment,
         )
         self._from_color: Color = from_color

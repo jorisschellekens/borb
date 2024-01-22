@@ -18,7 +18,7 @@ In one case, overprint on computer-printed output may be used to identify output
 In another instance, identifying codes can be encoded as a digital watermark for a music, video, picture, or other file.
 """
 import typing
-from _decimal import Decimal
+from decimal import Decimal
 from pathlib import Path
 
 import PIL

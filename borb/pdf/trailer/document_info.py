@@ -39,7 +39,7 @@ class DocumentInfo:
         (or if the Document has no signatures), False otherwise
         """
         # TODO
-        return True
+        raise NotImplementedError()
 
     def get_author(self) -> typing.Optional[str]:
         """

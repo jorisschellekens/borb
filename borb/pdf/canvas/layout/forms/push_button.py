@@ -75,6 +75,8 @@ class PushButton(FormField):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=font_color,
             font_size=font_size,
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
@@ -90,7 +92,6 @@ class PushButton(FormField):
         assert len(text) > 0
         self._field_name: typing.Optional[str] = field_name
         self._text = text
-        self._font_color: Color = font_color
         self._widget_dictionary: typing.Optional[Dictionary] = None
 
     #

@@ -77,6 +77,8 @@ class DropDownList(FormField):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=font_color,
             font_size=font_size,
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
@@ -90,7 +92,6 @@ class DropDownList(FormField):
             vertical_alignment=vertical_alignment,
         )
         assert (font_size is None) or (font_size >= 0)
-        self._font_color: Color = font_color
         self._value: str = value
         self._possible_values: typing.List[str] = possible_values
         self._default_value: str = default_value

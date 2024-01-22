@@ -42,8 +42,8 @@ class FreeTextAnnotation(Annotation):
         contents: str,
         background_color: typing.Optional[Color] = None,
         font: Font = StandardType1Font("Helvetica"),
-        font_size: Decimal = Decimal(12),
         font_color: Color = HexColor("000000"),
+        font_size: Decimal = Decimal(12),
     ):
         super(FreeTextAnnotation, self).__init__(
             bounding_box=bounding_box, contents=contents, color=background_color

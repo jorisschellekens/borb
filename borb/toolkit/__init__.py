@@ -67,20 +67,17 @@ from .image.image_format_optimization import ImageFormatOptimization
 from .location.location_filter import LocationFilter
 
 # ocr
+# fmt: off
 try:
     from .ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
-    from .ocr.ocr_image_render_event_listener import (
-        OCREvent,
-        OCRImageRenderEventListener,
-    )
+    from .ocr.ocr_image_render_event_listener import OCREvent
+    from .ocr.ocr_image_render_event_listener import OCRImageRenderEventListener
 except:
     pass
+# fmt: on
 
 # table
 from .table.table_detection_by_lines import TableDetectionByLines
-
-# test
-from .test_util.pdf_test_runner import PDFTestRunner
 
 # text
 from .text.simple_text_extraction import SimpleTextExtraction
@@ -88,12 +85,12 @@ from .text.simple_non_ligature_text_extraction import SimpleNonLigatureTextExtra
 from .text.simple_find_replace import SimpleFindReplace
 
 # text (structure)
+# fmt: off
 from .text.simple_paragraph_extraction import SimpleParagraphExtraction
 from .text.simple_line_of_text_extraction import SimpleLineOfTextExtraction
-from .text.regular_expression_text_extraction import (
-    RegularExpressionTextExtraction,
-    PDFMatch,
-)
+from .text.regular_expression_text_extraction import RegularExpressionTextExtraction
+from .text.regular_expression_text_extraction import PDFMatch
+# fmt: on
 
 # text (filter)
 from .text.font_color_filter import FontColorFilter

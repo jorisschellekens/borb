@@ -36,7 +36,7 @@ class Emoji(Image):
     #
 
     def __init__(self, path_to_resource: Path):
-        # Emoji explictly does not support other LayoutElement properties
+        # Emoji explicitly does not support other LayoutElement properties
         # since emoji are considered to be at the character level, and borb
         # does not support LayoutElement properties on characters either.
         super(Emoji, self).__init__(path_to_resource)

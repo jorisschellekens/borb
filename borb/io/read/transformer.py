@@ -30,19 +30,19 @@ class ReadTransformerState:
 
     def __init__(
         self,
+        password: typing.Optional[str] = None,
+        root_object: typing.Optional[typing.Any] = None,
         source: typing.Optional[
             typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO]
         ] = None,
         tokenizer: typing.Optional[HighLevelTokenizer] = None,
-        root_object: typing.Optional[typing.Any] = None,
-        password: typing.Optional[str] = None,
     ):
-        self.source = source
-        self.tokenizer = tokenizer
-        self.root_object = root_object
         self.indirect_reference_chain: typing.Set[Reference] = set()
         self.password: typing.Optional[str] = password
+        self.root_object = root_object
         self.security_handler: typing.Optional[typing.Any] = None
+        self.source = source
+        self.tokenizer = tokenizer
 
     #
     # PRIVATE
@@ -65,9 +65,9 @@ class Transformer:
 
     def __init__(self):
         self._children = []
-        self._parent = None
-        self._level: int = 0
         self._invocation_count: int = 0
+        self._level: int = 0
+        self._parent = None
 
     #
     # PRIVATE

@@ -20,10 +20,10 @@ class bitarray:
     #
 
     def __init__(self, input: bytes):
-        self._src: bytes = input
-        self._pos: int = -1
         self._buffer: typing.List[int] = []
         self._default_to_return: int = 256
+        self._pos: int = -1
+        self._src: bytes = input
 
     #
     # PRIVATE
@@ -73,7 +73,7 @@ class LZWDecode:
     # PRIVATE
     #
 
-    def _add_to_lookup_table(self, prev_bytes: bytearray, new_bytes: bytes):
+    def _add_to_lookup_table(self, new_bytes: bytes, prev_bytes: bytearray):
         self._lookup_table[self._table_index] = prev_bytes + new_bytes
         self._table_index += 1
         if self._table_index == 511:
@@ -126,13 +126,15 @@ class LZWDecode:
             if code < self._table_index:
                 x = self._lookup_table[code]
                 bytes_out += x
-                self._add_to_lookup_table(self._lookup_table[prev_code], x[0:1])
+                self._add_to_lookup_table(
+                    new_bytes=x[0:1], prev_bytes=self._lookup_table[prev_code]
+                )
                 prev_code = code
             else:
                 x = self._lookup_table[prev_code]
                 x = x + x[0:1]
                 bytes_out += x
-                self._add_to_lookup_table(x, bytearray())
+                self._add_to_lookup_table(new_bytes=bytearray(), prev_bytes=x)
                 prev_code = code
 
         # return bytes

@@ -91,7 +91,9 @@ class License:
     def _create_license(
         company: str = "",
         output_file: Path = Path(__file__).parent / "license_key.json",
-        private_key_file: Path = Path("/home/joris/borb_license_private_key.pem"),
+        private_key_file: Path = Path(
+            "/home/joris/Code/borb-license-key-private/borb-license-key-private-001.pem"
+        ),
         user_id: str = UUID.get(),
         valid_from_in_ms: int = int(datetime.datetime.now().timestamp() * 1000),
         valid_until_in_ms: int = int(datetime.datetime.now().timestamp() * 1000)

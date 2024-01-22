@@ -15,8 +15,8 @@ class PersistentRandomUserID:
     This class is responsible for getting/setting an anonymous (GDPR-compliant) ID
     """
 
-    USER_ID_FILE_NAME: str = "anonymous_user_id"
     USER_ID: typing.Optional[str] = None
+    USER_ID_FILE_NAME: str = "anonymous_user_id"
 
     #
     # CONSTRUCTOR

@@ -45,10 +45,13 @@ class PostScriptEval:
     #
 
     @staticmethod
-    def evaluate(s: str, args: typing.List[Decimal]) -> typing.List[Decimal]:
+    def evaluate(s: str, args: typing.List[Decimal] = []) -> typing.List[Decimal]:
         """
         This function evaluates a postscript str, using args as the (initial) stack.
         This function returns a typing.List[Decimal], or throws an assertion error
+        :param s:       the (postfix) str to evaluate
+        :param args:    the (initial) stack
+        :return:        the resulting stack
         """
         stk: typing.List[typing.Union[Decimal, bool]] = []
         stk += args

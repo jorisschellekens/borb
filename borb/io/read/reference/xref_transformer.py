@@ -57,7 +57,7 @@ class XREFTransformer(Transformer):
     @staticmethod
     def _check_header(context: ReadTransformerState) -> None:
         """
-        This function checks whether or not the first bytes in the document contain the text %PDF
+        This function checks whether the first bytes in the document contain the text %PDF
         :param context: the TransformerContext (containing the io source)
         :type context: TransformerContext
         """
@@ -246,7 +246,7 @@ class XREFTransformer(Transformer):
         assert xref is not None
         assert isinstance(xref, XREF)
 
-        # check for password protected PDF
+        # check for password-protected PDF
         if "Trailer" in xref and "Encrypt" in xref["Trailer"]:
             # transform /Encrypt dictionary
             # fmt: off
@@ -265,10 +265,12 @@ class XREFTransformer(Transformer):
                     "V is 0. An algorithm that is undocumented. "
                     "This value shall not be used."
                 )
+            # TODO: comments
             if v == 1:
                 context.security_handler = StandardSecurityHandler(
                     xref["Trailer"]["Encrypt"], context.password
                 )
+            # TODO: comments
             if v == 2:
                 context.security_handler = StandardSecurityHandler(
                     xref["Trailer"]["Encrypt"], context.password
@@ -281,10 +283,13 @@ class XREFTransformer(Transformer):
             if v == 4:
                 assert False, "V is 4. Currently unsupported encryption dictionary."
 
-            # raise error
-            raise NotImplementedError(
-                "password-protected PDFs are currently not supported"
-            )
+            # check password
+            # fmt: off
+            is_owner_pwd: bool = context.security_handler.authenticate_owner_password(context.password.encode())
+            is_user_pwd: bool = context.security_handler.authenticate_user_password(context.password.encode())
+            # fmt: on
+            if not is_user_pwd and not is_owner_pwd:
+                assert False, "Unable to open PDF, incorrect password."
 
         # transform /Trailer
         trailer = self.get_root_transformer().transform(

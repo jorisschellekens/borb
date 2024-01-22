@@ -21,7 +21,13 @@ class TestCreateFullA4PortraitTemplate(TestCase):
                 labels=["Consectetur", "Nunc"],
             )
             # blank
+            .add_h2("Blank")
             .add_blank_page()
+            # code
+            .add_h2("CodeBlock")
+            .add_code(
+                """def main():\n    print("Hello World!")\n\nif __name__ == "__main__":\n    main()"""
+            )
             # image
             .add_h2(text="Image")
             .add_text(Lipsum.generate_lipsum_text(3))

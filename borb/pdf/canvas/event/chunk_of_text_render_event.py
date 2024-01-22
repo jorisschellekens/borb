@@ -38,8 +38,8 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         )
         super(ChunkOfTextRenderEvent, self).__init__(
             font=graphics_state.font,
-            font_size=graphics_state.font_size * graphics_state.text_matrix[1][1],
             font_color=graphics_state.non_stroke_color,
+            font_size=graphics_state.font_size * graphics_state.text_matrix[1][1],
             text=self._glyph_line.get_text(),
         )
         m = graphics_state.text_matrix.mul(graphics_state.ctm)

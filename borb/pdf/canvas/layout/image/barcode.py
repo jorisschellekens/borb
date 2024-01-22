@@ -102,8 +102,6 @@ class Barcode(Image):
         self,
         data: str,
         type: BarcodeType,
-        stroke_color: Color = HexColor("000000"),
-        fill_color: Color = HexColor("ffffff"),
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
         border_left: bool = False,
@@ -114,6 +112,7 @@ class Barcode(Image):
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
+        fill_color: Color = HexColor("ffffff"),
         height: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
         margin_bottom: Decimal = Decimal(0),
@@ -124,6 +123,7 @@ class Barcode(Image):
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
+        stroke_color: Color = HexColor("000000"),
         vertical_alignment: Alignment = Alignment.TOP,
         width: typing.Optional[Decimal] = None,
     ):
@@ -142,8 +142,6 @@ class Barcode(Image):
         # call to super
         super(Barcode, self).__init__(
             image,
-            width=width,
-            height=height,
             border_bottom=border_bottom,
             border_color=border_color,
             border_left=border_left,
@@ -154,6 +152,7 @@ class Barcode(Image):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            height=height,
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
             margin_left=margin_left,
@@ -164,6 +163,7 @@ class Barcode(Image):
             padding_right=padding_right,
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
+            width=width,
         )
         self._background_color = fill_color
 

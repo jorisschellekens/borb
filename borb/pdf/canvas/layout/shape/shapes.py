@@ -18,7 +18,7 @@ from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 
 class Shapes(LayoutElement):
     """
-    This class represents a collection of shqpes (objects of type ConnectedShape or DisconnectedShape).
+    This class represents a collection of shapes (objects of type ConnectedShape or DisconnectedShape).
     It has convenience methods to calculate width and height, perform scaling, etc
     """
 
@@ -38,7 +38,7 @@ class Shapes(LayoutElement):
         border_width: Decimal = Decimal(1),
         fill_color: typing.Optional[Color] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
-        line_width: Decimal = Decimal(1),
+        line_width: typing.Optional[Decimal] = None,
         margin_bottom: typing.Optional[Decimal] = Decimal(0),
         margin_left: typing.Optional[Decimal] = Decimal(0),
         margin_right: typing.Optional[Decimal] = Decimal(0),
@@ -62,6 +62,8 @@ class Shapes(LayoutElement):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=HexColor("#000000"),
             font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,
@@ -76,12 +78,16 @@ class Shapes(LayoutElement):
         )
         self._shapes: typing.List[typing.Union[ConnectedShape, Shapes]] = shapes
         for s in self._shapes:
-            s._line_width = line_width
+            if line_width is not None:
+                s._line_width = line_width
             if isinstance(s, ConnectedShape):
-                s._fill_color = fill_color
-                s._stroke_color = stroke_color
+                if fill_color is not None:
+                    s._fill_color = fill_color
+                if stroke_color is not None:
+                    s._stroke_color = stroke_color
             if isinstance(s, DisconnectedShape):
-                s._stroke_color = stroke_color
+                if stroke_color is not None:
+                    s._stroke_color = stroke_color
 
     #
     # PRIVATE

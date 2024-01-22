@@ -90,10 +90,10 @@ class CMYKColor(Color):
         """
         This method returns the RGB representation of this Color
         """
-        ONE = Decimal(1)
-        r = (ONE - self.cyan) * (ONE - self.key)
-        g = (ONE - self.magenta) * (ONE - self.key)
-        b = (ONE - self.yellow) * (ONE - self.key)
+        ONE: Decimal = Decimal(1)
+        r: Decimal = (ONE - self.cyan) * (ONE - self.key)
+        g: Decimal = (ONE - self.magenta) * (ONE - self.key)
+        b: Decimal = (ONE - self.yellow) * (ONE - self.key)
         return RGBColor(r, g, b)
 
 
@@ -187,7 +187,7 @@ class HSVColor(Color):
         ]
 
     @staticmethod
-    def complementary(color: Color):
+    def complementary(color: Color) -> Color:
         """
         This function returns an HSV color whose hue is the complement of the current HSV color
         """
@@ -336,9 +336,9 @@ class RGBColor(Color):
         assert 0 <= r <= 1
         assert 0 <= g <= 1
         assert 0 <= b <= 1
-        self.red = r
-        self.green = g
-        self.blue = b
+        self.red: Decimal = r
+        self.green: Decimal = g
+        self.blue: Decimal = b
 
     #
     # PRIVATE
@@ -388,6 +388,8 @@ class HexColor(RGBColor):
     def __init__(self, hex_string: str):
         if hex_string.startswith("#"):
             hex_string = hex_string[1:]
+        if len(hex_string) == 3:
+            hex_string = f"{hex_string[0]}{hex_string[0]}{hex_string[1]}{hex_string[1]}{hex_string[2]}{hex_string[2]}"
         assert len(hex_string) == 6 or len(hex_string) == 8
         r: float = 0
         g: float = 0

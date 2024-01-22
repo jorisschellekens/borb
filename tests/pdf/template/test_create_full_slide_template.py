@@ -58,8 +58,19 @@ class TestCreateFullSlideTemplate(TestCase):
             # blank
             .add_section_title_slide(title="Blank", subtitle="Dolor Sit Amet", nr="03")
             .add_blank_slide()
+            # code
+            .add_section_title_slide(title="Code", subtitle="Dolor Sit Amet", nr="04")
+            .add_code_and_text_slide(
+                code="""def main():\n    print("Hello World!")\n\nif __name__ == "__main__":\n    main()""",
+                subtitle="Dolor Sit Amet",
+                title="Lorem Ipsum",
+                text=Lipsum.generate_lipsum_text(5),
+            )
+            .add_code_slide(
+                code="""def main():\n    print("Hello World!")\n\nif __name__ == "__main__":\n    main()""",
+            )
             # image
-            .add_section_title_slide(title="Image", subtitle="Dolor Sit Amet", nr="04")
+            .add_section_title_slide(title="Image", subtitle="Dolor Sit Amet", nr="05")
             .add_image_and_text_slide(
                 image_url="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1",
                 subtitle="Dolor Sit Amet",
@@ -71,7 +82,7 @@ class TestCreateFullSlideTemplate(TestCase):
             )
             # line chart
             .add_section_title_slide(
-                title="Line Chart", subtitle="Dolor Sit Amet", nr="05"
+                title="Line Chart", subtitle="Dolor Sit Amet", nr="06"
             )
             .add_linechart_and_text_slide(
                 xs=[[i for i in range(0, 360)], [i for i in range(0, 360)]],
@@ -93,7 +104,7 @@ class TestCreateFullSlideTemplate(TestCase):
                 labels=["sin(x)", "cos(x)"],
             )
             # map
-            .add_section_title_slide(title="Map", subtitle="Dolor Sit Amet", nr="06")
+            .add_section_title_slide(title="Map", subtitle="Dolor Sit Amet", nr="07")
             .add_map_of_the_contiguous_united_states_and_text_slide(
                 marked_states=["Texas"],
                 subtitle="Dolor Sit Amet",
@@ -110,7 +121,7 @@ class TestCreateFullSlideTemplate(TestCase):
             .add_map_of_the_world_slide(marked_countries=["Poland"])
             # pie chart
             .add_section_title_slide(
-                title="Pie Chart", subtitle="Dolor Sit Amet", nr="07"
+                title="Pie Chart", subtitle="Dolor Sit Amet", nr="08"
             )
             .add_piechart_and_text_slide(
                 xs=[10, 20, 30, 5],
@@ -123,7 +134,7 @@ class TestCreateFullSlideTemplate(TestCase):
                 xs=[10, 20, 30, 5], labels=["Lorem", "Ipsum", "Dolor", "Sit"]
             )
             # quote
-            .add_section_title_slide(title="Quote", subtitle="Dolor Sit Amet", nr="08")
+            .add_section_title_slide(title="Quote", subtitle="Dolor Sit Amet", nr="09")
             .add_quote_and_text_slide(
                 quote_author="Robert Frost",
                 quote_text="Two roads diverged in a wood, and I, I took the one less travelled by, and that has made all the difference.",
@@ -137,7 +148,7 @@ class TestCreateFullSlideTemplate(TestCase):
             )
             # single column text
             .add_section_title_slide(
-                title="Single Column Text", subtitle="Dolor Sit Amet", nr="09"
+                title="Single Column Text", subtitle="Dolor Sit Amet", nr="10"
             )
             .add_single_column_text_slide(
                 title="Lorem Ipsum",
@@ -145,7 +156,7 @@ class TestCreateFullSlideTemplate(TestCase):
                 text=Lipsum.generate_lipsum_text(10),
             )
             # table
-            .add_section_title_slide(title="Table", subtitle="Dolor Sit Amet", nr="10")
+            .add_section_title_slide(title="Table", subtitle="Dolor Sit Amet", nr="11")
             .add_table_and_text_slide(
                 tabular_data=[
                     ["", "Lorem", "Ipsum", "Dolor"],
@@ -165,7 +176,7 @@ class TestCreateFullSlideTemplate(TestCase):
             )
             # two column text
             .add_section_title_slide(
-                title="Two Column Text", subtitle="Dolor Sit Amet", nr="11"
+                title="Two Column Text", subtitle="Dolor Sit Amet", nr="12"
             )
             .add_two_column_text_slide(
                 text_left=Lipsum.generate_lipsum_text(5),

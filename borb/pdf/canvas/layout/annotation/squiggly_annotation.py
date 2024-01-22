@@ -36,13 +36,13 @@ class SquigglyAnnotation(Annotation):
     def __init__(
         self,
         bounding_box: Rectangle,
-        stroke_width: Decimal = Decimal(1),
         stroke_color: Color = HexColor("ff0000"),
+        stroke_width: Decimal = Decimal(1),
     ):
         super(SquigglyAnnotation, self).__init__(bounding_box)
 
         # (Required) The type of annotation that this dictionary describes; shall
-        # be Redact for a redaction annotation.
+        # be Squiggly for a squiggly annotation.
         self[Name("Subtype")] = Name("Squiggly")
 
         # (Optional; PDF 1.2) An appearance dictionary specifying how the
@@ -55,10 +55,10 @@ class SquigglyAnnotation(Annotation):
         self["AP"]["N"][Name("Subtype")] = Name("Form")
 
         appearance_stream_content = "q %f %f %f RG %f w 0 0 m " % (
-            stroke_color.to_rgb().red,
-            stroke_color.to_rgb().green,
-            stroke_color.to_rgb().blue,
-            stroke_width,
+            float(stroke_color.to_rgb().red),
+            float(stroke_color.to_rgb().green),
+            float(stroke_color.to_rgb().blue),
+            float(stroke_width),
         )
         for x in range(0, int(bounding_box.width), 5):
             appearance_stream_content += "%f %f l %f %f l " % (x, 0, x + 2.5, 7)

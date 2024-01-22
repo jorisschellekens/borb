@@ -18,12 +18,12 @@ class TestAddSmartArtAlternatingPictureList(TestCase):
         )
         layout.add(
             SmartArt.alternating_picture_list(
-                ["Lorem", "Ipsum", "Dolor"],
                 [
                     "https://icons.iconarchive.com/icons/benschlitter/matryoshka/512/Matryoshka-Leisure-icon.png",
                     "https://icons.iconarchive.com/icons/benschlitter/matryoshka/128/Matryoshka-Music-icon.png",
                     "https://icons.iconarchive.com/icons/benschlitter/matryoshka/128/Matryoshka-Pictures-icon.png",
                 ],
+                ["Lorem", "Ipsum", "Dolor"],
             )
         )
         with open(self.get_first_output_file(), "wb") as fh:

@@ -34,10 +34,10 @@ class SquareAnnotation(Annotation):
         self,
         bounding_box: Rectangle,
         fill_color: typing.Optional[Color] = None,
-        stroke_color: typing.Optional[Color] = None,
         rectangle_difference: typing.Optional[
             typing.Tuple[Decimal, Decimal, Decimal, Decimal]
         ] = None,
+        stroke_color: typing.Optional[Color] = None,
     ):
         super(SquareAnnotation, self).__init__(
             bounding_box=bounding_box, color=stroke_color

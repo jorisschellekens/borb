@@ -8,12 +8,11 @@ its child transformers, allowing it to transform AnyPDFType
 import io
 import typing
 
+# fmt: off
 from borb.io.read.types import AnyPDFType
 from borb.io.write.document.catalog_transformer import CatalogTransformer
 from borb.io.write.document.document_transformer import DocumentTransformer
-from borb.io.write.document.information_dictionary_transformer import (
-    InformationDictionaryTransformer,
-)
+from borb.io.write.document.information_dictionary_transformer import InformationDictionaryTransformer
 from borb.io.write.image.image_transformer import ImageTransformer
 from borb.io.write.image.rgba_image_transformer import RGBAImageTransformer
 from borb.io.write.object.array_transformer import ArrayTransformer
@@ -29,10 +28,11 @@ from borb.io.write.reference.reference_transformer import ReferenceTransform
 from borb.io.write.reference.xref_transformer import XREFTransformer
 from borb.io.write.transformer import Transformer
 from borb.io.write.transformer import WriteTransformerState
-from borb.io.write.version.version_as_comment_transformer import (
-    VersionAsCommentTransformer,
-)
+from borb.io.write.version.version_as_comment_transformer import VersionAsCommentTransformer
 from borb.io.write.xmp.xmp_transformer import XMPTransformer
+
+
+# fmt: on
 
 
 class AnyObjectTransformer(Transformer):

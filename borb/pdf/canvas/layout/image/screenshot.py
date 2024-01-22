@@ -5,7 +5,7 @@ A screenshot (also known as screen capture or screen grab) is a digital image th
 A screenshot is created by the operating system or software running on the device powering the display.
 """
 import typing
-from _decimal import Decimal
+from decimal import Decimal
 
 from PIL import ImageGrab
 

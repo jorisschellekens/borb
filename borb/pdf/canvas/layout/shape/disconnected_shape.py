@@ -32,7 +32,6 @@ class DisconnectedShape(LayoutElement):
         lines: typing.List[
             typing.Tuple[typing.Tuple[Decimal, Decimal], typing.Tuple[Decimal, Decimal]]
         ],
-        stroke_color: Color = HexColor("000000"),
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
@@ -54,6 +53,7 @@ class DisconnectedShape(LayoutElement):
         padding_left: Decimal = Decimal(0),
         padding_right: Decimal = Decimal(0),
         padding_top: Decimal = Decimal(0),
+        stroke_color: Color = HexColor("000000"),
         vertical_alignment: Alignment = Alignment.TOP,
     ):
         super(DisconnectedShape, self).__init__(
@@ -68,6 +68,8 @@ class DisconnectedShape(LayoutElement):
             border_right=border_right,
             border_top=border_top,
             border_width=border_width,
+            font="Helvetica",
+            font_color=HexColor("#000000"),
             font_size=Decimal(12),
             horizontal_alignment=horizontal_alignment,
             margin_bottom=margin_bottom,

@@ -7,7 +7,7 @@ opened, it shall display a pop-up window containing the text of the associated n
 annotation dictionary entries specific to this type of annotation.
 """
 import typing
-from _decimal import Decimal
+from decimal import Decimal
 
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import List as bList

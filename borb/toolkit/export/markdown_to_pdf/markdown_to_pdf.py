@@ -8,10 +8,6 @@ import typing
 import xml.etree.ElementTree as ET
 from decimal import Decimal
 
-from lxml.etree import Element  # type: ignore [import]
-from lxml.etree import HTMLParser  # type: ignore [import]
-from markdown_it import MarkdownIt  # type: ignore[import]
-
 from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.emoji.emoji import Emojis
@@ -36,11 +32,13 @@ class MarkdownToPDF:
 
     @staticmethod
     def _replace_github_flavored_emoji(
-        e: Element, parents: typing.List[Element] = []
-    ) -> Element:
+        e: "Element", parents: typing.List["Element"] = []
+    ) -> "Element":
         # do not modify emoji elements themselves
         if e.tag == "span" and "emoji" in e.get("class", "").split(" "):
             return e
+
+        from lxml.etree import Element
 
         TAGS_TO_IGNORE: typing.List[str] = ["code", "pre"]
         element_can_be_changed: bool = (
@@ -98,7 +96,7 @@ class MarkdownToPDF:
         return e
 
     @staticmethod
-    def _set_img_width_and_height(e: Element) -> Element:
+    def _set_img_width_and_height(e: "Element") -> "Element":
         if e.tag == "img":
             w: typing.Optional[int] = e.attrib["width"] if "width" in e.attrib else None
             h: typing.Optional[int] = (
@@ -143,6 +141,9 @@ class MarkdownToPDF:
         """
 
         # markdown to HTML
+        from lxml.etree import HTMLParser
+        from markdown_it import MarkdownIt
+
         html: str = MarkdownIt().enable("table").render(markdown)
         html_root: ET.Element = ET.fromstring(html, HTMLParser())
 
@@ -182,6 +183,9 @@ class MarkdownToPDF:
         """
 
         # markdown to HTML
+        from lxml.etree import HTMLParser
+        from markdown_it import MarkdownIt
+
         html: str = MarkdownIt().enable("table").render(markdown)
         html_root: ET.Element = ET.fromstring(html, HTMLParser())
 

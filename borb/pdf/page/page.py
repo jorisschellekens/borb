@@ -135,9 +135,10 @@ class Page(Dictionary):
         """
         This function applies the redaction annotations on this Page
         """
-        from borb.pdf.canvas.redacted_canvas_stream_processor import (
-            RedactedCanvasStreamProcessor,
-        )
+
+        # fmt: off
+        from borb.pdf.canvas.redacted_canvas_stream_processor import RedactedCanvasStreamProcessor
+        # fmt: on
 
         rectangles_to_redact: typing.List[Rectangle] = [
             Rectangle(
