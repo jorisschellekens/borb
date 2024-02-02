@@ -144,7 +144,7 @@ class TestCase(unittest.TestCase):
         assert 0 <= maximum_normalized_difference <= 1
 
         # execute GhostScript (to convert PDF to PNG)
-        png_path_001: Path = pdf_path.parent / pdf_path.name.replace(".pdf", ".png")
+        png_path_001: Path = pdf_path.parent / pdf_path.name.replace(".pdf", "_ground_truth.png")
         command: str = 'gs -dNOPAUSE -dBATCH -sDEVICE=png16m -sOutputFile="%s" %s' % (
             png_path_001,
             pdf_path,
