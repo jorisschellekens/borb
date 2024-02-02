@@ -45,6 +45,7 @@ class TableUtil:
         flexible_column_width: bool = True,
         font_color: Color = HexColor("000000"),
         font_size: Decimal = Decimal(12),
+        font_by_column: typing.Optional[typing.Dict[str, str]] = None,
         header_background_color: Color = HexColor("f1f3f4"),
         header_col: bool = False,
         header_font_color: Color = HexColor("000000"),
@@ -58,6 +59,7 @@ class TableUtil:
         :param flexible_column_width:       true if a FlexibleColumnWidthTable should be used, false otherwise
         :param font_color:                  the font-color of cells in the Table
         :param font_size:                   the font-size of cells in the Table
+        :param font_by_column:              a dictionary mapping column names to font names
         :param header_background_color:     the background color of header cells in the Table
         :param header_col:                  whether there is a header column
         :param header_font_color:           the font-color of header cells in the Table
@@ -114,11 +116,17 @@ class TableUtil:
                         background_color=header_background_color,
                     )
                 else:
+                    font: str = "Helvetica"
+
+                    column_name = data[0][j]
+                    if font_by_column is not None and column_name in font_by_column:
+                        font = font_by_column[column_name]
+
                     p = TableCell(
                         Paragraph(
                             s,
                             font_size=font_size,
-                            font="Helvetica",
+                            font=font,
                             font_color=font_color,
                         ),
                         background_color=background_color,
@@ -138,6 +146,7 @@ class TableUtil:
         flexible_column_width: bool = True,
         font_color: Color = HexColor("000000"),
         font_size: Decimal = Decimal(12),
+        font_by_column: typing.Optional[typing.Dict[str, str]] = None,
         header_background_color: Color = HexColor("f1f3f4"),
         header_col: bool = False,
         header_font_color: Color = HexColor("000000"),
@@ -151,6 +160,7 @@ class TableUtil:
         :param flexible_column_width:       true if a FlexibleColumnWidthTable should be used, false otherwise
         :param font_color:                  the font-color of cells in the Table
         :param font_size:                   the font-size of cells in the Table
+        :param font_by_column:              a dictionary mapping column names to font names
         :param header_background_color:     the background color of header cells in the Table
         :param header_col:                  whether there is a header column
         :param header_font_color:           the font-color of header cells in the Table
@@ -168,6 +178,7 @@ class TableUtil:
             flexible_column_width=flexible_column_width,
             font_color=font_color,
             font_size=font_size,
+            font_by_column=font_by_column,
             header_background_color=header_background_color,
             header_col=header_col,
             header_font_color=header_font_color,
