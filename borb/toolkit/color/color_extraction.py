@@ -8,7 +8,7 @@ import io
 import typing
 from decimal import Decimal
 
-from PIL.Image import Image  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -103,7 +103,7 @@ class ColorExtraction(EventListener):
             self._render_image(event)
 
     @staticmethod
-    def _get_rgb_from_image(img: Image, x: int, y: int) -> RGBColor:
+    def _get_rgb_from_image(img: PILImageModule.Image, x: int, y: int) -> RGBColor:
         c = img.getpixel((x, y))
         if img.mode == "RGB":
             return RGBColor(

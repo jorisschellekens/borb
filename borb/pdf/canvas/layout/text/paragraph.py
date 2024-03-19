@@ -27,6 +27,10 @@ class Paragraph(LineOfText):
     paragraphs are usually an expected part of formal writing, used to organize longer prose.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,
@@ -105,6 +109,10 @@ class Paragraph(LineOfText):
 
         # layout
         self._previous_lines_of_text: typing.Optional[typing.List[LineOfText]] = None
+
+    #
+    # PRIVATE
+    #
 
     def __hash__(self) -> int:
         attr: typing.List[typing.Any] = [
@@ -226,6 +234,7 @@ class Paragraph(LineOfText):
             page.append_to_content_stream("\n/Standard <</MCID %d>>\nBDC\n" % next_mcid)
 
         # check whether it can be painted
+        assert self._previous_lines_of_text is not None
         if round(available_space.get_height(), 2) < round(
             line_height * len(self._previous_lines_of_text), 2
         ):
@@ -233,7 +242,6 @@ class Paragraph(LineOfText):
             assert False
 
         # call paint on all LineOfText objects
-        assert self._previous_lines_of_text is not None
         for i, l in enumerate(self._previous_lines_of_text):
             l.paint(
                 page,
@@ -261,3 +269,7 @@ class Paragraph(LineOfText):
             respect_newlines=self._respect_newlines_in_text,
             respect_spaces=self._respect_spaces_in_text,
         )
+
+    #
+    # PUBLIC
+    #

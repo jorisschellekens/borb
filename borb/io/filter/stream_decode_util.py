@@ -20,8 +20,9 @@ from borb.io.read.types import Stream
 
 def decode_stream(s: Stream) -> Stream:
     """
-    This function decodes a Stream, applying the filters specified in the Filter entry
-    of its stream dictionary
+    This function decodes a Stream, applying the filters specified in the Filter entry of its stream dictionary
+    :param s:   the input Stream object
+    :return:    the input Stream, modified to contain the decoded bytes
     """
     # fmt: off
     assert isinstance(s, Stream), "decode_stream only works on Stream objects"

@@ -37,6 +37,7 @@ from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import Appen
 from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import AppendCubicBezierCurve2
 from borb.pdf.canvas.operator.path_construction.append_cubic_bezier import AppendCubicBezierCurve3
 from borb.pdf.canvas.operator.path_construction.append_line_segment import AppendLineSegment
+from borb.pdf.canvas.operator.path_construction.append_rectangle import AppendRectangle
 from borb.pdf.canvas.operator.path_construction.begin_subpath import BeginSubpath
 from borb.pdf.canvas.operator.path_construction.close_subpath import CloseSubpath
 from borb.pdf.canvas.operator.path_painting.close_and_stroke_path import CloseAndStrokePath
@@ -117,6 +118,7 @@ class CanvasStreamProcessor:
                 AppendCubicBezierCurve2(),
                 AppendCubicBezierCurve3(),
                 AppendLineSegment(),
+                AppendRectangle(),
                 BeginSubpath(),
                 CloseSubpath(),
                 # path painting
@@ -178,7 +180,7 @@ class CanvasStreamProcessor:
         """
         return self._canvas
 
-    def get_operator(self, name: str) -> typing.Optional["CanvasOperator"]:  # type: ignore [name-defined]
+    def get_operator(self, name: str) -> typing.Optional["CanvasOperator"]:  # type: ignore[name-defined]
         """
         This function returns the CanvasOperator matching the given operator-name.
         This allows operator re-use between different implementations of Canvas
@@ -214,8 +216,8 @@ class CanvasStreamProcessor:
     def read(
         self,
         io_source: typing.Union[io.BytesIO, io.IOBase],
-        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
-    ) -> "CanvasStreamProcessor":  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore[name-defined]
+    ) -> "CanvasStreamProcessor":  # type: ignore[name-defined]
         """
         This method reads a byte stream of canvas operators, and processes them, returning this Canvas afterwards
         """
@@ -252,7 +254,7 @@ class CanvasStreamProcessor:
 
             if not self._canvas.in_compatibility_section:
                 assert len(operand_stk) >= operator.get_number_of_operands()
-            operands: typing.List[AnyPDFType] = []  # type: ignore [name-defined]
+            operands: typing.List[AnyPDFType] = []  # type: ignore[name-defined]
             for _ in range(0, operator.get_number_of_operands()):
                 operands.insert(0, operand_stk.pop(-1))
 

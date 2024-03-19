@@ -8,7 +8,7 @@ import io
 import logging
 import typing
 
-from PIL import Image  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.transformer import ReadTransformerState
 from borb.io.read.transformer import Transformer
@@ -42,7 +42,9 @@ class JPEGImageTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a JPEG object
+        This function returns True if the object to be transformed is a JPEG Image
+        :param object:  the object to be transformed
+        :return:        True if the object is a JPEG Image, False otherwise
         """
         return (
             isinstance(object, Stream)
@@ -66,7 +68,12 @@ class JPEGImageTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a JPEG Image from a byte stream
+        This function transforms an Image Dictionary into an Image Object
+        :param object_to_transform:     the Image Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        an Image Object
         """
 
         # use PIL to read image bytes
@@ -82,7 +89,7 @@ class JPEGImageTransformer(Transformer):
 
         # read a pixel
         try:
-            tmp = Image.open(io.BytesIO(object_to_transform["Bytes"]))
+            tmp = PILImageModule.open(io.BytesIO(object_to_transform["Bytes"]))
             tmp.getpixel(
                 (0, 0)
             )  # attempting to read pixel 0,0 will trigger an error if the underlying image does not exist
@@ -90,9 +97,9 @@ class JPEGImageTransformer(Transformer):
             logger.debug(
                 "Unable to read jbig2 image. Constructing empty image of same dimensions."
             )
-            w = int(object_to_transform["Width"])
-            h = int(object_to_transform["Height"])
-            tmp = Image.new("RGB", (w, h), (128, 128, 128))
+            w: int = int(object_to_transform["Width"])
+            h: int = int(object_to_transform["Height"])
+            tmp = PILImageModule.new("RGB", (w, h), (128, 128, 128))
 
         # add base methods
         PDFObject.add_pdf_object_methods(tmp)

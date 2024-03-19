@@ -34,12 +34,14 @@ class VersionAsCommentTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
         This function returns True once per Document (on the first Stream object) and embeds some ASCII art
         This is used to embed the current version in each Document
+        :param object:  the object to be transformed
+        :return:        True if the object is a Stream AND the version has not yet been serialized, False otherwise
         """
-        return isinstance(any, Stream) and not self._has_been_used
+        return isinstance(object, Stream) and not self._has_been_used
 
     def transform(
         self,
@@ -47,7 +49,11 @@ class VersionAsCommentTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes ASCII art to a byte stream
+        This method writes the (borb) version to the byte stream.
+        It does so by hijacking the Stream serialization.
+        :param object_to_transform:     the Stream Object to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Stream Object
         """
         # fmt: off
         assert (context is not None), "context must be defined to write ASCII art (borb meta-info)"

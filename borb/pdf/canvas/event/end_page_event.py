@@ -30,6 +30,7 @@ class EndPageEvent(Event):
 
     def get_page(self) -> Page:
         """
-        This function returns the Page that triggered this BeginPageEvent
+        This function returns the Page that triggered this EndPageEvent
+        :return:    the Page
         """
         return self._page

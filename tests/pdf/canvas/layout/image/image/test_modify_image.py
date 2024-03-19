@@ -3,7 +3,7 @@ import unittest
 from decimal import Decimal
 
 import requests
-from PIL import Image as PILImage
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
@@ -19,7 +19,7 @@ class TestModifyImage(TestCase):
     and then modifies that Image
     """
 
-    def _modify_image(self, image: PILImage.Image):
+    def _modify_image(self, image: PILImageModule.Image):
         w = image.width
         h = image.height
         pixels = image.load()
@@ -57,6 +57,7 @@ class TestModifyImage(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_add_image_to_pdf_002(self):
+        self.test_add_image_to_pdf_001()
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
@@ -65,7 +66,7 @@ class TestModifyImage(TestCase):
             "XObject"
         ]
         for k, v in xobjects.items():
-            if isinstance(v, PILImage.Image):
+            if isinstance(v, PILImageModule.Image):
                 self._modify_image(v)
         with open(self.get_second_output_file(), "wb") as pdf_file_handle:
             PDF.dumps(pdf_file_handle, doc)
@@ -73,11 +74,12 @@ class TestModifyImage(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_add_image_to_pdf_003(self):
+        self.test_add_image_to_pdf_001()
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
         assert doc is not None
-        replacement_image = PILImage.open(
+        replacement_image = PILImageModule.open(
             requests.get(
                 "https://images.unsplash.com/photo-1667390894220-5ed48a975e85",
                 stream=True,

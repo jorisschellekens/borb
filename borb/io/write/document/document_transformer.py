@@ -77,11 +77,13 @@ class DocumentTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
         This function returns True if the object to be transformed is a Document
+        :param object:  the object to be transformed
+        :return:        True if the object is a Document, False otherwise
         """
-        return isinstance(any, Document)
+        return isinstance(object, Document)
 
     def transform(
         self,
@@ -89,8 +91,12 @@ class DocumentTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a Document object to a byte stream
+        This function transforms a Document into a byte stream
+        :param object_to_transform:     the /Catalog Dictionary to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Document
         """
+
         # write header
         # fmt: off
         assert context is not None, "A WriteTransformerState must be defined in order to write Document objects."

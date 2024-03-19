@@ -70,28 +70,10 @@ class TestDependencies(TestCase):
         # whitelist
         system_import_whitelist: typing.List[str] = [
             "from __future__ import annotations",
-            "from datetime import datetime",
-            "from datetime import timezone",
             "from decimal import Decimal",
             "from decimal import Decimal as oDecimal",
-            "from enum import Enum",
             "from functools import cmp_to_key",
-            "from hashlib import sha256",
-            "from math import atan",
-            "from math import ceil",
-            "from math import cos",
-            "from math import degrees",
-            "from math import exp",
-            "from math import floor",
-            "from math import log",
-            "from math import radians",
-            "from math import sin",
-            "from math import sqrt",
-            "from pathlib import Path",
-            "from re import Pattern",
-            "from types import MethodType",
             "from typing import TYPE_CHECKING",
-            "from unittest import TestResult",
             "import atexit",
             "import base64",
             "import copy",
@@ -106,6 +88,7 @@ class TestDependencies(TestCase):
             "import math",
             "import numbers",
             "import os",
+            "import pathlib",
             "import platform",
             "import random",
             "import re",
@@ -131,7 +114,9 @@ class TestDependencies(TestCase):
             with open(python_file, "r") as fh:
                 lines = fh.readlines()
             imports: typing.List[str] = [
-                x for x in lines if x.startswith("import") or x.startswith("from")
+                x.strip()
+                for x in lines
+                if x.strip().startswith("import") or x.strip().startswith("from")
             ]
 
             # filter every "from borb.<something>"
@@ -157,9 +142,7 @@ class TestDependencies(TestCase):
             external_imports = [x for x in external_imports if not x.startswith("from fontTools.")]
             external_imports = [x for x in external_imports if not x.startswith("from lxml.")]
             external_imports = [x for x in external_imports if not x.startswith("from PIL ")]
-            external_imports = [x for x in external_imports if not x.startswith("from PIL.")]
             external_imports = [x for x in external_imports if not x.startswith("import barcode  # type: ignore [import]")]
-            external_imports = [x for x in external_imports if not x.startswith("import PIL")]
             external_imports = [x for x in external_imports if not x.startswith("import qrcode  # type: ignore [import]")]
             external_imports = [x for x in external_imports if not x.startswith("import requests")]
             # fmt: on

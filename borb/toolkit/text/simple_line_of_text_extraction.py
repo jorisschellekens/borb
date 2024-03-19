@@ -7,7 +7,7 @@
 import io
 import typing
 from decimal import Decimal
-from functools import cmp_to_key
+import functools
 
 from borb.datastructure.disjoint_set import disjointset
 from borb.pdf.canvas.canvas import Canvas
@@ -76,7 +76,7 @@ class SimpleLineOfTextExtraction(EventListener):
                 x for x in chunks_of_text_partition
             ]
             chunks_of_text = sorted(
-                chunks_of_text, key=cmp_to_key(LeftToRightComparator.cmp)
+                chunks_of_text, key=functools.cmp_to_key(LeftToRightComparator.cmp)
             )
 
             # determine text

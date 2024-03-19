@@ -79,7 +79,7 @@ class SquigglyAnnotation(Annotation):
         # The lower-left corner of the bounding box (BBox) is set to coordinates (0, 0) in the form coordinate system.
         # The box’s top and right coordinates are taken from the dimensions of the annotation rectangle (the Rect
         # entry in the widget annotation dictionary).
-        self["AP"]["N"][Name("BBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+        self["AP"]["N"][Name("BBox")] = List().set_is_inline(True)
         self["AP"]["N"]["BBox"].append(bDecimal(0))
         self["AP"]["N"]["BBox"].append(bDecimal(0))
         self["AP"]["N"]["BBox"].append(bDecimal(bounding_box.width))

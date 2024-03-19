@@ -7,7 +7,7 @@ This includes an Alignment Enum type, and the base implementation of LayoutEleme
 """
 import typing
 from decimal import Decimal
-from enum import Enum
+import enum
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
@@ -15,7 +15,7 @@ from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.line_art.blob_factory import BlobFactory
 
 
-class Alignment(Enum):
+class Alignment(enum.Enum):
     """
     In typesetting and page layout, alignment or range is the setting of text flow or image placement relative to a page,
     column (measure), table cell, or tab.
@@ -53,7 +53,7 @@ class LayoutElement:
         border_right: bool = False,
         border_top: bool = False,
         border_width: Decimal = Decimal(1),
-        font: typing.Union["Font", str] = "Helvetica",
+        font: typing.Union["Font", str] = "Helvetica",  # type: ignore[name-defined]
         font_color: Color = HexColor("#000000"),
         font_size: typing.Optional[Decimal] = None,
         horizontal_alignment: Alignment = Alignment.LEFT,
@@ -678,9 +678,10 @@ class LayoutElement:
         landscape_box: typing.Optional[Rectangle] = None
         while abs(max_width - min_width) > Decimal(1):
             try:
-                landscape_box: Rectangle = self.get_layout_box(
+                landscape_box = self.get_layout_box(
                     Rectangle(Decimal(0), Decimal(0), midpoint_width, Decimal(2048))
                 )
+                assert landscape_box is not None
                 if landscape_box.get_width() > midpoint_width:
                     min_width = midpoint_width
                 else:

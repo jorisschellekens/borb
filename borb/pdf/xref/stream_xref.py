@@ -79,7 +79,7 @@ class StreamXREF(XREF):
         total_entry_width = sum(widths)
 
         # parent
-        document = self.get_root()  # type: ignore [attr-defined]
+        document = self.get_root()
 
         # list of references
         indirect_references = [

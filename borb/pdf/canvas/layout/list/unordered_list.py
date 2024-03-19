@@ -89,16 +89,16 @@ class UnorderedList(List):
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
         # determine font_size from item
-        font_size: typing.Optional[Decimal] = None
+        font_size: Decimal = Decimal(12)
         try:
             font_size = item.get_font_size()
         except:
             pass
 
         # determine font_color from item
-        font_color: typing.Optional[Color] = None
+        font_color: Color = HexColor("000000")
         try:
-            font_color = item.get_font_color()
+            font_color = item.get_font_color()  # type: ignore[attr-defined]
         except:
             pass
 

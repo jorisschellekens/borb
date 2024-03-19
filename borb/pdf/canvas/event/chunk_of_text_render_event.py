@@ -113,18 +113,21 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
         """
         This function returns the bounding box of this ChunkOfTextRenderEvent,
         starting at the baseline (not at the descent)
+        :return:    the baseline bounding box of this ChunkOfTextRenderEvent
         """
         return self._baseline_bounding_box
 
     def get_font_size(self) -> Decimal:
         """
-        This function returns the font size
+        This function returns the font size of this ChunkOfTextRenderEvent,
+        :return:    the font size of this ChunkOfTextRenderEvent
         """
         return self._font_size
 
     def get_space_character_width_estimate_in_text_space(self) -> Decimal:
         """
         This function returns the width (in text space) of the space-character.
+        :return:    the space character width of this ChunkOfTextRenderEvent
         """
         return (
             self._space_character_width_estimate_in_user_space
@@ -135,12 +138,14 @@ class ChunkOfTextRenderEvent(Event, ChunkOfText):
     def get_space_character_width_estimate_in_user_space(self) -> Decimal:
         """
         This function returns the width (in user space) of the space-character.
+        :return:    the space character width of this ChunkOfTextRenderEvent
         """
         return self._space_character_width_estimate_in_user_space
 
     def split_on_glyphs(self) -> typing.List["ChunkOfTextRenderEvent"]:
         """
         This function splits this ChunkOfTextRenderEvent on every Glyph
+        :return:    this ChunkOfTextRenderEvent, split on glyphs (as a typing.List[ChunkOfTextRenderEvent])
         """
         chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
         x: Decimal = Decimal(0)
@@ -227,6 +232,9 @@ class LeftToRightComparator:
         This function compares two ChunkOfTextRenderEvent objects
         returning a negative number if obj0 occurs first in the (western) reading order,
         and a positive number otherwise.
+        :param obj0:    the first ChunkOfTextRenderEvent
+        :param obj1:    the second ChunkOfTextRenderEvent
+        :return:        a negative number if obj0 occurs first (in left-to-right, top-to-bottom reading), positive otherwise
         """
         # get baseline
         y0_round = obj0.get_baseline().y

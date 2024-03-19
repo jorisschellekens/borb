@@ -22,6 +22,10 @@ class Shapes(LayoutElement):
     It has convenience methods to calculate width and height, perform scaling, etc
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         shapes: typing.List[typing.Union[ConnectedShape, DisconnectedShape]],
@@ -76,7 +80,9 @@ class Shapes(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        self._shapes: typing.List[typing.Union[ConnectedShape, Shapes]] = shapes
+        self._shapes: typing.List[
+            typing.Union[ConnectedShape, DisconnectedShape]
+        ] = shapes
         for s in self._shapes:
             if line_width is not None:
                 s._line_width = line_width
@@ -101,7 +107,7 @@ class Shapes(LayoutElement):
             self.get_height(),
         )
 
-    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore[name-defined]
 
         # translate points to fit in box
         self.move_to(
@@ -164,47 +170,56 @@ class Shapes(LayoutElement):
 
     def get_height(self) -> Decimal:
         """
-        This function returns the height of this DisjointShape
+        This function returns the height of this Shape
+        :return:    the height
         """
         min_y: typing.Optional[Decimal] = None
         max_y: typing.Optional[Decimal] = None
         for cs in self._shapes:
             ys: typing.List[Decimal] = []
             if isinstance(cs, ConnectedShape):
-                ys: typing.List[Decimal] = [y for x, y in cs._points]
+                ys = [y for x, y in cs._points]
             if isinstance(cs, DisconnectedShape):
-                ys: typing.List[Decimal] = [src[1] for src, dst in cs._lines] + [
+                ys = [src[1] for src, dst in cs._lines] + [
                     dst[1] for src, dst in cs._lines
                 ]
             if min_y is None or min(ys) < min_y:
                 min_y = min(ys)
             if max_y is None or max(ys) > max_y:
                 max_y = max(ys)
+        assert min_y is not None
+        assert max_y is not None
         return max_y - min_y
 
     def get_width(self) -> Decimal:
         """
-        This function returns the width of this DisjointShape
+        This function returns the width of this Shape
+        :return:    the width
         """
         min_x: typing.Optional[Decimal] = None
         max_x: typing.Optional[Decimal] = None
         for cs in self._shapes:
             xs: typing.List[Decimal] = []
             if isinstance(cs, ConnectedShape):
-                xs: typing.List[Decimal] = [x for x, y in cs._points]
+                xs = [x for x, y in cs._points]
             if isinstance(cs, DisconnectedShape):
-                xs: typing.List[Decimal] = [src[0] for src, dst in cs._lines] + [
+                xs = [src[0] for src, dst in cs._lines] + [
                     dst[0] for src, dst in cs._lines
                 ]
             if min_x is None or min(xs) < min_x:
                 min_x = min(xs)
             if max_x is None or max(xs) > max_x:
                 max_x = max(xs)
+        assert min_x is not None
+        assert max_x is not None
         return max_x - min_x
 
     def move_to(self, lower_left_x: Decimal, lower_left_y: Decimal) -> "Shapes":
         """
-        This method translates this DisjointShape so its lower left corner aligns with the given coordinates
+        This method translates this Shape so its lower left corner aligns with the given coordinates
+        :param lower_left_x:    the desired lower left x-coordinate
+        :param lower_left_y:    the desired lower left y-coordinate
+        :return:    self
         """
         min_x: typing.Optional[Decimal] = None
         min_y: typing.Optional[Decimal] = None
@@ -212,13 +227,13 @@ class Shapes(LayoutElement):
             xs: typing.List[Decimal] = []
             ys: typing.List[Decimal] = []
             if isinstance(cs, ConnectedShape):
-                xs: typing.List[Decimal] = [x for x, y in cs._points]
-                ys: typing.List[Decimal] = [y for x, y in cs._points]
+                xs = [x for x, y in cs._points]
+                ys = [y for x, y in cs._points]
             if isinstance(cs, DisconnectedShape):
-                xs: typing.List[Decimal] = [src[0] for src, dst in cs._lines] + [
+                xs = [src[0] for src, dst in cs._lines] + [
                     dst[0] for src, dst in cs._lines
                 ]
-                ys: typing.List[Decimal] = [src[1] for src, dst in cs._lines] + [
+                ys = [src[1] for src, dst in cs._lines] + [
                     dst[1] for src, dst in cs._lines
                 ]
             if min_x is None or min(xs) < min_x:
@@ -256,6 +271,10 @@ class Shapes(LayoutElement):
     ) -> "Shapes":
         """
         This method scales this Shape down to fit a given max. width / height
+        :param max_width:               the maximum width
+        :param max_height:              the maximum height
+        :param preserve_aspect_ratio:   True if the aspect ratio should be preserved, False otherwise
+        :return:                        self
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()
@@ -290,6 +309,10 @@ class Shapes(LayoutElement):
     ) -> "Shapes":
         """
         This method scales this Shape up to fit a given max. width / height
+        :param max_width:               the maximum width
+        :param max_height:              the maximum height
+        :param preserve_aspect_ratio:   True if the aspect ratio should be preserved, False otherwise
+        :return:                        self
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()

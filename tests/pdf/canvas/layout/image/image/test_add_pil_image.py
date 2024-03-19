@@ -1,7 +1,7 @@
 import unittest
 
 import requests
-from PIL import Image as PILImage
+from PIL import Image as PILImageModule
 
 from borb.io.read.types import Decimal
 from borb.pdf.canvas.layout.image.image import Image
@@ -18,7 +18,7 @@ class TestAddPILImage(TestCase):
     """
 
     def _get_image_001(self):
-        im = PILImage.open(
+        im = PILImageModule.open(
             requests.get(
                 "https://images.unsplash.com/photo-1597826368522-9f4cb5a6ba48?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw",
                 stream=True,

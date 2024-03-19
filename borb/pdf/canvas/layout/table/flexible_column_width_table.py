@@ -148,11 +148,12 @@ class FlexibleColumnWidthTable(Table):
             sum_of_min_col_spans: Decimal = Decimal(
                 sum([min_column_widths[x] for x in column_indices])
             )
-            assert table_cell.get_min_width() is not None
-            if sum_of_min_col_spans < table_cell.get_min_width():
-                delta: Decimal = table_cell.get_min_width() - sum_of_min_col_spans
+            table_cell_min_width: typing.Optional[Decimal] = table_cell.get_min_width()
+            assert table_cell_min_width is not None
+            if sum_of_min_col_spans < table_cell_min_width:
+                delta00: Decimal = table_cell_min_width - sum_of_min_col_spans
                 min_column_widths = [
-                    w + (delta / table_cell.get_column_span())
+                    w + (delta00 / table_cell.get_column_span())
                     if i in column_indices
                     else w
                     for i, w in enumerate(min_column_widths)
@@ -161,11 +162,12 @@ class FlexibleColumnWidthTable(Table):
             sum_of_max_col_spans: Decimal = Decimal(
                 sum([max_column_widths[x] for x in column_indices])
             )
-            assert table_cell.get_max_width() is not None
-            if sum_of_max_col_spans < table_cell.get_max_width():
-                delta = table_cell.get_max_width() - sum_of_max_col_spans
+            table_cell_max_width: typing.Optional[Decimal] = table_cell.get_max_width()
+            assert table_cell_max_width is not None
+            if sum_of_max_col_spans < table_cell_max_width:
+                delta01 = table_cell_max_width - sum_of_max_col_spans
                 max_column_widths = [
-                    w + (delta / table_cell.get_column_span())
+                    w + (delta01 / table_cell.get_column_span())
                     if i in column_indices
                     else w
                     for i, w in enumerate(max_column_widths)
@@ -252,7 +254,7 @@ class FlexibleColumnWidthTable(Table):
             # do a second pass, this time with the right vertical alignment
             # now that we know the tallest element (and thus the row height)
             for e in [x for x in self.get_cells_at_row(r) if x.get_row_span() == 1]:
-                grid_x: int = min([p[1] for p in e.get_table_coordinates()])
+                grid_x: int = min([p[1] for p in e.get_table_coordinates()])  # type: ignore[no-redef]
                 if e.get_layout_element()._vertical_alignment == Alignment.TOP:
                     continue
                 e.get_layout_box(
@@ -273,17 +275,23 @@ class FlexibleColumnWidthTable(Table):
         for table_cell in [
             x for x in self.get_cells_at_column(col) if x.get_column_span() == 1
         ]:
-            if table_cell.get_max_width() is None:
+            table_cell_max_width: typing.Optional[Decimal] = table_cell.get_max_width()
+            table_cell_preferred_width: typing.Optional[
+                Decimal
+            ] = table_cell.get_preferred_width()
+            if table_cell_max_width is None:
                 widths.append(Decimal(2048))
                 continue
-            if table_cell.get_preferred_width() is None:
-                widths.append(table_cell.get_max_width())
+            assert table_cell_max_width is not None
+            if table_cell_preferred_width is None:
+                widths.append(table_cell_max_width)
                 continue
-            if table_cell.get_preferred_width() < table_cell.get_max_width():
-                widths.append(table_cell.get_preferred_width())
+            assert table_cell_preferred_width is not None
+            if table_cell_preferred_width < table_cell_max_width:
+                widths.append(table_cell_preferred_width)
                 continue
             # default
-            widths.append(table_cell.get_max_width())
+            widths.append(table_cell_max_width)
 
         # exception
         if len(widths) == 0:
@@ -297,20 +305,23 @@ class FlexibleColumnWidthTable(Table):
         for table_cell in [
             x for x in self.get_cells_at_column(col) if x.get_column_span() == 1
         ]:
-            if table_cell.get_min_width() is None:
+            table_cell_min_width: typing.Optional[Decimal] = table_cell.get_min_width()
+            table_cell_preferred_width: typing.Optional[
+                Decimal
+            ] = table_cell.get_preferred_width()
+            if table_cell_min_width is None:
                 widths.append(Decimal(0))
                 continue
-            if table_cell.get_preferred_width() is None:
-                assert table_cell.get_min_width() is not None
-                widths.append(table_cell.get_min_width())
+            assert table_cell_min_width is not None
+            if table_cell_preferred_width is None:
+                widths.append(table_cell_min_width)
                 continue
-            if table_cell.get_preferred_width() > table_cell.get_min_width():
-                assert table_cell.get_preferred_width() is not None
-                widths.append(table_cell.get_preferred_width())
+            assert table_cell_preferred_width is not None
+            if table_cell_preferred_width > table_cell_min_width:
+                widths.append(table_cell_preferred_width)
                 continue
             # default
-            assert table_cell.get_min_width() is not None
-            widths.append(table_cell.get_min_width())
+            widths.append(table_cell_min_width)
 
         # exception
         if len(widths) == 0:

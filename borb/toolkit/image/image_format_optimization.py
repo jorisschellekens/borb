@@ -7,7 +7,7 @@ to fit their actual dimensions (ensuring they are not bigger than they need to b
 """
 import typing
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import Name
@@ -43,7 +43,7 @@ class ImageFormatOptimization(EventListener):
             self._render_image(event)
 
     def _render_image(self, image_render_event: "ImageRenderEvent"):
-        source_image: PILImage = image_render_event.get_image()  # type: ignore[valid-type]
+        source_image: PILImageModule.Image = image_render_event.get_image()  # type: ignore[valid-type]
 
         # get desired width/height
         w0: int = int(image_render_event.get_width())  # type: ignore [attr-defined]
@@ -69,7 +69,7 @@ class ImageFormatOptimization(EventListener):
 
         # resize
         if (w0 * h0) < (w1 * h1):
-            resized_image: PILImage = source_image.resize((w0, h0))  # type: ignore[attr-defined, valid-type]
+            resized_image: PILImageModule.Image = source_image.resize((w0, h0))  # type: ignore[attr-defined, valid-type]
             PDFObject.add_pdf_object_methods(resized_image)
             self._current_page["Resources"]["XObject"][resource_name] = resized_image
             resized_image.set_parent(self._current_page["Resources"]["XObject"][resource_name])  # type: ignore[attr-defined]

@@ -44,6 +44,10 @@ class TestPageHasEmptyResourceDictionary(TestCase):
 
     def test_resource_dictionary_is_empty(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as fh:
             doc = PDF.loads(fh)

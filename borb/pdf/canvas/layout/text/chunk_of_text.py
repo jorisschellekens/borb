@@ -133,7 +133,7 @@ class ChunkOfText(LayoutElement):
     def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed
         if "Resources" not in page:
-            page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
+            page[Name("Resources")] = Dictionary().set_parent(page)
         if "Font" not in page["Resources"]:
             page["Resources"][Name("Font")] = Dictionary()
 
@@ -257,17 +257,20 @@ class ChunkOfText(LayoutElement):
     def get_font(self) -> Font:
         """
         This function returns the Font of this LayoutElement
+        :return:    the Font
         """
         return self._font
 
     def get_font_color(self) -> Color:
         """
         This function returns the font Color of this LayoutElement
+        :return:    the font Color
         """
         return self._font_color
 
     def get_text(self) -> str:
         """
         This function returns the text of this LayoutElement
+        :return:    the text
         """
         return self._text

@@ -8,9 +8,9 @@ This class provides functions to extract a color palette (typing.List[Color]) fr
 import math
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
-from PIL.Image import Image as pImage
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.color.color import RGBColor
@@ -32,7 +32,8 @@ class ColorPaletteFromImage:
 
     @staticmethod
     def color_palette_from_image(
-        img: typing.Union[str, Path, bImage, pImage], limit: int = 4
+        img: typing.Union[str, pathlib.Path, bImage, PILImageModule.Image],
+        limit: int = 4,
     ):
         """
         This function calculates the color palette from an Image
@@ -44,16 +45,16 @@ class ColorPaletteFromImage:
         # convert everything to bImage
         if isinstance(img, str):
             img = bImage(img)
-        if isinstance(img, Path):
+        if isinstance(img, pathlib.Path):
             img = bImage(img)
-        if isinstance(img, pImage):
+        if isinstance(img, PILImageModule.Image):
             img = bImage(img)
         assert isinstance(img, bImage)
         img.force_load_image()
 
         # resize
-        assert isinstance(img.get_PIL_image(), pImage)
-        img_in: pImage = img.get_PIL_image()
+        assert isinstance(img.get_PIL_image(), PILImageModule.Image)
+        img_in: PILImageModule.Image = img.get_PIL_image()
         while img_in.width > 128 and img_in.height > 128:
             img_in = img_in.resize((img_in.width // 2, img_in.height // 2))
 

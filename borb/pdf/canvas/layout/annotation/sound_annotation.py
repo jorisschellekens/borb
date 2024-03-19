@@ -8,7 +8,7 @@ sound shall be played. The annotation shall behave like a text annotation in mos
 default, a speaker) to indicate that it represents a sound. Table 185 shows the annotation dictionary entries
 specific to this type of annotation. Sound objects are discussed in 13.3, “Sounds.”
 """
-from pathlib import Path
+import pathlib
 
 from borb.io.read.types import Boolean
 from borb.io.read.types import Decimal as bDecimal
@@ -88,7 +88,7 @@ class SoundAnnotation(Annotation):
     @staticmethod
     def _make_canonical_file_path(p: str) -> str:
         try:
-            return Path(p).as_uri()
+            return pathlib.Path(p).as_uri()
         except:
             return p
 

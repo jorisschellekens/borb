@@ -31,6 +31,8 @@ class ASCII85Decode:
     def decode(bytes_in: bytes) -> bytes:
         """
         Decodes data encoded in an ASCII base-85 representation
+        :param bytes_in:    the input bytes
+        :return:            the output bytes
         """
         exceptions_to_throw = []
 

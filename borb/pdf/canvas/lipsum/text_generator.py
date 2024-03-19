@@ -9,8 +9,7 @@ import random
 import re
 import typing
 import zlib
-from pathlib import Path
-
+import pathlib
 import requests
 
 
@@ -178,7 +177,7 @@ class TextGenerator:
         # return
         return "".join([x + " " for x in sentence_being_built])
 
-    def load(self, json_file: Path) -> "TextGenerator":
+    def load(self, json_file: pathlib.Path) -> "TextGenerator":
         """
         This function loads a TextGenerator from a (zipped) JSON file
         :param json_file:   the location where to load the (zipped) JSON

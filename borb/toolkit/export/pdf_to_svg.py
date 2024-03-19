@@ -7,10 +7,10 @@
 import base64
 import io
 import typing
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 from decimal import Decimal
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -44,7 +44,7 @@ class PDFToSVG(EventListener):
         self._default_page_height = default_page_height
         self._page: typing.Optional[Page] = None
         self._page_nr = Decimal(-1)
-        self._svg_per_page: typing.Dict[int, ET.Element] = {}
+        self._svg_per_page: typing.Dict[int, xml.etree.ElementTree.Element] = {}
 
     #
     # PRIVATE
@@ -54,13 +54,13 @@ class PDFToSVG(EventListener):
         self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
     ) -> None:
         # init svg image
-        ET.register_namespace("", "http://www.w3.org/2000/svg")
-        svg_element = ET.Element("svg")
+        xml.etree.ElementTree.register_namespace("", "http://www.w3.org/2000/svg")
+        svg_element = xml.etree.ElementTree.Element("svg")
         svg_element.set("xmlns:xlink", "http://www.w3.org/1999/xlink")
         svg_element.set("viewbox", "0 0 %d %d" % (page_width, page_height))
 
         # white background
-        rct_element = ET.Element("rect")
+        rct_element = xml.etree.ElementTree.Element("rect")
         rct_element.set("width", str(page_width))
         rct_element.set("height", str(page_height))
         rct_element.set("style", "fill:rgb(255, 255, 255);")
@@ -127,7 +127,7 @@ class PDFToSVG(EventListener):
         y: Decimal,
         image_width: Decimal,
         image_height: Decimal,
-        image: PILImage,  # type: ignore[valid-type]
+        image: PILImageModule.Image,  # type: ignore[valid-type]
     ):
         pass
 
@@ -138,7 +138,7 @@ class PDFToSVG(EventListener):
                 output.getvalue()
             ).decode("utf-8")
 
-        image_element = ET.Element("image")
+        image_element = xml.etree.ElementTree.Element("image")
         image_element.set("width", str(int(image_width)))
         image_element.set("height", str(int(image_height)))
         image_element.set("xlink:href", base64_image)
@@ -168,7 +168,7 @@ class PDFToSVG(EventListener):
         if len(text.strip()) == 0:
             return
 
-        text_element = ET.Element("text")
+        text_element = xml.etree.ElementTree.Element("text")
 
         # bold
         if bold:
@@ -211,11 +211,13 @@ class PDFToSVG(EventListener):
     #
 
     @staticmethod
-    def convert_pdf_to_svg(pdf: Document) -> typing.Dict[int, ET.Element]:
+    def convert_pdf_to_svg(
+        pdf: Document,
+    ) -> typing.Dict[int, xml.etree.ElementTree.Element]:
         """
-        This function converts a PDF to an SVG ET.Element
+        This function converts a PDF to an SVG xml.etree.ElementTree.Element
         """
-        image_of_each_page: typing.Dict[int, ET.Element] = {}
+        image_of_each_page: typing.Dict[int, xml.etree.ElementTree.Element] = {}
         number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
         for page_nr in range(0, number_of_pages):
             # get Page object
@@ -236,8 +238,8 @@ class PDFToSVG(EventListener):
         # return
         return image_of_each_page
 
-    def convert_to_svg(self) -> typing.Dict[int, ET.Element]:
+    def convert_to_svg(self) -> typing.Dict[int, xml.etree.ElementTree.Element]:
         """
-        This function returns the ET.Element for a given page_nr
+        This function returns the xml.etree.ElementTree.Element for a given page_nr
         """
         return self._svg_per_page

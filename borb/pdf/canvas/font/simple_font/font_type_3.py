@@ -61,6 +61,7 @@ class Type3Font(Type1Font):
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
+        :return:    the ascent
         """
         if "FontDescriptor" in self and "Ascent" in "FontDescriptor":
             return self["FontDescriptor"]["Ascent"]
@@ -73,6 +74,7 @@ class Type3Font(Type1Font):
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
+        :return:    the descent
         """
         if "FontDescriptor" in self and "Descent" in "FontDescriptor":
             return self["FontDescriptor"]["Descent"]

@@ -14,7 +14,7 @@ unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestCopyPage(TestCase):
-    def test_create_dummy_pdf_document(self):
+    def test_create_dummy_pdf(self):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
@@ -37,6 +37,8 @@ class TestCopyPage(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_copy_page_to_empty_pdf(self):
+        # create PDF
+        self.test_create_dummy_pdf()
 
         # attempt to store PDF
         doc: typing.Optional[Document] = None

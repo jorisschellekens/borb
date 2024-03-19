@@ -52,6 +52,9 @@ class TestWritePDFA1B(TestCase):
 
     def test_re_open_pdfa_1_b(self):
 
+        # create
+        self.test_write_pdf_a_1b()
+
         # attempt to re-open PDF
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             pdf = PDF.loads(in_file_handle)
@@ -65,6 +68,9 @@ class TestWritePDFA1B(TestCase):
         assert xmp.get_keywords() == "Keyword1 Keyword2 Keyword3"
 
     def test_re_save_pdf_a_1_b(self):
+
+        # create
+        self.test_re_open_pdfa_1_b()
 
         # attempt to re-open PDF
         with open(self.get_first_output_file(), "rb") as in_file_handle:

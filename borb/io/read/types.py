@@ -7,10 +7,9 @@ e.g. Boolean, CanvasOperatorName, Decimal, Dictionary, Element, Name, Stream, St
 """
 import copy
 import typing
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 from decimal import Decimal as oDecimal
-from math import ceil
-from math import floor
+import math
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.postfix.postfix_eval import PostScriptEval
@@ -120,7 +119,7 @@ class CanvasOperatorName(PDFObject):
     #
 
 
-class Decimal(PDFObject, oDecimal):  # type: ignore [no-redef]
+class Decimal(PDFObject, oDecimal):  # type: ignore[no-redef]
     """
     PDF provides two types of numeric objects: integer and real. Integer objects represent mathematical integers.
     Real objects represent mathematical real numbers. The range and precision of numbers may be limited by the
@@ -191,7 +190,7 @@ class Dictionary(PDFObject, dict):
     #
 
 
-class Element(PDFObject, ET.Element):
+class Element(PDFObject, xml.etree.ElementTree.Element):
     """
     An XML element.
 
@@ -253,20 +252,21 @@ class Function(Dictionary):
         return out
 
     def _get_sample(self, sample_number: int) -> typing.List[oDecimal]:
+        # fmt: off
         n: int = int(len(self["Range"]) / 2)
         bps: int = int(self["BitsPerSample"])
-        byte_start_index: int = floor((sample_number * bps * n) / 8)
-        byte_stop_index: int = min(
-            byte_start_index + ceil((n * bps) / 8), len(self["DecodedBytes"])
-        )
+        byte_start_index: int = math.floor((sample_number * bps * n) / 8)
+        byte_stop_index: int = min(byte_start_index + math.ceil((n * bps) / 8), len(self["DecodedBytes"]))
         bit_offset: int = (sample_number * bps * n) - byte_start_index * 8
+        # fmt: on
+
+        # fmt: off
         bytes_to_use: bytes = self["DecodedBytes"][byte_start_index:byte_stop_index]
-        byte_str: str = "".join([bin(x)[2:].zfill(8) for x in bytes_to_use])[
-            bit_offset : (bit_offset + n * bps)
-        ]
-        ys: typing.List[oDecimal] = [
-            Decimal(int(byte_str[i : i + bps], 2)) for i in range(0, len(byte_str), bps)
-        ]
+        byte_str: str = "".join([bin(x)[2:].zfill(8) for x in bytes_to_use])[bit_offset : (bit_offset + n * bps)]
+        ys: typing.List[oDecimal] = [Decimal(int(byte_str[i : i + bps], 2)) for i in range(0, len(byte_str), bps)]
+        # fmt: on
+
+        # return
         return ys
 
     def _get_sample_number(self, sample: typing.List[oDecimal]) -> typing.Optional[int]:
@@ -512,7 +512,7 @@ class Reference(PDFObject):
         index_in_parent_stream: typing.Optional[int] = None,
         byte_offset: typing.Optional[int] = None,
         is_in_use: bool = True,
-        document: typing.Optional["Document"] = None,  # type: ignore [name-defined]
+        document: typing.Optional["Document"] = None,  # type: ignore[name-defined]
     ):
         self.object_number = object_number
         self.generation_number = generation_number
@@ -600,7 +600,7 @@ class String(PDFObject):
     # CONSTRUCTOR
     #
 
-    def __init__(self, bts: typing.Union[bytes, str]):  # type: ignore [name-defined]
+    def __init__(self, bts: typing.Union[bytes, str]):  # type: ignore[name-defined]
         super().__init__()
         if isinstance(bts, str):
             self._text: str = bts
@@ -732,7 +732,7 @@ class HexadecimalString(String):
     THAN SIGN (3Eh)).
     """
 
-    def __init__(self, text: str, encoding: typing.Optional["Encoding"] = None):  # type: ignore [name-defined]
+    def __init__(self, text: str, encoding: typing.Optional["Encoding"] = None):  # type: ignore[name-defined]
         if len(text) % 2 == 1:
             text += "0"
         self.encoding = encoding

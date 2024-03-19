@@ -80,8 +80,9 @@ class AnyObjectTransformer(Transformer):
 
     def can_be_transformed(self, object_to_transform: AnyPDFType):
         """
-        This function returns True if the object to be transformed
-        can be transformed by this WriteBaseTransformer
+        This function returns True if the object to be transformed is a PDF Object
+        :param object:  the object to be transformed
+        :return:        True if the object is a PDF Object, False otherwise
         """
         return False
 
@@ -94,7 +95,10 @@ class AnyObjectTransformer(Transformer):
         ] = None,
     ):
         """
-        This method writes an (PDF) object to a byte stream
+        This function transforms a PDF Object into a byte stream
+        :param object_to_transform:     the PDF Object to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) PDF Object
         """
         if context is None:
             super().transform(

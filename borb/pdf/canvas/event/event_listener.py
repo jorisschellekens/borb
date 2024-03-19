@@ -36,5 +36,8 @@ class EventListener:
         """
         This method is called whenever a matching Event is fired from the Canvas.
         EventListeners can then choose to act on those Event objects.
+        :param event:   the Event that triggered this method
+                        e.g. "a Page has started", "a piece of text is being rendered", etc
+        :return:        None
         """
         pass

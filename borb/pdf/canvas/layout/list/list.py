@@ -86,23 +86,23 @@ class List(LayoutElement):
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
         # determine font_size from item
-        font_size: typing.Optional[Decimal] = None
+        font_size: Decimal = Decimal(12)
         try:
             font_size = item.get_font_size()
         except:
             pass
 
         # determine font_color from item
-        font_color: typing.Optional[Color] = None
+        font_color: Color = HexColor("000000")
         try:
-            font_color = item.get_font_color()
+            font_color = item.get_font_color()  # type: ignore[attr-defined]
         except:
             pass
 
         return ChunkOfText(
             text="●",
-            font_size=font_size or Decimal(12),
-            font_color=font_color or HexColor("000000"),
+            font_size=font_size,
+            font_color=font_color,
             font="Zapfdingbats",
             padding_right=font_size,
             vertical_alignment=Alignment.TOP,
@@ -119,6 +119,7 @@ class List(LayoutElement):
             )
             if self._bullet_margin is None or bullet_width > self._bullet_margin:
                 self._bullet_margin = bullet_width
+        assert self._bullet_margin is not None
 
         previous_layout_box: typing.Optional[Rectangle] = None
         min_x: typing.Optional[Decimal] = None
@@ -189,6 +190,7 @@ class List(LayoutElement):
         )
 
     def _paint_content_box(self, page: "Page", available_space: Rectangle) -> None:
+        assert self._bullet_margin is not None
         previous_layout_box: typing.Optional[Rectangle] = None
         for index, e in enumerate(self._items):
             if previous_layout_box is None:
@@ -229,6 +231,8 @@ class List(LayoutElement):
     def add(self, element: LayoutElement) -> "List":
         """
         This function adds a LayoutElement to this List
+        :param element:     the element to be added
+        :return:            self
         """
         if self._font_size is None:
             self._font_size = element.get_font_size()

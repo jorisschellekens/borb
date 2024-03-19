@@ -19,8 +19,8 @@ import datetime
 import json
 import logging
 import typing
-from hashlib import sha256
-from pathlib import Path
+import hashlib
+import pathlib
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
@@ -58,8 +58,10 @@ class License:
 
     @staticmethod
     def _create_key_pair(
-        private_key_file: Path = Path(__file__).parent / "private_key.pem",
-        public_key_file: Path = Path(__file__).parent / "public_key.pem",
+        private_key_file: pathlib.Path = pathlib.Path(__file__).parent
+        / "private_key.pem",
+        public_key_file: pathlib.Path = pathlib.Path(__file__).parent
+        / "public_key.pem",
     ):
         # Generate a new RSA private key
         private_key = rsa.generate_private_key(
@@ -90,8 +92,8 @@ class License:
     @staticmethod
     def _create_license(
         company: str = "",
-        output_file: Path = Path(__file__).parent / "license_key.json",
-        private_key_file: Path = Path(
+        output_file: pathlib.Path = pathlib.Path(__file__).parent / "license_key.json",
+        private_key_file: pathlib.Path = pathlib.Path(
             "/home/joris/Code/borb-license-key-private/borb-license-key-private-001.pem"
         ),
         user_id: str = UUID.get(),
@@ -111,7 +113,9 @@ class License:
 
         # convert to bytes
         license_bytes: bytes = json.dumps(license_dict, indent=3).encode()
-        license_bytes_unsigned_hash: bytes = sha256(license_bytes).hexdigest().encode()
+        license_bytes_unsigned_hash: bytes = (
+            hashlib.sha256(license_bytes).hexdigest().encode()
+        )
 
         # Load private key from a file
         with open(private_key_file, "rb") as f:
@@ -133,7 +137,9 @@ class License:
             fh.write(json.dumps(license_dict, indent=3))
 
     @staticmethod
-    def _datetime_str_to_ms(s: str) -> typing.Optional[int]:
+    def _datetime_str_to_ms(s: typing.Optional[str]) -> typing.Optional[int]:
+        if s is None:
+            return None
         try:
             return int(
                 datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timestamp() * 1000
@@ -179,7 +185,7 @@ class License:
         return License._LICENSE_VALID_UNTIL_IN_MS
 
     @staticmethod
-    def register(path_to_license_file: Path) -> bool:
+    def register(path_to_license_file: pathlib.Path) -> bool:
         """
         This function (attempts to) register a license (specified as a Path)
         :param path_to_license_file:    the license to register
@@ -212,10 +218,10 @@ class License:
         license_bytes1: bytes = json.dumps(json_dict, indent=3).encode()
 
         # hash
-        license_hash_1: bytes = sha256(license_bytes1).hexdigest().encode()
+        license_hash_1: bytes = hashlib.sha256(license_bytes1).hexdigest().encode()
 
         # Load public key(s) from a file
-        key_dir: Path = Path(__file__).parent / "public_keys"
+        key_dir: pathlib.Path = pathlib.Path(__file__).parent / "public_keys"
         assert key_dir.exists()
         assert key_dir.is_dir()
         for public_key_file in [key_dir / "public_key_001.pem"]:
@@ -283,7 +289,7 @@ if __name__ == "__main__":
     # noinspection PyProtectedMember
     License._create_license(
         company="borb (EZ)",
-        output_file=Path("/home/joris/Code/borb-dev/tests/license/artifacts_test_register_license/license.json"),
+        output_file=pathlib.Path("/home/joris/Code/borb-dev/tests/license/artifacts_test_register_license/license.json"),
         user_id="Joris Schellekens",
     )
     # fmt: on

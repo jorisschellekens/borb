@@ -63,6 +63,9 @@ class TestExtractRegularExpression(TestCase):
 
     def test_match_regular_expression(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
         # attempt to read PDF
         doc: typing.Optional[Document] = None
         l = RegularExpressionTextExtraction("ad minim veniam")

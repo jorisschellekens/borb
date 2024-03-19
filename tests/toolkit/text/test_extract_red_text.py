@@ -71,11 +71,14 @@ class TestExtractRedText(TestCase):
 
     def test_extract_red_paragraph(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc = None
         l0 = FontColorFilter(HexColor("ff0000"), Decimal(0.1))
         l1 = SimpleTextExtraction()
         l0.add_listener(l1)
-
         with open(self.get_first_output_file(), "rb") as file_handle:
             doc = PDF.loads(file_handle, [l0])
 

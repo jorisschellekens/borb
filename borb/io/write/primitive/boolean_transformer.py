@@ -29,11 +29,13 @@ class BooleanTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents a Boolean object
+        This function returns True if the object to be transformed is a Boolean
+        :param object:  the object to be transformed
+        :return:        True if the object is a Boolean, False otherwise
         """
-        return isinstance(any, Boolean)
+        return isinstance(object, Boolean)
 
     def transform(
         self,
@@ -41,7 +43,10 @@ class BooleanTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a Boolean to a byte stream
+        This function transforms a Boolean Object into a byte stream
+        :param object_to_transform:     the Boolean Object to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Boolean Object
         """
         # fmt: off
         assert context is not None, "context must be defined to write bool objects"

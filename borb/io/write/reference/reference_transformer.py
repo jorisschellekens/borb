@@ -29,11 +29,13 @@ class ReferenceTransform(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents a Reference
+        This function returns True if the object to be transformed is a Reference
+        :param object:  the object to be transformed
+        :return:        True if the object is a Reference, False otherwise
         """
-        return isinstance(any, Reference)
+        return isinstance(object, Reference)
 
     def transform(
         self,
@@ -41,7 +43,10 @@ class ReferenceTransform(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a Reference to a byte stream
+        This function transforms a Reference Object into a byte stream
+        :param object_to_transform:     the Reference Object to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Reference Object
         """
         assert (
             context is not None

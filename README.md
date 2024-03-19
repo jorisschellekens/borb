@@ -8,6 +8,8 @@
 [![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
 [![Number of Tests : 751](https://img.shields.io/badge/number%20of%20tests-751-green)]()
 [![Python : 3.8 | 3.9 | 3.10 ](https://img.shields.io/badge/python-3.8%20&#124;%203.9%20&#124;%203.10-green)]()
+[![Type Checking : 98%](https://img.shields.io/badge/type%20checking-98%25-green)]()
+
 
 [![Downloads](https://pepy.tech/badge/borb)](https://pepy.tech/project/borb)
 [![Downloads](https://pepy.tech/badge/borb/month)](https://pepy.tech/project/borb)

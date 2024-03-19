@@ -10,11 +10,11 @@ import io
 import typing
 import zlib
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
-from fontTools.agl import toUnicode  # type: ignore [import]
-from fontTools.pens.boundsPen import BoundsPen  # type: ignore [import]
-from fontTools.ttLib import TTFont  # type: ignore [import]
+from fontTools.agl import toUnicode  # type: ignore[import]
+from fontTools.pens.boundsPen import BoundsPen  # type: ignore[import]
+from fontTools.ttLib import TTFont  # type: ignore[import]
 
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import Dictionary
@@ -137,7 +137,7 @@ class TrueTypeFont(Type1Font):
             widths_array[-1].append(bDecimal(glyph_width))
         return widths_array
 
-    def _empty_copy(self) -> "Font":  # type: ignore [name-defined]
+    def _empty_copy(self) -> "Font":  # type: ignore[name-defined]
         return TrueTypeFont()
 
     @staticmethod
@@ -189,7 +189,7 @@ class TrueTypeFont(Type1Font):
         if cap_height is None:
             cap_height = bDecimal(840)
 
-        font_descriptor[Name("FontBBox")] = List().set_is_inline(True)  # type: ignore[attr-defined]
+        font_descriptor[Name("FontBBox")] = List().set_is_inline(True)
         font_descriptor["FontBBox"].append(bDecimal(min_x))
         font_descriptor["FontBBox"].append(bDecimal(min_y))
         font_descriptor["FontBBox"].append(bDecimal(max_x))
@@ -269,18 +269,20 @@ class TrueTypeFont(Type1Font):
 
     @staticmethod
     def true_type_font_from_file(
-        font_file: typing.Union[Path, bytes],
+        font_file: typing.Union[pathlib.Path, bytes],
     ) -> typing.Union["TrueTypeFont", "Type0Font"]:
         """
         This function returns the PDF TrueTypeFont object for a given TTF file
+        :param font_file:   the font file (as a Path, or bytes)
+        :return:            a TrueTypeFont or Type0Font
         """
-        if isinstance(font_file, Path):
+        if isinstance(font_file, pathlib.Path):
             assert font_file.exists()
             assert font_file.name.endswith(".ttf")
 
         # read bytes if needed
         font_file_bytes: typing.Optional[bytes] = None
-        if isinstance(font_file, Path):
+        if isinstance(font_file, pathlib.Path):
             with open(font_file, "rb") as ffh:
                 font_file_bytes = ffh.read()
             assert font_file_bytes

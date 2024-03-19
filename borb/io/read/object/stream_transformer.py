@@ -38,7 +38,9 @@ class StreamTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a Stream object
+        This function returns True if the object to be transformed is a Stream
+        :param object:  the object to be transformed
+        :return:        True if the object is a Stream, False otherwise
         """
         return isinstance(object, Stream)
 
@@ -50,7 +52,12 @@ class StreamTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a Stream from a byte stream
+        This function transforms a PDF Stream
+        :param object_to_transform:     the Stream to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a Stream Object
         """
         assert isinstance(object_to_transform, Stream)
         object_to_transform.set_parent(parent_object)

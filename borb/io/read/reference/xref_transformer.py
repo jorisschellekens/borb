@@ -58,8 +58,8 @@ class XREFTransformer(Transformer):
     def _check_header(context: ReadTransformerState) -> None:
         """
         This function checks whether the first bytes in the document contain the text %PDF
-        :param context: the TransformerContext (containing the io source)
-        :type context: TransformerContext
+        :param context:     the ReadTransformerState (containing the io source)
+        :return:            None
         """
         assert context is not None
         assert context.source is not None
@@ -78,10 +78,9 @@ class XREFTransformer(Transformer):
     ) -> None:
         """
         This function attempts to read the XREF table, first as plaintext, then as a stream
-        :param context:         the TransformerContext (containing the io source)
-        :type context:          TransformerContext
+        :param context:         the ReadTransformerState (containing the io source)
         :param initial_offset:  the initial byte offset at which to read (set to None to allow this method to find the XREF)
-        :type initial_offset:   int
+        :return:                None
         """
         assert context is not None
         assert context.root_object is not None
@@ -99,7 +98,7 @@ class XREFTransformer(Transformer):
         try:
             most_recent_xref = PlainTextXREF()
             assert most_recent_xref is not None
-            most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+            most_recent_xref.set_parent(doc)
             most_recent_xref.read(src, tok, initial_offset)
             if "XRef" in doc:
                 doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
@@ -114,7 +113,7 @@ class XREFTransformer(Transformer):
             try:
                 most_recent_xref = StreamXREF()
                 assert most_recent_xref is not None
-                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+                most_recent_xref.set_parent(doc)
                 most_recent_xref.read(src, tok, initial_offset)
                 if "XRef" in doc:
                     doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
@@ -129,7 +128,7 @@ class XREFTransformer(Transformer):
             try:
                 most_recent_xref = RebuiltXREF()
                 assert most_recent_xref is not None
-                most_recent_xref.set_parent(doc)  # type: ignore [attr-defined]
+                most_recent_xref.set_parent(doc)
                 most_recent_xref.read(src, tok)
                 if "XRef" in doc:
                     doc[Name("XRef")] = doc["XRef"].merge(most_recent_xref)
@@ -196,7 +195,9 @@ class XREFTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a cross-reference table
+        This function returns True if the object to be transformed is an XREF table
+        :param object:  the object to be transformed
+        :return:        True if the object is a XREF table, False otherwise
         """
         return isinstance(object, io.IOBase)
 
@@ -208,7 +209,12 @@ class XREFTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a cross-reference table from a byte stream
+        This function transforms a PDF cross-reference table into an XREF Object
+        :param object_to_transform:     the PDF cross-reference to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        an XREF Object
         """
 
         # update context
@@ -224,7 +230,7 @@ class XREFTransformer(Transformer):
         # add listener(s)
         for l in event_listeners:
             # noinspection PyProtectedMember
-            l._event_occurred(BeginDocumentEvent())  # type: ignore [attr-defined]
+            l._event_occurred(BeginDocumentEvent())  # type: ignore[attr-defined]
 
         # remove prefix
         XREFTransformer._remove_prefix(context)
@@ -285,8 +291,12 @@ class XREFTransformer(Transformer):
 
             # check password
             # fmt: off
-            is_owner_pwd: bool = context.security_handler.authenticate_owner_password(context.password.encode())
-            is_user_pwd: bool = context.security_handler.authenticate_user_password(context.password.encode())
+            assert context.security_handler is not None
+            is_owner_pwd: bool = False
+            is_user_pwd: bool = False
+            if context.password is not None:
+                is_owner_pwd = context.security_handler.authenticate_owner_password(context.password.encode())
+                is_user_pwd = context.security_handler.authenticate_user_password(context.password.encode())
             # fmt: on
             if not is_user_pwd and not is_owner_pwd:
                 assert False, "Unable to open PDF, incorrect password."
@@ -309,7 +319,7 @@ class XREFTransformer(Transformer):
         # notify
         for l in event_listeners:
             # noinspection PyProtectedMember
-            l._event_occurred(EndDocumentEvent())  # type: ignore [attr-defined]
+            l._event_occurred(EndDocumentEvent())  # type: ignore[attr-defined]
 
         # return
         return context.root_object

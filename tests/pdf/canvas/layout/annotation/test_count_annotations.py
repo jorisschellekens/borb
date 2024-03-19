@@ -52,6 +52,7 @@ class TestCountAnnotations(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_count_annotations(self):
+        self.test_add_circle_annotations()
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)

@@ -15,18 +15,17 @@ unless they are masked by an object declared with the same name.
 import typing
 from decimal import Decimal
 
+from borb.pdf.canvas.layout.emoji.emoji import Emoji
+from borb.pdf.canvas.layout.image.image import Image
+from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
+from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.layout.text.heterogeneous_paragraph import HeterogeneousParagraph
 from borb.pdf.canvas.layout.text.heterogeneous_paragraph import LineBreakChunk
-
-try:
-    import black  # type: ignore[import]
-except ImportError as ex:
-    pass
 
 
 class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
@@ -91,6 +90,8 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
 
         # format string using black
         try:
+            import black  # type: ignore[import]
+
             text = black.format_str(text, mode=black.Mode())
         except:
             pass
@@ -126,7 +127,7 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
             respect_newlines_in_text=True,
             vertical_alignment=vertical_alignment,
         )
-        self._font = font
+        self._font: Font = StandardType1Font(font) if isinstance(font, str) else font
         self._font_color = font_color
         self._font_size = font_size
 
@@ -139,10 +140,12 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
         default_font_color: Color,
         font_size: Decimal,
         text: str,
-    ) -> typing.List[ChunkOfText]:
+    ) -> typing.List[typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]]:
 
         # convert to typing.List[ChunkOfText]
-        chunks: typing.List[ChunkOfText] = []
+        chunks: typing.List[
+            typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]
+        ] = []
 
         # go over entire text
         tokens_and_colors: typing.List[
@@ -207,11 +210,13 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
         This function returns the tokens it found in the input, and their corresponding Color
         :return:    tokens and Colors (as typing.List[typing.Tuple[str, Color]])
         """
-        from pygments import lexers
 
         number_of_tokens: int = 0
         number_of_default_tokens: int = 0
         tokens_and_colors: typing.List[typing.Tuple[str, Color]] = []
+
+        from pygments import lexers  # type: ignore[import]
+
         for ttype, value in lexers.get_lexer_by_name("python").get_tokens(text):
             number_of_tokens += 1
             token_color: typing.Optional[Color] = self._get_token_color_by_type(ttype)
@@ -222,11 +227,11 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
         return tokens_and_colors
 
     @staticmethod
-    def _get_token_color_by_type(token_type: "_TokenType") -> typing.Optional[Color]:
+    def _get_token_color_by_type(token_type: "_TokenType") -> typing.Optional[Color]:  # type: ignore[name-defined]
         if token_type is None:
             return None
         color_and_style: typing.Optional[
-            str
+            Color
         ] = CodeBlockWithSyntaxHighlighting.LIGHT_THEME.get(str(token_type))
         while color_and_style is None and token_type.parent is not None:
             token_type = token_type.parent

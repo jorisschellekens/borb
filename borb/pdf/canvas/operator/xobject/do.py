@@ -10,7 +10,7 @@ Type entry, if present, is XObject.
 import io
 import typing
 
-import PIL  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Dictionary
@@ -44,6 +44,10 @@ class Do(CanvasOperator):
     ) -> None:
         """
         Invoke the Do operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
 
         # get Page
@@ -55,7 +59,7 @@ class Do(CanvasOperator):
         xobject = canvas_stream_processor.get_resource("XObject", str(operands[0]))
 
         # render Image objects
-        if isinstance(xobject, PIL.Image.Image):
+        if isinstance(xobject, PILImageModule.Image):
             for l in event_listeners:
                 # noinspection PyProtectedMember
                 l._event_occurred(

@@ -38,7 +38,9 @@ class StringTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a String or Hexadecimal String or a Name
+        This function returns True if the object to be transformed is a string
+        :param object:  the object to be transformed
+        :return:        True if the object is a string, False otherwise
         """
         return (
             isinstance(object, String)
@@ -54,8 +56,14 @@ class StringTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a String from a byte stream
+        This function transforms a PDF string into a (borb) Python String
+        :param object_to_transform:     the string to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a String Object
         """
+
         # set parent
         assert (
             isinstance(object_to_transform, String)

@@ -31,6 +31,10 @@ class SetCharacterSpacing(CanvasOperator):
     ) -> None:
         """
         Invoke the Tc operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         assert isinstance(operands[0], Decimal), "Operand 0 of Tc must be a Decimal"
         canvas = canvas_stream_processor.get_canvas()

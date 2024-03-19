@@ -6,8 +6,8 @@ This implementation of EventListener keeps track of which space on a Page is ava
 """
 import typing
 from decimal import Decimal
-from math import ceil
-from pathlib import Path
+import math
+import pathlib
 
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 from borb.pdf.canvas.event.chunk_of_text_render_event import ChunkOfTextRenderEvent
@@ -37,8 +37,8 @@ class FreeSpaceFinder(EventListener):
             self._page_height = page_height
             self._resolution = resolution
             self._availability: typing.List[typing.List[bool]] = [
-                [True for _ in range(0, ceil(self._page_width / self._resolution))]
-                for _ in range(0, ceil(self._page_height / self._resolution))
+                [True for _ in range(0, math.ceil(self._page_width / self._resolution))]
+                for _ in range(0, math.ceil(self._page_height / self._resolution))
             ]
 
         def get_free_space(
@@ -160,17 +160,17 @@ class FreeSpaceFinder(EventListener):
 
     @staticmethod
     def find_free_space_for_page(
-        file: Path, page_number: int, desired_rectangle: Rectangle
+        file: pathlib.Path, page_number: int, desired_rectangle: Rectangle
     ) -> typing.Optional[Rectangle]:
         """
-        This function returns the nearest (euclidean distance)
+        This function returns the nearest (Euclidean distance)
         empty Rectangle that is at least as wide and tall as the
         desired Rectangle.
         If no such Rectangle exists, this method returns None.
         """
         l: FreeSpaceFinder = FreeSpaceFinder()
         with open(file, "rb") as pdf_file_handle:
-            PDF.loads(pdf_file_handle, [l])  # type: ignore [arg-type]
+            PDF.loads(pdf_file_handle, [l])  # type: ignore[arg-type]
         return l.get_free_space_for_page(page_number, desired_rectangle)
 
     def get_free_space_for_page(

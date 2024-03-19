@@ -40,7 +40,7 @@ class ReadTransformerState:
         self.indirect_reference_chain: typing.Set[Reference] = set()
         self.password: typing.Optional[str] = password
         self.root_object = root_object
-        self.security_handler: typing.Optional[typing.Any] = None
+        self.security_handler: typing.Optional["StandardSecurityHandler"] = None  # type: ignore[name-defined]
         self.source = source
         self.tokenizer = tokenizer
 

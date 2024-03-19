@@ -67,6 +67,10 @@ class AppendCubicBezierCurve1(CanvasOperator):
     ) -> None:
         """
         Invokes the c operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         assert isinstance(
             operands[0], Decimal
@@ -125,6 +129,10 @@ class AppendCubicBezierCurve2(CanvasOperator):
     ) -> None:
         """
         Invokes the v operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         assert isinstance(
             operands[0], Decimal
@@ -176,6 +184,10 @@ class AppendCubicBezierCurve3(CanvasOperator):
     ) -> None:
         """
         Invokes the y operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         assert isinstance(
             operands[0], Decimal

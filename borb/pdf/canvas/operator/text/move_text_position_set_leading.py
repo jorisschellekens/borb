@@ -36,6 +36,10 @@ class MoveTextPositionSetLeading(CanvasOperator):
     ) -> None:
         """
         Invoke the TD operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         assert isinstance(operands[0], Decimal), "Operand 0 of TD must be a Decimal"
         assert isinstance(operands[1], Decimal), "Operand 1 of TD must be a Decimal"

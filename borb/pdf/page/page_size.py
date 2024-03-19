@@ -22,7 +22,7 @@ class PageSize(enum.Enum):
     A2_LANDSCAPE = (Decimal(1684), Decimal(1190))
     A2_PORTRAIT = (Decimal(1190), Decimal(1684))
 
-    A3_LANDSCAPE = (Decimal(842), Decimal(1190))
+    A3_LANDSCAPE = (Decimal(1190), Decimal(842))
     A3_PORTRAIT = (Decimal(842), Decimal(1190))
 
     A4_LANDSCAPE = (Decimal(842), Decimal(595))

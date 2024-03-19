@@ -334,6 +334,8 @@ class Table(LayoutElement):
         """
         This function adds the given LayoutElement to this Table.
         This function returns self.
+        :param layout_element:  the LayoutElement to be added
+        :return:                self
         """
 
         # embed LayoutElement in TableCell (if needed)
@@ -396,10 +398,11 @@ class Table(LayoutElement):
         """
         This function colors the Table with the classic "zebra stripes"
         e.a. one color for all even rows, and a contrasting color for the odd rows.
+        This function returns self.
         :param even_row_color:      the Color to be used for even rows
         :param odd_row_color:       the Color to be used for odd rows
         :param header_row_color:    the Color to be used for the header row, if None is specified the even_row_color will be used
-        This function returns self.
+        :return:                    self
         """
         if header_row_color is None:
             header_row_color = even_row_color
@@ -457,6 +460,7 @@ class Table(LayoutElement):
         """
         This method sets the border(s) on all TableCell objects in this Table
         except for the borders that form the outside edge of the Table
+        :return:    self
         """
         for tc in self._content:
             tc._border_top = True
@@ -476,6 +480,7 @@ class Table(LayoutElement):
     def no_borders(self) -> "Table":
         """
         This method unsets the border(s) on all TableCell objects in this Table
+        :return:    self
         """
         self.set_borders_on_all_cells(False, False, False, False)
         return self
@@ -484,6 +489,7 @@ class Table(LayoutElement):
         """
         This method unsets the border(s) on all TableCell objects in this Table
         except for the borders that form the outside edge of the Table
+        :return:    self
         """
         self.no_borders()
         for c in self.get_cells_at_row(0):
@@ -528,6 +534,8 @@ class Table(LayoutElement):
     def set_background_color_on_all_cells(self, background_color: Color) -> "Table":
         """
         This method sets the background Color on all TableCell objects in this Table
+        :param background_color:    the background Color
+        :return:    self
         """
         for e in self._content:
             e._background_color = background_color
@@ -536,6 +544,8 @@ class Table(LayoutElement):
     def set_border_color_on_all_cells(self, border_color: Color) -> "Table":
         """
         This method sets the border color on all TableCell objects in this Table
+        :param border_color:    the border Color
+        :return:                self
         """
         for e in self._content:
             e._border_color = border_color
@@ -544,6 +554,8 @@ class Table(LayoutElement):
     def set_border_width_on_all_cells(self, border_width: Decimal) -> "Table":
         """
         This method sets the border width on all TableCell objects in this Table
+        :param border_width:    the border width
+        :return:                self
         """
         assert border_width >= 0
         for e in self._content:
@@ -559,6 +571,11 @@ class Table(LayoutElement):
     ) -> "Table":
         """
         This method sets the border(s) on all TableCell objects in this Table
+        :param border_top:          True if a top border should be drawn, False otherwise
+        :param border_right:        True if a right border should be drawn, False otherwise
+        :param border_bottom:       True if a bottom border should be drawn, False otherwise
+        :param border_left:         True if a left border should be drawn, False otherwise
+        :return:                    self
         """
         for e in self._content:
             e._border_top = border_top
@@ -576,6 +593,11 @@ class Table(LayoutElement):
     ) -> "Table":
         """
         This method sets the padding on all TableCell objects in this Table
+        :param padding_top:     the top padding
+        :param padding_right:   the right padding
+        :param padding_bottom:  the bottom padding
+        :param padding_left:    the left padding
+        :return:                self
         """
         for e in self._content:
             e._padding_top = padding_top

@@ -65,12 +65,16 @@ class CopyCommandOperator(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore[name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore[name-defined]
     ) -> None:
         """
         Invokes this CanvasOperator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may need to be notified
+        :return:                            None
         """
 
         # execute command

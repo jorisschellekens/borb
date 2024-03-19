@@ -9,7 +9,7 @@ import logging
 import typing
 from decimal import Decimal
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
@@ -81,7 +81,7 @@ class Chart(Image):
             border_width=border_width,
             height=height,
             horizontal_alignment=horizontal_alignment,
-            image=PILImage.open(byte_buffer),
+            image=PILImageModule.open(byte_buffer),
             margin_bottom=margin_bottom if margin_bottom is not None else Decimal(5),
             margin_left=margin_left if margin_left is not None else Decimal(5),
             margin_right=margin_right if margin_right is not None else Decimal(5),

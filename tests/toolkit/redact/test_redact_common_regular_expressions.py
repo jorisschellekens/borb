@@ -66,6 +66,9 @@ class TestRedactCommonRegularExpressions(TestCase):
 
     def test_add_redact_annotation_for_email(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
         # attempt to read PDF
         doc = None
         ls = [
@@ -90,7 +93,10 @@ class TestRedactCommonRegularExpressions(TestCase):
             PDF.dumps(out_file_handle, doc)
 
     def test_apply_redact_annotation_for_email(self):
+        # create PDF
+        self.test_add_redact_annotation_for_email()
 
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_second_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)

@@ -11,7 +11,7 @@ from tests.test_case import TestCase
 
 
 class TestCountPages(TestCase):
-    def test_create_dummy_pdf_document(self):
+    def test_create_dummy_pdf(self):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
@@ -34,6 +34,10 @@ class TestCountPages(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_get_page_number(self):
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as file_handle:
             doc = PDF.loads(file_handle)
@@ -45,6 +49,10 @@ class TestCountPages(TestCase):
             assert page_nr == i
 
     def test_get_number_of_pages(self):
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as file_handle:
             doc = PDF.loads(file_handle)

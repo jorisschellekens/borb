@@ -79,26 +79,29 @@ class OrderedList(List):
     def _get_bullet_layout_element(
         self, item_index: int, item: LayoutElement
     ) -> LayoutElement:
+
         # determine font_size from item
-        font_size: typing.Optional[Decimal] = None
+        font_size: Decimal = Decimal(12)
         try:
             font_size = item.get_font_size()
+            if font_size == Decimal(0):
+                font_size = Decimal(12)
         except:
             pass
 
         # determine font_color from item
-        font_color: typing.Optional[Color] = None
+        font_color: Color = HexColor("000000")
         try:
-            font_color = item.get_font_color()
+            font_color = item.get_font_color()  # type: ignore[attr-defined]
         except:
             pass
 
         # return
         return ChunkOfText(
             text=str(item_index + 1) + ".",
-            font_size=font_size or Decimal(12),
+            font_size=font_size,
             padding_right=Decimal(12),
-            font_color=font_color or HexColor("000000"),
+            font_color=font_color,
             horizontal_alignment=Alignment.RIGHT,
         )
 

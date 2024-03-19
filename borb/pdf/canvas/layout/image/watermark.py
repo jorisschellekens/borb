@@ -19,9 +19,9 @@ In another instance, identifying codes can be encoded as a digital watermark for
 """
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
-import PIL
+from PIL import Image as PILImageModule
 from PIL import ImageDraw
 from PIL import ImageFont
 
@@ -127,11 +127,11 @@ class Watermark(Image):
     #
 
     @staticmethod
-    def _get_font_path() -> typing.Optional[Path]:
+    def _get_font_path() -> typing.Optional[pathlib.Path]:
 
         # find system font(s)
-        potential_fonts: typing.List[Path] = [
-            Path("/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf")
+        potential_fonts: typing.List[pathlib.Path] = [
+            pathlib.Path("/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf")
         ]
         for x in potential_fonts:
             if x.exists():
@@ -149,25 +149,29 @@ class Watermark(Image):
         height: typing.Optional[Decimal] = None,
         transparency: float = 0.5,
         width: typing.Optional[Decimal] = None,
-    ) -> PIL.Image:
+    ) -> PILImageModule.Image:
 
         # build new PIL.Image to hold text
         W: int = int(width or Decimal(595))
         H: int = int(height or Decimal(842))
-        text_img: PIL.Image = PIL.Image.new(mode="RGBA", size=(W, H))
+        text_img: PILImageModule.Image = PILImageModule.new(mode="RGBA", size=(W, H))
 
         # convert transparency to hex
         transparency_hex: str = hex(255 - int(transparency * 255))[2:]
 
         # draw text
-        draw: PIL.ImageDraw = PIL.ImageDraw.ImageDraw(text_img)
-        font_path: typing.Optional[Path] = Watermark._get_font_path()
+        draw: ImageDraw.ImageDraw = ImageDraw.ImageDraw(text_img)
+        font_path: typing.Optional[pathlib.Path] = Watermark._get_font_path()
+        font: typing.Optional[
+            typing.Union[ImageFont.FreeTypeFont, ImageFont.ImageFont]
+        ] = None
         if font_path is not None:
             font = ImageFont.truetype(str(font_path), size=font_size)
             scale_factor: float = 1
         else:
             font = ImageFont.load_default()
             scale_factor = (font_size / font.getsize("x")[0]) * 0.6
+        assert font is not None
 
         draw.text(
             xy=(W // 2, H // 2),
@@ -178,9 +182,7 @@ class Watermark(Image):
         )
 
         # rotate
-        text_img: PIL.Image = text_img.rotate(
-            angle=angle_in_degrees, center=(W // 2, H // 2)
-        )
+        text_img = text_img.rotate(angle=angle_in_degrees, center=(W // 2, H // 2))
 
         # determine minimum dimensions of the (rotated) image
         min_x: int = W
@@ -205,10 +207,10 @@ class Watermark(Image):
         if scale_factor != 1:
             w = int(w * scale_factor)
             h = int(h * scale_factor)
-            text_img = text_img.resize(size=(w, h), resample=PIL.Image.LANCZOS)
+            text_img = text_img.resize(size=(w, h), resample=PILImageModule.LANCZOS)
 
         # create background_img
-        background_img = PIL.Image.new(mode="RGBA", size=(W, H))
+        background_img = PILImageModule.new(mode="RGBA", size=(W, H))
 
         # paste text_img on background_img
         for y in range(0, h):
@@ -226,8 +228,14 @@ class Watermark(Image):
     #
 
     def paint(self, page: "Page", available_space: Rectangle) -> None:
-        W: int = int(page.get_page_info().get_width())
-        H: int = int(page.get_page_info().get_height())
+        """
+        This method paints this LayoutElement on the given Page, in the available space
+        :param page:                the Page on which to paint this LayoutElement
+        :param available_space:     the available space (as a Rectangle) on which to paint this LayoutElement
+        :return:                    None
+        """
+        W: int = int(page.get_page_info().get_width() or Decimal(595))
+        H: int = int(page.get_page_info().get_height() or Decimal(842))
         w: int = self.get_PIL_image().width
         h: int = self.get_PIL_image().height
         super().paint(

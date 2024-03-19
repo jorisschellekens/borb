@@ -30,11 +30,13 @@ class StringTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents a String or HexadecimalString
+        This function returns True if the object to be transformed is a String
+        :param object:  the object to be transformed
+        :return:        True if the object is a String (or HexadecimalString), False otherwise
         """
-        return isinstance(any, String) or isinstance(any, HexadecimalString)
+        return isinstance(object, String) or isinstance(object, HexadecimalString)
 
     def transform(
         self,
@@ -42,7 +44,10 @@ class StringTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a String object to a byte stream
+        This function transforms a String Object into a byte stream
+        :param object_to_transform:     the String Object to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) String Object
         """
         assert (
             context is not None

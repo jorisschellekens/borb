@@ -40,6 +40,7 @@ class SetColorStroking(CanvasOperator):
         """
         This function returns the number of operands for the SCN operator.
         The number of operands and their interpretation depends on the colour space.
+        :return:    the number of operands
         """
         stroke_color_space = self._canvas.graphics_state.stroke_color_space
         if stroke_color_space == "DeviceCMYK":
@@ -65,6 +66,10 @@ class SetColorStroking(CanvasOperator):
     ) -> None:
         """
         Invoke the SCN operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         canvas = canvas_stream_processor.get_canvas()
         stroke_color_space = canvas.graphics_state.stroke_color_space

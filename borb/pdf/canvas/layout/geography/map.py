@@ -10,8 +10,9 @@ Many techniques have been developed to present world maps that address diverse t
 import json
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
+from borb.pdf.canvas.layout.shape.disconnected_shape import DisconnectedShape
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.layout.layout_element import Alignment
@@ -28,9 +29,13 @@ class Map(Shapes):
     Many techniques have been developed to present world maps that address diverse technical and aesthetic goals.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
-        geojson_file: Path,
+        geojson_file: pathlib.Path,
         name_key: str,
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
@@ -86,7 +91,7 @@ class Map(Shapes):
                     )
 
         # all shapes
-        all_shapes: typing.List[ConnectedShape] = []
+        all_shapes: typing.List[typing.Union[ConnectedShape, DisconnectedShape]] = []
         for css in self._iso3_code_to_shapes.values():
             all_shapes.extend(css)
 
@@ -119,6 +124,14 @@ class Map(Shapes):
             vertical_alignment=vertical_alignment,
         )
 
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     def pop(self, key: str) -> "Map":
         """
         This function removes a key (associated with one or multiple ConnectedShape or DisconnectedShape objects)
@@ -126,7 +139,7 @@ class Map(Shapes):
         :return:        self
         """
         shapes_to_remove: typing.Optional[
-            ConnectedShape
+            typing.List[ConnectedShape]
         ] = self._iso3_code_to_shapes.get(key, None)
         if shapes_to_remove is not None:
             self._iso3_code_to_shapes.pop(key)
@@ -141,7 +154,7 @@ class Map(Shapes):
         """
         This function sets the fill Color of all countries, or a specific country (specified by its ISO3 code)
         :param fill_color:          the fill Color
-        :param key:   an ISO3 country code, or None
+        :param key:                 an ISO3 country code, or None
         :return:                    self
         """
         if key is None:
@@ -162,7 +175,7 @@ class Map(Shapes):
         """
         This function sets the line width of all countries, or a specific country (specified by its ISO3 code)
         :param line_width:          the line width
-        :param key:   an ISO3 country code, or None
+        :param key:                 an ISO3 country code, or None
         :return:                    self
         """
         if key is None:
@@ -182,7 +195,7 @@ class Map(Shapes):
         """
         This function sets the stroke Color of all countries, or a specific country (specified by its ISO3 code)
         :param stroke_color:        the stroke Color
-        :param key:   an ISO3 country code, or None
+        :param key:                 an ISO3 country code, or None
         :return:                    self
         """
         if key is None:

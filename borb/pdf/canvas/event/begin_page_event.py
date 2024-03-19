@@ -31,5 +31,6 @@ class BeginPageEvent(Event):
     def get_page(self) -> Page:
         """
         This function returns the Page that triggered this BeginPageEvent
+        :return:    the Page
         """
         return self._page

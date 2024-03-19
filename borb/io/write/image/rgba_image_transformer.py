@@ -8,7 +8,7 @@ import itertools
 import typing
 import zlib
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
@@ -33,7 +33,7 @@ class RGBAImageTransformer(Transformer):
     #
 
     @staticmethod
-    def _construct_smask_stream(image: PILImage.Image) -> Stream:
+    def _construct_smask_stream(image: PILImageModule.Image) -> Stream:
         # get raw <alpha> bytes
         w: int = image.width
         h: int = image.height
@@ -56,7 +56,7 @@ class RGBAImageTransformer(Transformer):
         return out
 
     @staticmethod
-    def _rgb_array(image: PILImage.Image) -> bytes:
+    def _rgb_array(image: PILImageModule.Image) -> bytes:
         s0 = [(r, g, b) for r, g, b, a in image.getdata()]
         s1 = [x for x in itertools.chain(*s0)]
         return bytes(s1)
@@ -65,11 +65,13 @@ class RGBAImageTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents an Image object
+        This function returns True if the object to be transformed is an Image
+        :param object:  the object to be transformed
+        :return:        True if the object is an Image, False otherwise
         """
-        return isinstance(any, PILImage.Image) and any.mode == "RGBA"
+        return isinstance(object, PILImageModule.Image) and object.mode == "RGBA"
 
     def transform(
         self,
@@ -77,12 +79,16 @@ class RGBAImageTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes an Image to a byte stream
+        This function transforms an Image into a byte stream
+        :param object_to_transform:     the Image to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Image
         """
+
         # fmt: off
         assert (context is not None), "context must be defined in order to write Image objects."
         assert context.destination is not None, "context.destination must be defined in order to write Image objects."
-        assert isinstance(object_to_transform, PILImage.Image), "object_to_transform must be of type PILImage.Image"
+        assert isinstance(object_to_transform, PILImageModule.Image), "object_to_transform must be of type PILImage.Image"
         # fmt: on
 
         # construct SMask entry
@@ -111,7 +117,7 @@ class RGBAImageTransformer(Transformer):
         out_value[Name("Width")] = bDecimal(object_to_transform.width)
 
         # copy reference
-        out_value.set_reference(  # type: ignore [attr-defined]
+        out_value.set_reference(  # type: ignore[attr-defined]
             object_to_transform.get_reference()  # type: ignore [union-attr]
         )
 

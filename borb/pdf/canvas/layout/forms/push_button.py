@@ -149,7 +149,7 @@ class PushButton(FormField):
         self._widget_dictionary[Name("AP")][Name("N")] = Stream()
         self._widget_dictionary[Name("AP")][Name("N")][Name("Type")] = Name("XObject")
         self._widget_dictionary[Name("AP")][Name("N")][Name("Subtype")] = Name("Form")
-        self._widget_dictionary[Name("AP")][Name("N")][Name("BBox")] = List().set_is_inline(True)   # type: ignore[attr-defined]
+        self._widget_dictionary[Name("AP")][Name("N")][Name("BBox")] = List().set_is_inline(True)
         for _ in range(0, 4):
             self._widget_dictionary[Name("AP")][Name("N")][Name("BBox")].append(bDecimal(0))
         self._widget_dictionary[Name("AP")][Name("N")][Name("DecodedBytes")] = b"/Tx BMC EMC"
@@ -157,7 +157,7 @@ class PushButton(FormField):
         self._widget_dictionary[Name("AP")][Name("N")][Name("Filter")] = Name("FlateDecode")
         self._widget_dictionary[Name("AP")][Name("N")][Name("Length")] = bDecimal(len(self._widget_dictionary[Name("AP")][Name("N")][Name("Bytes")]))
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")] = Dictionary()
-        self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")] = List().set_is_inline(True) # type: ignore [attr-defined]
+        self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")] = List().set_is_inline(True)
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")].append(Name("PDF"))
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("ProcSet")].append(Name("Text"))
         self._widget_dictionary[Name("AP")][Name("N")][Name("Resources")][Name("Font")] = Dictionary()
@@ -176,12 +176,12 @@ class PushButton(FormField):
         self._widget_dictionary[Name("Ff")] = bDecimal(65536)
         self._widget_dictionary[Name("FT")] = Name("Btn")
         self._widget_dictionary[Name("MK")] = Dictionary()
-        self._widget_dictionary[Name("MK")][Name("BC")] = List().set_is_inline(True)    # type: ignore [attr-defined]
-        self._widget_dictionary[Name("MK")][Name("BG")] = List().set_is_inline(True)    # type: ignore [attr-defined]
+        self._widget_dictionary[Name("MK")][Name("BC")] = List().set_is_inline(True)
+        self._widget_dictionary[Name("MK")][Name("BG")] = List().set_is_inline(True)
         self._widget_dictionary[Name("MK")][Name("CA")] = String("")
         self._widget_dictionary[Name("P")] = catalog
         self._widget_dictionary[Name("Q")] = bDecimal(1)
-        self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)              # type: ignore [attr-defined]
+        self._widget_dictionary[Name("Rect")] = List().set_is_inline(True)
         for _ in range(0, 4):
             self._widget_dictionary[Name("Rect")].append(bDecimal(0))
         self._widget_dictionary[Name("Subtype")] = Name("Widget")
@@ -308,7 +308,7 @@ class JavaScriptPushButton(PushButton):
         # build JavaScript stream object
         # fmt: off
         javascript_stream = Stream()
-        javascript_stream.set_is_unique(True)     # type: ignore [attr-defined]
+        javascript_stream.set_is_unique(True)
         javascript_stream[Name("Type")] = Name("JavaScript")
         javascript_stream[Name("DecodedBytes")] = bytes(self._javascript, "latin1")
         javascript_stream[Name("Bytes")] = zlib.compress(javascript_stream[Name("DecodedBytes")], 9)

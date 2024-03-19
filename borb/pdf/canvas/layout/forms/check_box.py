@@ -98,6 +98,7 @@ class CheckBox(FormField):
     #
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
+        assert self._font_size is not None
         line_height: Decimal = self._font_size * Decimal(1.2)
         return Rectangle(
             available_space.x,
@@ -167,7 +168,7 @@ class CheckBox(FormField):
         # widget appearance dictionary
         widget_appearance_dictionary: Dictionary = Dictionary()
         widget_appearance_dictionary[Name("N")] = widget_normal_appearance
-        widget_appearance_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
+        widget_appearance_dictionary.set_is_unique(True)
 
         # get Catalog
         catalog: Dictionary = root["XRef"]["Trailer"]["Root"]  # type: ignore [attr-defined]
@@ -178,7 +179,7 @@ class CheckBox(FormField):
         # widget dictionary
         # fmt: off
         self._widget_dictionary = Dictionary()
-        self._widget_dictionary.set_is_unique(True)  # type: ignore [attr-defined]
+        self._widget_dictionary.set_is_unique(True)
         self._widget_dictionary[Name("AP")] = widget_appearance_dictionary
         self._widget_dictionary[Name("AS")] = Name("Off")
         self._widget_dictionary[Name("DA")] = String(
@@ -198,7 +199,7 @@ class CheckBox(FormField):
         self._widget_dictionary[Name("MK")] = Dictionary()
         self._widget_dictionary[Name("MK")][Name("CA")] = bString("8")
         self._widget_dictionary[Name("P")] = catalog
-        self._widget_dictionary[Name("Rect")] = bList().set_is_inline(True)  # type: ignore [attr-defined]
+        self._widget_dictionary[Name("Rect")] = bList().set_is_inline(True)
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x))
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.y + layout_box.height - self._font_size - 2))
         self._widget_dictionary["Rect"].append(bDecimal(layout_box.x + layout_box.width))
@@ -228,6 +229,7 @@ class CheckBox(FormField):
 
         # set location
         # fmt: off
+        assert self._font_size is not None
         line_height: Decimal = self._font_size * Decimal(1.2)
         if self._widget_dictionary is not None:
             self._widget_dictionary["Rect"][0] = bDecimal(content_box.get_x())

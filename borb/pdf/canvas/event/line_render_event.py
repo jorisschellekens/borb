@@ -34,5 +34,6 @@ class LineRenderEvent(Event):
     def get_line_segment(self) -> LineSegment:
         """
         Get the LineSegment that was constructed through various path-painting operators
+        :return:    the LineSegment
         """
         return self._line_segment

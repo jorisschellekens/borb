@@ -65,12 +65,9 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         top_y: typing.Optional[Decimal] = None
         best_row_for_split: typing.Optional[int] = None
         for i in range(0, layout_element.get_number_of_rows()):
-            prev_layout_box: typing.Optional[
-                Rectangle
-            ] = layout_element.get_cells_at_row(i)[0].get_previous_layout_box()
-            if top_y is None or top_y < (
-                prev_layout_box.get_y() + prev_layout_box.get_height()
-            ):
+            prev_layout_box: typing.Optional[Rectangle] = layout_element.get_cells_at_row(i)[0].get_previous_layout_box()
+            assert prev_layout_box is not None
+            if top_y is None or top_y < (prev_layout_box.get_y() + prev_layout_box.get_height()):
                 top_y = prev_layout_box.get_y() + prev_layout_box.get_height()
             assert top_y is not None
             if any([x.get_row_span() != 1 for x in layout_element.get_cells_at_row(i)]):
@@ -121,9 +118,12 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
     # PUBLIC
     #
 
-    def add(self, layout_element: LayoutElement) -> "PageLayout":  # type: ignore [name-defined]
+    def add(self, layout_element: LayoutElement) -> "PageLayout":  # type: ignore[name-defined]
         """
         This method adds a `LayoutElement` to the current `Page`.
+        The specific implementation of `PageLayout` should decide where the `LayoutElement` will be placed.
+        :param layout_element:  the LayoutElement to be added
+        :return:                self
         """
 
         # anything that isn't a Table gets added as expected
@@ -145,14 +145,13 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         max_y: Decimal = page_height - self._margin_top
         min_y: Decimal = self._margin_bottom
         if self._previous_layout_element is not None:
-            max_y = self._previous_layout_element.get_previous_layout_box().get_y()
-            max_y -= super()._calculate_leading_between(
-                self._previous_layout_element, layout_element
-            )
-            max_y -= max(
-                self._previous_layout_element.get_margin_bottom(),
-                layout_element.get_margin_top(),
-            )
+            # fmt: off
+            previous_layout_box: typing.Optional[Rectangle] = self._previous_layout_element.get_previous_layout_box()
+            assert previous_layout_box is not None
+            max_y = previous_layout_box.get_y()
+            max_y -= super()._calculate_leading_between(self._previous_layout_element, layout_element)
+            max_y -= max(self._previous_layout_element.get_margin_bottom(), layout_element.get_margin_top())
+            # fmt: off
 
         # calculate the height available for the LayoutElement
         available_height: Decimal = max_y - min_y

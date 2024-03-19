@@ -71,7 +71,7 @@ class LinkAnnotation(Annotation):
         # be displayed when the annotation is activated (see 12.3.2,
         # “Destinations”).
         destination = List()
-        destination.set_is_inline(True)  # type: ignore [attr-defined]
+        destination.set_is_inline(True)
         destination.append(bDecimal(page))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:

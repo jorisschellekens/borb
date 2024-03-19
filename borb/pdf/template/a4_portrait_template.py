@@ -7,7 +7,7 @@ This class represents a PDF document
 import io
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
 # fmt: off
 from borb.pdf.canvas.color.color import Color
@@ -154,9 +154,9 @@ class A4PortraitTemplate:
         available_height: typing.Optional[Decimal] = Decimal(200)
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot  # type: ignore[import]
 
-        fig, ax = plt.subplots()
+        fig, ax = matplotlib.pyplot.subplots()
         ax.bar(labels, xs)
         if y_label is not None:
             ax.set_ylabel(y_label)
@@ -165,7 +165,7 @@ class A4PortraitTemplate:
         # add Chart
         self._layout.add(
             Chart(
-                plt,
+                matplotlib.pyplot,
                 width=available_width,
                 height=available_height,
                 horizontal_alignment=Alignment.CENTERED,
@@ -322,14 +322,14 @@ class A4PortraitTemplate:
 
     def add_image(
         self,
-        url_or_path: typing.Union[str, Path],
+        url_or_path: typing.Union[str, pathlib.Path],
     ) -> "A4PortraitTemplate":
         """
         This function adds an image to this A4PortraitTemplate
         :param url_or_path:     the url (str) or path (Path) of the Image
         :return:                self
         """
-        assert isinstance(url_or_path, str) or isinstance(url_or_path, Path)
+        assert isinstance(url_or_path, str) or isinstance(url_or_path, pathlib.Path)
         available_width: typing.Optional[Decimal] = None
         available_height: typing.Optional[Decimal] = None
         if isinstance(self._layout, TwoColumnLayout):
@@ -345,7 +345,7 @@ class A4PortraitTemplate:
                 height=available_height,
                 width=available_width,
             )
-        if isinstance(url_or_path, Path):
+        if isinstance(url_or_path, pathlib.Path):
             assert url_or_path.exists()
             image_to_add = Image(
                 url_or_path,
@@ -353,12 +353,12 @@ class A4PortraitTemplate:
                 height=available_height,
                 width=available_width,
             )
-        w: float = image_to_add.get_PIL_image().width
-        h: float = image_to_add.get_PIL_image().height
+        w: Decimal = Decimal(image_to_add.get_PIL_image().width)
+        h: Decimal = Decimal(image_to_add.get_PIL_image().height)
         if w > available_width or h > available_height:
-            scale: float = max(w / available_width, h / available_height)
-            image_to_add._width = round(w / scale)
-            image_to_add._height = round(h / scale)
+            scale: Decimal = max(w / available_width, h / available_height)
+            image_to_add._width = Decimal(round(w / scale))
+            image_to_add._height = Decimal(round(h / scale))
         self._layout.add(image_to_add)
         return self
 
@@ -366,7 +366,7 @@ class A4PortraitTemplate:
         self,
         xs: typing.List[typing.List[float]],
         ys: typing.List[typing.List[float]],
-        labels: typing.Optional[typing.List[str]] = None,
+        labels: typing.List[str],
         x_label: typing.Optional[str] = None,
         y_label: typing.Optional[str] = None,
     ) -> "A4PortraitTemplate":
@@ -384,9 +384,9 @@ class A4PortraitTemplate:
         available_height: typing.Optional[Decimal] = Decimal(200)
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots(layout="constrained")
+        fig, ax = matplotlib.pyplot.subplots(layout="constrained")
         ax.set(xlabel=x_label or "", ylabel=y_label or "", title="")
         for x, y, label in zip(xs, ys, labels):
             ax.plot(x, y, label=label)
@@ -395,7 +395,7 @@ class A4PortraitTemplate:
         # add Chart
         self._layout.add(
             Chart(
-                plt,
+                matplotlib.pyplot,
                 width=available_width,
                 height=available_height,
                 horizontal_alignment=Alignment.CENTERED,
@@ -411,8 +411,8 @@ class A4PortraitTemplate:
         :param marked_countries:    the countries that ought to be marked
         :return:                    self
         """
-        available_width: typing.Optional[Decimal] = Decimal(200)
-        available_height: typing.Optional[Decimal] = Decimal(200)
+        available_width: Decimal = Decimal(200)
+        available_height: Decimal = Decimal(200)
         m: MapOfEurope = MapOfEurope(
             horizontal_alignment=Alignment.CENTERED,
             fill_color=A4PortraitTemplate.LIGHT_GRAY_COLOR,
@@ -434,8 +434,8 @@ class A4PortraitTemplate:
         :param marked_countries:    the states that ought to be marked
         :return:                    self
         """
-        available_width: typing.Optional[Decimal] = Decimal(200)
-        available_height: typing.Optional[Decimal] = Decimal(200)
+        available_width: Decimal = Decimal(200)
+        available_height: Decimal = Decimal(200)
         m: MapOfTheUnitedStates = MapOfTheUnitedStates(
             horizontal_alignment=Alignment.CENTERED,
             fill_color=A4PortraitTemplate.LIGHT_GRAY_COLOR,
@@ -465,8 +465,8 @@ class A4PortraitTemplate:
         :param marked_countries:    the states that ought to be marked
         :return:                    self
         """
-        available_width: typing.Optional[Decimal] = Decimal(200)
-        available_height: typing.Optional[Decimal] = Decimal(200)
+        available_width: Decimal = Decimal(200)
+        available_height: Decimal = Decimal(200)
         m: MapOfTheUnitedStates = MapOfTheUnitedStates(
             horizontal_alignment=Alignment.CENTERED,
             fill_color=A4PortraitTemplate.LIGHT_GRAY_COLOR,
@@ -488,8 +488,8 @@ class A4PortraitTemplate:
         :param marked_countries:    the countries that ought to be marked
         :return:                    self
         """
-        available_width: typing.Optional[Decimal] = Decimal(200)
-        available_height: typing.Optional[Decimal] = Decimal(200)
+        available_width: Decimal = Decimal(200)
+        available_height: Decimal = Decimal(200)
         m: MapOfTheWorld = MapOfTheWorld(
             horizontal_alignment=Alignment.CENTERED,
             fill_color=A4PortraitTemplate.LIGHT_GRAY_COLOR,
@@ -555,9 +555,9 @@ class A4PortraitTemplate:
         available_height: typing.Optional[Decimal] = Decimal(200)
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots(layout="constrained")
+        fig, ax = matplotlib.pyplot.subplots(layout="constrained")
         should_explode = tuple(
             [1 if xs[i] == max(xs) else 0 for i in range(0, len(xs))]
         )
@@ -567,7 +567,7 @@ class A4PortraitTemplate:
         # add Chart
         self._layout.add(
             Chart(
-                plt,
+                matplotlib.pyplot,
                 width=available_width,
                 height=available_height,
                 horizontal_alignment=Alignment.CENTERED,
@@ -742,7 +742,9 @@ class A4PortraitTemplate:
         buffer.seek(0)
         return buffer.getvalue()
 
-    def save(self, path_or_str: typing.Union[str, Path]) -> "A4PortraitTemplate":
+    def save(
+        self, path_or_str: typing.Union[str, pathlib.Path]
+    ) -> "A4PortraitTemplate":
         """
         This function stores this A4PortraitTemplate at the given path
         :param path_or_str:     the path or str representing the location at which to store this A4PortraitTemplate

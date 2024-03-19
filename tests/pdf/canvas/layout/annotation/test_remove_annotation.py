@@ -52,6 +52,7 @@ class TestCountAnnotations(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_count_annotations_before_removal(self):
+        self.test_add_circle_annotations()
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
@@ -63,6 +64,7 @@ class TestCountAnnotations(TestCase):
         assert len(page["Annots"]) == 9
 
     def test_remove_annotation(self):
+        self.test_add_circle_annotations()
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
         page: Page = doc.get_page(0)
@@ -78,6 +80,7 @@ class TestCountAnnotations(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_count_annotations_after_removal(self):
+        self.test_remove_annotation()
         doc: typing.Optional[Document] = None
         with open(self.get_second_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)

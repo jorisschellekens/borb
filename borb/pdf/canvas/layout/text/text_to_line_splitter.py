@@ -20,6 +20,18 @@ class TextToLineSplitter:
 
     HYPHENATION_CHARACTER: str = "-"
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def text_to_lines(
         bounding_box: Rectangle,
@@ -51,9 +63,9 @@ class TextToLineSplitter:
         # handle newlines
         if "\n" in text:
             if respect_newlines:
-                out: typing.List[str] = []
+                tmp01: typing.List[str] = []
                 for partial_text in text.split("\n"):
-                    out.extend(
+                    tmp01.extend(
                         TextToLineSplitter.text_to_lines(
                             bounding_box=bounding_box,
                             font=font,
@@ -63,7 +75,7 @@ class TextToLineSplitter:
                             respect_newlines=False,
                         )
                     )
-                return out
+                return tmp01
             else:
                 text = re.sub("\n+", " ", text)
 
@@ -128,11 +140,12 @@ class TextToLineSplitter:
             # IF free_line_width > 0
             # THEN  add more tokens from "tokens" until text just fits
             #       update estimate
+            future_tokens_in_line: typing.List[str] = []
+            max_hyphenation_index: typing.Optional[int] = None
+            token_parts: typing.List[str] = []
             if free_line_width > 0:
                 while free_line_width > 0 and len(tokens) > 0:
-                    future_tokens_in_line: typing.List[str] = tokens_in_line + [
-                        tokens[0]
-                    ]
+                    future_tokens_in_line = tokens_in_line + [tokens[0]]
 
                     # calculate (future) free_line_width
                     # fmt: off
@@ -151,16 +164,16 @@ class TextToLineSplitter:
                 #
                 # hyphenation (AFTER UNDERFLOW)
                 #
-
+                future_tokens_in_line = []
+                max_hyphenation_index = None
+                token_parts = []
                 if hyphenation is not None and len(tokens) > 0:
-                    token_parts: typing.List[str] = hyphenation.hyphenate(
-                        tokens[0]
-                    ).split(chr(173))
-                    max_hyphenation_index: typing.Optional[int] = None
+                    token_parts = hyphenation.hyphenate(tokens[0]).split(chr(173))
+                    max_hyphenation_index = None
 
                     # check every split
                     for i in range(1, len(token_parts) + 1):
-                        future_tokens_in_line: typing.List[str] = (
+                        future_tokens_in_line = (
                             tokens_in_line
                             + token_parts[:i]
                             + [TextToLineSplitter.HYPHENATION_CHARACTER]
@@ -222,14 +235,12 @@ class TextToLineSplitter:
                 #
 
                 if hyphenation is not None and len(tokens) > 0:
-                    token_parts: typing.List[str] = hyphenation.hyphenate(
-                        tokens[0]
-                    ).split(chr(173))
-                    max_hyphenation_index: typing.Optional[int] = None
+                    token_parts = hyphenation.hyphenate(tokens[0]).split(chr(173))
+                    max_hyphenation_index = None
 
                     # check every split
                     for i in range(1, len(token_parts) + 1):
-                        future_tokens_in_line: typing.List[str] = (
+                        future_tokens_in_line = (
                             tokens_in_line
                             + token_parts[:i]
                             + [TextToLineSplitter.HYPHENATION_CHARACTER]

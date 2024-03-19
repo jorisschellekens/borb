@@ -67,11 +67,13 @@ class TestCopyCircleAnnotation(TestCase):
     def test_copy_circle_annotations_to_empty_document(self):
 
         # open document 1
+        self.test_add_circle_annotations()
         doc_in_a = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc_in_a = PDF.loads(in_file_handle)
 
         # open document 2
+        self.test_create_empty_document()
         doc_in_b = None
         with open(self.get_second_output_file(), "rb") as in_file_handle:
             doc_in_b = PDF.loads(in_file_handle)

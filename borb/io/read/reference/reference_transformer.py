@@ -48,7 +48,9 @@ class ReferenceTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a Reference
+        This function returns True if the object to be transformed is a Reference
+        :param object:  the object to be transformed
+        :return:        True if the object is a Reference, False otherwise
         """
         return isinstance(object, Reference)
 
@@ -60,8 +62,14 @@ class ReferenceTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a Reference from a byte stream
+        This function transforms a PDF reference into a (borb) Reference Object
+        :param object_to_transform:     the reference to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a Reference Object
         """
+
         # fmt: off
         assert isinstance(object_to_transform, Reference), "object_to_transform must be of type Reference"
         # fmt: on
@@ -132,6 +140,7 @@ class ReferenceTransformer(Transformer):
                 object_number=matching_ref_in_xref.parent_stream_object_number,
                 generation_number=matching_ref_in_xref.generation_number,
             )
+            assert parent_reference.object_number is not None
             xref._cache[parent_reference.object_number] = self.transform(
                 parent_reference,
                 parent_object=parent_object,

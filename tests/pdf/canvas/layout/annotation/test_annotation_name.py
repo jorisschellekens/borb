@@ -50,6 +50,7 @@ class TestAnnotationName(TestCase):
     def test_annotation_names(self):
 
         # attempt to re-open PDF
+        self.test_add_circle_annotations()
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)

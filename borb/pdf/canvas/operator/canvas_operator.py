@@ -39,12 +39,14 @@ class CanvasOperator:
     def get_number_of_operands(self) -> int:
         """
         Return the number of operands for this CanvasOperator
+        :return:    the number of operands
         """
         return self._number_of_operands
 
     def get_text(self) -> str:
         """
         Return the str that invokes this CanvasOperator
+        :return:    the str
         """
         return self._text
 
@@ -56,5 +58,9 @@ class CanvasOperator:
     ) -> None:
         """
         Invokes this CanvasOperator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may need to be notified
+        :return:                            None
         """
         pass

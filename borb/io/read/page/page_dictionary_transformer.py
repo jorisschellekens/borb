@@ -46,7 +46,9 @@ class PageDictionaryTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a /Page Dictionary
+        This function returns True if the object to be transformed is a /Page Dictionary
+        :param object:  the object to be transformed
+        :return:        True if the object is a /Page Dictionary, False otherwise
         """
         return (
             isinstance(object, typing.Dict)
@@ -62,7 +64,12 @@ class PageDictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a /Page Dictionary from a byte stream
+        This function transforms an /Page Dictionary into a Page Object
+        :param object_to_transform:     the /Page Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a Page Object
         """
 
         if isinstance(object_to_transform, Page):
@@ -110,7 +117,7 @@ class PageDictionaryTransformer(Transformer):
             page_out["Contents"][Name("Filter")] = Name("FlateDecode")
             page_out["Contents"][Name("Length")] = bDecimal(len(bts))
             contents = page_out["Contents"]
-            contents.set_parent(page_out)  # type: ignore [attr-defined]
+            contents.set_parent(page_out)
 
         # create Canvas
         canvas = Canvas().set_parent(page_out)

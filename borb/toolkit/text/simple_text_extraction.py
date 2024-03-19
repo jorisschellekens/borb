@@ -7,7 +7,7 @@
 import io
 import typing
 from decimal import Decimal
-from functools import cmp_to_key
+import functools
 
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -61,7 +61,7 @@ class SimpleTextExtraction(EventListener):
             return
 
         # sort according to comparator
-        tris = sorted(tris, key=cmp_to_key(LeftToRightComparator.cmp))
+        tris = sorted(tris, key=functools.cmp_to_key(LeftToRightComparator.cmp))
 
         # iterate over the TextRenderInfo objects to get the text
         last_baseline_bottom = tris[0].get_baseline().y

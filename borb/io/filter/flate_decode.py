@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-(PDF 1.2) Decompresses data encoded using the zlib/deflate
-compression method, reproducing the original text or binary
-data.
+LZW and Flate encoding compress more compactly if their input data is highly predictable.
+One way of increasing the predictability of many continuous-tone sampled images is to replace each sample with the
+difference between that sample and a predictor function applied to earlier neighboring samples.
+If the predictor function works well, the postprediction data clusters toward 0.
+PDF supports two groups of Predictor functions.
+The first, the TIFF group, consists of the single function that is Predictor 2 in the TIFF 6.0 specification.
 """
 import copy
 import typing
@@ -13,9 +16,12 @@ import zlib
 
 class FlateDecode:
     """
-    (PDF 1.2) Decompresses data encoded using the zlib/deflate
-    compression method, reproducing the original text or binary
-    data.
+    LZW and Flate encoding compress more compactly if their input data is highly predictable.
+    One way of increasing the predictability of many continuous-tone sampled images is to replace each sample with the
+    difference between that sample and a predictor function applied to earlier neighboring samples.
+    If the predictor function works well, the postprediction data clusters toward 0.
+    PDF supports two groups of Predictor functions.
+    The first, the TIFF group, consists of the single function that is Predictor 2 in the TIFF 6.0 specification.
     """
 
     #
@@ -38,8 +44,17 @@ class FlateDecode:
         predictor: int = 1,
     ) -> bytes:
         """
-        Decompresses data encoded using the zlib/deflate
-        compression method
+        LZW and Flate encoding compress more compactly if their input data is highly predictable.
+        One way of increasing the predictability of many continuous-tone sampled images is to replace each sample with the
+        difference between that sample and a predictor function applied to earlier neighboring samples.
+        If the predictor function works well, the postprediction data clusters toward 0.
+        PDF supports two groups of Predictor functions.
+        The first, the TIFF group, consists of the single function that is Predictor 2 in the TIFF 6.0 specification.
+        :param bytes_in:            the input bytes
+        :param bits_per_component:  the number of bits per component
+        :param columns:             the number of columns
+        :param predictor:           which predictor to use
+        :return:                    the output bytes
         """
 
         # trivial case

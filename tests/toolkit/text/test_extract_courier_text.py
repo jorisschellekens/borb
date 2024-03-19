@@ -70,6 +70,10 @@ class TestExtractCourierText(TestCase):
 
     def test_extract_courier_paragraph(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         l0 = FontNameFilter("Courier")
         l1 = SimpleTextExtraction()
         l0.add_listener(l1)

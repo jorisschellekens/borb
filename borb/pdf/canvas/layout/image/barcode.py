@@ -6,12 +6,11 @@ This module contains everything needed to implement a LayoutElement representing
 """
 import typing
 from decimal import Decimal
-from enum import Enum
+import enum
 
-import barcode  # type: ignore [import]
-import qrcode  # type: ignore [import]
-from PIL import Image as PILImage  # type: ignore [import]
-from barcode.writer import ImageWriter as BarcodeImageWriter  # type: ignore [import]
+import barcode  # type: ignore[import]
+import qrcode  # type: ignore[import]
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
@@ -19,7 +18,7 @@ from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
 
 
-class BarcodeType(Enum):
+class BarcodeType(enum.Enum):
     """
     This Enum represents the various types of supported barcodes
     """
@@ -45,10 +44,10 @@ class BarcodeType(Enum):
     UPC_A = "upca"
 
 
-class InMemoryBarcodeWriter(BarcodeImageWriter):
+class InMemoryBarcodeWriter(barcode.writer.ImageWriter):
     """
     This class inherits from BarcodeImageWriter, and enables
-    access to the PILImage being built
+    access to the PILImageModule being built
     """
 
     #
@@ -57,7 +56,7 @@ class InMemoryBarcodeWriter(BarcodeImageWriter):
 
     def __init__(self):
         super(InMemoryBarcodeWriter, self).__init__(format="JPEG", mode="RGB")
-        self.output_image: typing.Optional[PILImage] = None
+        self.output_image: typing.Optional[PILImageModule.Image] = None
 
     #
     # PRIVATE
@@ -67,24 +66,20 @@ class InMemoryBarcodeWriter(BarcodeImageWriter):
     # PUBLIC
     #
 
-    def get_output_image(self) -> PILImage:  # type: ignore[valid-type]
+    def get_output_image(self) -> PILImageModule.Image:  # type: ignore[valid-type]
         """
-        This function returns the PILImage representing the barcode
+        This function returns the PIL.Image.Image representing the barcode
+        :return:    the output PIL.Image.Image
         """
+        assert self.output_image is not None
         return self.output_image
 
-    def save(self, filename, output):
+    def save(self, filename, output) -> None:
         """
         Saves the rendered output to `filename` storing the output.
-
-        :parameters:
-            filename : String
-                Filename without extension.
-            output : String
-                The rendered output.
-
-        :returns: The full filename with extension.
-        :rtype: String
+        :param filename:    the filename (not used)
+        :param output:      the rendered output
+        :return:            None
         """
         self.output_image = output
 
@@ -184,7 +179,7 @@ class Barcode(Image):
         )
 
         # get the rendered image from InMemoryBarcodeWriter
-        image: PILImage = writer.get_output_image()  # type: ignore[valid-type]
+        image: PILImageModule = writer.get_output_image()  # type: ignore[valid-type]
         assert image is not None
         assert image.width > 0
         assert image.height > 0
@@ -203,7 +198,7 @@ class Barcode(Image):
         qr.make(fit=True)
 
         # png to jpg
-        png_image: PILImage = qr.make_image(  # type: ignore[valid-type]
+        png_image: PILImageModule = qr.make_image(  # type: ignore[valid-type]
             fill_color=self._stroke_color.to_rgb().to_hex_string(),
             back_color=self._fill_color.to_rgb().to_hex_string(),
         )

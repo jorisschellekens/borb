@@ -8,7 +8,7 @@ It has convenience methods to calculate width and height, perform scaling, etc
 import math
 import typing
 from decimal import Decimal
-from math import sqrt
+import math
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
@@ -93,7 +93,7 @@ class ConnectedShape(LayoutElement):
         # close shape if desired (and needed)
         if (
             auto_close_shape
-            and sqrt(
+            and math.sqrt(
                 (points[0][0] - points[-1][0]) ** 2
                 + (points[0][1] - points[-1][1]) ** 2
             )
@@ -154,6 +154,7 @@ class ConnectedShape(LayoutElement):
     def get_height(self) -> Decimal:
         """
         This function returns the height of this Shape
+        :return:    the height
         """
         min_y = min([x[1] for x in self._points])
         max_y = max([x[1] for x in self._points])
@@ -162,6 +163,7 @@ class ConnectedShape(LayoutElement):
     def get_width(self) -> Decimal:
         """
         This function returns the width of this Shape
+        :return:    the width
         """
         min_x = min([x[0] for x in self._points])
         max_x = max([x[0] for x in self._points])
@@ -170,6 +172,9 @@ class ConnectedShape(LayoutElement):
     def move_to(self, lower_left_x: Decimal, lower_left_y: Decimal) -> "ConnectedShape":
         """
         This method translates this Shape so its lower left corner aligns with the given coordinates
+        :param lower_left_x:    the desired lower left x-coordinate
+        :param lower_left_y:    the desired lower left y-coordinate
+        :return:    self
         """
         min_x = min([x[0] for x in self._points])
         min_y = min([x[1] for x in self._points])
@@ -181,8 +186,8 @@ class ConnectedShape(LayoutElement):
     def rotate(self, angle_in_radians: float) -> "ConnectedShape":
         """
         This function rotates the Shape for a given angle
-        :param angle_in_radians:    the angle
-        :return:                    this Shape
+        :param angle_in_radians:    the angle in radians
+        :return:                    self
         """
         a: Decimal = Decimal(math.cos(angle_in_radians))
         b: Decimal = Decimal(-math.sin(angle_in_radians))
@@ -199,6 +204,10 @@ class ConnectedShape(LayoutElement):
     ) -> "ConnectedShape":
         """
         This method scales this Shape down to fit a given max. width / height
+        :param max_width:               the maximum width
+        :param max_height:              the maximum height
+        :param preserve_aspect_ratio:   True if the aspect ratio should be preserved, False otherwise
+        :return:                        self
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()
@@ -219,6 +228,10 @@ class ConnectedShape(LayoutElement):
     ) -> "ConnectedShape":
         """
         This method scales this Shape up to fit a given max. width / height
+        :param max_width:               the maximum width
+        :param max_height:              the maximum height
+        :param preserve_aspect_ratio:   True if the aspect ratio should be preserved, False otherwise
+        :return:                        self
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()

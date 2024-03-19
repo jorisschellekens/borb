@@ -71,9 +71,7 @@ class AsyncUsageStatisticsWithFairUseWarning(AsyncUsageStatistics):
     #
 
     @staticmethod
-    def send_usage_statistics(
-        event_name: str = "", document: typing.Optional["Document"] = None
-    ) -> None:
+    def send_usage_statistics(event_name: str = "", document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
         """
         This method sends (anonymous) usage statistics to the borb server(s)
         :param event_name:  the name of the event (e.g. "PDF.dumps")

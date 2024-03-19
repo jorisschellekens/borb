@@ -133,7 +133,7 @@ class Heading(Paragraph):
         """
 
         # fetch document
-        p = page.get_root()  # type: ignore[attr-defined]
+        p = page.get_root()
         assert isinstance(p, Document)
 
         # add outline to document

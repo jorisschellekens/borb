@@ -7,7 +7,7 @@ This implementation of WriteBaseTransformer is responsible for writing List obje
 import logging
 import typing
 
-from PIL.Image import Image  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Dictionary
@@ -37,11 +37,13 @@ class ArrayTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents a List object
+        This function returns True if the object to be transformed is a List
+        :param object:  the object to be transformed
+        :return:        True if the object is a List, False otherwise
         """
-        return isinstance(any, List)
+        return isinstance(object, List)
 
     def transform(
         self,
@@ -49,8 +51,12 @@ class ArrayTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a List to a byte stream
+        This function transforms a List into a byte stream
+        :param object_to_transform:     the List to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) List
         """
+
         # fmt: off
         assert isinstance(object_to_transform, List), "object_to_transform must be of type List"
         assert (context is not None), "context must be defined in order to write Array objects."
@@ -78,7 +84,7 @@ class ArrayTransformer(Transformer):
                 isinstance(v, Dictionary)
                 or isinstance(v, List)
                 or isinstance(v, Stream)
-                or isinstance(v, Image)
+                or isinstance(v, PILImageModule.Image)
             ) and not v.is_inline():  # type: ignore [union-attr]
                 out_value.append(self.get_reference(v, context))  # type: ignore [arg-type]
                 queue.append(v)  # type: ignore [arg-type]

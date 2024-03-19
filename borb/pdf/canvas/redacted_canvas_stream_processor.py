@@ -53,9 +53,9 @@ class CopyCommandOperator(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore[name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore[name-defined]
     ) -> None:
         """
         Invokes this CanvasOperator
@@ -122,7 +122,7 @@ class ShowTextMod(CanvasOperator):
             )
 
     def _write_chunk_of_text(
-        self, canvas_stream_processor: "CanvasStreamProcessor", s: str, f: "Font"  # type: ignore [name-defined]
+        self, canvas_stream_processor: "CanvasStreamProcessor", s: str, f: "Font"  # type: ignore[name-defined]
     ):
         from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 
@@ -138,9 +138,9 @@ class ShowTextMod(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore[name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore[name-defined]
     ) -> None:
         """
         Invokes this CanvasOperator
@@ -170,18 +170,18 @@ class ShowTextMod(CanvasOperator):
         for evt in ChunkOfTextRenderEvent(
             canvas.graphics_state, operands[0]
         ).split_on_glyphs():
+            evt_previous_layout_box: typing.Optional[
+                Rectangle
+            ] = evt.get_previous_layout_box()
+            assert evt_previous_layout_box is not None
             letter_should_be_redacted: bool = any(
                 [
-                    x.intersects(evt.get_previous_layout_box())
+                    x.intersects(evt_previous_layout_box)
                     for x in canvas_stream_processor._redacted_rectangles  # type: ignore[attr-defined]
                 ]
             )
             graphics_state = canvas_stream_processor.get_canvas().graphics_state
-            event_bounding_box: typing.Optional[
-                Rectangle
-            ] = evt.get_previous_layout_box()
-            assert event_bounding_box is not None
-            w: Decimal = event_bounding_box.get_width()
+            w: Decimal = evt_previous_layout_box.get_width()
 
             if letter_should_be_redacted:
                 # update text_matrix
@@ -249,9 +249,9 @@ class ShowTextWithGlyphPositioningMod(CanvasOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore[name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore[name-defined]
     ) -> None:
         """
         Invoke the TJ operator

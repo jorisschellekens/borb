@@ -60,10 +60,10 @@ class ScreenShot(Image):
                 bbox=None
                 if bounding_box is None
                 else (
-                    bounding_box.get_x(),
-                    bounding_box.get_y(),
-                    bounding_box.get_width(),
-                    bounding_box.get_height(),
+                    int(bounding_box.get_x()),
+                    int(bounding_box.get_y()),
+                    int(bounding_box.get_width()),
+                    int(bounding_box.get_height()),
                 ),
                 include_layered_windows=include_layered_windows,
                 all_screens=all_screens,

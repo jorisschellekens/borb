@@ -13,7 +13,7 @@ unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestDocumentFileSize(TestCase):
-    def test_write_hello_world(self):
+    def test_create_dummy_pdf(self):
 
         # create an empty Document
         pdf = Document()
@@ -35,7 +35,10 @@ class TestDocumentFileSize(TestCase):
 
     def test_check_file_size_001(self):
 
-        # read
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             document = PDF.loads(pdf_file_handle)
 

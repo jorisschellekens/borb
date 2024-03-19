@@ -24,7 +24,7 @@
 import io
 import re
 import typing
-from math import log
+import math
 
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -120,7 +120,7 @@ class TFIDFKeywordExtraction(SimpleTextExtraction):
 
                 # normalize tf, idf
                 tf /= self._number_of_words_per_page[k]
-                idf = log(self._number_of_pages / self._inverse_page_frequency[w])
+                idf = math.log(self._number_of_pages / self._inverse_page_frequency[w])
 
                 # avoid multiply by zero
                 tf += 0.0001

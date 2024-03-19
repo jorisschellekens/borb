@@ -14,7 +14,7 @@ unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestInlineObjectIO(TestCase):
-    def test_write_document(self):
+    def test_create_dummy_pdf(self):
 
         # create document
         pdf = Document()
@@ -65,6 +65,10 @@ class TestInlineObjectIO(TestCase):
 
     def test_inline_object_io(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         bts: typing.Optional[bytes] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             bts = in_file_handle.read()

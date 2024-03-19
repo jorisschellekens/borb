@@ -15,7 +15,7 @@ dictionary may have a Metadata entry (see Table 316).
 import io
 import logging
 import typing
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 
 from borb.io.read.object.stream_transformer import StreamTransformer
 from borb.io.read.transformer import ReadTransformerState
@@ -57,7 +57,9 @@ class XMPMetadataTransformer(StreamTransformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents an XML element
+        This function returns True if the object to be transformed is a JPEG Image
+        :param object:  the object to be transformed
+        :return:        True if the object is XML Metadata, False otherwise
         """
         return (
             isinstance(object, Stream)
@@ -75,7 +77,12 @@ class XMPMetadataTransformer(StreamTransformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads an XML Element from a byte stream
+        This function transforms a Dictionary into an xml.etree.ElementTree Object
+        :param object_to_transform:     the Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        an xml.etree.ElementTree Object
         """
 
         # delegate to super (ReadStreamTransformer)
@@ -92,7 +99,9 @@ class XMPMetadataTransformer(StreamTransformer):
         assert "DecodedBytes" in out_value
         xml_root_out = None
         try:
-            xml_root_orig = ET.fromstring(out_value["DecodedBytes"].decode("latin1"))
+            xml_root_orig = xml.etree.ElementTree.fromstring(
+                out_value["DecodedBytes"].decode("latin1")
+            )
 
             # make copy so that we can add attributes like parent and listeners
             xml_root_out = Element(xml_root_orig.tag)

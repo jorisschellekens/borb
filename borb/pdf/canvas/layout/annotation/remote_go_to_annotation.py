@@ -46,7 +46,7 @@ class RemoteGoToAnnotation(Annotation):
         # border. The dash array shall be specified in the same format as in the
         # line dash pattern parameter of the graphics state (see 8.4.3.6, “Line
         # Dash Pattern”).
-        self[Name("Border")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+        self[Name("Border")] = List().set_is_inline(True)
         for _ in range(0, 3):
             self[Name("Border")].append(bDecimal(0))
 

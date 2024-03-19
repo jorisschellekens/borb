@@ -107,6 +107,14 @@ class InlineFlow(LayoutElement):
         :param e:   the LayoutElement to be added
         :return:    self
         """
+
+        # keep track of font size
+        if len(self._content) == 0:
+            try:
+                self._font_size = e.get_font_size()
+            except:
+                pass
+
         if isinstance(e, InlineFlow):
             for child_e in e._content:
                 self.add(child_e)
@@ -117,7 +125,7 @@ class InlineFlow(LayoutElement):
     def extend(self, es: typing.List[LayoutElement]) -> "InlineFlow":
         """
         This function adds a typing.List of LayoutElement(s) to this InlineFlow
-        :param es:   the LayoutElements to be added
+        :param es:  the LayoutElements to be added
         :return:    self
         """
         for e in es:

@@ -8,7 +8,7 @@ import io
 import logging
 import typing
 
-from PIL import Image  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.transformer import ReadTransformerState
@@ -42,7 +42,9 @@ class JPEG2000ImageTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a JPEG2000 object
+        This function returns True if the object to be transformed is a JPEG2000 Image
+        :param object:  the object to be transformed
+        :return:        True if the object is a JPEG2000 Image, False otherwise
         """
         return (
             isinstance(object, dict)
@@ -66,7 +68,12 @@ class JPEG2000ImageTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a JPEG2000 Image from byte stream
+        This function transforms an Image Dictionary into an Image Object
+        :param object_to_transform:     the Image Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        an Image Object
         """
 
         # use PIL to read image bytes
@@ -74,7 +81,7 @@ class JPEG2000ImageTransformer(Transformer):
         assert isinstance(object_to_transform, Stream), "object_to_transform must be of type Stream"
         # fmt: on
         try:
-            tmp = Image.open(io.BytesIO(object_to_transform["Bytes"]))
+            tmp = PILImageModule.open(io.BytesIO(object_to_transform["Bytes"]))
             tmp.getpixel(
                 (0, 0)
             )  # attempting to read pixel 0,0 will trigger an error if the underlying image does not exist
@@ -84,7 +91,7 @@ class JPEG2000ImageTransformer(Transformer):
             )
             w = int(object_to_transform["Width"])
             h = int(object_to_transform["Height"])
-            tmp = Image.new("RGB", (w, h), (128, 128, 128))
+            tmp = PILImageModule.new("RGB", (w, h), (128, 128, 128))
 
         # add base methods
         PDFObject.add_pdf_object_methods(tmp)

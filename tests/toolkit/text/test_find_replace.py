@@ -60,6 +60,10 @@ class TestFindReplace(TestCase):
 
     def test_find_replace_near_match(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
@@ -78,6 +82,10 @@ class TestFindReplace(TestCase):
 
     def test_find_replace_identical(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
@@ -96,6 +104,10 @@ class TestFindReplace(TestCase):
 
     def test_find_replace_near_match_different_color(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)
@@ -118,6 +130,10 @@ class TestFindReplace(TestCase):
 
     def test_find_replace_near_match_different_font(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle)

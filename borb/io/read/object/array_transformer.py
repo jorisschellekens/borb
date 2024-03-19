@@ -37,6 +37,8 @@ class ArrayTransformer(Transformer):
     ) -> bool:
         """
         This function returns True if the object to be transformed is a List
+        :param object:  the object to be transformed
+        :return:        True if the object is a List, False otherwise
         """
         return isinstance(object, List)
 
@@ -48,7 +50,12 @@ class ArrayTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a List from a byte stream
+        This function transforms a PDF List into a Python List
+        :param object_to_transform:     the List to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a List Object
         """
 
         # create root object

@@ -36,7 +36,9 @@ class DictionaryTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a Dictionary object
+        This function returns True if the object to be transformed is a Dictionary
+        :param object:  the object to be transformed
+        :return:        True if the object is a Dictionary, False otherwise
         """
         return isinstance(object, Dictionary)
 
@@ -48,7 +50,12 @@ class DictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a Dictionary from a byte stream
+        This function transforms a PDF Dictionary into a Python Dictionary
+        :param object_to_transform:     the Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a Dictionary Object
         """
 
         # create root object

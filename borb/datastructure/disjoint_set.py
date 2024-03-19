@@ -46,6 +46,8 @@ class disjointset:
     def add(self, x: typing.Any) -> "disjointset":
         """
         Add an element to this disjointset
+        :param x:   the element to be added
+        :return:    self
         """
         self._parents[x] = x
         self._ranks[x] = 0
@@ -54,6 +56,8 @@ class disjointset:
     def find(self, x: typing.Any) -> typing.Any:
         """
         Find the root of an element in this disjointset
+        :param x:   the element for which to find the root element
+        :return:    the root element of the given element
         """
         if self._parents[x] == x:
             return x
@@ -63,12 +67,15 @@ class disjointset:
     def pop(self, x: typing.Any) -> "disjointset":
         """
         Remove an element from this disjointset
+        :param x:   the element to be removed
+        :return:    self
         """
         raise NotImplementedError()
 
     def sets(self) -> typing.List[typing.List[typing.Any]]:
         """
         This function returns all equivalence sets in this disjointset
+        :return:    all equivalence sets of this disjointset
         """
         cluster_parents: typing.Dict[typing.Any, typing.Any] = {}
         for x, _ in self._parents.items():
@@ -82,6 +89,9 @@ class disjointset:
         """
         Mark two elements in this disjointset as equivalent,
         propagating the equivalence throughout the disjointset
+        :param x:   the first element
+        :param y:   the second element
+        :return:    self
         """
         x_parent = self.find(x)
         y_parent = self.find(y)

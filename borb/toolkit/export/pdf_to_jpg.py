@@ -8,9 +8,9 @@ import io
 import platform
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 from PIL import ImageDraw
 from PIL import ImageFont
 
@@ -42,13 +42,13 @@ class PDFToJPG(PDFToSVG):
             default_page_width=default_page_width,
             default_page_height=default_page_height,
         )
-        self._jpg_image_per_page: typing.Dict[int, PILImage] = {}  # type: ignore[valid-type]
+        self._jpg_image_per_page: typing.Dict[int, PILImageModule.Image] = {}  # type: ignore[valid-type]
 
         # figure out fonts
-        self._regular_font: typing.Optional[Path] = None
-        self._bold_font: typing.Optional[Path] = None
-        self._italic_font: typing.Optional[Path] = None
-        self._bold_italic_font: typing.Optional[Path] = None
+        self._regular_font: typing.Optional[pathlib.Path] = None
+        self._bold_font: typing.Optional[pathlib.Path] = None
+        self._italic_font: typing.Optional[pathlib.Path] = None
+        self._bold_italic_font: typing.Optional[pathlib.Path] = None
         self._find_font_families()
 
     #
@@ -58,24 +58,24 @@ class PDFToJPG(PDFToSVG):
     def _begin_page(
         self, page_nr: Decimal, page_width: Decimal, page_height: Decimal
     ) -> None:
-        self._jpg_image_per_page[int(page_nr)] = PILImage.new(
+        self._jpg_image_per_page[int(page_nr)] = PILImageModule.new(
             "RGB", (int(page_width), int(page_height)), color=(255, 255, 255)
         )
 
     def _find_font_families(self):
         system: str = platform.system()
         assert system in ["Darwin", "Linux", "Windows"]
-        root_font_dir: typing.Optional[Path] = None
+        root_font_dir: typing.Optional[pathlib.Path] = None
         if system == "Linux":
-            root_font_dir = Path("/usr/share/fonts")
+            root_font_dir = pathlib.Path("/usr/share/fonts")
         if system == "Darwin":
-            root_font_dir = Path("/Library/Fonts/")
+            root_font_dir = pathlib.Path("/Library/Fonts/")
         if system == "Windows":
-            root_font_dir = Path("C:/Windows/Fonts")
+            root_font_dir = pathlib.Path("C:/Windows/Fonts")
 
         # BFS directory
         ttf_font_files = []
-        file_stk: typing.List[Path] = [root_font_dir]
+        file_stk: typing.List[pathlib.Path] = [root_font_dir]
         while len(file_stk) > 0:
             f = file_stk[0]
             file_stk.pop(0)
@@ -117,7 +117,7 @@ class PDFToJPG(PDFToSVG):
         y: Decimal,
         image_width: Decimal,
         image_height: Decimal,
-        image: PILImage,  # type: ignore[valid-type]
+        image: PILImageModule.Image,  # type: ignore[valid-type]
     ):
         page_image = self._jpg_image_per_page.get(int(page_nr))
         assert page_image is not None
@@ -180,11 +180,11 @@ class PDFToJPG(PDFToSVG):
     #
 
     @staticmethod
-    def convert_pdf_to_jpg(pdf: "Document") -> typing.Dict[int, PILImage.Image]:  # type: ignore [name-defined]
+    def convert_pdf_to_jpg(pdf: "Document") -> typing.Dict[int, PILImageModule.Image]:  # type: ignore[name-defined]
         """
         This function converts a PDF to an PIL.Image.Image
         """
-        image_of_each_page: typing.Dict[int, PILImage.Image] = {}
+        image_of_each_page: typing.Dict[int, PILImageModule.Image] = {}
         number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
         for page_nr in range(0, number_of_pages):
             # get Page object
@@ -205,7 +205,7 @@ class PDFToJPG(PDFToSVG):
         # return
         return image_of_each_page
 
-    def convert_to_jpg(self) -> typing.Dict[int, PILImage.Image]:  # type: ignore[valid-type]
+    def convert_to_jpg(self) -> typing.Dict[int, PILImageModule.Image]:  # type: ignore[valid-type]
         """
         This function returns the PIL.Image for a given page_nr
         """

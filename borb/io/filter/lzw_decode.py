@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Decompresses data encoded using the LZW (Lempel-Ziv-Welch)
-adaptive compression method, reproducing the original
-text or binary data.
+Decompresses data encoded using the LZW (Lempel-Ziv-Welch) adaptive compression method,
+reproducing the original text or binary data.
 """
 import typing
 
@@ -55,9 +54,8 @@ class bitarray:
 
 class LZWDecode:
     """
-    Decompresses data encoded using the LZW (Lempel-Ziv-
-    Welch) adaptive compression method, reproducing the original
-    text or binary data.
+    Decompresses data encoded using the LZW (Lempel-Ziv-Welch) adaptive compression method,
+    reproducing the original text or binary data.
     """
 
     #
@@ -94,8 +92,9 @@ class LZWDecode:
 
     def decode(self, input: bytes):
         """
-        Decompresses data encoded using the LZW (Lempel-Ziv-Welch)
-        adaptive compression method
+        Decompresses data encoded using the LZW (Lempel-Ziv-Welch) adaptive compression method
+        :param input:   the input bytes
+        :return:        the output bytes
         """
 
         # output

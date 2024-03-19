@@ -65,7 +65,7 @@ class FormField(LayoutElement):
     def _get_font_resource_name(self, font: Font, page: Page):
         # create resources if needed
         if "Resources" not in page:
-            page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
+            page[Name("Resources")] = Dictionary().set_parent(page)
         if "Font" not in page["Resources"]:
             page["Resources"][Name("Font")] = Dictionary()
 

@@ -7,7 +7,7 @@ This implementation of WriteBaseTransformer is responsible for writing Image obj
 import io
 import typing
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import AnyPDFType
@@ -32,9 +32,9 @@ class ImageTransformer(Transformer):
     # PRIVATE
     #
 
-    def _convert_to_rgb_mode(self, image: PILImage.Image) -> PILImage.Image:
+    def _convert_to_rgb_mode(self, image: PILImageModule.Image) -> PILImageModule.Image:
         # build image_out
-        image_out: PILImage.Image = image
+        image_out: PILImageModule.Image = image
 
         # omit transparency
         if image_out.mode == "P":
@@ -44,7 +44,7 @@ class ImageTransformer(Transformer):
         if image_out.mode == "RGBA":
             fill_color = (255, 255, 255)  # new background color
             non_alpha_mode: str = image_out.mode[:-1]
-            background = PILImage.new(
+            background = PILImageModule.new(
                 non_alpha_mode, image_out.size, fill_color  # type: ignore[arg-type]
             )
             background.paste(image_out, mask=image_out.split()[-1])  # omit transparency
@@ -64,11 +64,13 @@ class ImageTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents an Image object
+        This function returns True if the object to be transformed is an Image
+        :param object:  the object to be transformed
+        :return:        True if the object is an Image, False otherwise
         """
-        return isinstance(any, PILImage.Image)
+        return isinstance(object, PILImageModule.Image)
 
     def transform(
         self,
@@ -76,12 +78,16 @@ class ImageTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes an Image to a byte stream
+        This function transforms an Image into a byte stream
+        :param object_to_transform:     the Image to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Image
         """
+
         # fmt: off
         assert (context is not None), "context must be defined in order to write Image objects."
         assert context.destination is not None, "context.destination must be defined in order to write Image objects."
-        assert isinstance(object_to_transform, PILImage.Image), "object_to_transform must be of type PILImage.Image"
+        assert isinstance(object_to_transform, PILImageModule.Image), "object_to_transform must be of type PIL.Image.Image"
         # fmt: on
 
         # get image bytes
@@ -89,10 +95,10 @@ class ImageTransformer(Transformer):
         filter_name: typing.Optional[Name] = None
         try:
             with io.BytesIO() as output:
-                assert isinstance(object_to_transform, PILImage.Image)
+                assert isinstance(object_to_transform, PILImageModule.Image)
                 # TODO: find a better solution than converting everything to mode RGB
-                object_to_transform = self._convert_to_rgb_mode(object_to_transform)  # type: ignore [assignment]
-                assert isinstance(object_to_transform, PILImage.Image)
+                object_to_transform = self._convert_to_rgb_mode(object_to_transform)  # type: ignore[assignment]
+                assert isinstance(object_to_transform, PILImageModule.Image)
                 object_to_transform.save(output, format="JPEG")
                 contents = output.getvalue()
             filter_name = Name("DCTDecode")
@@ -115,13 +121,13 @@ class ImageTransformer(Transformer):
         out_value[Name("Bytes")] = contents
 
         # copy reference
-        out_value.set_reference(  # type: ignore [attr-defined]
-            object_to_transform.get_reference()  # type: ignore [union-attr]
+        out_value.set_reference(
+            object_to_transform.get_reference()  # type: ignore[union-attr]
         )
 
         # start object if needed
         started_object = False
-        ref = out_value.get_reference()  # type: ignore [attr-defined]
+        ref = out_value.get_reference()  # type: ignore[attr-defined]
         if ref is not None:
             assert isinstance(ref, Reference)
             if ref.object_number is not None and ref.byte_offset is None:

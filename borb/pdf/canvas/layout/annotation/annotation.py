@@ -47,7 +47,7 @@ class Annotation(Dictionary):
 
         # (Required) The annotation rectangle, defining the location of the
         # annotation on the page in default user space units.
-        self[Name("Rect")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+        self[Name("Rect")] = List().set_is_inline(True)
         self["Rect"].append(bDecimal(bounding_box.get_x()))
         self["Rect"].append(bDecimal(bounding_box.get_y()))
         self["Rect"].append(bDecimal(bounding_box.get_x() + bounding_box.get_width()))
@@ -106,7 +106,7 @@ class Annotation(Dictionary):
             and vertical_corner_radius is not None
             and border_width is not None
         ):
-            self[Name("Border")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+            self[Name("Border")] = List().set_is_inline(True)
             self["Border"].append(bDecimal(horizontal_corner_radius))
             self["Border"].append(bDecimal(vertical_corner_radius))
             self["Border"].append(bDecimal(border_width))
@@ -119,7 +119,7 @@ class Annotation(Dictionary):
         # The number of array elements determines the colour space in which the
         # colour shall be defined
         if color is not None:
-            self[Name("C")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+            self[Name("C")] = List().set_is_inline(True)
             self["C"].append(bDecimal(color.to_rgb().red))
             self["C"].append(bDecimal(color.to_rgb().green))
             self["C"].append(bDecimal(color.to_rgb().blue))

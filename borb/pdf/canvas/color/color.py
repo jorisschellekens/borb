@@ -32,6 +32,7 @@ class Color(object):
     def to_rgb(self) -> "RGBColor":
         """
         This method returns the RGB representation of this Color
+        :return:    the RGBColor equivalent of this Color
         """
         pass
 
@@ -79,6 +80,8 @@ class CMYKColor(Color):
     def from_rgb(c: "RGBColor") -> "CMYKColor":
         """
         This method returns the CMYKColor representation of an RGB color
+        :param c:   the origin RGBColor
+        :return:    the matching CMYKColor
         """
         K: Decimal = Decimal(1.0) - max(c.red, c.green, c.blue)
         C: Decimal = (Decimal(1) - c.red - K) / (Decimal(1.0) - K)
@@ -89,6 +92,7 @@ class CMYKColor(Color):
     def to_rgb(self) -> "RGBColor":
         """
         This method returns the RGB representation of this Color
+        :return:    the RGBColor equivalent of this Color
         """
         ONE: Decimal = Decimal(1)
         r: Decimal = (ONE - self.cyan) * (ONE - self.key)
@@ -127,6 +131,7 @@ class GrayColor(Color):
     def to_rgb(self) -> "RGBColor":
         """
         This method returns the RGB representation of this Color
+        :return:    the RGBColor equivalent of this Color
         """
         return RGBColor(self.gray_level, self.gray_level, self.gray_level)
 
@@ -179,6 +184,8 @@ class HSVColor(Color):
         This function returns an analogous color scheme.
         Analogous color schemes use colors that are next to each other on the color wheel. They usually match well and create serene and comfortable designs.
         Analogous color schemes are often found in nature and are harmonious and pleasing to the eye.
+        :param color:   the input Color
+        :return:        an analogous Color
         """
         c: HSVColor = HSVColor.from_rgb(color.to_rgb())
         return [
@@ -190,6 +197,8 @@ class HSVColor(Color):
     def complementary(color: Color) -> Color:
         """
         This function returns an HSV color whose hue is the complement of the current HSV color
+        :param color:   the input Color
+        :return:        a complementary Color
         """
         c: HSVColor = HSVColor.from_rgb(color.to_rgb())
         new_hue: int = int(float(c.hue) * 360.0) + 180 % 360
@@ -198,6 +207,7 @@ class HSVColor(Color):
     def darker(self) -> "HSVColor":
         """
         This function returns a darker shade of the current HSV color
+        :return:    a darker shade of this Color
         """
         return HSVColor(self.hue, self.saturation, self.value * Decimal(0.8))
 
@@ -206,7 +216,6 @@ class HSVColor(Color):
         """
         This method returns the HSV representation of an RGB color
         """
-        RGB_MAX = Decimal(255)
         r, g, b = c.red, c.green, c.blue
         mx = max(r, g, b)
         mn = min(r, g, b)
@@ -280,6 +289,7 @@ class HSVColor(Color):
     def to_rgb(self) -> "RGBColor":
         """
         This method returns the RGB representation of this Color
+        :return:    the RGBColor equivalent of this Color
         """
         h, s, v = self.hue, self.saturation, self.value
         ONE = Decimal(1)

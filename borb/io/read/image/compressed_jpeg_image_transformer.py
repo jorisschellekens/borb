@@ -8,7 +8,7 @@ import io
 import logging
 import typing
 
-from PIL import Image  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.filter.stream_decode_util import decode_stream
 from borb.io.read.pdf_object import PDFObject
@@ -44,7 +44,9 @@ class CompressedJPEGImageTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a JPEG object
+        This function returns True if the object to be transformed is a (compressed) JPEG Image
+        :param object:  the object to be transformed
+        :return:        True if the object is a compressed JPEG Image, False otherwise
         """
         return (
             isinstance(object, Stream)
@@ -69,7 +71,12 @@ class CompressedJPEGImageTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a JPEG Image from a byte stream
+        This function transforms an Image Dictionary into an Image Object
+        :param object_to_transform:     the Image Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        an Image Object
         """
         # fmt: off
         assert isinstance(object_to_transform, Stream), "object_to_transform must be of type Stream"
@@ -89,7 +96,7 @@ class CompressedJPEGImageTransformer(Transformer):
         raw_byte_array = object_to_transform["Bytes"]
 
         try:
-            tmp = Image.open(io.BytesIO(raw_byte_array))
+            tmp = PILImageModule.open(io.BytesIO(raw_byte_array))
             tmp.getpixel(
                 (0, 0)
             )  # attempting to read pixel 0,0 will trigger an error if the underlying image does not exist
@@ -99,7 +106,7 @@ class CompressedJPEGImageTransformer(Transformer):
             )
             w = int(object_to_transform["Width"])
             h = int(object_to_transform["Height"])
-            tmp = Image.new("RGB", (w, h), (128, 128, 128))
+            tmp = PILImageModule.new("RGB", (w, h), (128, 128, 128))
 
         # add base methods
         PDFObject.add_pdf_object_methods(tmp)

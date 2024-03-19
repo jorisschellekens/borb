@@ -42,65 +42,34 @@
     address: joris.schellekens.1989@gmail.com
 """
 
-# color
+# fmt: off
 from .color.color_extraction import ColorExtraction
-
-# export
+from .color.color_extraction import ColorExtraction
 from .export.html_to_pdf.html_to_pdf import HTMLToPDF
-
-try:
-    from .export.markdown_to_pdf.markdown_to_pdf import MarkdownToPDF
-except:
-    pass
-try:
-    from .export.pdf_to_mp3 import PDFToMP3
-except:
-    pass
+from .export.markdown_to_pdf.markdown_to_pdf import MarkdownToPDF
 from .export.pdf_to_jpg import PDFToJPG
+from .export.pdf_to_mp3 import PDFToMP3
 from .export.pdf_to_svg import PDFToSVG
-
-# image
 from .image.image_extraction import ImageExtraction
 from .image.image_format_optimization import ImageFormatOptimization
-
-# location
 from .location.location_filter import LocationFilter
-
-# ocr
-# fmt: off
-try:
-    from .ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
-    from .ocr.ocr_image_render_event_listener import OCREvent
-    from .ocr.ocr_image_render_event_listener import OCRImageRenderEventListener
-except:
-    pass
-# fmt: on
-
-# table
+from .ocr.ocr_as_optional_content_group import OCRAsOptionalContentGroup
+from .ocr.ocr_image_render_event_listener import OCREvent
+from .ocr.ocr_image_render_event_listener import OCRImageRenderEventListener
+from .redact.face_detection_event_listener import FaceDetectionEventListener
+from .redact.face_eraser_event_listener import FaceEraserEventListener
 from .table.table_detection_by_lines import TableDetectionByLines
-
-# text
-from .text.simple_text_extraction import SimpleTextExtraction
-from .text.simple_non_ligature_text_extraction import SimpleNonLigatureTextExtraction
-from .text.simple_find_replace import SimpleFindReplace
-
-# text (structure)
-# fmt: off
-from .text.simple_paragraph_extraction import SimpleParagraphExtraction
-from .text.simple_line_of_text_extraction import SimpleLineOfTextExtraction
-from .text.regular_expression_text_extraction import RegularExpressionTextExtraction
-from .text.regular_expression_text_extraction import PDFMatch
-# fmt: on
-
-# text (filter)
 from .text.font_color_filter import FontColorFilter
 from .text.font_extraction import FontExtraction
 from .text.font_name_filter import FontNameFilter
-
-# text (keywords, NLP)
-try:
-    from .text.text_rank_keyword_extraction import TextRankKeywordExtraction
-except:
-    pass
-from .text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
+from .text.regular_expression_text_extraction import PDFMatch
+from .text.regular_expression_text_extraction import RegularExpressionTextExtraction
+from .text.simple_find_replace import SimpleFindReplace
+from .text.simple_line_of_text_extraction import SimpleLineOfTextExtraction
+from .text.simple_non_ligature_text_extraction import SimpleNonLigatureTextExtraction
+from .text.simple_paragraph_extraction import SimpleParagraphExtraction
+from .text.simple_text_extraction import SimpleTextExtraction
 from .text.stop_words import FRENCH_STOP_WORDS, ENGLISH_STOP_WORDS
+from .text.text_rank_keyword_extraction import TextRankKeywordExtraction
+from .text.tf_idf_keyword_extraction import TFIDFKeywordExtraction
+# fmt: on

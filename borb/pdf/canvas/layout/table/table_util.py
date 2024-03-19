@@ -133,7 +133,7 @@ class TableUtil:
 
     @staticmethod
     def from_pandas_dataframe(
-        data: "pandas.DataFrame",
+        data: "pandas.DataFrame",  # type: ignore[name-defined]
         background_color: Color = HexColor("ffffff"),
         flexible_column_width: bool = True,
         font_color: Color = HexColor("000000"),

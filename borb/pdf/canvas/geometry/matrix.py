@@ -64,11 +64,17 @@ class Matrix:
     # PUBLIC
     #
 
-    def cross(self, x: Decimal, y: Decimal, z: Decimal):
+    def cross(
+        self, x: Decimal, y: Decimal, z: Decimal
+    ) -> typing.Tuple[Decimal, Decimal, Decimal]:
         """
         This method calculates the dot-product of this Matrix
         with an input vector (represented by 3 input Decimal objects)
         and returns the result
+        :param x:   the first component of the vector
+        :param y:   the second component of the vector
+        :param z:   the third component of the vector
+        :return:    the result vector
         """
         x2 = x * self[0][0] + y * self[1][0] + z * self[2][0]
         y2 = x * self[0][1] + y * self[1][1] + z * self[2][1]
@@ -83,6 +89,7 @@ class Matrix:
         Geometrically, it can be viewed as the volume scaling factor of the linear transformation described by the matrix.
         This is also the signed volume of the n-dimensional parallelepiped spanned by the column or row vectors of the matrix.
         The determinant is positive or negative according to whether the linear transformation preserves or reverses the orientation of a real vector space.
+        :return:    the determinant of this Matrix
         """
         return (
             self.mtx[0][0]
@@ -96,7 +103,9 @@ class Matrix:
     @staticmethod
     def identity_matrix() -> "Matrix":
         """
-        The identity matrix In of size n is the n-by-n matrix in which all the elements on the main diagonal are equal to 1 and all other elements are equal to 0.
+        The identity matrix In of size n is the n-by-n matrix in which all the elements on the main diagonal
+        are equal to 1 and all other elements are equal to 0.
+        :return:    the identity Matrix
         """
         m = Matrix()
         m.mtx = [
@@ -112,6 +121,13 @@ class Matrix:
     ):
         """
         This method returns the matrix [[a, b, 0], [c, d, 0], [e, f, 1]]
+        :param a:   the component at (0, 0)
+        :param b:   the component at (0, 1)
+        :param c:   the component at (1, 0)
+        :param d:   the component at (1, 1)
+        :param e:   the component at (2, 0)
+        :param f:   the component at (2, 1)
+        :return:    the Matrix
         """
         m = Matrix()
         m.mtx = [[a, b, Decimal(0)], [c, d, Decimal(0)], [e, f, Decimal(1)]]
@@ -119,8 +135,9 @@ class Matrix:
 
     def mul(self, y: "Matrix") -> "Matrix":
         """
-        This function multiplies this Matrix with another Matrix,
-        returning the result
+        This function multiplies this Matrix with another Matrix, returning the result
+        :param y:   the Matrix to multiply by
+        :return:    the resulting Matrix
         """
         m_vals = [
             [Decimal(0), Decimal(0), Decimal(0)],

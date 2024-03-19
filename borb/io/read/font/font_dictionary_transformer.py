@@ -50,6 +50,8 @@ class FontDictionaryTransformer(Transformer):
     ) -> bool:
         """
         This function returns True if the object to be transformed is a /Font Dictionary
+        :param object:  the object to be transformed
+        :return:        True if the object is a /Font Dictionary, False otherwise
         """
         return (
             isinstance(object, dict)
@@ -66,7 +68,12 @@ class FontDictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a /Font Dictionary from a byte stream
+        This function transforms a /Font Dictionary into a Font Object
+        :param object_to_transform:     the /Font Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a Font Object
         """
 
         # convert dictionary like structure
@@ -106,7 +113,6 @@ class FontDictionaryTransformer(Transformer):
         # Type 3 Font
         elif subtype_name == "Type3":
             font_obj = Type3Font()
-
         elif subtype_name == "CIDFontType0":
             font_obj = CIDType0Font()
         elif subtype_name == "CIDFontType2":

@@ -154,7 +154,7 @@ class Transformer:
         handler._parent = self
         return self
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
         This function returns True if this WriteBaseTransformer can transform the input object,
         false otherwise
@@ -170,7 +170,7 @@ class Transformer:
         """
         is_unique: bool = False
         try:
-            is_unique = object.is_unique()  # type: ignore[union-attr]
+            is_unique = object.is_unique()
         except:
             pass
 
@@ -198,18 +198,18 @@ class Transformer:
         # generate new object number
         existing_obj_numbers = set(
             [
-                item.get_reference().object_number  # type: ignore [union-attr]
+                item.get_reference().object_number  # type: ignore[union-attr]
                 for sublist in [v for k, v in context.indirect_objects_by_hash.items()]
                 for item in sublist
             ]
         )
         obj_number = len(existing_obj_numbers) + 1
-        while obj_number in existing_obj_numbers:  # type: ignore [union-attr]
+        while obj_number in existing_obj_numbers:  # type: ignore[union-attr]
             obj_number += 1
 
         # build reference
         ref = Reference(object_number=obj_number)
-        object.set_reference(ref)  # type: ignore [union-attr]
+        object.set_reference(ref)
 
         # insert into context.indirect_objects_by_hash
         if obj_hash in context.indirect_objects_by_hash:

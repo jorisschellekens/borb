@@ -5,7 +5,7 @@
 This class converts Markdown to PDF
 """
 import typing
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 from decimal import Decimal
 
 from borb.pdf.canvas.font.font import Font
@@ -31,14 +31,12 @@ class MarkdownToPDF:
     #
 
     @staticmethod
-    def _replace_github_flavored_emoji(
-        e: "Element", parents: typing.List["Element"] = []
-    ) -> "Element":
+    def _replace_github_flavored_emoji(e: "Element", parents: typing.List["Element"] = []) -> "Element":  # type: ignore[name-defined]
         # do not modify emoji elements themselves
         if e.tag == "span" and "emoji" in e.get("class", "").split(" "):
             return e
 
-        from lxml.etree import Element
+        import lxml.etree  # type: ignore[import]
 
         TAGS_TO_IGNORE: typing.List[str] = ["code", "pre"]
         element_can_be_changed: bool = (
@@ -57,7 +55,7 @@ class MarkdownToPDF:
                     e.text = before
 
                     # create <span> element
-                    span: Element = Element("span")
+                    span: lxml.etree.Element = lxml.etree.Element("span")
                     span.set("class", "emoji emoji_%s" % v)
                     span.text = k
                     span.tail = after
@@ -80,13 +78,13 @@ class MarkdownToPDF:
                     e.tail = after
 
                     # create <span> element
-                    span = Element("span")
+                    span = lxml.etree.Element("span")
                     span.set("class", "emoji emoji_%s" % v)
                     span.text = k
                     span.tail = before
 
                     # insert new element
-                    parent: Element = parents[-1]
+                    parent: lxml.etree.Element = parents[-1]
                     index_of_e_in_parent: int = [
                         i for i, x in enumerate(parent) if x == e
                     ][0]
@@ -96,7 +94,7 @@ class MarkdownToPDF:
         return e
 
     @staticmethod
-    def _set_img_width_and_height(e: "Element") -> "Element":
+    def _set_img_width_and_height(e: "lxml.etree.Element") -> "lxml.etree.Element":  # type: ignore[name-defined]
         if e.tag == "img":
             w: typing.Optional[int] = e.attrib["width"] if "width" in e.attrib else None
             h: typing.Optional[int] = (
@@ -141,11 +139,13 @@ class MarkdownToPDF:
         """
 
         # markdown to HTML
-        from lxml.etree import HTMLParser
-        from markdown_it import MarkdownIt
+        import markdown_it  # type: ignore[import]
+        import lxml.etree  # type: ignore[import]
 
-        html: str = MarkdownIt().enable("table").render(markdown)
-        html_root: ET.Element = ET.fromstring(html, HTMLParser())
+        html: str = markdown_it.MarkdownIt().enable("table").render(markdown)
+        html_root: xml.etree.ElementTree.Element = xml.etree.ElementTree.fromstring(
+            html, lxml.etree.HTMLParser()
+        )
 
         # handle emoji
         html_root = MarkdownToPDF._replace_github_flavored_emoji(html_root)
@@ -183,11 +183,13 @@ class MarkdownToPDF:
         """
 
         # markdown to HTML
-        from lxml.etree import HTMLParser
-        from markdown_it import MarkdownIt
+        import markdown_it  # type: ignore[import]
+        import lxml.etree  # type: ignore[import]
 
-        html: str = MarkdownIt().enable("table").render(markdown)
-        html_root: ET.Element = ET.fromstring(html, HTMLParser())
+        html: str = markdown_it.MarkdownIt().enable("table").render(markdown)
+        html_root: xml.etree.ElementTree.Element = xml.etree.ElementTree.fromstring(
+            html, lxml.etree.HTMLParser()
+        )
 
         # handle emoji
         html_root = MarkdownToPDF._replace_github_flavored_emoji(html_root)

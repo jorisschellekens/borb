@@ -38,12 +38,14 @@ class PageInfo(Dictionary):
         expressed in default user space units, that shall define the
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
+        :return:    the height of the Page
         """
         return self._page["MediaBox"][3]
 
     def get_page_number(self) -> typing.Optional[Decimal]:
         """
         This function returns the page number
+        :return:    the page number
         """
         kids = self._page.get_parent().get_parent().get("Kids")
         l = int(self._page.get_parent().get_parent().get("Count"))
@@ -58,6 +60,7 @@ class PageInfo(Dictionary):
         expressed in default user space units, that shall define the
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
+        :return:    the width, height (as typing.Tuple[Decimal, Decimal]) of the Page
         """
         return self.get_width() or Decimal(0), self.get_height() or Decimal(0)
 
@@ -69,6 +72,7 @@ class PageInfo(Dictionary):
         expressed in default user space units, that shall define the
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
+        :return:    the width, height (as PageSize) of the Page
         """
         w: typing.Optional[Decimal] = self.get_width()
         h: typing.Optional[Decimal] = self.get_height()
@@ -87,6 +91,7 @@ class PageInfo(Dictionary):
         expressed in default user space units, that shall define the
         boundaries of the physical medium on which the page shall be
         displayed or printed (see 14.11.2, "Page Boundaries").
+        :return:    the width of the Page
         """
         return self._page["MediaBox"][2]
 
@@ -98,6 +103,7 @@ class PageInfo(Dictionary):
         “Resource Dictionaries”) shall hold an array consisting of the names of the procedure sets used in that content
         stream.
         This method returns whether this PDF uses operators from the "ImageC" procedure set.
+        :return:    True if the Page uses color images, False otherwise
         """
         return "ImageC" in self._page["Resources"]["ProcSet"]
 
@@ -109,6 +115,7 @@ class PageInfo(Dictionary):
         “Resource Dictionaries”) shall hold an array consisting of the names of the procedure sets used in that content
         stream.
         This method returns whether this PDF uses operators from the "ImageB" procedure set.
+        :return:    True if the Page uses grayscale images, False otherwise
         """
         return "ImageB" in self._page["Resources"]["ProcSet"]
 
@@ -120,6 +127,7 @@ class PageInfo(Dictionary):
         “Resource Dictionaries”) shall hold an array consisting of the names of the procedure sets used in that content
         stream.
         This method returns whether this PDF uses operators from the "ImageI" procedure set.
+        :return:    True if the Page uses indexed images, False otherwise
         """
         return "ImageI" in self._page["Resources"]["ProcSet"]
 

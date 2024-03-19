@@ -29,7 +29,9 @@ class AsyncUsageStatistics:
     """
 
     class Event:
-        """ """
+        """
+        This class represents something that happened that needs to be sent to the borb server(s).
+        """
 
         def __init__(
             self,
@@ -43,16 +45,34 @@ class AsyncUsageStatistics:
             self._number_of_pages: typing.List[int] = [number_of_pages]
 
         def get_avg_number_of_pages(self) -> int:
+            """
+            This function returns the average number of pages in this Event.
+            e.g.    2 PDF documents have been read, one of 10 pages and one of 2 pages.
+                    This function would return 6.
+            :return:    the average number of pages in this Event
+            """
             if len(self._number_of_pages) == 0:
                 return 0
             return sum(self._number_of_pages) // len(self._number_of_pages)
 
         def get_max_number_of_pages(self) -> int:
+            """
+            This function returns the maximum number of pages in this Event.
+            e.g.    2 PDF documents have been read, one of 10 pages and one of 2 pages.
+                    This function would return 10.
+            :return:    the maximum number of pages in this Event
+            """
             if len(self._number_of_pages) == 0:
                 return 0
             return max(self._number_of_pages)
 
         def get_min_number_of_pages(self) -> int:
+            """
+            This function returns the minimum number of pages in this Event.
+            e.g.    2 PDF documents have been read, one of 10 pages and one of 2 pages.
+                    This function would return 2.
+            :return:    the minimum number of pages in this Event
+            """
             if len(self._number_of_pages) == 0:
                 return 0
             return min(self._number_of_pages)
@@ -74,13 +94,13 @@ class AsyncUsageStatistics:
     #
 
     @staticmethod
-    def _get_number_of_pages(document: typing.Optional["Document"]) -> int:
+    def _get_number_of_pages(document: typing.Optional["Document"]) -> int:  # type: ignore[name-defined]
         if document is None:
             return 0
         return int(document.get_document_info().get_number_of_pages() or Decimal(0))
 
     @staticmethod
-    def _get_user_id() -> str:
+    def _get_user_id() -> typing.Optional[str]:
         return License.get_user_id() or PersistentRandomUserID.get()
 
     @staticmethod
@@ -92,9 +112,9 @@ class AsyncUsageStatistics:
 
         # copy _EVENT_QUEUE
         # this ensures that if this code gets executed concurrently, the queue is empty
-        queue_copy: typing.List[
-            AsyncUsageStatistics.Event
-        ] = AsyncUsageStatistics._EVENT_QUEUE
+        # fmt: off
+        queue_copy: typing.List[AsyncUsageStatistics.Event] = AsyncUsageStatistics._EVENT_QUEUE
+        # fmt: on
 
         # clear _EVENT_QUEUE
         AsyncUsageStatistics._EVENT_QUEUE = []
@@ -181,9 +201,7 @@ class AsyncUsageStatistics:
         AsyncUsageStatistics._ENABLED = True
 
     @staticmethod
-    def send_usage_statistics(
-        event_name: str = "", document: typing.Optional["Document"] = None
-    ) -> None:
+    def send_usage_statistics(event_name: str = "", document: typing.Optional["Document"] = None) -> None:  # type: ignore[name-defined]
         """
         This method sends (anonymous) usage statistics to the borb server
         :param event_name:  the name of the event (e.g. "PDF.dumps")
@@ -199,9 +217,10 @@ class AsyncUsageStatistics:
         # THEN do it NOW
         if not AsyncUsageStatistics._REGISTERED_FOR_SYS_EXIT_EVENT:
             AsyncUsageStatistics._REGISTERED_FOR_SYS_EXIT_EVENT = True
-            atexit.register(AsyncUsageStatistics._process_event_queue)
-            signal.signal(signal.SIGINT, AsyncUsageStatistics._process_event_queue)
-            signal.signal(signal.SIGTERM, AsyncUsageStatistics._process_event_queue)
+            if threading.current_thread() is threading.main_thread():
+                atexit.register(AsyncUsageStatistics._process_event_queue)
+                signal.signal(signal.SIGINT, AsyncUsageStatistics._process_event_queue)  # type: ignore[arg-type]
+                signal.signal(signal.SIGTERM, AsyncUsageStatistics._process_event_queue)  # type: ignore[arg-type]
 
         # IF no existing Event matches the event_name
         # THEN create a new Event

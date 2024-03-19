@@ -29,14 +29,10 @@ class MultiColumnLayout(PageLayout):
 
     def __init__(
         self,
-        page: "Page",
+        page: "Page",  # type: ignore[name-defined]
         column_widths: typing.List[Decimal] = [],
-        footer_paint_method: typing.Optional[
-            typing.Callable[["Page", Rectangle], None]
-        ] = None,
-        header_paint_method: typing.Optional[
-            typing.Callable[["Page", Rectangle], None]
-        ] = None,
+        footer_paint_method: typing.Optional[typing.Callable[["Page", Rectangle], None]] = None,  # type: ignore[name-defined]
+        header_paint_method: typing.Optional[typing.Callable[["Page", Rectangle], None]] = None,  # type: ignore[name-defined]
         inter_column_margins: typing.List[Decimal] = [],
         margin_bottom: Decimal = Decimal(84.2),
         margin_left: Decimal = Decimal(59.5),
@@ -55,12 +51,8 @@ class MultiColumnLayout(PageLayout):
         super().__init__(page)
         self._column_widths: typing.List[Decimal] = column_widths
         self._inter_column_margins: typing.List[Decimal] = inter_column_margins
-        self._footer_paint_method: typing.Optional[
-            typing.Callable[["Page", Rectangle], None]
-        ] = footer_paint_method
-        self._header_paint_method: typing.Optional[
-            typing.Callable[["Page", Rectangle], None]
-        ] = header_paint_method
+        self._footer_paint_method: typing.Optional[typing.Callable[["Page", Rectangle], None]] = footer_paint_method  # type: ignore[name-defined]
+        self._header_paint_method: typing.Optional[typing.Callable[["Page", Rectangle], None]] = header_paint_method  # type: ignore[name-defined]
         self._margin_bottom: Decimal = margin_bottom
         self._margin_left: Decimal = margin_left
         self._margin_right: Decimal = margin_right
@@ -139,6 +131,13 @@ class MultiColumnLayout(PageLayout):
     #
 
     def add(self, layout_element: LayoutElement) -> "PageLayout":
+        """
+        This method adds a `LayoutElement` to the current `Page`.
+        The specific implementation of `PageLayout` should decide where the `LayoutElement` will be placed.
+        :param layout_element:  the LayoutElement to be added
+        :return:                self
+        """
+
         # IF we are going out of bounds
         # THEN do nothing, return self
         if self._active_column >= self._number_of_columns:
@@ -149,7 +148,11 @@ class MultiColumnLayout(PageLayout):
         from borb.pdf.canvas.layout.image.watermark import Watermark
 
         if isinstance(layout_element, Watermark):
-            layout_element.paint(self._page, None)
+            # the actual Rectangle doesn't matter
+            # it will be painted to fit the Page anyway
+            layout_element.paint(
+                self._page, Rectangle(Decimal(0), Decimal(0), Decimal(1), Decimal(1))
+            )
             return self
 
         # get the dimensions of the Page
@@ -163,7 +166,11 @@ class MultiColumnLayout(PageLayout):
         max_y: Decimal = page_height - self._margin_top
         min_y: Decimal = self._margin_bottom
         if self._previous_layout_element is not None:
-            max_y = self._previous_layout_element.get_previous_layout_box().get_y()
+            previous_layout_box: typing.Optional[
+                Rectangle
+            ] = self._previous_layout_element.get_previous_layout_box()
+            assert previous_layout_box is not None
+            max_y = previous_layout_box.get_y()
             max_y -= MultiColumnLayout._calculate_leading_between(
                 self._previous_layout_element, layout_element
             )
@@ -232,6 +239,7 @@ class MultiColumnLayout(PageLayout):
     def switch_to_next_column(self) -> "PageLayout":
         """
         This function forces this PageLayout to move to the next column on the Page
+        :return:    self
         """
         self._active_column += 1
         if self._active_column == self._number_of_columns:
@@ -242,6 +250,7 @@ class MultiColumnLayout(PageLayout):
     def switch_to_next_page(self) -> "PageLayout":
         """
         This function forces this PageLayout to move to the next Page
+        :return:    self
         """
         self._active_column = 0
         self._previous_layout_element = None
@@ -249,7 +258,7 @@ class MultiColumnLayout(PageLayout):
         # get Document
         from borb.pdf.document.document import Document
 
-        doc = self.get_page().get_root()  # type: ignore[attr-defined]
+        doc = self.get_page().get_root()
         assert isinstance(doc, Document)
 
         # determine page_width, page_height
@@ -271,7 +280,7 @@ class MultiColumnLayout(PageLayout):
 
 
 class SingleColumnLayout(MultiColumnLayout):
-    def __init__(self, page: "Page"):
+    def __init__(self, page: "Page"):  # type: ignore[name-defined]
         w: typing.Optional[Decimal] = page.get_page_info().get_width()
         h: typing.Optional[Decimal] = page.get_page_info().get_height()
         assert w is not None
@@ -290,7 +299,7 @@ class SingleColumnLayout(MultiColumnLayout):
 
 
 class ThreeColumnLayout(MultiColumnLayout):
-    def __init__(self, page: "Page"):
+    def __init__(self, page: "Page"):  # type: ignore[name-defined]
         w: typing.Optional[Decimal] = page.get_page_info().get_width()
         h: typing.Optional[Decimal] = page.get_page_info().get_height()
         assert w is not None
@@ -313,7 +322,7 @@ class ThreeColumnLayout(MultiColumnLayout):
 
 
 class TwoColumnLayout(MultiColumnLayout):
-    def __init__(self, page: "Page"):
+    def __init__(self, page: "Page"):  # type: ignore[name-defined]
         w: typing.Optional[Decimal] = page.get_page_info().get_width()
         h: typing.Optional[Decimal] = page.get_page_info().get_height()
         assert w is not None

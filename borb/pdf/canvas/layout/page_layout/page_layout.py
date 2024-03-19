@@ -39,11 +39,14 @@ class PageLayout:
         """
         This method adds a `LayoutElement` to the current `Page`.
         The specific implementation of `PageLayout` should decide where the `LayoutElement` will be placed.
+        :param layout_element:  the LayoutElement to be added
+        :return:                self
         """
         return self
 
     def get_page(self) -> Page:
         """
         This function returns the Page for which this PageLayout is active.
+        :return:    the Page
         """
         return self._page

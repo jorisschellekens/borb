@@ -8,7 +8,7 @@ import io
 import logging
 import typing
 
-from PIL import Image  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.filter.stream_decode_util import decode_stream
 from borb.io.read.pdf_object import PDFObject
@@ -45,6 +45,8 @@ class GrayscaleImageTransformer(Transformer):
     ) -> bool:
         """
         This function returns True if the object to be transformed is a grayscale Image
+        :param object:  the object to be transformed
+        :return:        True if the object is a grayscale Image, False otherwise
         """
         return (
             isinstance(object, Stream)
@@ -69,7 +71,12 @@ class GrayscaleImageTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a grayscale Image from a byte stream
+        This function transforms an Image Dictionary into an Image Object
+        :param object_to_transform:     the Image Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        an Image Object
         """
 
         # fmt: off
@@ -95,7 +102,7 @@ class GrayscaleImageTransformer(Transformer):
         # use PIL to process image bytes
         w = int(object_to_transform["Width"])
         h = int(object_to_transform["Height"])
-        tmp = Image.new("RGB", (w, h))
+        tmp = PILImageModule.new("RGB", (w, h))
         for i in range(0, w):
             for j in range(0, h):
                 k = i * h + j

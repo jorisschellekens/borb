@@ -8,9 +8,7 @@ import io
 import tempfile
 import typing
 from decimal import Decimal
-from pathlib import Path
-
-from gtts import gTTS  # type: ignore [import]
+import pathlib
 
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -155,15 +153,17 @@ class PDFToMP3(SimpleParagraphExtraction):
         """
         This function creates and then returns the audio-file for the text spoken at the given page
         """
+        import gtts  # type: ignore[import]
+
         sound_bytes_per_page: typing.Dict[int, bytes] = {}
         number_of_pages: int = len(self._text_to_speak_for_page.keys())
         for page_nr in range(0, number_of_pages):
-            sound_for_page = gTTS(
+            sound_for_page = gtts.gTTS(
                 text=self._text_to_speak_for_page[page_nr], lang=self._language
             )
 
             # store in temporary location
-            tmp_path: Path = Path(tempfile.NamedTemporaryFile().name)
+            tmp_path: pathlib.Path = pathlib.Path(tempfile.NamedTemporaryFile().name)
             sound_for_page.save(tmp_path)
 
             # read bytes

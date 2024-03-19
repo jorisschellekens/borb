@@ -35,11 +35,17 @@ class PagesTransformer(DictionaryTransformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents a /Pages Dictionary
+        This function returns True if the object to be transformed is a /Pages Dictionary
+        :param object:  the object to be transformed
+        :return:        True if the object is a /Pages Dictionary, False otherwise
         """
-        return isinstance(any, Dictionary) and "Type" in any and any["Type"] == "Pages"
+        return (
+            isinstance(object, Dictionary)
+            and "Type" in object
+            and object["Type"] == "Pages"
+        )
 
     def transform(
         self,
@@ -47,7 +53,10 @@ class PagesTransformer(DictionaryTransformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a /Pages Dictionary to a byte stream
+        This function transforms a /Pages Dictionary into a byte stream
+        :param object_to_transform:     the /Pages Dictionary to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) /Pages Dictionary
         """
         # fmt: off
         assert isinstance(object_to_transform, Dictionary)

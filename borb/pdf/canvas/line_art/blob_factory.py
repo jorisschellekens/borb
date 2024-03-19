@@ -7,9 +7,7 @@
 import random
 import typing
 from decimal import Decimal
-from math import cos
-from math import radians
-from math import sin
+import math
 
 
 class BlobFactory:
@@ -71,11 +69,13 @@ class BlobFactory:
     def blob(number_of_edges: int) -> typing.List[typing.Tuple[Decimal, Decimal]]:
         """
         This function returns a smoothed n-sided blob shape
+        :param number_of_edges:     the number of "edges" the blob should have
+        :return:                    the coordinates of the perimeter of the blob
         """
 
         # generate regular polygon
         points = [
-            (Decimal(cos(radians(x))), Decimal(sin(radians(x))))
+            (Decimal(math.cos(math.radians(x))), Decimal(math.sin(math.radians(x))))
             for x in range(0, 360, int(360 / number_of_edges))
         ]
 

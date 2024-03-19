@@ -61,24 +61,29 @@ class Token:
     def get_byte_offset(self) -> int:
         """
         Get the byte offset of this Token
+        :return:    the byte offset
         """
         return self._byte_offset
 
     def get_bytes(self) -> bytes:
         """
         Get the bytes of this Token
+        :return:    the bytes
         """
         return self._bytes
 
     def get_text(self, encoding: str = "latin1") -> str:
         """
         Get the text of this Token, using a given encoding (default: latin1)
+        :param encoding:    the encoding to be used (default is latin1)
+        :return:            the text
         """
         return self._bytes.decode(encoding)
 
     def get_token_type(self) -> TokenType:
         """
         Get the TokenType of this Token
+        :return:    the TokenType
         """
         return self._token_type
 
@@ -123,6 +128,7 @@ class LowLevelTokenizer:
         """
         This function retrieves the next non-comment Token.
         It returns None if no such Token exists (end of stream/file)
+        :return:    the next non-comment Token
         """
         t = self.next_token()
         while t is not None and t.get_token_type() == TokenType.COMMENT:
@@ -133,6 +139,7 @@ class LowLevelTokenizer:
         """
         This function retrieves the next Token.
         It returns None if no such Token exists (end of stream/file)
+        :return:    the next Token
         """
         ch = self._next_byte()
         if len(ch) == 0:
@@ -265,11 +272,15 @@ class LowLevelTokenizer:
         SEEK_CUR or 1 – current stream position; offset may be negative
         SEEK_END or 2 – end of the stream; offset is usually negative
         Return the new absolute position.
+        :param pos:         the desired (relative) stream position
+        :param whence:      how the position should be interpreted (relative to what)
+        :return:            the new absolute position
         """
         return self._io_source.seek(pos, whence)
 
     def tell(self) -> int:
         """
         Return the current stream position.
+        :return:    the current stream position
         """
         return self._io_source.tell()

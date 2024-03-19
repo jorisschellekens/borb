@@ -68,7 +68,7 @@ class BlockFlow(LayoutElement):
             ),
         )
 
-    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore  [name-defined]
+    def _paint_content_box(self, page: "Page", content_box: Rectangle) -> None:  # type: ignore[name-defined]
         tallest_y_coordinate: Decimal = content_box.get_y() + content_box.get_height()
         if len(self._content) > 0:
             tallest_y_coordinate -= self._content[0].get_margin_top()
@@ -83,7 +83,11 @@ class BlockFlow(LayoutElement):
                     max(tallest_y_coordinate - content_box.get_y(), Decimal(0)),
                 ),
             )
-            tallest_y_coordinate = e.get_previous_paint_box().get_y()
+            e_previous_paint_box: typing.Optional[
+                Rectangle
+            ] = e.get_previous_paint_box()
+            assert e_previous_paint_box is not None
+            tallest_y_coordinate = e_previous_paint_box.get_y()
             if (i + 1) < len(self._content):
                 margin: Decimal = max(
                     e.get_margin_bottom(), self._content[i + 1].get_margin_top()
@@ -103,6 +107,13 @@ class BlockFlow(LayoutElement):
         :return:    self
         """
 
+        # keep track of font size
+        if len(self._content) == 0:
+            try:
+                self._font_size = e.get_font_size()
+            except:
+                pass
+
         # if the last element of this BlockFlow is an InlineFlow
         # and the new element is also an InlineFlow, just add the two together
         if (
@@ -120,7 +131,7 @@ class BlockFlow(LayoutElement):
     def extend(self, es: typing.List[LayoutElement]) -> "BlockFlow":
         """
         This function adds a typing.List of LayoutElement(s) to this BlockFlow
-        :param es:   the LayoutElements to be added
+        :param es:  the LayoutElements to be added
         :return:    self
         """
         for e in es:

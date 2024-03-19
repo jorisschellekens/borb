@@ -63,6 +63,10 @@ class TestExtractText(TestCase):
 
     def test_extract_text(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[None] = None
         l = SimpleTextExtraction()
         with open(self.get_first_output_file(), "rb") as file_handle:

@@ -8,7 +8,7 @@ import io
 import re
 import typing
 from decimal import Decimal
-from functools import cmp_to_key
+import functools
 
 from borb.pdf.canvas.canvas import Canvas
 from borb.pdf.canvas.canvas_stream_processor import CanvasStreamProcessor
@@ -239,7 +239,7 @@ class RegularExpressionTextExtraction(EventListener):
             return
 
         # sort according to comparator
-        tris = sorted(tris, key=cmp_to_key(LeftToRightComparator.cmp))
+        tris = sorted(tris, key=functools.cmp_to_key(LeftToRightComparator.cmp))
 
         poss = []
 
@@ -307,8 +307,12 @@ class RegularExpressionTextExtraction(EventListener):
                 PDFMatch(
                     re_match=m,
                     glyph_bounding_boxes=[
-                        x.get_previous_layout_box()
-                        for x in tris[tri_start_index : (tri_stop_index + 1)]
+                        y
+                        for y in [
+                            x.get_previous_layout_box()
+                            for x in tris[tri_start_index : (tri_stop_index + 1)]
+                        ]
+                        if y is not None
                     ],
                     font_color=tris[tri_start_index].get_font_color(),
                     font_name=tris[tri_start_index].get_font().get_font_name() or "",

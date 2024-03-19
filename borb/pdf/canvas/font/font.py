@@ -152,7 +152,7 @@ class Font(Dictionary):
             f1[Name("FontWeight")] = f0["FontWeight"]
         f1[Name("Flags")] = f0["Flags"]
         if "FontBBox" in f0 and False:  # TODO
-            f1[Name("FontBBox")] = List().set_is_inline(True)  # type: ignore [attr-defined]
+            f1[Name("FontBBox")] = List().set_is_inline(True)
             for i in range(0, len(f0["FontBBox"])):
                 f1["FontBBox"].append(f0["FontBBox"][i])
         f1[Name("ItalicAngle")] = f0["ItalicAngle"]
@@ -309,6 +309,8 @@ class Font(Dictionary):
         """
         This function maps a character identifier to its unicode str.
         If no such mapping exists, this function returns None.
+        :param character_identifier:    the character identifier
+        :return:                        the matching unicode str
         """
         return None
 
@@ -316,6 +318,7 @@ class Font(Dictionary):
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
+        :return:    the ascent
         """
         return bDecimal(0)
 
@@ -323,6 +326,7 @@ class Font(Dictionary):
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
+        :return:    the descent
         """
         return bDecimal(0)
 
@@ -330,6 +334,7 @@ class Font(Dictionary):
         """
         This function returns the name of the Font
         e.g. "Helvetica"
+        :return:    the name of this Font
         """
         if "BaseFont" in self:
             return str(self["BaseFont"])
@@ -349,7 +354,9 @@ class Font(Dictionary):
 
         If all previously mentioned approaches fail, the width is estimated based on characters
         that may be present in the Font. (e.g. the width of 'A' is typically twice that of ' ').
+        :return:    (an estimate of) the width of the space character
         """
+
         # 1. if space is defined, and the width of space is defined, return that
         character_identifier: typing.Optional[
             int
@@ -413,6 +420,8 @@ class Font(Dictionary):
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
         this function returns None
+        :param character_identifier:    the character_identifier
+        :return:                        the width (in text space) of the character identifier
         """
         return None
 
@@ -420,5 +429,7 @@ class Font(Dictionary):
         """
         This function maps a unicode str to its character identifier.
         If no such mapping exists, this function returns None.
+        :param unicode:             the unicode character
+        :return:                    the character identifier matching the unicode character
         """
         return None

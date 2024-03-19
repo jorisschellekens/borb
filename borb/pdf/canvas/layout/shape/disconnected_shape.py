@@ -135,6 +135,7 @@ class DisconnectedShape(LayoutElement):
     def get_height(self) -> Decimal:
         """
         This function returns the height of this DisjointShape
+        :return:    the height
         """
         min_y = min([min(x[0][1], x[1][1]) for x in self._lines])
         max_y = max([max(x[0][1], x[1][1]) for x in self._lines])
@@ -143,6 +144,7 @@ class DisconnectedShape(LayoutElement):
     def get_width(self) -> Decimal:
         """
         This function returns the width of this DisjointShape
+        :return:    the width
         """
         min_x = min([min(x[0][0], x[1][0]) for x in self._lines])
         max_x = max([max(x[0][0], x[1][0]) for x in self._lines])
@@ -152,7 +154,10 @@ class DisconnectedShape(LayoutElement):
         self, lower_left_x: Decimal, lower_left_y: Decimal
     ) -> "DisconnectedShape":
         """
-        This method translates this DisjointShape so its lower left corner aligns with the given coordinates
+        This method translates this Shape so its lower left corner aligns with the given coordinates
+        :param lower_left_x:    the desired lower left x-coordinate
+        :param lower_left_y:    the desired lower left y-coordinate
+        :return:    self
         """
         min_x = min([min(x[0][0], x[1][0]) for x in self._lines])
         min_y = min([min(x[0][1], x[1][1]) for x in self._lines])
@@ -171,7 +176,7 @@ class DisconnectedShape(LayoutElement):
         """
         This function rotates the DisjointShape for a given angle
         :param angle_in_radians:    the angle
-        :return:                    this DisjointShape
+        :return:                    self
         """
         a: Decimal = Decimal(math.cos(angle_in_radians))
         b: Decimal = Decimal(-math.sin(angle_in_radians))
@@ -194,6 +199,10 @@ class DisconnectedShape(LayoutElement):
     ) -> "DisconnectedShape":
         """
         This method scales this Shape down to fit a given max. width / height
+        :param max_width:               the maximum width
+        :param max_height:              the maximum height
+        :param preserve_aspect_ratio:   True if the aspect ratio should be preserved, False otherwise
+        :return:                        self
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()
@@ -219,7 +228,11 @@ class DisconnectedShape(LayoutElement):
         preserve_aspect_ratio: bool = True,
     ) -> "DisconnectedShape":
         """
-        This method scales this Shape down to fit a given max. width / height
+        This method scales this Shape up to fit a given max. width / height
+        :param max_width:               the maximum width
+        :param max_height:              the maximum height
+        :param preserve_aspect_ratio:   True if the aspect ratio should be preserved, False otherwise
+        :return:                        self
         """
         w_scale = max_width / self.get_width()
         h_scale = max_height / self.get_height()

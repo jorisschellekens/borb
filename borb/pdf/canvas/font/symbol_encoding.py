@@ -50,6 +50,8 @@ SYMBOL_ENCODING_LOOKUP = [
 def symbol_decode(byte_input: bytes) -> str:
     """
     This function decodes bytes using SymbolEncoding
+    :param byte_input:  the input
+    :return:            a str (representing the decoded bytes)
     """
     s: str = ""
     for b in byte_input:
@@ -60,6 +62,8 @@ def symbol_decode(byte_input: bytes) -> str:
 def symbol_encode(str_input: str) -> bytes:
     """
     This function encodes a str using SymbolEncoding
+    :param str_input:   the input
+    :return:            bytes (representing the encoded str)
     """
     b: bytearray = bytearray()
     for c in str_input:
@@ -114,6 +118,8 @@ ZAPFDINGBATS_ENCODING_LOOKUP = [
 def zapfdingbats_decode(byte_input: bytes) -> str:
     """
     This function decodes bytes using ZapfDingbats
+    :param byte_input:  the input
+    :return:            a str (representing the decoded bytes)
     """
     s: str = ""
     for b in byte_input:
@@ -124,6 +130,8 @@ def zapfdingbats_decode(byte_input: bytes) -> str:
 def zapfdingbats_encode(str_input: str) -> bytes:
     """
     This function encodes a str using ZapfDingbats
+    :param str_input:   the input
+    :return:            bytes (representing the encoded str)
     """
     b: bytearray = bytearray()
     for c in str_input:

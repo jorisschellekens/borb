@@ -22,11 +22,6 @@ from borb.pdf.canvas.font.font import Font
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 
-try:
-    import black  # type: ignore[import]
-except ImportError:
-    pass
-
 
 class CodeBlock(Paragraph):
     """
@@ -72,6 +67,8 @@ class CodeBlock(Paragraph):
     ):
         # format string using black
         try:
+            import black  # type: ignore[import]
+
             text = black.format_str(text, mode=black.Mode())
         except:
             pass

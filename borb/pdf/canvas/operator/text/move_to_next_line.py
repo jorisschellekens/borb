@@ -39,6 +39,10 @@ class MoveToNextLine(CanvasOperator):
     ) -> None:
         """
         Invoke the T* operator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may be notified
+        :return:                            None
         """
         move_text_position_op: typing.Optional[
             CanvasOperator

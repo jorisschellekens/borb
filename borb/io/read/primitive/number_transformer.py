@@ -36,7 +36,9 @@ class NumberTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be transformed is a Decimal object
+        This function returns True if the object to be transformed is a number
+        :param object:  the object to be transformed
+        :return:        True if the object is a number, False otherwise
         """
         return isinstance(object, bDecimal)
 
@@ -48,8 +50,14 @@ class NumberTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a Decimal from a byte stream
+        This function transforms a PDF number into a (borb) Python Decimal
+        :param object_to_transform:     the number to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a Decimal Object
         """
+
         # fmt: off
         assert isinstance(object_to_transform, bDecimal), "object_to_transform must be of type Decimal"
         return bDecimal(object_to_transform).set_parent(parent_object)

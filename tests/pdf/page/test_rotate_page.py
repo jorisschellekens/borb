@@ -14,7 +14,7 @@ unittest.TestLoader.sortTestMethodsUsing = None
 
 
 class TestRemovePage(TestCase):
-    def test_create_dummy_pdf_document(self):
+    def test_create_dummy_pdf(self):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
@@ -37,6 +37,10 @@ class TestRemovePage(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_rotate_page_right(self):
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
@@ -47,6 +51,10 @@ class TestRemovePage(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_rotate_page_left(self):
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)

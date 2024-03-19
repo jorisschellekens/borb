@@ -61,6 +61,8 @@ class TestSimpleParagraphExtraction(TestCase):
             PDF.dumps(pdf_file_handle, pdf)
 
     def test_simple_paragraph_extraction(self):
+        # create PDF
+        self.test_create_dummy_pdf()
 
         # read document
         l: SimpleParagraphExtraction = SimpleParagraphExtraction(

@@ -9,7 +9,7 @@ Many techniques have been developed to present world maps that address diverse t
 """
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
@@ -25,6 +25,10 @@ class MapOfEurope(Map):
     While this is true of any map, these distortions reach extremes in a world map.
     Many techniques have been developed to present world maps that address diverse technical and aesthetic goals.
     """
+
+    #
+    # CONSTRUCTOR
+    #
 
     def __init__(
         self,
@@ -55,7 +59,8 @@ class MapOfEurope(Map):
     ):
         # init
         super(MapOfEurope, self).__init__(
-            geojson_file=(Path(__file__).parent / "geojson") / "map_of_europe.geojson",
+            geojson_file=(pathlib.Path(__file__).parent / "geojson")
+            / "map_of_europe.geojson",
             name_key="NAME",
             background_color=background_color,
             border_bottom=border_bottom,
@@ -82,3 +87,11 @@ class MapOfEurope(Map):
             stroke_color=stroke_color,
             vertical_alignment=vertical_alignment,
         )
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #

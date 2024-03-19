@@ -8,9 +8,9 @@ should be persisted, as well as some methods to traverse the object-graph.
 import copy
 import decimal
 import typing
-from types import MethodType
+import types
 
-import PIL
+from PIL import Image as PILImageModule
 
 import borb.io.read.types
 
@@ -84,9 +84,9 @@ class PDFObject:
 
         # Element
         if isinstance(self, borb.io.read.types.Element):
-            from borb.io.read.types import ET
+            import xml.etree.ElementTree
 
-            return str(ET.tostring(self))
+            return str(xml.etree.ElementTree.tostring(self))
 
         # Name
         if isinstance(self, borb.io.read.types.Name):
@@ -133,8 +133,8 @@ class PDFObject:
         This method allows you to pretend an object is actually a PDFObject.
         It adds all the methods that are present for a PDFObject.
         It also adds a utility hashing method for images (since PIL normally does not hash images)
-        :param non_borb_object:
-        :return:
+        :param non_borb_object: a (non-borb) object
+        :return:                an object that plays nice with borb
         """
 
         def _deepcopy_and_add_methods(self, memodict={}):
@@ -213,22 +213,30 @@ class PDFObject:
             return self
 
         # inject these methods in the object
-        non_borb_object.set_parent = MethodType(_set_parent, non_borb_object)
-        non_borb_object.get_parent = MethodType(_get_parent, non_borb_object)
-        non_borb_object.get_root = MethodType(_get_root, non_borb_object)
-        non_borb_object.set_reference = MethodType(_set_reference, non_borb_object)
-        non_borb_object.get_reference = MethodType(_get_reference, non_borb_object)
-        non_borb_object.set_is_inline = MethodType(_set_is_inline, non_borb_object)
-        non_borb_object.is_inline = MethodType(_is_inline, non_borb_object)
-        non_borb_object.set_is_unique = MethodType(_set_is_unique, non_borb_object)
-        non_borb_object.is_unique = MethodType(_is_unique, non_borb_object)
-        non_borb_object.__deepcopy__ = MethodType(
+        non_borb_object.set_parent = types.MethodType(_set_parent, non_borb_object)
+        non_borb_object.get_parent = types.MethodType(_get_parent, non_borb_object)
+        non_borb_object.get_root = types.MethodType(_get_root, non_borb_object)
+        non_borb_object.set_reference = types.MethodType(
+            _set_reference, non_borb_object
+        )
+        non_borb_object.get_reference = types.MethodType(
+            _get_reference, non_borb_object
+        )
+        non_borb_object.set_is_inline = types.MethodType(
+            _set_is_inline, non_borb_object
+        )
+        non_borb_object.is_inline = types.MethodType(_is_inline, non_borb_object)
+        non_borb_object.set_is_unique = types.MethodType(
+            _set_is_unique, non_borb_object
+        )
+        non_borb_object.is_unique = types.MethodType(_is_unique, non_borb_object)
+        non_borb_object.__deepcopy__ = types.MethodType(
             _deepcopy_and_add_methods, non_borb_object
         )
 
         # add a __hash__ method for PIL.Image.Image
-        if isinstance(non_borb_object, PIL.Image.Image):
-            non_borb_object.__hash__ = MethodType(_pil_image_hash, non_borb_object)  # type: ignore [assignment]
+        if isinstance(non_borb_object, PILImageModule.Image):
+            non_borb_object.__hash__ = types.MethodType(_pil_image_hash, non_borb_object)  # type: ignore[assignment]
 
         # return
         return non_borb_object

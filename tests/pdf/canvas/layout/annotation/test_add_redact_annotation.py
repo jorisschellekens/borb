@@ -45,6 +45,7 @@ class TestAddRedactAnnotation(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_add_redact_annotation(self):
+        self.test_create_pdf_to_redact()
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as fh:
             doc = PDF.loads(fh)
@@ -63,6 +64,7 @@ class TestAddRedactAnnotation(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_apply_redact_annotation(self):
+        self.test_add_redact_annotation()
         doc: typing.Optional[Document] = None
         with open(self.get_second_output_file(), "rb") as fh:
             doc = PDF.loads(fh)

@@ -11,7 +11,7 @@ import string
 import time
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
 # fmt: off
 from borb.pdf.canvas.color.color import Color
@@ -70,7 +70,7 @@ class A4PortraitInvoiceTemplate:
         # them in a completely different order than how we'd prefer to display them
         self._address: typing.Optional[typing.Tuple[str, str, str, str, str]] = None
         self._bill_to: typing.Optional[typing.Tuple[str, str, str, str, str]] = None
-        self._company_logo: typing.Optional[Image] = None
+        self._company_logo: typing.Optional[typing.Union[str, pathlib.Path]] = None
         self._currency_abbreviation: typing.Optional[str] = None
         self._creation_date_in_ms: typing.Optional[int] = None
         self._ship_to: typing.Optional[typing.Tuple[str, str, str, str, str]] = None
@@ -174,8 +174,12 @@ class A4PortraitInvoiceTemplate:
         for chunk_of_text, url, should_be_marked in chunks_of_text:
             if not should_be_marked:
                 continue
+            previous_layout_box: typing.Optional[
+                Rectangle
+            ] = chunk_of_text.get_previous_layout_box()
+            assert previous_layout_box is not None
             page_layout.get_page().add_annotation(
-                RemoteGoToAnnotation(chunk_of_text.get_previous_layout_box(), url)
+                RemoteGoToAnnotation(previous_layout_box, url)
             )
 
     def _build(self) -> None:
@@ -218,16 +222,19 @@ class A4PortraitInvoiceTemplate:
         # _subtotal
         if self._subtotal is None:
             self._subtotal = sum([x[4] for x in self._items])
+        assert self._subtotal is not None
 
         # _total
         if self._total is None:
             if self._vat is None:
                 self._vat = self._subtotal * 0.10
             self._total = self._subtotal + self._vat
+        assert self._total is not None
 
         # _vat
         if self._vat is None:
             self._vat = self._subtotal * 0.10
+        assert self._vat is not None
 
         # add logo to PageLayout
         THIRTY_TWO: Decimal = Decimal(32)
@@ -469,7 +476,9 @@ class A4PortraitInvoiceTemplate:
         buffer.seek(0)
         return buffer.getvalue()
 
-    def save(self, path_or_str: typing.Union[str, Path]) -> "A4PortraitInvoiceTemplate":
+    def save(
+        self, path_or_str: typing.Union[str, pathlib.Path]
+    ) -> "A4PortraitInvoiceTemplate":
         """
         This function stores this InvoiceTemplate at the given path
         :param path_or_str:     the path or str representing the location at which to store this A4PortraitInvoiceTemplate
@@ -534,7 +543,7 @@ class A4PortraitInvoiceTemplate:
         return self
 
     def set_company_logo(
-        self, path_or_uri: typing.Union[str, Path]
+        self, path_or_uri: typing.Union[str, pathlib.Path]
     ) -> "A4PortraitInvoiceTemplate":
         """
         This function sets the URI (str) or Path for the company logo

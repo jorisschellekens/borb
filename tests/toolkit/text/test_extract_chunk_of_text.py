@@ -67,6 +67,9 @@ class TestExtractChunkOfText(TestCase):
             def get_chunks_of_text(self) -> typing.List[ChunkOfText]:
                 return self._chunks_of_text
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
         # read PDF
         doc: typing.Optional[Document] = None
         l: PrivateEventListener = PrivateEventListener()

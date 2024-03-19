@@ -13,7 +13,7 @@ There are also a large number of exceptions, which further complicates matters.
 """
 import json
 import typing
-from pathlib import Path
+import pathlib
 
 from borb.datastructure.str_trie import Trie
 
@@ -46,8 +46,10 @@ class Hyphenation:
         self._exceptions: typing.List[str] = []
 
         # load data
-        resources_dir: Path = Path(__file__).parent / "resources"
-        hyphenation_pattern_file: Path = resources_dir / ("%s.json" % iso_language_code)
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
+        hyphenation_pattern_file: pathlib.Path = resources_dir / (
+            "%s.json" % iso_language_code
+        )
         assert hyphenation_pattern_file.exists(), (
             "No hyphenation file for %s" % iso_language_code
         )
@@ -89,6 +91,9 @@ class Hyphenation:
         """
         This function hyphenates the input word, inserting the hyphenation_character wherever the word *can* be split
         in syllables. This function returns the word with hyphenation_character inserted.
+        :param s:                       the str to be hyphenated
+        :param hyphenation_character:   the character to insert to mark hyphenation
+        :return:                        the hyphenated str
         """
         # don't spend effort on stupid input
         # fmt: off

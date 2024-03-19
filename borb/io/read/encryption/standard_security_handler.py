@@ -86,7 +86,7 @@ class StandardSecurityHandler:
         assert len(self._o) == 32
 
         # /ID
-        trailer: typing.Optional["PDFObject"] = encryption_dictionary.get_parent()
+        trailer: typing.Optional["PDFObject"] = encryption_dictionary.get_parent()  # type: ignore[name-defined]
         assert trailer is not None
         assert isinstance(trailer, Dictionary)
         if "ID" in trailer:
@@ -95,7 +95,7 @@ class StandardSecurityHandler:
         # (Required) A set of flags specifying which operations shall be permitted
         # when the document is opened with user access (see Table 22).
         assert "P" in encryption_dictionary
-        self._permissions: int = int(encryption_dictionary.get("P"))  # type: ignore [arg-type]
+        self._permissions: int = int(encryption_dictionary.get("P"))  # type: ignore[arg-type]
 
         # (Optional; PDF 1.4; only if V is 2 or 3) The length of the encryption key, in bits.
         # The value shall be a multiple of 8, in the range 40 to 128. Default value: 40.
@@ -113,9 +113,9 @@ class StandardSecurityHandler:
         # Streams") shall be encrypted. Conforming products should respect this
         # value.
         # Default value: true.
-        self._encrypt_metadata: bool = encryption_dictionary.get(
-            "EncryptMetadata", Boolean(True)
-        )
+        # fmt: off
+        self._encrypt_metadata: bool = encryption_dictionary.get("EncryptMetadata", Boolean(True))
+        # fmt: on
 
         # verify password(s)
         password: typing.Optional[bytes] = None
@@ -347,6 +347,8 @@ class StandardSecurityHandler:
     def authenticate_owner_password(self, owner_password: bytes) -> bool:
         """
         Algorithm 7: Authenticating the owner password
+        :param owner_password:  the owner password
+        :return:                True if the owner password matches, False otherwise
         """
         # a) Compute an encryption key from the supplied password string, as described in steps (a) to (d) of
         # "Algorithm 3: Computing the encryption dictionary’s O (owner password) value".
@@ -368,6 +370,8 @@ class StandardSecurityHandler:
     def authenticate_user_password(self, user_password: bytes) -> bool:
         """
         Algorithm 6: Authenticating the user password
+        :param user_password:   the user password
+        :return:                True if the user password matches, False otherwise
         """
         # a) Perform all but the last step of "Algorithm 4: Computing the encryption dictionary’s U (user password)
         # value (Security handlers of revision 2)" or "Algorithm 5: Computing the encryption dictionary’s U (user
@@ -388,15 +392,25 @@ class StandardSecurityHandler:
         return self._u == u_value
 
     def decrypt(self, object: AnyPDFType) -> AnyPDFType:
+        """
+        This function decrypts an object inside the PDF
+        :param object:  the object to be decrypted
+        :return:        the decrypted object
+        """
         return self.encrypt(object)
 
     def encrypt(self, object: AnyPDFType) -> AnyPDFType:
+        """
+        This function encrypts an object inside the PDF
+        :param object:  the object to be encrypted
+        :return:        the encrypted object
+        """
         # a) Obtain the object number and generation number from the object identifier of the string or stream to be
         # encrypted (see 7.3.10, "Indirect Objects"). If the string is a direct object, use the identifier of the indirect
         # object containing it.
         reference: typing.Optional[Reference] = object.get_reference()
         if reference is None:
-            parent: typing.Optional["PDFObject"] = object.get_parent()
+            parent: typing.Optional["PDFObject"] = object.get_parent()  # type: ignore[name-defined]
             assert parent is not None
             reference = parent.get_reference()
         assert reference is not None

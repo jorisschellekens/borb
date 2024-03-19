@@ -71,7 +71,9 @@ class RootDictionaryTransformer(Transformer):
         object: typing.Union[io.BufferedIOBase, io.RawIOBase, io.BytesIO, AnyPDFType],
     ) -> bool:
         """
-        This function returns True if the object to be converted represents a /Catalog Dictionary
+        This function returns True if the object to be transformed is a /Catalog Dictionary
+        :param object:  the object to be transformed
+        :return:        True if the object is a /Catalog Dictionary, False otherwise
         """
         return (
             isinstance(object, typing.Dict)
@@ -87,8 +89,14 @@ class RootDictionaryTransformer(Transformer):
         event_listeners: typing.List[EventListener] = [],
     ) -> typing.Any:
         """
-        This function reads a /Catalog Dictionary from a byte stream
+        This function transforms an /Catalog Dictionary
+        :param object_to_transform:     the /Catalog Dictionary to transform
+        :param parent_object:           the parent Object
+        :param context:                 the ReadTransformerState (containing passwords, etc)
+        :param event_listeners:         the EventListener objects that may need to be notified
+        :return:                        a /Catalog Dictionary
         """
+
         # fmt: off
         assert isinstance(object_to_transform, Dictionary), "object_to_transform must be of type Dictionary"
         # fmt: on

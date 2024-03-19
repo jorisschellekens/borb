@@ -1,7 +1,7 @@
 import unittest
 
 import requests
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule  # type: ignore [import]
 
 from borb.io.read.pdf_object import PDFObject
 from borb.pdf.canvas.canvas import Canvas
@@ -66,7 +66,7 @@ class TestPDFObjectMethodsBorbTypes(unittest.TestCase):
         assert hasattr(obj0, "to_json")
 
     def test_image_has_pdfobject_methods(self):
-        obj0 = PILImage.open(
+        obj0 = PILImageModule.open(
             requests.get(
                 "https://images.unsplash.com/photo-1597826368522-9f4cb5a6ba48?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw",
                 stream=True,

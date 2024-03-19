@@ -134,7 +134,7 @@ class Document(Dictionary):
         This function adds an outline to this Document
         """
         destination = List()
-        destination.set_is_inline(True)  # type: ignore [attr-defined]
+        destination.set_is_inline(True)
         destination.append(bDecimal(page_nr))
         destination.append(destination_type.value)
         if destination_type == DestinationType.X_Y_Z:
@@ -209,7 +209,7 @@ class Document(Dictionary):
         if "Outlines" not in self["XRef"]["Trailer"]["Root"]:
             outline_dictionary: Dictionary = Dictionary()
             self["XRef"]["Trailer"]["Root"][Name("Outlines")] = outline_dictionary
-            outline_dictionary.set_parent(  # type: ignore [attr-defined]
+            outline_dictionary.set_parent(
                 self["XRef"]["Trailer"]["Root"][Name("Outlines")]
             )
             outline_dictionary[Name("Type")] = Name("Outlines")
@@ -402,7 +402,7 @@ class Document(Dictionary):
         )
         # set /Parent
         page[Name("Parent")] = self["XRef"]["Trailer"]["Root"]["Pages"]
-        page.set_parent(kids)  # type: ignore [attr-defined]
+        page.set_parent(kids)
         # return
         return self
 

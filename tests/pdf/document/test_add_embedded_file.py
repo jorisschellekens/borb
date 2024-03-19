@@ -63,6 +63,10 @@ class TestAddEmbeddedFile(TestCase):
 
     def test_append_binary_file(self):
 
+        # create PDF
+        self.test_create_dummy_pdf()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_first_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)
@@ -85,6 +89,11 @@ class TestAddEmbeddedFile(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_extract_embedded_file(self):
+
+        # create PDF
+        self.test_append_binary_file()
+
+        # read PDF
         doc: typing.Optional[Document] = None
         with open(self.get_second_output_file(), "rb") as in_file_handle:
             doc = PDF.loads(in_file_handle)

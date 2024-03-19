@@ -11,15 +11,7 @@ required.
 """
 import typing
 from decimal import Decimal
-from math import atan
-from math import ceil
-from math import cos
-from math import degrees
-from math import exp
-from math import floor
-from math import log
-from math import sin
-from math import sqrt
+import math
 
 
 class PostScriptEval:
@@ -174,7 +166,7 @@ class PostScriptEval:
                     # fmt: on
                     arg0 = stk[-1]
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(atan(arg0)))
+                    stk.append(Decimal(math.atan(arg0)))
                     continue
                 # ceiling
                 if operator == "ceiling":
@@ -184,7 +176,7 @@ class PostScriptEval:
                     # fmt: on
                     arg0 = stk[-1]
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(ceil(arg0)))
+                    stk.append(Decimal(math.ceil(arg0)))
                     continue
                 # cos
                 if operator == "cos":
@@ -194,7 +186,7 @@ class PostScriptEval:
                     # fmt: on
                     arg0 = stk[-1]
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(cos(degrees(arg0))))
+                    stk.append(Decimal(math.cos(math.degrees(arg0))))
                     continue
                 # cvi
                 if operator == "cvi":
@@ -263,7 +255,7 @@ class PostScriptEval:
                         arg0, Decimal
                     ), "Unable to apply operator exp, unexpected type"
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(exp(arg0)))
+                    stk.append(Decimal(math.exp(arg0)))
                     continue
                 # false
                 if operator == "false":
@@ -279,7 +271,7 @@ class PostScriptEval:
                         arg0, Decimal
                     ), "Unable to apply operator floor, unexpected type"
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(floor(arg0)))
+                    stk.append(Decimal(math.floor(arg0)))
                     continue
                 # ge
                 if operator == "ge":
@@ -340,7 +332,7 @@ class PostScriptEval:
                     arg0 = stk[-1]
                     assert isinstance(arg0, Decimal)
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(log(arg0)))
+                    stk.append(Decimal(math.log(arg0)))
                     continue
                 # log
                 if operator == "log":
@@ -350,7 +342,7 @@ class PostScriptEval:
                     arg0 = stk[-1]
                     assert isinstance(arg0, Decimal)
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(log(arg0, Decimal(10))))
+                    stk.append(Decimal(math.log(arg0, Decimal(10))))
                     continue
                 # lt
                 if operator == "lt":
@@ -457,7 +449,7 @@ class PostScriptEval:
                     arg0 = stk[-1]
                     assert isinstance(arg0, Decimal)
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(sin(degrees(arg0))))
+                    stk.append(Decimal(math.sin(math.degrees(arg0))))
                     continue
                 # sqrt
                 if operator == "sqrt":
@@ -467,7 +459,7 @@ class PostScriptEval:
                     arg0 = stk[-1]
                     assert isinstance(arg0, Decimal)
                     stk.pop(len(stk) - 1)
-                    stk.append(Decimal(sqrt(arg0)))
+                    stk.append(Decimal(math.sqrt(arg0)))
                     continue
                 # sub
                 if operator == "sub":

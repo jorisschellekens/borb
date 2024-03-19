@@ -70,7 +70,10 @@ class TestExtractKeywords(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_extract_keywords_using_tf_idf_from_document(self):
+        # create PDF
+        self.test_create_dummy_pdf()
 
+        # read PDF
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             l = TFIDFKeywordExtraction(ENGLISH_STOP_WORDS)
             doc = PDF.loads(pdf_file_handle, [l])
@@ -104,7 +107,10 @@ class TestExtractKeywords(TestCase):
         self.check_pdf_using_validator(self.get_second_output_file())
 
     def test_extract_keywords_using_textrank_from_document(self):
+        # create PDF
+        self.test_create_dummy_pdf()
 
+        # read PDF
         l = TextRankKeywordExtraction()
         with open(self.get_first_output_file(), "rb") as pdf_file_handle:
             doc = PDF.loads(pdf_file_handle, [l])

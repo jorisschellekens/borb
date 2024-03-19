@@ -11,8 +11,7 @@
 """
 
 import random
-from pathlib import Path
-
+import pathlib
 from borb.pdf.canvas.lipsum.text_generator import TextGenerator
 
 
@@ -48,7 +47,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(
             resources_dir / "mm_agatha_christie.json"
         )
@@ -69,7 +68,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(
             resources_dir / "mm_alan_alexander_milne.json"
         )
@@ -90,7 +89,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(
             resources_dir / "mm_arthur_conan_doyle.json"
         )
@@ -111,7 +110,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(resources_dir / "mm_emily_bronte.json")
         return "".join(
             [
@@ -130,7 +129,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(resources_dir / "mm_jane_austen.json")
         return "".join(
             [
@@ -149,7 +148,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(
             resources_dir / "mm_lewis_carroll.json"
         )
@@ -171,7 +170,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(resources_dir / "mm_lipsum.json")
         return "".join(
             [
@@ -190,7 +189,7 @@ class Lipsum:
         assert (
             number_of_sentences >= 1
         ), "number_of_sentences must be a positive non-zero quantity"
-        resources_dir: Path = Path(__file__).parent / "resources"
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
         tg: TextGenerator = TextGenerator().load(resources_dir / "mm_mary_shelley.json")
         return "".join(
             [

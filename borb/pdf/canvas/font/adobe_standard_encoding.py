@@ -52,6 +52,8 @@ ADOBE_STANDARD_ENCODING_LOOKUP = [
 def adobe_standard_decode(byte_input: bytes) -> str:
     """
     This function decodes bytes using StandardEncoding
+    :param byte_input:  the input
+    :return:            a str (representing the decoded bytes)
     """
     s: str = ""
     for b in byte_input:
@@ -62,6 +64,8 @@ def adobe_standard_decode(byte_input: bytes) -> str:
 def adobe_standard_encode(str_input: str) -> bytes:
     """
     This function encodes a str using StandardEncoding
+    :param str_input:   the input
+    :return:            bytes (representing the encoded str)
     """
     b: bytearray = bytearray()
     for c in str_input:

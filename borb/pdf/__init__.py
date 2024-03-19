@@ -46,9 +46,8 @@
 from .canvas.color.color import CMYKColor
 from .canvas.color.color import Color
 from .canvas.color.color import GrayColor
-from .canvas.color.color import HSVColor
-from .canvas.color.color import HSVColor
 from .canvas.color.color import HexColor
+from .canvas.color.color import HSVColor
 from .canvas.color.color import RGBColor
 from .canvas.color.color import X11Color
 from .canvas.color.farrow_and_ball import FarrowAndBall
@@ -139,7 +138,7 @@ from .document.document import Document
 from .page.page import Page
 from .pdf import PDF
 from .template.a4_2_column_portrait_template import A42ColumnPortraitTemplate
-from .template.a4_portrait_template import A4PortraitTemplate
+from .template.a4_portrait_invoice_template import A4PortraitInvoiceTemplate
 from .template.a4_portrait_template import A4PortraitTemplate
 from .template.slide_template import SlideTemplate
 # fmt: on

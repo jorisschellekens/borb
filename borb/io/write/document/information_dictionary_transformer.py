@@ -8,7 +8,7 @@ import datetime
 import logging
 import random
 import typing
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 
 from borb.io.read.types import AnyPDFType
 from borb.io.read.types import Decimal as bDecimal
@@ -61,7 +61,10 @@ class InformationDictionaryTransformer(Transformer):
             and "Trailer" in document["XRef"]
             and "Root" in document["XRef"]["Trailer"]
             and "Metadata" in document["XRef"]["Trailer"]["Root"]
-            and isinstance(document["XRef"]["Trailer"]["Root"]["Metadata"], ET.Element)
+            and isinstance(
+                document["XRef"]["Trailer"]["Root"]["Metadata"],
+                xml.etree.ElementTree.Element,
+            )
         ):
             xmp_document_info: XMPDocumentInfo = document.get_xmp_document_info()
             for k, v in {
@@ -242,17 +245,19 @@ class InformationDictionaryTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
         This function returns True if the object to be transformed is an /Info Dictionary
+        :param object:  the object to be transformed
+        :return:        True if the object is an /Info Dictionary, False otherwise
         """
-        if not isinstance(any, Dictionary):
+        if not isinstance(object, Dictionary):
             return False
-        parent: typing.Any = any.get_parent()
+        parent: typing.Any = object.get_parent()
         return (
             isinstance(parent, Dictionary)
             and "Info" in parent
-            and parent["Info"] == any
+            and parent["Info"] == object
         )
 
     def transform(
@@ -261,7 +266,10 @@ class InformationDictionaryTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes an /Info Dictionary to a byte stream
+        This function transforms an /Info Dictionary into a byte stream
+        :param object_to_transform:     the /Info Dictionary to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) /Info Dictionary
         """
 
         # get Document
@@ -296,7 +304,7 @@ class InformationDictionaryTransformer(Transformer):
             document["XRef"]["Trailer"]["Root"][Name("Metadata")] = self.get_reference(
                 xmp_metadata_stream, context
             )
-            xmp_metadata_stream.set_parent(document["XRef"]["Trailer"]["Root"])  # type: ignore [attr-defined]
+            xmp_metadata_stream.set_parent(document["XRef"]["Trailer"]["Root"])  # type: ignore[attr-defined]
 
             # delegate XMP /Metadata
             for h in self.get_root_transformer()._handlers:

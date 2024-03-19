@@ -41,7 +41,8 @@ class Parser:
                     len(operators) > 0
                     and operators[-1].get_type() != TokenType.LEFT_PARENTHESIS
                     and (
-                        operators[-1].get_precedence() > t.get_precedence()
+                        (operators[-1].get_precedence() or 0)
+                        > (t.get_precedence() or 0)
                         or (
                             operators[-1].get_precedence() == t.get_precedence()
                             and t.get_is_left_associative()
@@ -112,8 +113,10 @@ class Parser:
                 continue
 
             if t.get_type() == TokenType.OPERATOR:
-                assert len(args) >= t.get_number_of_arguments()
-                for _ in range(0, t.get_number_of_arguments()):
+                op_number_of_args: typing.Optional[int] = t.get_number_of_arguments()
+                assert op_number_of_args is not None
+                assert len(args) >= op_number_of_args
+                for _ in range(0, op_number_of_args):
                     # noinspection PyProtectedMember
                     t._children.append(args[-1])
                     args.pop(-1)
@@ -121,8 +124,10 @@ class Parser:
                 continue
 
             if t.get_type() == TokenType.FUNCTION:
-                assert len(args) >= t.get_number_of_arguments()
-                for _ in range(0, t.get_number_of_arguments()):
+                fn_number_of_args: typing.Optional[int] = t.get_number_of_arguments()
+                assert fn_number_of_args is not None
+                assert len(args) >= fn_number_of_args
+                for _ in range(0, fn_number_of_args):
                     # noinspection PyProtectedMember
                     t._children.append(args[-1])
                     args.pop(-1)

@@ -12,7 +12,8 @@ import datetime
 import typing
 import zlib
 from decimal import Decimal
-from pathlib import Path
+import pathlib
+
 # FIX: circular imports (2/2)
 from typing import TYPE_CHECKING
 
@@ -46,7 +47,9 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
     #
 
     def __init__(
-        self, tesseract_data_dir: Path, minimal_confidence: Decimal = Decimal(0.75)
+        self,
+        tesseract_data_dir: pathlib.Path,
+        minimal_confidence: Decimal = Decimal(0.75),
     ):
         super(OCRAsOptionalContentGroup, self).__init__(
             tesseract_data_dir, minimal_confidence

@@ -177,7 +177,9 @@ class FarrowAndBall(HexColor):
     @staticmethod
     def find_nearest_farrow_and_ball_color(color: Color) -> "FarrowAndBall":
         """
-        This function find the nearest `Farrow and Ball` equivalent for a given Color
+        This function find the nearest FarrowAndBall equivalent for a given Color
+        :param color:   the input Color
+        :return:        the (nearest) FarrowAndBall Color
         """
         rgb_color_001: RGBColor = color.to_rgb()
         min_dist: typing.Optional[Decimal] = None
@@ -198,6 +200,7 @@ class FarrowAndBall(HexColor):
 
     def get_name(self) -> str:
         """
-        This function returns the name of this `Farrow and Ball` color
+        This function returns the name of this FarrowAndBall color
+        :return:    the name of this FarrowAndBall Color
         """
         return self.color_name

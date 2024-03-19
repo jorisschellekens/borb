@@ -8,7 +8,7 @@ CIDFont. A composite font shall be represented by a font dictionary whose Subtyp
 """
 import logging
 import typing
-from pathlib import Path
+import pathlib
 
 from borb.io.read.types import Decimal as bDecimal
 from borb.io.read.types import List
@@ -56,7 +56,7 @@ class Type0Font(Font):
 
     @staticmethod
     def _find_best_matching_predefined_cmap(cmap_name: str) -> typing.Dict[int, str]:
-        cmap_dir: Path = Path(__file__).parent / "cmaps"
+        cmap_dir: pathlib.Path = pathlib.Path(__file__).parent / "cmaps"
         assert cmap_dir.exists(), "cmaps dir not found."
         predefined_cmaps: typing.List[str] = [x.name for x in cmap_dir.iterdir()]
 
@@ -148,6 +148,8 @@ class Type0Font(Font):
         """
         This function maps a character identifier to its unicode str.
         If no such mapping exists, this function returns None.
+        :param character_identifier:    the character identifier
+        :return:                        the matching unicode str
         """
 
         # If the font dictionary contains a ToUnicode CMap (see 9.10.3, "ToUnicode CMaps"), use that CMap to
@@ -195,6 +197,7 @@ class Type0Font(Font):
         """
         This function returns the maximum height above the baseline reached by glyphs in this font.
         The height of glyphs for accented characters shall be excluded.
+        :return:    the ascent
         """
         # fmt: off
         assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
@@ -208,6 +211,7 @@ class Type0Font(Font):
         """
         This function returns the maximum depth below the baseline reached by glyphs in this font.
         The value shall be a negative number.
+        :return:    the descent
         """
         # fmt: off
         assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
@@ -222,6 +226,8 @@ class Type0Font(Font):
         This function returns the width (in text space) of a given character identifier.
         If this Font is unable to represent the glyph that corresponds to the character identifier,
         this function returns None
+        :param character_identifier:    the character_identifier
+        :return:                        the width (in text space) of the character identifier
         """
         # fmt: off
         assert "DescendantFonts" in self, "Type0Font must have a /DescendantFonts entry"
@@ -235,6 +241,8 @@ class Type0Font(Font):
         """
         This function maps a unicode str to its character identifier.
         If no such mapping exists, this function returns None.
+        :param unicode:             the unicode character
+        :return:                    the character identifier matching the unicode character
         """
         if Name("ToUnicode") in self:
             self._read_to_unicode()

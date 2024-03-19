@@ -38,11 +38,13 @@ class StreamTransformer(Transformer):
     # PUBLIC
     #
 
-    def can_be_transformed(self, any: AnyPDFType):
+    def can_be_transformed(self, object: AnyPDFType):
         """
-        This function returns True if the object to be converted represents a Stream object
+        This function returns True if the object to be transformed is a Stream
+        :param object:  the object to be transformed
+        :return:        True if the object is a Stream, False otherwise
         """
-        return isinstance(any, Stream)
+        return isinstance(object, Stream)
 
     def transform(
         self,
@@ -50,7 +52,10 @@ class StreamTransformer(Transformer):
         context: typing.Optional[WriteTransformerState] = None,
     ):
         """
-        This method writes a Stream to a byte stream
+        This function transforms a Stream into a byte stream
+        :param object_to_transform:     the Stream to transform
+        :param context:                 the WriteTransformerState (containing passwords, etc)
+        :return:                        a (serialized) Stream
         """
         # fmt: off
         assert (context is not None), "context must be defined in order to write Stream objects."

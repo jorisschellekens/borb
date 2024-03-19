@@ -6,10 +6,10 @@ This implementation of LayoutElement represents an Image
 """
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
 import requests
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.io.read.pdf_object import PDFObject
 from borb.io.read.types import Dictionary
@@ -33,7 +33,7 @@ class Image(LayoutElement):
 
     def __init__(
         self,
-        image: typing.Union[str, Path, PILImage.Image],
+        image: typing.Union[str, pathlib.Path, PILImageModule.Image],
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
@@ -84,7 +84,7 @@ class Image(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        self._image: typing.Union[str, Path, PILImage.Image] = image
+        self._image: typing.Union[str, pathlib.Path, PILImageModule.Image] = image
         self._width: typing.Optional[Decimal] = width
         self._height: typing.Optional[Decimal] = height
 
@@ -103,10 +103,10 @@ class Image(LayoutElement):
             self._height,
         )
 
-    def _get_image_resource_name(self, image: PILImage, page: Page):  # type: ignore[valid-type]
+    def _get_image_resource_name(self, image: PILImageModule, page: Page):  # type: ignore[valid-type]
         # create resources if needed
         if "Resources" not in page:
-            page[Name("Resources")] = Dictionary().set_parent(page)  # type: ignore [attr-defined]
+            page[Name("Resources")] = Dictionary().set_parent(page)
         if "XObject" not in page["Resources"]:
             page["Resources"][Name("XObject")] = Dictionary()
 
@@ -156,7 +156,7 @@ class Image(LayoutElement):
         """
         # load Image from URL
         if isinstance(self._image, str):
-            self._image = PILImage.open(
+            self._image = PILImageModule.open(
                 requests.get(
                     self._image,
                     stream=True,
@@ -166,12 +166,12 @@ class Image(LayoutElement):
                 ).raw,
             )
 
-        # load image from Path
-        if isinstance(self._image, Path):
-            self._image = PILImage.open(self._image)
+        # load image
+        if isinstance(self._image, pathlib.Path):
+            self._image = PILImageModule.open(self._image)
 
         # self._image should be a PIL Image by now
-        assert isinstance(self._image, PILImage.Image)
+        assert isinstance(self._image, PILImageModule.Image)
         # self._image = self._image.resize(size=(int(self._width), int(self._height)))
         PDFObject.add_pdf_object_methods(self._image)
 
@@ -181,10 +181,11 @@ class Image(LayoutElement):
         if self._height is None:
             self._height = Decimal(self._image.height)
 
-    def get_PIL_image(self) -> PILImage.Image:
+    def get_PIL_image(self) -> PILImageModule.Image:
         """
-        This function returns the PIL Image underlying this borb Image
-        :return:    the PIL Image underlying this borb Image
+        This function returns the PIL.Image.Image underlying this borb Image
+        :return:    the PIL.Image.Image underlying this borb Image
         """
         self.force_load_image()
+        assert isinstance(self._image, PILImageModule.Image)
         return self._image

@@ -9,9 +9,10 @@ import io
 import random
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
 # fmt: off
+from borb.pdf.canvas.layout.shape.shapes import Shapes
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.geometry.rectangle import Rectangle
@@ -144,6 +145,7 @@ class SlideTemplate:
             if self._document.get_page(i) == s:
                 page_nr = i
                 break
+        assert page_nr is not None
         self._slides_to_be_numbered.append(page_nr)
 
         # add title
@@ -163,7 +165,9 @@ class SlideTemplate:
                     Decimal(950 // 2), Decimal(0), Decimal(950 // 2), Decimal(540)
                 ),
             )
-            prev_bottom_y = p0.get_previous_paint_box().get_y()
+            p0_prev_paint_box: typing.Optional[Rectangle] = p0.get_previous_paint_box()
+            assert p0_prev_paint_box is not None
+            prev_bottom_y = p0_prev_paint_box.get_y()
             must_have_top_padding = False
 
         # add subtitle
@@ -182,7 +186,9 @@ class SlideTemplate:
                     Decimal(950 // 2), Decimal(0), Decimal(950 // 2), prev_bottom_y
                 ),
             )
-            prev_bottom_y = p0.get_previous_paint_box().get_y()
+            p0_prev_paint_box = p0.get_previous_paint_box()
+            assert p0_prev_paint_box is not None
+            prev_bottom_y = p0_prev_paint_box.get_y()
             must_have_top_padding = False
 
         # text
@@ -232,9 +238,9 @@ class SlideTemplate:
         s: Page = self._split_in_half_slide(subtitle=subtitle, text=text, title=title)
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot  # type: ignore[import]
 
-        fig, ax = plt.subplots()
+        fig, ax = matplotlib.pyplot.subplots()
         ax.bar(labels, xs)
         if y_label is not None:
             ax.set_ylabel(y_label)
@@ -242,7 +248,7 @@ class SlideTemplate:
 
         # add chart
         Chart(
-            plt,
+            matplotlib.pyplot,
             padding_top=Decimal(540 // 10),
             padding_right=Decimal(540 // 10),
             padding_bottom=Decimal(540 // 10),
@@ -278,9 +284,9 @@ class SlideTemplate:
         s: Page = self._blank_slide()
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots()
+        fig, ax = matplotlib.pyplot.subplots()
         ax.bar(labels, xs)
         if y_label is not None:
             ax.set_ylabel(y_label)
@@ -288,7 +294,7 @@ class SlideTemplate:
 
         # add chart
         Chart(
-            plt,
+            matplotlib.pyplot,
             padding_top=Decimal(540 // 10),
             padding_right=Decimal(540 // 10),
             padding_bottom=Decimal(540 // 10),
@@ -577,7 +583,7 @@ class SlideTemplate:
         self,
         xs: typing.List[typing.List[float]],
         ys: typing.List[typing.List[float]],
-        labels: typing.Optional[typing.List[str]] = None,
+        labels: typing.List[str],
         x_label: typing.Optional[str] = None,
         y_label: typing.Optional[str] = None,
         subtitle: typing.Optional[str] = None,
@@ -602,9 +608,9 @@ class SlideTemplate:
         s: Page = self._split_in_half_slide(subtitle=subtitle, text=text, title=title)
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots(layout="constrained")
+        fig, ax = matplotlib.pyplot.subplots(layout="constrained")
         ax.set(xlabel=x_label or "", ylabel=y_label or "", title="")
         for x, y, label in zip(xs, ys, labels):
             ax.plot(x, y, label=label)
@@ -612,7 +618,7 @@ class SlideTemplate:
 
         # add chart
         Chart(
-            plt,
+            matplotlib.pyplot,
             padding_top=Decimal(540 // 10),
             padding_right=Decimal(540 // 10),
             padding_bottom=Decimal(540 // 10),
@@ -633,7 +639,7 @@ class SlideTemplate:
         self,
         xs: typing.List[typing.List[float]],
         ys: typing.List[typing.List[float]],
-        labels: typing.Optional[typing.List[str]] = None,
+        labels: typing.List[str],
         x_label: typing.Optional[str] = None,
         y_label: typing.Optional[str] = None,
     ) -> "SlideTemplate":
@@ -652,9 +658,9 @@ class SlideTemplate:
         s: Page = self._blank_slide()
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots(layout="constrained")
+        fig, ax = matplotlib.pyplot.subplots(layout="constrained")
         ax.set(xlabel=x_label or "", ylabel=y_label or "", title="")
         for x, y, label in zip(xs, ys, labels):
             ax.plot(x, y, label=label)
@@ -662,7 +668,7 @@ class SlideTemplate:
 
         # add chart
         Chart(
-            plt,
+            matplotlib.pyplot,
             horizontal_alignment=Alignment.CENTERED,
             vertical_alignment=Alignment.MIDDLE,
             padding_top=Decimal(540 // 10),
@@ -984,7 +990,7 @@ class SlideTemplate:
         """
         s: Page = self._blank_slide()
         # add map
-        m = MapOfTheWorld(
+        m: Shapes = MapOfTheWorld(
             horizontal_alignment=Alignment.CENTERED,
             vertical_alignment=Alignment.MIDDLE,
             fill_color=SlideTemplate.LIGHT_GRAY_COLOR,
@@ -1000,7 +1006,7 @@ class SlideTemplate:
             max_height=Decimal(540 - 540 // 10 - 540 // 10),
         )
         for c in marked_countries:
-            m.set_fill_color(fill_color=SlideTemplate.ACCENT_COLOR, key=c)
+            m.set_fill_color(fill_color=SlideTemplate.ACCENT_COLOR, key=c)  # type: ignore[attr-defined]
         m.paint(
             page=s,
             available_space=Rectangle(
@@ -1130,9 +1136,9 @@ class SlideTemplate:
         s: Page = self._split_in_half_slide(subtitle=subtitle, text=text, title=title)
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots(layout="constrained")
+        fig, ax = matplotlib.pyplot.subplots(layout="constrained")
         should_explode = tuple(
             [1 if xs[i] == max(xs) else 0 for i in range(0, len(xs))]
         )
@@ -1141,7 +1147,7 @@ class SlideTemplate:
 
         # add chart
         Chart(
-            plt,
+            matplotlib.pyplot,
             padding_top=Decimal(540 // 10),
             padding_right=Decimal(540 // 10),
             padding_bottom=Decimal(540 // 10),
@@ -1175,9 +1181,9 @@ class SlideTemplate:
         s: Page = self._blank_slide()
 
         # create matplotlib plot
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot
 
-        fig, ax = plt.subplots(layout="constrained")
+        fig, ax = matplotlib.pyplot.subplots(layout="constrained")
         should_explode = tuple(
             [1 if xs[i] == max(xs) else 0 for i in range(0, len(xs))]
         )
@@ -1186,7 +1192,7 @@ class SlideTemplate:
 
         # add chart
         Chart(
-            plt,
+            matplotlib.pyplot,
             padding_top=Decimal(540 // 10),
             padding_right=Decimal(540 // 10),
             padding_bottom=Decimal(540 // 10),
@@ -1544,7 +1550,9 @@ class SlideTemplate:
                     Decimal(0), Decimal(0), Decimal(950), Decimal(540)
                 ),
             )
-            prev_bottom_y = p0.get_previous_paint_box().get_y()
+            p0_prev_paint_box: typing.Optional[Rectangle] = p0.get_previous_paint_box()
+            assert p0_prev_paint_box is not None
+            prev_bottom_y = p0_prev_paint_box.get_y()
             must_have_top_padding = False
 
         # add subtitle
@@ -1563,7 +1571,9 @@ class SlideTemplate:
                     Decimal(0), Decimal(0), Decimal(950), prev_bottom_y
                 ),
             )
-            prev_bottom_y = p0.get_previous_paint_box().get_y()
+            p0_prev_paint_box = p0.get_previous_paint_box()
+            assert p0_prev_paint_box is not None
+            prev_bottom_y = p0_prev_paint_box.get_y()
             must_have_top_padding = False
 
         # add blue rectangle
@@ -1589,6 +1599,7 @@ class SlideTemplate:
             if self._document.get_page(i) == s:
                 page_nr = i
                 break
+        assert page_nr is not None
         self._slides_to_be_numbered.append(page_nr)
 
         # add text
@@ -1863,7 +1874,9 @@ class SlideTemplate:
                     Decimal(0), Decimal(0), Decimal(950), Decimal(540)
                 ),
             )
-            prev_bottom_y = p0.get_previous_paint_box().get_y()
+            p0_prev_paint_box: typing.Optional[Rectangle] = p0.get_previous_paint_box()
+            assert p0_prev_paint_box is not None
+            prev_bottom_y = p0_prev_paint_box.get_y()
             must_have_top_padding = False
 
         # add subtitle
@@ -1882,7 +1895,9 @@ class SlideTemplate:
                     Decimal(0), Decimal(0), Decimal(950), prev_bottom_y
                 ),
             )
-            prev_bottom_y = p0.get_previous_paint_box().get_y()
+            p0_prev_paint_box = p0.get_previous_paint_box()
+            assert p0_prev_paint_box is not None
+            prev_bottom_y = p0_prev_paint_box.get_y()
             must_have_top_padding = False
 
         # add blue rectangle
@@ -1908,6 +1923,7 @@ class SlideTemplate:
             if self._document.get_page(i) == s:
                 page_nr = i
                 break
+        assert page_nr is not None
         self._slides_to_be_numbered.append(page_nr)
 
         # add text_left, text_right
@@ -2074,7 +2090,7 @@ class SlideTemplate:
         buffer.seek(0)
         return buffer.getvalue()
 
-    def save(self, path_or_str: typing.Union[str, Path]) -> "SlideTemplate":
+    def save(self, path_or_str: typing.Union[str, pathlib.Path]) -> "SlideTemplate":
         """
         This function stores this SlideTemplate at the given path
         :param path_or_str:     the path or str representing the location at which to store this SlideTemplate

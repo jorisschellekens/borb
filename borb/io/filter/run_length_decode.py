@@ -35,8 +35,9 @@ class RunLengthDecode:
     @staticmethod
     def decode(bytes_in: bytes) -> bytes:
         """
-        Decompresses data encoded using a byte-oriented run-length
-        encoding algorithm
+        Decompresses data encoded using a byte-oriented run-length encoding algorithm
+        :param bytes_in:    the input bytes
+        :return:            the output bytes
         """
 
         # trivial case

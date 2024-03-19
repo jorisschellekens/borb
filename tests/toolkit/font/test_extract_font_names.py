@@ -63,6 +63,8 @@ class TestExtractFontNames(TestCase):
         self.check_pdf_using_validator(self.get_first_output_file())
 
     def test_extract_font_names(self):
+        # create PDF
+        self.test_create_dummy_pdf()
 
         # extract _font names
         font_names = []

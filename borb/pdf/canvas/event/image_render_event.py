@@ -6,7 +6,7 @@
 """
 from decimal import Decimal
 
-from PIL import Image as PILImage  # type: ignore [import]
+from PIL import Image as PILImageModule
 
 from borb.pdf.canvas.canvas_graphics_state import CanvasGraphicsState
 from borb.pdf.canvas.event.event_listener import Event
@@ -21,8 +21,10 @@ class ImageRenderEvent(Event):
     # CONSTRUCTOR
     #
 
-    def __init__(self, graphics_state: CanvasGraphicsState, image: PILImage):  # type: ignore[valid-type]
-        self._image: PILImage = image  # type: ignore[valid-type]
+    def __init__(
+        self, graphics_state: CanvasGraphicsState, image: PILImageModule.Image
+    ):
+        self._image: PILImageModule.Image = image
 
         # calculate position
         v = graphics_state.ctm.cross(Decimal(0), Decimal(0), Decimal(1))
@@ -44,32 +46,36 @@ class ImageRenderEvent(Event):
 
     def get_height(self) -> Decimal:
         """
-        Get the height of the (scaled) Image
+        Get the height at which the Image is drawn
+        :return:    the height
         """
         return self._height
 
-    def get_image(self) -> PILImage:  # type: ignore[valid-type]
+    def get_image(self) -> PILImageModule.Image:
         """
-        Get the (source) Image
-        This Image may have different dimensions than
-        how it is displayed in the PDF
+        Get the PIL.Image.Image as it is stored in the PDF.
+        This Image may have different dimensions from how the Image is drawn in the PDF
+        :return:    the Image
         """
         return self._image
 
     def get_width(self) -> Decimal:
         """
-        Get the width of the (scaled) Image
+        Get the width at which the Image is drawn
+        :return:    the width
         """
         return self._width
 
     def get_x(self) -> Decimal:
         """
         Get the x-coordinate at which the Image is drawn
+        :return:    the x-coordinate
         """
         return self._x
 
     def get_y(self) -> Decimal:
         """
         Get the y-coordinate at which the Image is drawn
+        :return:    the y-coordinate
         """
         return self._y

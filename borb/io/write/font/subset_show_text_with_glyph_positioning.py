@@ -66,12 +66,16 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
 
     def invoke(
         self,
-        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore [name-defined]
+        canvas_stream_processor: "CanvasStreamProcessor",  # type: ignore[name-defined]
         operands: typing.List[AnyPDFType] = [],
-        event_listeners: typing.List["EventListener"] = [],  # type: ignore [name-defined]
+        event_listeners: typing.List["EventListener"] = [],  # type: ignore[name-defined]
     ) -> None:
         """
-        Invoke the TJ operator
+        Invokes this (TJ) CanvasOperator
+        :param canvas_stream_processor:     the CanvasStreamProcessor
+        :param operands:                    the operands for this CanvasOperator
+        :param event_listeners:             the typing.List of EventListener(s) that may need to be notified
+        :return:                            None
         """
 
         assert isinstance(operands[0], typing.List), "Operand 0 of TJ must be a List"
