@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 In PDF, a font is classified as either nonsymbolic or symbolic according to whether all of its characters are

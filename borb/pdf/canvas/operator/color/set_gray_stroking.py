@@ -23,8 +23,20 @@ class SetGrayStroking(CanvasOperator):
     1.0 (white).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("G", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

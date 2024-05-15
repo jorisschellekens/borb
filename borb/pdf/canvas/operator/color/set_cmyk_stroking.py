@@ -27,8 +27,20 @@ class SetCMYKStroking(CanvasOperator):
     Control").
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("K", 4)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

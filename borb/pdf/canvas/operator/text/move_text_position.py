@@ -24,8 +24,20 @@ class MoveTextPosition(CanvasOperator):
     Tm = Tlm = [[1,0,0], [0,1,0],[tx,ty,1]] * Tlm
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Td", 2)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

@@ -56,8 +56,20 @@ class AppendCubicBezierCurve1(CanvasOperator):
     (x3 , y3 ).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("c", 6)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

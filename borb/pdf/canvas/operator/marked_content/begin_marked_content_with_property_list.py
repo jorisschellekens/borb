@@ -27,8 +27,20 @@ class BeginMarkedContentWithPropertyList(CanvasOperator):
     dictionary (see 14.6.2, “Property Lists”).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("BDC", 2)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

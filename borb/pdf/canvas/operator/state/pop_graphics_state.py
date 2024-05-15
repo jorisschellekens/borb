@@ -20,8 +20,20 @@ class PopGraphicsState(CanvasOperator):
     "Graphics State Stack").
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Q", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

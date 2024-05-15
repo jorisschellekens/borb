@@ -20,8 +20,20 @@ class SetHorizontalScaling(CanvasOperator):
     width).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Tz", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

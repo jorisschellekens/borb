@@ -26,8 +26,20 @@ class SetFontAndSize(CanvasOperator):
     explicitly by using Tf before any text is shown.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Tf", 2)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

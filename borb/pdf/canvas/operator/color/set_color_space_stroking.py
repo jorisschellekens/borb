@@ -81,8 +81,20 @@ class SetColorSpaceStroking(CanvasOperator):
     causes nothing to be painted.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("CS", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

@@ -20,8 +20,20 @@ class SetTextLeading(CanvasOperator):
     " operators. Initial value: 0.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("TL", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

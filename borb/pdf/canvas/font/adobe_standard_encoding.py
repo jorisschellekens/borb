@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 One commonly used font encoding for Latin-text font programs is often referred to as StandardEncoding or

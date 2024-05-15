@@ -27,6 +27,18 @@ class SimpleFindReplace:
     RedactAnnotation to remove the text, and Paragraph to re-insert replacement text.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def sub(
         pattern: str,

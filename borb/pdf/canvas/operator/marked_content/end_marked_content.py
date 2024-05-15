@@ -16,8 +16,20 @@ class EndMarkedContent(CanvasOperator):
     End a marked-content sequence begun by a BMC or BDC operator.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("EMC", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

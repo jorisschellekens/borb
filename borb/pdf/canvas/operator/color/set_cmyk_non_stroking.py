@@ -17,8 +17,20 @@ class SetCMYKNonStroking(CanvasOperator):
     Same as K but used for nonstroking operations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("k", 4)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

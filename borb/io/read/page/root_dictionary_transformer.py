@@ -25,6 +25,10 @@ class RootDictionaryTransformer(Transformer):
     """
 
     #
+    # CONSTRUCTOR
+    #
+
+    #
     # PRIVATE
     #
 

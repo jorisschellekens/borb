@@ -18,8 +18,20 @@ class SetTextRise(CanvasOperator):
     unscaled text space units. Initial value: 0.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Ts", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -27,6 +27,10 @@ class Token:
     This module contains everything needed to represent a low-level token in mathematical syntax
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         is_left_associative: typing.Optional[bool] = None,
@@ -41,6 +45,14 @@ class Token:
         self._precedence: typing.Optional[int] = precedence
         self._text: str = text
         self._type: TokenType = type
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_children(self) -> typing.List["Token"]:
         """

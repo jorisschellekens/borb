@@ -20,8 +20,20 @@ class SetWordSpacing(CanvasOperator):
     the Tj, TJ, and ' operators. Initial value: 0.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Tw", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

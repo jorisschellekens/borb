@@ -18,8 +18,20 @@ class PushGraphicsState(CanvasOperator):
     8.4.2, "Graphics State Stack").
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("q", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

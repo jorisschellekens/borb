@@ -224,6 +224,13 @@ class TableCell(LayoutElement):
         """
         return self._preferred_width
 
+    def get_previous_layout_box(self) -> typing.Optional[Rectangle]:
+        """
+        This function returns the previous result of layout of this LayoutElement
+        :return:    the Rectangle that was the result of the previous layout operation
+        """
+        return self._layout_element.get_previous_layout_box()
+
     def get_row_span(self) -> int:
         """
         This function returns the row span. This specifies the number of rows a cell should span.

@@ -32,9 +32,21 @@ class SetColorStroking(CanvasOperator):
     specified.
     """
 
-    def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):  # type: ignore [name-defined]
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):
         super().__init__("SCN", 0)
         self._canvas = canvas_stream_processor.get_canvas()
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_number_of_operands(self) -> int:
         """

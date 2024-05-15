@@ -30,8 +30,20 @@ class ShowTextWithGlyphPositioning(CanvasOperator):
     effect of passing offsets to TJ.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("TJ", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

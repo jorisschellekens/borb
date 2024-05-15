@@ -28,8 +28,20 @@ class SetTextMatrix(CanvasOperator):
     current text matrix, but shall replace it.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("Tm", 6)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

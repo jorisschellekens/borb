@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Subclass of FaceDetectionEventListener that focuses on blurring detected faces in a PDF document.
@@ -6,7 +6,7 @@ When a face is identified, this class applies a blur effect to protect privacy o
 """
 from decimal import Decimal
 
-import PIL.Image
+from PIL import Image as PILImageModule
 from borb.pdf.canvas.event.image_render_event import ImageRenderEvent
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.toolkit import FaceDetectionEventListener
@@ -17,6 +17,14 @@ class FaceEraserEventListener(FaceDetectionEventListener):
     Subclass of FaceDetectionEventListener that focuses on blurring detected faces in a PDF document.
     When a face is identified, this class applies a blur effect to protect privacy or anonymize individuals within the document.
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
 
     def _face_occurred(
         self,
@@ -31,7 +39,7 @@ class FaceEraserEventListener(FaceDetectionEventListener):
         )
 
         # grab the original image
-        img: PIL.Image.Image = event.get_image()
+        img: PILImageModule.Image = event.get_image()
 
         # determine the coordinates to modify
         x: int = int(rectangle_in_image.get_x())
@@ -84,3 +92,7 @@ class FaceEraserEventListener(FaceDetectionEventListener):
                         if i + i2 >= img.width or j + j2 >= img.height:
                             continue
                         img.putpixel((i + i2, j + j2), (avg_r, avg_g, avg_b))
+
+    #
+    # PUBLIC
+    #

@@ -31,6 +31,23 @@ class TestCase(unittest.TestCase):
     #
 
     @staticmethod
+    def _is_in_debug_mode() -> bool:
+
+        try:
+            if sys.gettrace() is not None:
+                return True
+        except AttributeError:
+            pass
+
+        try:
+            if sys.monitoring.get_tool(sys.monitoring.DEBUGGER_ID) is not None:
+                return True
+        except AttributeError:
+            pass
+
+        return False
+
+    @staticmethod
     def _trim_text(s: str, n: int = 38) -> str:
         if len(s) < n:
             return s
@@ -280,6 +297,11 @@ class TestCase(unittest.TestCase):
         return self.get_artifacts_directory() / f"output_{nr:02d}.pdf"
 
     def tearDown(self):
+
+        # IF we are in debug mode
+        # THEN do not remove the output
+        if TestCase._is_in_debug_mode():
+            return
 
         # IF we are not supposed to clean up the output files
         # THEN return

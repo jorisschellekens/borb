@@ -20,8 +20,20 @@ class BeginCompatibilitySection(CanvasOperator):
     is encountered.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("BX", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

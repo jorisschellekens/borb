@@ -21,8 +21,20 @@ class BeginMarkedContent(CanvasOperator):
     the sequence.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("BMC", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

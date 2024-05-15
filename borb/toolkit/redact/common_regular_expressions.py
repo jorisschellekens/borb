@@ -13,6 +13,18 @@ class CommonRegularExpression(enum.Enum):
     This class contains some useful (common) regular expressions.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     # fmt: off
     BITCOIN_ADDRESS: re.Pattern = re.compile('(?<![a-km-zA-HJ-NP-Z0-9])[13][a-km-zA-HJ-NP-Z0-9]{26,33}(?![a-km-zA-HJ-NP-Z0-9])')
     CREDIT_CARD: re.Pattern = re.compile('((?:(?:\\d{4}[- ]?){3}\\d{4}|\\d{15,16}))(?![\\d])')

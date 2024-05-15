@@ -46,6 +46,18 @@ class SmartArt:
     while others simply enhance the appearance of a bulleted list.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def alternating_picture_list(
         pictures: typing.List[str],

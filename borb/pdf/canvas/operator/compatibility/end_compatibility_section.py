@@ -20,8 +20,20 @@ class EndCompatibilitySection(CanvasOperator):
     is encountered.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("EX", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

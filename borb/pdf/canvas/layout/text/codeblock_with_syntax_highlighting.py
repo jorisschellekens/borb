@@ -262,3 +262,7 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
             cs[-1]._font_size = font_size
         cs.pop(-1)
         return cs
+
+    #
+    # PUBLIC
+    #

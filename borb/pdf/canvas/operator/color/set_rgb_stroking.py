@@ -23,8 +23,20 @@ class SetRGBStroking(CanvasOperator):
     (minimum intensity) and 1.0 (maximum intensity).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("RG", 3)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

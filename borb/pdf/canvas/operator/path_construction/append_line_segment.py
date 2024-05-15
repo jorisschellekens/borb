@@ -20,8 +20,20 @@ class AppendLineSegment(CanvasOperator):
     point (x, y). The new current point shall be (x, y).
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("l", 2)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

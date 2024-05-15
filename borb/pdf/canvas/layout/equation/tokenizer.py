@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 In computer science, lexical analysis, lexing or tokenization is the process of converting a sequence of characters
@@ -23,6 +23,18 @@ class Tokenizer:
     A lexer is generally combined with a parser, which together analyze the syntax of programming languages, web pages,
     and so forth.
     """
+
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def tokenize(infix_expression: str) -> typing.List[Token]:

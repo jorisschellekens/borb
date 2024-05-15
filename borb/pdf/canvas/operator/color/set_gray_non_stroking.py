@@ -17,8 +17,20 @@ class SetGrayNonStroking(CanvasOperator):
     Same as G but used for nonstroking operations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("g", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

@@ -26,6 +26,10 @@ class Heading(Paragraph):
     It also adds an outline in the document outline tree.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         text: str,

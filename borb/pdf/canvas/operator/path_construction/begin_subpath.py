@@ -25,8 +25,20 @@ class BeginSubpath(CanvasOperator):
     previous m operation remains in the path.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("m", 2)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

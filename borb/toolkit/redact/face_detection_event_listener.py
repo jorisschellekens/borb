@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 A class for analyzing a PDF document to detect faces.
@@ -8,7 +8,7 @@ and triggers events or provides information based on the identified faces.
 
 import typing
 from decimal import Decimal
-from pathlib import Path
+import pathlib
 
 from borb.pdf.canvas.event.begin_page_event import BeginPageEvent
 
@@ -31,8 +31,8 @@ class FaceDetectionEventListener(EventListener):
     def __init__(self):
         self._current_page: int = -1
         self._face_information_per_page: typing.Dict[int, typing.List[Rectangle]] = {}
-        resources_dir: Path = Path(__file__).parent / "resources"
-        self._haar_cascade_detector_files: typing.List[Path] = [
+        resources_dir: pathlib.Path = pathlib.Path(__file__).parent / "resources"
+        self._haar_cascade_detector_files: typing.List[pathlib.Path] = [
             resources_dir / "haar_cascade_frontal_face_default.xml",
             resources_dir / "haar_cascade_profile_face_default.xml",
         ]

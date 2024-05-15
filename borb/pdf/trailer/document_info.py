@@ -76,8 +76,8 @@ class DocumentInfo:
     def get_creator(self) -> typing.Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
-        the name of the conforming product that created the original document
-        from which it was converted.
+        the name of the conforming product that created the original
+        document from which it was converted.
         """
         try:
             return self._document["XRef"]["Trailer"]["Info"]["Creator"]
@@ -298,8 +298,8 @@ class XMPDocumentInfo(DocumentInfo):
     def get_creator(self) -> typing.Optional[str]:
         """
         (Optional) If the document was converted to PDF from another format,
-        the name of the conforming product that created the original document
-        from which it was converted.
+        the name of the conforming product that created the original
+        document from which it was converted.
         """
         try:
             return next(

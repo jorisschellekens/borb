@@ -25,8 +25,20 @@ class MoveTextPositionSetLeading(CanvasOperator):
     tx ty Td
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("TD", 2)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

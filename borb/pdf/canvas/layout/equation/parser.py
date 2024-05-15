@@ -21,6 +21,14 @@ class Parser:
     The parsing may be preceded or followed by other steps, or these may be combined into a single step.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
     @staticmethod
     def _to_postfix(infix_expression: str) -> typing.List[Token]:
         tokens: typing.List[Token] = Tokenizer.tokenize(infix_expression)
@@ -93,6 +101,10 @@ class Parser:
 
         # return
         return postfix
+
+    #
+    # PUBLIC
+    #
 
     @staticmethod
     def to_abstract_syntax_tree(s: str) -> Token:

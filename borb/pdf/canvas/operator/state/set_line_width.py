@@ -16,8 +16,20 @@ class SetLineWidth(CanvasOperator):
     Set the line width in the graphics state (see 8.4.3.2, "Line Width").
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("w", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

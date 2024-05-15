@@ -79,6 +79,14 @@ class HTMLToPDF:
             # linking
             self.document: typing.Optional[Document] = None
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
     @staticmethod
     def _build_chunk_of_text(s: str, c: Context) -> LayoutElement:
         fonts_to_try: typing.List[Font] = []
@@ -1061,7 +1069,7 @@ class HTMLToPDF:
             )
 
     #
-    # public methods
+    # PUBLIC
     #
 
     @staticmethod

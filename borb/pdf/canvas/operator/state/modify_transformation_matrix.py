@@ -23,8 +23,20 @@ class ModifyTransformationMatrix(CanvasOperator):
     numbers, not as an array.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("cm", 6)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

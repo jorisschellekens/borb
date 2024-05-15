@@ -68,12 +68,16 @@ class SlideTemplate:
     TEXT_FONTSIZE: int = 12
     TITLE_FONTSIZE: int = 20
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         self._document: Document = Document()
         self._slides_to_be_numbered: typing.List[int] = []
 
     #
-    # private
+    # PRIVATE
     #
 
     def _add_page_numbers(self) -> None:
@@ -210,7 +214,7 @@ class SlideTemplate:
         return s
 
     #
-    # public
+    # PUBLIC
     #
 
     def add_barchart_and_text_slide(

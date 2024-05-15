@@ -17,8 +17,20 @@ class SetRGBNonStroking(CanvasOperator):
     Same as RG but used for nonstroking operations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("rg", 3)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

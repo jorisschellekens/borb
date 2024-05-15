@@ -111,6 +111,8 @@ from .canvas.layout.page_layout.block_flow import BlockFlow
 from .canvas.layout.page_layout.inline_flow import InlineFlow
 from .canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
 from .canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
+from .canvas.layout.page_layout.multi_column_layout import TwoColumnLayout
+from .canvas.layout.page_layout.multi_column_layout import ThreeColumnLayout
 from .canvas.layout.page_layout.page_layout import PageLayout
 from .canvas.layout.page_layout.single_column_layout_with_overflow import SingleColumnLayoutWithOverflow
 from .canvas.layout.shape.connected_shape import ConnectedShape
@@ -139,6 +141,7 @@ from .page.page import Page
 from .pdf import PDF
 from .template.a4_2_column_portrait_template import A42ColumnPortraitTemplate
 from .template.a4_portrait_invoice_template import A4PortraitInvoiceTemplate
+from .template.a4_portrait_resume_template import A4PortraitResumeTemplate
 from .template.a4_portrait_template import A4PortraitTemplate
 from .template.slide_template import SlideTemplate
 # fmt: on

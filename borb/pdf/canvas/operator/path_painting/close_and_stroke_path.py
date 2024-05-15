@@ -17,8 +17,20 @@ class CloseAndStrokePath(CanvasOperator):
     sequence h S.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("s", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

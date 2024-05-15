@@ -22,8 +22,20 @@ class BeginTextObject(CanvasOperator):
     not appear before an ET.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("BT", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

@@ -24,8 +24,20 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
     string '
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__('"', 3)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

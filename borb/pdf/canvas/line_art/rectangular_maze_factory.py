@@ -12,8 +12,8 @@ from decimal import Decimal
 
 class RectangularMazeFactory:
     """
-    A maze where every point is reachable and where there is only one single path
-    from one point in the maze to any other point is called a perfect maze.
+    A maze where every point is reachable and where there is only one single
+    path from one point in the maze to any other point is called a perfect maze.
     """
 
     #

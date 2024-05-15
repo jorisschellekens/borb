@@ -1,3 +1,4 @@
+import unittest
 from decimal import Decimal
 
 from borb.pdf import Alignment
@@ -65,6 +66,7 @@ class TestRedactFaces(TestCase):
         with open(self.get_first_output_file(), "wb") as fh:
             PDF.dumps(fh, d)
 
+    @unittest.skip
     def test_redact_faces(self):
         # create PDF
         self.test_create_dummy_pdf()

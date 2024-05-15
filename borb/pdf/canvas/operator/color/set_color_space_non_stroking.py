@@ -21,8 +21,20 @@ class SetColorSpaceNonStroking(CanvasOperator):
     (PDF 1.1) Same as CS but used for nonstroking operations.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("cs", 1)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,

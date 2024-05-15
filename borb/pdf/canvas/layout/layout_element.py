@@ -40,6 +40,10 @@ class LayoutElement:
     e.g. the placement of borders, margins, padding, background color, etc
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(
         self,
         background_color: typing.Optional[Color] = None,

@@ -20,9 +20,21 @@ class SetColorNonStroking(CanvasOperator):
     (PDF 1.2) Same as SCN but used for nonstroking operations.
     """
 
-    def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):  # type: ignore [name-defined]
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self, canvas_stream_processor: "CanvasStreamProcessor"):
         super().__init__("scn", 0)
         self._canvas = canvas_stream_processor.get_canvas()
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def get_number_of_operands(self) -> int:
         """

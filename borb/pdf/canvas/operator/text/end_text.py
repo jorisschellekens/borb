@@ -17,8 +17,20 @@ class EndTextObject(CanvasOperator):
     End a text object, discarding the text matrix.
     """
 
+    #
+    # CONSTRUCTOR
+    #
+
     def __init__(self):
         super().__init__("ET", 0)
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
 
     def invoke(
         self,
