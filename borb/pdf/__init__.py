@@ -111,8 +111,8 @@ from .canvas.layout.page_layout.block_flow import BlockFlow
 from .canvas.layout.page_layout.inline_flow import InlineFlow
 from .canvas.layout.page_layout.multi_column_layout import MultiColumnLayout
 from .canvas.layout.page_layout.multi_column_layout import SingleColumnLayout
-from .canvas.layout.page_layout.multi_column_layout import TwoColumnLayout
 from .canvas.layout.page_layout.multi_column_layout import ThreeColumnLayout
+from .canvas.layout.page_layout.multi_column_layout import TwoColumnLayout
 from .canvas.layout.page_layout.page_layout import PageLayout
 from .canvas.layout.page_layout.single_column_layout_with_overflow import SingleColumnLayoutWithOverflow
 from .canvas.layout.shape.connected_shape import ConnectedShape
