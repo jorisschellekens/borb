@@ -8,6 +8,7 @@ class TestCodeFilesAreSmall(unittest.TestCase):
 
     KNOWN_EXCEPTIONS: typing.List[str] = [
         "a4_portrait_invoice_template.py",
+        "a4_portrait_resume_template.py",
         "a4_portrait_template.py",
         "adobe_glyph_list.py",
         "color.py",

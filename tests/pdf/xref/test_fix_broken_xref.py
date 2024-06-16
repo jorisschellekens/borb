@@ -31,6 +31,10 @@ class TestFixBrokenXRef(TestCase):
             PDF.dumps(in_file_handle, pdf)
 
     def test_break_document(self):
+
+        # create dummy PDF
+        self.test_create_dummy_pdf()
+
         # read input document
         bytes_in: bytes = b""
         with open(self.get_first_output_file(), "rb") as pdf_in_file_handle:
@@ -68,6 +72,9 @@ class TestFixBrokenXRef(TestCase):
                 i += 1
 
     def test_read_broken_document(self):
+
+        # create broken PDF
+        self.test_break_document()
 
         # read input document
         doc: typing.Optional[Document] = None

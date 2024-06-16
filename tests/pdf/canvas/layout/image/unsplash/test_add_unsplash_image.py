@@ -20,11 +20,11 @@ class TestAddUnsplashImage(TestCase):
 
     def test_add_unsplash_image(self):
 
-        # set unsplash API key
+        # set UNSPLASH_API_KEY
         try:
-            from tests.borb_secrets import populate_keyring
+            from tests.borb_secrets import populate_os_environ
 
-            populate_keyring()
+            populate_os_environ()
         except:
             pass
 
@@ -52,11 +52,11 @@ class TestAddUnsplashImage(TestCase):
 
     def test_add_orderedlist_of_unsplash_images(self):
 
-        # set unsplash API key
+        # set UNSPLASH_API_KEY
         try:
-            from tests.borb_secrets import populate_keyring
+            from tests.borb_secrets import populate_os_environ
 
-            populate_keyring()
+            populate_os_environ()
         except:
             pass
 
@@ -99,11 +99,11 @@ class TestAddUnsplashImage(TestCase):
 
     def test_add_unorderedlist_of_unsplash_images(self):
 
-        # set unsplash API key
+        # set UNSPLASH_API_KEY
         try:
-            from tests.borb_secrets import populate_keyring
+            from tests.borb_secrets import populate_os_environ
 
-            populate_keyring()
+            populate_os_environ()
         except:
             pass
 
@@ -146,11 +146,11 @@ class TestAddUnsplashImage(TestCase):
 
     def test_add_table_of_unsplash_images(self):
 
-        # set unsplash API key
+        # set UNSPLASH_API_KEY
         try:
-            from tests.borb_secrets import populate_keyring
+            from tests.borb_secrets import populate_os_environ
 
-            populate_keyring()
+            populate_os_environ()
         except:
             pass
 

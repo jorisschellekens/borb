@@ -52,6 +52,9 @@ from .canvas.color.color import RGBColor
 from .canvas.color.color import X11Color
 from .canvas.color.farrow_and_ball import FarrowAndBall
 from .canvas.color.pantone import Pantone
+from .canvas.font.google_true_type_font import GoogleTrueTypeFont
+from .canvas.font.simple_font.font_type_1 import StandardType1Font
+from .canvas.font.simple_font.true_type_font import TrueTypeFont
 from .canvas.layout.annotation.annotation import Annotation
 from .canvas.layout.annotation.caret_annotation import CaretAnnotation
 from .canvas.layout.annotation.circle_annotation import CircleAnnotation

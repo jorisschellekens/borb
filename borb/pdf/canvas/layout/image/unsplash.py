@@ -7,6 +7,7 @@ This class expects `keyring.get_password("unsplash", "access_key")` to have been
 """
 
 import json
+import os
 import typing
 import urllib.request
 from decimal import Decimal
@@ -52,14 +53,11 @@ class Unsplash:
         # build keyword str
         keyword_str: str = "".join([(k + "+") for k in keywords])[:-1]
 
-        # get access_key
-        import keyring  # type: ignore[import]
-
-        keyring.get_keyring()
-        unsplash_access_key: typing.Optional[str] = keyring.get_password(
-            "unsplash", "access_key"
-        )
-        assert unsplash_access_key is not None
+        # get UNSPLASH_API_KEY
+        unsplash_access_key: typing.Optional[str] = os.environ.get("UNSPLASH_API_KEY")
+        assert (
+            unsplash_access_key is not None
+        ), "UNSPLASH_API_KEY not found in os.environ"
 
         # fetch json
         min_delta: typing.Optional[Decimal] = None
