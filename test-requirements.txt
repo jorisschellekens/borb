@@ -1,7 +1,6 @@
 cryptography>=41.0.1
 fonttools>=4.38.0
 gTTS>=2.4.0
-keyring>=24.3.0
 lxml>=4.9.2
 markdown-it-py>=3.0.0
 matplotlib>=3.8.2

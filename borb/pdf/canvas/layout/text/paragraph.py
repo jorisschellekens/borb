@@ -175,7 +175,7 @@ class Paragraph(LineOfText):
         #  When using justification,
         #  it is customary to treat the last line of a paragraph separately by simply left or right aligning it,
         #  depending on the language direction.
-        if self._text_alignment == Alignment.JUSTIFIED and len(lines_of_text) > 1:
+        if self._text_alignment == Alignment.JUSTIFIED:
             lines_of_text[-1]._text_alignment = Alignment.LEFT
 
         # determine line height

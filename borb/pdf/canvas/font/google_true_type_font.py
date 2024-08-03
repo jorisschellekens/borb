@@ -75,7 +75,9 @@ class GoogleTrueTypeFont(TrueTypeFont):
             ), f"Unable to find URL for font {font_name}"
 
             # download to temporary file
-            temp_font_file: pathlib.Path = pathlib.Path(tempfile.NamedTemporaryFile(suffix=".ttf").name)
+            temp_font_file: pathlib.Path = pathlib.Path(
+                tempfile.NamedTemporaryFile(suffix=".ttf").name
+            )
             with open(temp_font_file, "wb") as fh:
                 fh.write(requests.get(true_type_font_file_url).content)
 
