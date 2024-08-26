@@ -112,7 +112,7 @@ class DocumentTransformer(Transformer):
         DocumentTransformer._invalidate_all_references(object_to_transform)
 
         # set /ID
-        random_id = HexadecimalString("%032x" % random.randrange(16 ** 32))
+        random_id = HexadecimalString("%032x" % random.randrange(16**32))
         if "ID" not in object_to_transform["XRef"]["Trailer"]:
             # fmt: off
             object_to_transform["XRef"]["Trailer"][Name("ID")] = List()

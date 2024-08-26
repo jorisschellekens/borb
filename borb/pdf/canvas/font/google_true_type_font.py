@@ -83,7 +83,7 @@ class GoogleTrueTypeFont(TrueTypeFont):
 
             # return
             return temp_font_file
-        except:
+        except Exception as ex:
             assert False, f"Unable to process font {font_name}"
 
     #

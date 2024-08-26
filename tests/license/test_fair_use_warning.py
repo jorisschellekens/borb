@@ -40,7 +40,7 @@ class TestFairUseWarning(TestCase):
             FixedColumnWidthTable(number_of_columns=2, number_of_rows=5)
             .add(
                 Image(
-                    Path("/home/joris/Code/borb-dev/logo/borb_64.png"),
+                    Path("/home/joris-schellekens/Code/borb/logo/borb_64.png"),
                     width=Decimal(100),
                     height=Decimal(100),
                 )

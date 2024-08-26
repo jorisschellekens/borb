@@ -16,13 +16,13 @@ from borb.io.read.types import List
 from borb.io.read.types import Name
 from borb.io.read.types import Stream
 from borb.io.read.types import String
+from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.simple_font.font_type_1 import StandardType1Font
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.forms.form_field import FormField
 from borb.pdf.canvas.layout.layout_element import Alignment
-from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.page.page import Page
 
 
@@ -100,7 +100,7 @@ class PushButton(FormField):
 
     def _get_content_box(self, available_space: Rectangle) -> Rectangle:
         assert self._font_size is not None
-        line_of_text: LineOfText = LineOfText(
+        line_of_text: ChunkOfText = ChunkOfText(
             self._text,
             background_color=self._background_color,
             font_size=self._font_size,
@@ -208,7 +208,7 @@ class PushButton(FormField):
 
         # layout text
         assert self._font_size is not None
-        line_of_text = LineOfText(
+        line_of_text = ChunkOfText(
             self._text,
             background_color=self._background_color,
             font_size=self._font_size,

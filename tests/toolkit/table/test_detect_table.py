@@ -128,6 +128,9 @@ class TestDetectTable(TestCase):
 
     def test_find_table(self):
 
+        # generate
+        self.test_generate_pdfs_with_tables()
+
         input_files: typing.List[Path] = [
             x
             for x in self.get_artifacts_directory().iterdir()
@@ -160,6 +163,8 @@ class TestDetectTable(TestCase):
 
                 for tc in t._content:
                     r = tc.get_previous_layout_box()
+                    if r is None:
+                        continue
                     r = r.shrink(Decimal(2))
                     ConnectedShape(
                         LineArtFactory.rectangle(r),

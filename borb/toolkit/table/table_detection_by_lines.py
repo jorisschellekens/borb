@@ -118,8 +118,8 @@ class TableDetectionByLines(EventListener):
             for j in range(0, number_of_cols):
                 ds.add((i, j))
 
-        for c in range(0, len(xs) - 1):
-            for r in range(0, len(ys) - 1):
+        for c in range(0, number_of_cols):
+            for r in range(0, number_of_rows):
                 if c + 2 < len(xs):
                     logger.debug(
                         "attempting to merge [%d %d] with its right neighbour" % (r, c)
@@ -182,13 +182,16 @@ class TableDetectionByLines(EventListener):
             )
 
             # set bounding_box
-            tc._previous_layout_box = Rectangle(
+            r: Rectangle = Rectangle(
                 xs[min_col],
                 ys[min_row],
                 xs[max_col + 1] - xs[min_col],
                 ys[max_row + 1] - ys[min_row],
             )
-            tc._previous_paint_box = tc.get_previous_layout_box()
+            tc._previous_layout_box = r
+            tc._previous_paint_box = r
+            tc._layout_element._previous_layout_box = r
+            tc._layout_element._previous_paint_box = r
 
             # add to Table
             table.add(tc)

@@ -1,4 +1,4 @@
-from borb.pdf import Document
+from borb.pdf import Document, ChunkOfText
 from borb.pdf import PDF
 from borb.pdf import Page
 from borb.pdf import SingleColumnLayout
@@ -6,8 +6,8 @@ from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from tests.test_case import TestCase
 
 
-class TestAddLineOfTextUsingAccentedCharacters(TestCase):
-    def test_add_lineoftext_using_accented_characters(self):
+class TestAddChunkOfTextUsingAccentedCharacters(TestCase):
+    def test_add_chunk_of_text_using_accented_characters(self):
         pdf = Document()
         page = Page()
         pdf.add_page(page)
@@ -18,7 +18,7 @@ class TestAddLineOfTextUsingAccentedCharacters(TestCase):
             )
         )
 
-        layout.add(LineOfText("Dirección Código Número"))
+        layout.add(ChunkOfText("Dirección Código Número"))
         with open(self.get_first_output_file(), "wb") as fh:
             PDF.dumps(fh, pdf)
         self.compare_visually_to_ground_truth(self.get_first_output_file())

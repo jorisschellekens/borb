@@ -17,7 +17,6 @@ from decimal import Decimal
 
 from borb.pdf.canvas.layout.emoji.emoji import Emoji
 from borb.pdf.canvas.layout.image.image import Image
-from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
 from borb.pdf.canvas.font.font import Font
@@ -140,17 +139,15 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
         default_font_color: Color,
         font_size: Decimal,
         text: str,
-    ) -> typing.List[typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]]:
+    ) -> typing.List[typing.Union[ChunkOfText, Emoji, Image, str]]:
 
         # convert to typing.List[ChunkOfText]
-        chunks: typing.List[
-            typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]
-        ] = []
+        chunks: typing.List[typing.Union[ChunkOfText, Emoji, Image, str]] = []
 
         # go over entire text
-        tokens_and_colors: typing.List[
-            typing.Tuple[str, Color]
-        ] = self._get_non_default_colored_tokens(text)
+        tokens_and_colors: typing.List[typing.Tuple[str, Color]] = (
+            self._get_non_default_colored_tokens(text)
+        )
         tokens_and_colors_index: int = 0
         while len(text):
 
@@ -230,9 +227,9 @@ class CodeBlockWithSyntaxHighlighting(HeterogeneousParagraph):
     def _get_token_color_by_type(token_type: "_TokenType") -> typing.Optional[Color]:  # type: ignore[name-defined]
         if token_type is None:
             return None
-        color_and_style: typing.Optional[
-            Color
-        ] = CodeBlockWithSyntaxHighlighting.LIGHT_THEME.get(str(token_type))
+        color_and_style: typing.Optional[Color] = (
+            CodeBlockWithSyntaxHighlighting.LIGHT_THEME.get(str(token_type))
+        )
         while color_and_style is None and token_type.parent is not None:
             token_type = token_type.parent
             color_and_style = CodeBlockWithSyntaxHighlighting.LIGHT_THEME.get(

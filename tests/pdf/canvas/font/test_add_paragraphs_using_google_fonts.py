@@ -95,7 +95,7 @@ class TestAddParagraphsUsingGoogleFonts(TestCase):
 
         # set GOOGLE_FONTS_API_KEY
         try:
-            from tests.borb_secrets import populate_os_environ
+            from tests.secrets import populate_os_environ
 
             populate_os_environ()
         except:
@@ -110,7 +110,7 @@ class TestAddParagraphsUsingGoogleFonts(TestCase):
 
         # set GOOGLE_FONTS_API_KEY
         try:
-            from tests.borb_secrets import populate_os_environ
+            from tests.secrets import populate_os_environ
 
             populate_os_environ()
         except:
@@ -125,7 +125,7 @@ class TestAddParagraphsUsingGoogleFonts(TestCase):
 
         # set GOOGLE_FONTS_API_KEY
         try:
-            from tests.borb_secrets import populate_os_environ
+            from tests.secrets import populate_os_environ
 
             populate_os_environ()
         except:

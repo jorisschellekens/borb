@@ -56,9 +56,9 @@ class MoveToNextLine(CanvasOperator):
         :param event_listeners:             the typing.List of EventListener(s) that may be notified
         :return:                            None
         """
-        move_text_position_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("Td")
+        move_text_position_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("Td")
+        )
         assert (
             move_text_position_op
         ), "Operator Td must be defined for operator T* to function."

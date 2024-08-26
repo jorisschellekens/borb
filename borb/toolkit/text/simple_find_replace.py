@@ -67,9 +67,9 @@ class SimpleFindReplace:
         number_of_pages: int = int(
             doc.get_document_info().get_number_of_pages() or Decimal(0)
         )
-        matches_per_page: typing.Dict[
-            int, typing.List[PDFMatch]
-        ] = RegularExpressionTextExtraction.get_matches_for_pdf(pattern, doc)
+        matches_per_page: typing.Dict[int, typing.List[PDFMatch]] = (
+            RegularExpressionTextExtraction.get_matches_for_pdf(pattern, doc)
+        )
         if page_range is None:
             page_range = [x for x in range(0, number_of_pages)]
         else:

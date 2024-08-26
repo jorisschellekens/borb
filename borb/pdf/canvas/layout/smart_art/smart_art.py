@@ -15,7 +15,6 @@ import typing
 from decimal import Decimal
 
 # fmt: off
-from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.canvas.layout.emoji.emoji import Emoji
 from borb.pdf.canvas.color.color import Color
 from borb.pdf.canvas.color.color import HexColor
@@ -1121,9 +1120,7 @@ class SmartArt:
         uniq.sort()
 
         # build typing.List[ChunkOfText]
-        chunks: typing.List[
-            typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]
-        ] = []
+        chunks: typing.List[typing.Union[ChunkOfText, Emoji, Image, str]] = []
         for t in uniq:
             chunks.append(
                 ChunkOfText(

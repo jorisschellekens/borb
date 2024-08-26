@@ -248,9 +248,9 @@ class RegularExpressionTextExtraction(EventListener):
         last_baseline_right = tris[0].get_baseline().x
         text = ""
         for t in tris:
-            chunk_of_text_bounding_box: typing.Optional[
-                Rectangle
-            ] = t.get_previous_layout_box()
+            chunk_of_text_bounding_box: typing.Optional[Rectangle] = (
+                t.get_previous_layout_box()
+            )
             assert chunk_of_text_bounding_box is not None
 
             # add newline if needed

@@ -350,9 +350,9 @@ class OCRImageRenderEventListener(EventListener):
         ZERO: Decimal = Decimal(0)
         for c in text:
             try:
-                cid: typing.Optional[
-                    int
-                ] = self._helvetica.unicode_to_character_identifier(c)
+                cid: typing.Optional[int] = (
+                    self._helvetica.unicode_to_character_identifier(c)
+                )
                 assert cid is not None
                 w += (
                     (self._helvetica.get_width(cid) or ZERO)

@@ -80,9 +80,9 @@ class Shapes(LayoutElement):
             padding_top=padding_top,
             vertical_alignment=vertical_alignment,
         )
-        self._shapes: typing.List[
-            typing.Union[ConnectedShape, DisconnectedShape]
-        ] = shapes
+        self._shapes: typing.List[typing.Union[ConnectedShape, DisconnectedShape]] = (
+            shapes
+        )
         for s in self._shapes:
             if line_width is not None:
                 s._line_width = line_width

@@ -34,9 +34,9 @@ class Document(Dictionary):
 
     def __init__(self, conformance_level: typing.Optional[ConformanceLevel] = None):
         super(Document, self).__init__()
-        self._conformance_level_upon_create: typing.Optional[
-            ConformanceLevel
-        ] = conformance_level
+        self._conformance_level_upon_create: typing.Optional[ConformanceLevel] = (
+            conformance_level
+        )
 
     #
     # PRIVATE

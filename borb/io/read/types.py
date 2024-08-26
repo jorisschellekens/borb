@@ -347,7 +347,7 @@ class Function(Dictionary):
             # Each output value rj, for 0 £ j < n, shall then be decoded:
             rs_prime: typing.List[oDecimal] = [
                 Function._interpolate(
-                    rs[j], oDecimal(0), 2 ** bps - 1, decode[2 * j], decode[2 * j + 1]
+                    rs[j], oDecimal(0), 2**bps - 1, decode[2 * j], decode[2 * j + 1]
                 )
                 for j in range(0, len(rs))
             ]

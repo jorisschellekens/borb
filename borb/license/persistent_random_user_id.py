@@ -43,9 +43,9 @@ class PersistentRandomUserID:
 
     @staticmethod
     def _get_user_id_file_from_borb_dir() -> typing.Optional[pathlib.Path]:
-        installation_dir: typing.Optional[
-            pathlib.Path
-        ] = PersistentRandomUserID._get_borb_installation_dir()
+        installation_dir: typing.Optional[pathlib.Path] = (
+            PersistentRandomUserID._get_borb_installation_dir()
+        )
         if installation_dir is None:
             return None
         # check whether the USER_ID_FILE_NAME file exists
@@ -70,12 +70,12 @@ class PersistentRandomUserID:
         """
         # IF borb installation directory exists, but the file does not exist (yet)
         # THEN create the file, return the uuid
-        installation_dir: typing.Optional[
-            pathlib.Path
-        ] = PersistentRandomUserID._get_borb_installation_dir()
-        user_id_file: typing.Optional[
-            pathlib.Path
-        ] = PersistentRandomUserID._get_user_id_file_from_borb_dir()
+        installation_dir: typing.Optional[pathlib.Path] = (
+            PersistentRandomUserID._get_borb_installation_dir()
+        )
+        user_id_file: typing.Optional[pathlib.Path] = (
+            PersistentRandomUserID._get_user_id_file_from_borb_dir()
+        )
         if (
             installation_dir is not None
             and installation_dir.exists()

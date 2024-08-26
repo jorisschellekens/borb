@@ -83,9 +83,9 @@ class BlockFlow(LayoutElement):
                     max(tallest_y_coordinate - content_box.get_y(), Decimal(0)),
                 ),
             )
-            e_previous_paint_box: typing.Optional[
-                Rectangle
-            ] = e.get_previous_paint_box()
+            e_previous_paint_box: typing.Optional[Rectangle] = (
+                e.get_previous_paint_box()
+            )
             assert e_previous_paint_box is not None
             tallest_y_coordinate = e_previous_paint_box.get_y()
             if (i + 1) < len(self._content):

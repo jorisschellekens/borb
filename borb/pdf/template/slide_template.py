@@ -1467,7 +1467,11 @@ class SlideTemplate:
                 "https://plus.unsplash.com/premium_photo-1661880452033-a41bd5e32eae",
             ]
         )
-        Image(image_url, width=Decimal(950 // 2.32), height=Decimal(540),).paint(
+        Image(
+            image_url,
+            width=Decimal(950 // 2.32),
+            height=Decimal(540),
+        ).paint(
             page=s,
             available_space=Rectangle(
                 Decimal(0), Decimal(0), Decimal(950 // 2.32), Decimal(540)
@@ -1615,9 +1619,11 @@ class SlideTemplate:
             try:
                 Paragraph(
                     text=text,
-                    padding_top=Decimal(540 // 10)
-                    if must_have_top_padding
-                    else Decimal(font_size),
+                    padding_top=(
+                        Decimal(540 // 10)
+                        if must_have_top_padding
+                        else Decimal(font_size)
+                    ),
                     padding_left=Decimal(540 // 10),
                     padding_right=Decimal(540 // 10),
                     padding_bottom=Decimal(540 // 10),
@@ -1942,9 +1948,11 @@ class SlideTemplate:
                         number_of_columns=2,
                         number_of_rows=1,
                         padding_left=Decimal(540 // 10),
-                        padding_top=Decimal(540 // 10)
-                        if must_have_top_padding
-                        else Decimal(font_size),
+                        padding_top=(
+                            Decimal(540 // 10)
+                            if must_have_top_padding
+                            else Decimal(font_size)
+                        ),
                         padding_bottom=Decimal(540 // 10),
                         padding_right=Decimal(540 // 10),
                     )

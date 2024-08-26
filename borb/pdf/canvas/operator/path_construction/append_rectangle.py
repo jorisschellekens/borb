@@ -71,17 +71,17 @@ class AppendRectangle(CanvasOperator):
         width: Decimal = operands[2]
         height: Decimal = operands[3]
 
-        moveto_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("m")
+        moveto_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("m")
+        )
         assert moveto_op is not None
         moveto_op.invoke(
             canvas_stream_processor, [bDecimal(x), bDecimal(y)], event_listeners
         )
 
-        line_to_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("l")
+        line_to_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("l")
+        )
         assert line_to_op is not None
         line_to_op.invoke(
             canvas_stream_processor, [bDecimal(x + width), bDecimal(y)], event_listeners
@@ -97,8 +97,8 @@ class AppendRectangle(CanvasOperator):
             event_listeners,
         )
 
-        close_subpath_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("h")
+        close_subpath_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("h")
+        )
         assert close_subpath_op is not None
         close_subpath_op.invoke(canvas_stream_processor, [], event_listeners)

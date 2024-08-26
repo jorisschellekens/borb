@@ -15,7 +15,7 @@ class TestCopyDocumentOptimizeImageAndCompareSize(TestCase):
     This test opens every PDF from a corpus of PDF documents.
     """
 
-    CORPUS_DIRECTORY: Path = Path("/home/joris/Code/pdf-corpus/")
+    CORPUS_DIRECTORY: Path = Path("/home/joris-schellekens/Code/borb-pdf-corpus/")
     NUMBER_OF_DOCUMENTS: int = 0
     NUMBER_OF_FAILS: int = 0
     NUMBER_OF_PASSES: int = 0

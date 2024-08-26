@@ -153,9 +153,11 @@ class FlexibleColumnWidthTable(Table):
             if sum_of_min_col_spans < table_cell_min_width:
                 delta00: Decimal = table_cell_min_width - sum_of_min_col_spans
                 min_column_widths = [
-                    w + (delta00 / table_cell.get_column_span())
-                    if i in column_indices
-                    else w
+                    (
+                        w + (delta00 / table_cell.get_column_span())
+                        if i in column_indices
+                        else w
+                    )
                     for i, w in enumerate(min_column_widths)
                 ]
 
@@ -167,9 +169,11 @@ class FlexibleColumnWidthTable(Table):
             if sum_of_max_col_spans < table_cell_max_width:
                 delta01 = table_cell_max_width - sum_of_max_col_spans
                 max_column_widths = [
-                    w + (delta01 / table_cell.get_column_span())
-                    if i in column_indices
-                    else w
+                    (
+                        w + (delta01 / table_cell.get_column_span())
+                        if i in column_indices
+                        else w
+                    )
                     for i, w in enumerate(max_column_widths)
                 ]
 
@@ -276,9 +280,9 @@ class FlexibleColumnWidthTable(Table):
             x for x in self.get_cells_at_column(col) if x.get_column_span() == 1
         ]:
             table_cell_max_width: typing.Optional[Decimal] = table_cell.get_max_width()
-            table_cell_preferred_width: typing.Optional[
-                Decimal
-            ] = table_cell.get_preferred_width()
+            table_cell_preferred_width: typing.Optional[Decimal] = (
+                table_cell.get_preferred_width()
+            )
             if table_cell_max_width is None:
                 widths.append(Decimal(2048))
                 continue
@@ -306,9 +310,9 @@ class FlexibleColumnWidthTable(Table):
             x for x in self.get_cells_at_column(col) if x.get_column_span() == 1
         ]:
             table_cell_min_width: typing.Optional[Decimal] = table_cell.get_min_width()
-            table_cell_preferred_width: typing.Optional[
-                Decimal
-            ] = table_cell.get_preferred_width()
+            table_cell_preferred_width: typing.Optional[Decimal] = (
+                table_cell.get_preferred_width()
+            )
             if table_cell_min_width is None:
                 widths.append(Decimal(0))
                 continue
@@ -339,9 +343,9 @@ class FlexibleColumnWidthTable(Table):
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
 
-        m: typing.List[
-            typing.List[typing.Tuple[Decimal, Decimal]]
-        ] = self._get_grid_coordinates(available_space)
+        m: typing.List[typing.List[typing.Tuple[Decimal, Decimal]]] = (
+            self._get_grid_coordinates(available_space)
+        )
 
         # paint
         for e in self._content:

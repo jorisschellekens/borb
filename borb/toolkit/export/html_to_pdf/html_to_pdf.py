@@ -285,9 +285,9 @@ class HTMLToPDF:
         assert e.tag == "blockquote"
         prev_background_color: typing.Optional[Color] = c.background_color
         c.background_color = HexColor("F5F5F5")
-        blockquote_element: typing.Optional[
-            LayoutElement
-        ] = HTMLToPDF._process_block_element(e, c)
+        blockquote_element: typing.Optional[LayoutElement] = (
+            HTMLToPDF._process_block_element(e, c)
+        )
         assert blockquote_element is not None
         blockquote_element._background_color = c.background_color
         blockquote_element._padding_left = c.font_size * 2
@@ -984,9 +984,9 @@ class HTMLToPDF:
         )
         for tr in [x for x in e if x.tag == "tr"]:
             for td in [y for y in tr if y.tag == "td"]:
-                tmp_value: typing.Optional[
-                    LayoutElement
-                ] = HTMLToPDF._process_inline_element(td, c)
+                tmp_value: typing.Optional[LayoutElement] = (
+                    HTMLToPDF._process_inline_element(td, c)
+                )
                 assert tmp_value is not None
                 table.add(tmp_value)
 

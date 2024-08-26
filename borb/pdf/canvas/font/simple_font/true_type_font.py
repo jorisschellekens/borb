@@ -228,9 +228,9 @@ class TrueTypeFont(Type1Font):
         type_0_font[Name("Encoding")] = Name("Identity-H")
 
         # set ToUnicode
-        type_0_font[
-            Name("ToUnicode")
-        ] = TrueTypeFont._build_custom_cmap_for_type_0_font(ttf_font_file)
+        type_0_font[Name("ToUnicode")] = (
+            TrueTypeFont._build_custom_cmap_for_type_0_font(ttf_font_file)
+        )
 
         # build DescendantFont
         descendant_font: CIDType2Font = CIDType2Font()
@@ -243,9 +243,9 @@ class TrueTypeFont(Type1Font):
         descendant_font[Name("DW")] = bDecimal(250)
 
         # build W array
-        descendant_font[
-            Name("W")
-        ] = TrueTypeFont._build_custom_widths_array_for_type_0_font(ttf_font_file)
+        descendant_font[Name("W")] = (
+            TrueTypeFont._build_custom_widths_array_for_type_0_font(ttf_font_file)
+        )
         descendant_font[Name("CIDToGIDMap")] = Name("Identity")
 
         # build CIDSystemInfo

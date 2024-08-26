@@ -16,7 +16,6 @@ from borb.pdf.canvas.layout.image.image import Image
 from borb.pdf.canvas.layout.layout_element import Alignment
 from borb.pdf.canvas.layout.layout_element import LayoutElement
 from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
-from borb.pdf.canvas.layout.text.line_of_text import LineOfText
 from borb.pdf.canvas.layout.text.paragraph import Paragraph
 from borb.pdf.page.page import Page
 
@@ -56,9 +55,7 @@ class HeterogeneousParagraph(Paragraph):
 
     def __init__(
         self,
-        chunks_of_text: typing.List[
-            typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]
-        ] = [],
+        chunks_of_text: typing.List[typing.Union[ChunkOfText, Emoji, Image, str]] = [],
         background_color: typing.Optional[Color] = None,
         border_bottom: bool = False,
         border_color: Color = HexColor("000000"),
@@ -114,7 +111,7 @@ class HeterogeneousParagraph(Paragraph):
             vertical_alignment=vertical_alignment,
         )
         # fmt: off
-        self._chunks_of_text: typing.List[typing.Union[ChunkOfText, LineOfText, Emoji, Image, str]] = chunks_of_text
+        self._chunks_of_text: typing.List[typing.Union[ChunkOfText, Emoji, Image, str]] = chunks_of_text
         # fmt: on
 
     #
@@ -128,9 +125,9 @@ class HeterogeneousParagraph(Paragraph):
         )
 
         # lines of text
-        lines_of_text: typing.List[
-            typing.List[LayoutElement]
-        ] = self._split_to_lines_of_chunks_of_text(available_space)
+        lines_of_text: typing.List[typing.List[LayoutElement]] = (
+            self._split_to_lines_of_chunks_of_text(available_space)
+        )
 
         # determine height
         h: Decimal = Decimal(
@@ -176,9 +173,9 @@ class HeterogeneousParagraph(Paragraph):
 
     def _paint_content_box(self, page: Page, available_space: Rectangle) -> None:
         # lines of text
-        lines_of_text: typing.List[
-            typing.List[LayoutElement]
-        ] = self._split_to_lines_of_chunks_of_text(available_space)
+        lines_of_text: typing.List[typing.List[LayoutElement]] = (
+            self._split_to_lines_of_chunks_of_text(available_space)
+        )
 
         for line in lines_of_text:
             for e in line:
@@ -222,29 +219,8 @@ class HeterogeneousParagraph(Paragraph):
             if isinstance(c0, Image):
                 initial_chunks_of_text.append(c0)
                 continue
-            if isinstance(c0, ChunkOfText) and not isinstance(c0, LineOfText):
+            if isinstance(c0, ChunkOfText):
                 initial_chunks_of_text.append(c0)
-                continue
-            if isinstance(c0, LineOfText):
-                for word in c0.get_text().split(" "):
-                    # TODO: continuation of borders when splitting LineOfText in ChunkOfText
-                    initial_chunks_of_text.append(
-                        ChunkOfText(
-                            word + " ",
-                            border_top=c0._border_top,
-                            border_right=c0._border_right,
-                            border_bottom=c0._border_bottom,
-                            border_left=c0._border_left,
-                            border_radius_top_left=c0._border_radius_top_left,
-                            border_radius_top_right=c0._border_radius_top_right,
-                            border_radius_bottom_left=c0._border_radius_bottom_left,
-                            border_radius_bottom_right=c0._border_radius_bottom_right,
-                            background_color=c0._background_color,
-                            font_color=c0._font_color,
-                            font_size=c0._font_size or Decimal(12),
-                            font=c0._font,
-                        )
-                    )
                 continue
 
         # perform initial layout (figure out where to break lines)

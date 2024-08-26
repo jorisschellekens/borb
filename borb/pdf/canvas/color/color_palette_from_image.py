@@ -33,9 +33,9 @@ class ColorPaletteFromImage:
 
     @staticmethod
     def _dist(c0: str, c1: str) -> float:
-        r_delta = (int(c0[1:3], 16) - int(c1[1:3], 16)) ** 2 / (255 ** 2)
-        g_delta = (int(c0[3:5], 16) - int(c1[3:5], 16)) ** 2 / (255 ** 2)
-        b_delta = (int(c0[5:7], 16) - int(c1[5:7], 16)) ** 2 / (255 ** 2)
+        r_delta = (int(c0[1:3], 16) - int(c1[1:3], 16)) ** 2 / (255**2)
+        g_delta = (int(c0[3:5], 16) - int(c1[3:5], 16)) ** 2 / (255**2)
+        b_delta = (int(c0[5:7], 16) - int(c1[5:7], 16)) ** 2 / (255**2)
         return math.sqrt(r_delta + g_delta + b_delta) / math.sqrt(3)
 
     #

@@ -49,16 +49,16 @@ class MoveToNextLineShowText(CanvasOperator):
         :param event_listeners:             the typing.List of EventListener(s) that may be notified
         :return:                            None
         """
-        move_to_next_line_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("T*")
+        move_to_next_line_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("T*")
+        )
         assert (
             move_to_next_line_op
         ), "Operator T* must be defined for operator ' to function."
         move_to_next_line_op.invoke(canvas_stream_processor, [], event_listeners)
 
-        show_text_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("Tj")
+        show_text_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("Tj")
+        )
         assert show_text_op, "Operator Tj must be defined for operator ' to function"
         show_text_op.invoke(canvas_stream_processor, operands, event_listeners)

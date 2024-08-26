@@ -247,6 +247,6 @@ dmypy.json
 .prof
 
 # secrets
-tests/borb_secrets.py
+tests/secrets.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm

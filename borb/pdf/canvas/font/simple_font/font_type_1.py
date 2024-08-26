@@ -141,9 +141,9 @@ class Type1Font(SimpleFont):
                 self["Encoding"]["Differences"][j], bDecimal
             ):
                 glyph_name: str = str(self["Encoding"]["Differences"][j])
-                self._character_identifier_to_unicode_lookup[
-                    int(character_code)
-                ] = toUnicode(glyph_name)
+                self._character_identifier_to_unicode_lookup[int(character_code)] = (
+                    toUnicode(glyph_name)
+                )
                 character_code += 1
                 j += 1
             i = j
@@ -202,9 +202,9 @@ class Type1Font(SimpleFont):
             ):
                 glyph_name: str = str(self["Encoding"]["Differences"][j])
                 cid: int = int(glyph_name[1:])
-                self._character_identifier_to_unicode_lookup[
-                    int(character_code)
-                ] = encoding_without_differences[cid]
+                self._character_identifier_to_unicode_lookup[int(character_code)] = (
+                    encoding_without_differences[cid]
+                )
                 character_code += 1
                 j += 1
             i = j

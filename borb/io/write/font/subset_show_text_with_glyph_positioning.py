@@ -111,14 +111,14 @@ class SubSetShowTextWithGlyphPositioning(CopyCommandOperator):
 
             # display string
             if isinstance(obj, String):
-                str_in_prev_font: typing.Optional[
-                    str
-                ] = old_font.character_identifier_to_unicode(int(str(obj), 16))
+                str_in_prev_font: typing.Optional[str] = (
+                    old_font.character_identifier_to_unicode(int(str(obj), 16))
+                )
                 assert str_in_prev_font is not None
 
-                char_id_in_new_font: typing.Optional[
-                    int
-                ] = new_font.unicode_to_character_identifier(str_in_prev_font)
+                char_id_in_new_font: typing.Optional[int] = (
+                    new_font.unicode_to_character_identifier(str_in_prev_font)
+                )
                 assert char_id_in_new_font is not None
 
                 operands_out.append(

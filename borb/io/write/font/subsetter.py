@@ -110,9 +110,9 @@ class Subsetter:
             return page
 
         # determine character set for each Type0Font
-        characters_per_font: typing.Dict[
-            Font, typing.Set[str]
-        ] = Subsetter._extract_text_per_font(page)
+        characters_per_font: typing.Dict[Font, typing.Set[str]] = (
+            Subsetter._extract_text_per_font(page)
+        )
 
         # update which fonts to apply subsetting to
         fonts_to_be_subset = [

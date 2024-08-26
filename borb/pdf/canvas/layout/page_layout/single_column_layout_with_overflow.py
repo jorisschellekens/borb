@@ -65,9 +65,13 @@ class SingleColumnLayoutWithOverflow(SingleColumnLayout):
         top_y: typing.Optional[Decimal] = None
         best_row_for_split: typing.Optional[int] = None
         for i in range(0, layout_element.get_number_of_rows()):
-            prev_layout_box: typing.Optional[Rectangle] = layout_element.get_cells_at_row(i)[0].get_previous_layout_box()
+            prev_layout_box: typing.Optional[Rectangle] = (
+                layout_element.get_cells_at_row(i)[0].get_previous_layout_box()
+            )
             assert prev_layout_box is not None
-            if top_y is None or top_y < (prev_layout_box.get_y() + prev_layout_box.get_height()):
+            if top_y is None or top_y < (
+                prev_layout_box.get_y() + prev_layout_box.get_height()
+            ):
                 top_y = prev_layout_box.get_y() + prev_layout_box.get_height()
             assert top_y is not None
             if any([x.get_row_span() != 1 for x in layout_element.get_cells_at_row(i)]):

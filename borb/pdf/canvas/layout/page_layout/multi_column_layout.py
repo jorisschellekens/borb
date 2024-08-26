@@ -117,12 +117,16 @@ class MultiColumnLayout(PageLayout):
 
         if isinstance(e0, ChunkOfText) or isinstance(e1, ChunkOfText):
             return max(
-                (Decimal(1.2) * e0.get_font_size())
-                if isinstance(e0, ChunkOfText)
-                else Decimal(0),
-                (Decimal(1.2) * e1.get_font_size())
-                if isinstance(e1, ChunkOfText)
-                else Decimal(0),
+                (
+                    (Decimal(1.2) * e0.get_font_size())
+                    if isinstance(e0, ChunkOfText)
+                    else Decimal(0)
+                ),
+                (
+                    (Decimal(1.2) * e1.get_font_size())
+                    if isinstance(e1, ChunkOfText)
+                    else Decimal(0)
+                ),
             )
         return Decimal(5)
 
@@ -166,9 +170,9 @@ class MultiColumnLayout(PageLayout):
         max_y: Decimal = page_height - self._margin_top
         min_y: Decimal = self._margin_bottom
         if self._previous_layout_element is not None:
-            previous_layout_box: typing.Optional[
-                Rectangle
-            ] = self._previous_layout_element.get_previous_layout_box()
+            previous_layout_box: typing.Optional[Rectangle] = (
+                self._previous_layout_element.get_previous_layout_box()
+            )
             assert previous_layout_box is not None
             max_y = previous_layout_box.get_y()
             max_y -= MultiColumnLayout._calculate_leading_between(

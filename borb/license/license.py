@@ -94,7 +94,7 @@ class License:
         company: str = "",
         output_file: pathlib.Path = pathlib.Path(__file__).parent / "license_key.json",
         private_key_file: pathlib.Path = pathlib.Path(
-            "/home/joris/Code/borb-license-key-private/borb-license-key-private-001.pem"
+            "/home/joris-schellekens/Code/borb-license-key/borb-license-key-private-001.pem"
         ),
         user_id: str = UUID.get(),
         valid_from_in_ms: int = int(datetime.datetime.now().timestamp() * 1000),
@@ -289,7 +289,7 @@ if __name__ == "__main__":
     # noinspection PyProtectedMember
     License._create_license(
         company="borb (EZ)",
-        output_file=pathlib.Path("/home/joris/Code/borb-dev/tests/license/artifacts_test_register_license/license.json"),
+        output_file=pathlib.Path("/home/joris-schellekens/Code/borb/tests/license/artifacts_test_register_license/license.json"),
         user_id="Joris Schellekens",
     )
     # fmt: on

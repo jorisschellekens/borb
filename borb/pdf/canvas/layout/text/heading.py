@@ -84,14 +84,18 @@ class Heading(Paragraph):
             font_size=font_size,
             horizontal_alignment=horizontal_alignment,
             hyphenation=hyphenation,
-            margin_bottom=margin_bottom
-            if margin_bottom is not None
-            else Heading._get_margin_for_outline_level(outline_level, font_size),
+            margin_bottom=(
+                margin_bottom
+                if margin_bottom is not None
+                else Heading._get_margin_for_outline_level(outline_level, font_size)
+            ),
             margin_left=margin_left or Decimal(0),
             margin_right=margin_right or Decimal(0),
-            margin_top=margin_top
-            if margin_top is not None
-            else Heading._get_margin_for_outline_level(outline_level, font_size),
+            margin_top=(
+                margin_top
+                if margin_top is not None
+                else Heading._get_margin_for_outline_level(outline_level, font_size)
+            ),
             multiplied_leading=multiplied_leading,
             padding_bottom=padding_bottom,
             padding_left=padding_left,

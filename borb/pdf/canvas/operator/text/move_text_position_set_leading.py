@@ -56,9 +56,9 @@ class MoveTextPositionSetLeading(CanvasOperator):
         assert isinstance(operands[0], Decimal), "Operand 0 of TD must be a Decimal"
         assert isinstance(operands[1], Decimal), "Operand 1 of TD must be a Decimal"
 
-        set_text_leading_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("TL")
+        set_text_leading_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("TL")
+        )
         assert (
             set_text_leading_op
         ), "Operand TL must be defined for operator TD to function"
@@ -66,9 +66,9 @@ class MoveTextPositionSetLeading(CanvasOperator):
             canvas_stream_processor, [bDecimal(-operands[1])], event_listeners
         )
 
-        move_text_position_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("Td")
+        move_text_position_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("Td")
+        )
         assert (
             move_text_position_op
         ), "Operand Td must be defined for operator TD to function"

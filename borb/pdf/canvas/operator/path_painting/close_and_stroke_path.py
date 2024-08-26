@@ -45,14 +45,14 @@ class CloseAndStrokePath(CanvasOperator):
         :param event_listeners:             the typing.List of EventListener(s) that may be notified
         :return:                            None
         """
-        close_subpath_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("h")
+        close_subpath_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("h")
+        )
         assert close_subpath_op
         close_subpath_op.invoke(canvas_stream_processor, [], event_listeners)
 
-        stroke_path_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("S")
+        stroke_path_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("S")
+        )
         assert stroke_path_op
         stroke_path_op.invoke(canvas_stream_processor, [], event_listeners)

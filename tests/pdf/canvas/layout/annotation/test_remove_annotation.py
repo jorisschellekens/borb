@@ -15,7 +15,7 @@ from tests.test_case import TestCase
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
-class TestCountAnnotations(TestCase):
+class TestRemoveAnnotations(TestCase):
     def test_add_circle_annotations(self):
         pdf = Document()
         page = Page()

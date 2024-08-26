@@ -135,9 +135,9 @@ class FreeSpaceFinder(EventListener):
         # ChunkOfTextRenderEvent
         if isinstance(event, ChunkOfTextRenderEvent):
             assert isinstance(event, ChunkOfTextRenderEvent)
-            bounding_box_001: typing.Optional[
-                Rectangle
-            ] = event.get_previous_layout_box()
+            bounding_box_001: typing.Optional[Rectangle] = (
+                event.get_previous_layout_box()
+            )
             if bounding_box_001 is not None:
                 # fmt: off
                 self._grid_per_page[self._page_number].mark_as_unavailable(bounding_box_001)

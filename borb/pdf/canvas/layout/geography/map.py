@@ -138,9 +138,9 @@ class Map(Shapes):
         :param key:     the key to be removed
         :return:        self
         """
-        shapes_to_remove: typing.Optional[
-            typing.List[ConnectedShape]
-        ] = self._iso3_code_to_shapes.get(key, None)
+        shapes_to_remove: typing.Optional[typing.List[ConnectedShape]] = (
+            self._iso3_code_to_shapes.get(key, None)
+        )
         if shapes_to_remove is not None:
             self._iso3_code_to_shapes.pop(key)
             self._shapes = [x for x in self._shapes if x not in shapes_to_remove]

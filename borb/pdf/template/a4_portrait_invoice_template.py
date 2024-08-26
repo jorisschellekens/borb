@@ -172,9 +172,9 @@ class A4PortraitInvoiceTemplate:
         for chunk_of_text, url, should_be_marked in chunks_of_text:
             if not should_be_marked:
                 continue
-            previous_layout_box: typing.Optional[
-                Rectangle
-            ] = chunk_of_text.get_previous_layout_box()
+            previous_layout_box: typing.Optional[Rectangle] = (
+                chunk_of_text.get_previous_layout_box()
+            )
             assert previous_layout_box is not None
             page_layout.get_page().add_annotation(
                 RemoteGoToAnnotation(previous_layout_box, url)

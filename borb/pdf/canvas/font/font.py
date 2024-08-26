@@ -358,9 +358,9 @@ class Font(Dictionary):
         """
 
         # 1. if space is defined, and the width of space is defined, return that
-        character_identifier: typing.Optional[
-            int
-        ] = self.unicode_to_character_identifier(" ")
+        character_identifier: typing.Optional[int] = (
+            self.unicode_to_character_identifier(" ")
+        )
         width: typing.Optional[Decimal] = None
         if character_identifier is not None:
             width = self.get_width(character_identifier)

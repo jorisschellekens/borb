@@ -57,13 +57,15 @@ class ScreenShot(Image):
     ):
         super().__init__(
             image=ImageGrab.grab(
-                bbox=None
-                if bounding_box is None
-                else (
-                    int(bounding_box.get_x()),
-                    int(bounding_box.get_y()),
-                    int(bounding_box.get_width()),
-                    int(bounding_box.get_height()),
+                bbox=(
+                    None
+                    if bounding_box is None
+                    else (
+                        int(bounding_box.get_x()),
+                        int(bounding_box.get_y()),
+                        int(bounding_box.get_width()),
+                        int(bounding_box.get_height()),
+                    )
                 ),
                 include_layered_windows=include_layered_windows,
                 all_screens=all_screens,

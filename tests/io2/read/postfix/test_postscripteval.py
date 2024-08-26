@@ -31,4 +31,4 @@ class TestPostscriptEval(unittest.TestCase):
         assert len(out) == 1
 
         # assert value
-        assert abs(float(out[0]) - 0.6338117228265895963801312974) < 1 * 10 ** -5
+        assert abs(float(out[0]) - 0.6338117228265895963801312974) < 1 * 10**-5

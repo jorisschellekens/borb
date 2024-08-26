@@ -52,9 +52,9 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
         :param event_listeners:             the typing.List of EventListener(s) that may be notified
         :return:                            None
         """
-        set_word_spacing_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("Tw")
+        set_word_spacing_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("Tw")
+        )
         assert (
             set_word_spacing_op
         ), 'Operator Tw must be defined for operator " to function'
@@ -62,9 +62,9 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
             canvas_stream_processor, [operands[0]], event_listeners
         )
 
-        set_character_spacing_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("Tc")
+        set_character_spacing_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("Tc")
+        )
         assert (
             set_character_spacing_op
         ), 'Operator Tc must be defined for operator " to function'
@@ -72,9 +72,9 @@ class SetSpacingMoveToNextLineShowText(CanvasOperator):
             canvas_stream_processor, [operands[1]], event_listeners
         )
 
-        move_to_next_line_show_text_op: typing.Optional[
-            CanvasOperator
-        ] = canvas_stream_processor.get_operator("'")
+        move_to_next_line_show_text_op: typing.Optional[CanvasOperator] = (
+            canvas_stream_processor.get_operator("'")
+        )
         assert (
             move_to_next_line_show_text_op
         ), "Operator ' must be defined for operator \" to function"

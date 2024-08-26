@@ -20,7 +20,7 @@ from borb.pdf.canvas.event.event_listener import Event
 from borb.pdf.canvas.event.event_listener import EventListener
 from borb.pdf.canvas.geometry.rectangle import Rectangle
 from borb.pdf.canvas.layout.layout_element import LayoutElement
-from borb.pdf.canvas.layout.text.line_of_text import LineOfText
+from borb.pdf.canvas.layout.text.chunk_of_text import ChunkOfText
 from borb.pdf.document.document import Document
 from borb.pdf.page.page import Page
 
@@ -38,7 +38,7 @@ class SimpleLineOfTextExtraction(EventListener):
         self._chunks_of_text: typing.List[ChunkOfTextRenderEvent] = []
         self._current_page_number: int = -1
         self._current_page: typing.Optional[Page] = None
-        self._lines_of_text_per_page: typing.Dict[int, typing.List[LineOfText]] = {}
+        self._lines_of_text_per_page: typing.Dict[int, typing.List[ChunkOfText]] = {}
 
     #
     # PRIVATE
@@ -69,7 +69,7 @@ class SimpleLineOfTextExtraction(EventListener):
                     chunks_of_text_disjoint_set.union(c0, c1)
 
         # combine partitions into LineOfText objects
-        lines_of_text: typing.List[LineOfText] = []
+        lines_of_text: typing.List[ChunkOfText] = []
         for chunks_of_text_partition in chunks_of_text_disjoint_set.sets():
             # sort
             chunks_of_text: typing.List[ChunkOfTextRenderEvent] = [
@@ -98,7 +98,7 @@ class SimpleLineOfTextExtraction(EventListener):
                 txt += c.get_text()
 
             # build LineOfText
-            l: LayoutElement = LineOfText(
+            l: LayoutElement = ChunkOfText(
                 text=txt,
                 font=chunks_of_text[0].get_font(),
                 font_size=chunks_of_text[0].get_font_size(),
@@ -112,7 +112,7 @@ class SimpleLineOfTextExtraction(EventListener):
                 - chunks_of_text[0].get_baseline().get_x(),
                 chunks_of_text[0].get_baseline().get_height(),
             )
-            assert isinstance(l, LineOfText)
+            assert isinstance(l, ChunkOfText)
             lines_of_text.append(l)
 
         # add to dict
@@ -132,7 +132,7 @@ class SimpleLineOfTextExtraction(EventListener):
     # PUBLIC
     #
 
-    def get_lines_of_text(self) -> typing.Dict[int, typing.List[LineOfText]]:
+    def get_lines_of_text(self) -> typing.Dict[int, typing.List[ChunkOfText]]:
         """
         This function returns the lines of text on a given PDF
         """
@@ -141,13 +141,13 @@ class SimpleLineOfTextExtraction(EventListener):
     @staticmethod
     def get_lines_of_text_from_pdf(
         pdf: Document,
-    ) -> typing.Dict[int, typing.List[LineOfText]]:
+    ) -> typing.Dict[int, typing.List[ChunkOfText]]:
         """
         This function returns the LineOfText objects for a given PDF (per page)
         :param pdf:     the PDF to be analyzed
         :return:        the LineOfText objects per page (represented by typing.Dict[int, typing.List[LineOfText]])
         """
-        lines_of_text_per_page: typing.Dict[int, typing.List[LineOfText]] = {}
+        lines_of_text_per_page: typing.Dict[int, typing.List[ChunkOfText]] = {}
         number_of_pages: int = int(pdf.get_document_info().get_number_of_pages() or 0)
         for page_nr in range(0, number_of_pages):
             # get Page object

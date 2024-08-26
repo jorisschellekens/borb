@@ -193,9 +193,9 @@ class FixedColumnWidthTable(Table):
         for _ in range(0, empty_cells):
             self.add(Paragraph(" ", respect_spaces_in_text=True))
 
-        m: typing.List[
-            typing.List[typing.Tuple[Decimal, Decimal]]
-        ] = self._get_grid_coordinates(available_space)
+        m: typing.List[typing.List[typing.Tuple[Decimal, Decimal]]] = (
+            self._get_grid_coordinates(available_space)
+        )
 
         # paint
         for e in self._content:

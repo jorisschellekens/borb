@@ -91,9 +91,9 @@ class OCRAsOptionalContentGroup(OCRImageRenderEventListener):
         # add to /Resources Dictionary of the Page
         now = datetime.datetime.now()
         ocr_layer_internal_name: str = "ocr%d%d%d" % (now.year, now.month, now.day)
-        number_of_pages: typing.Optional[
-            Decimal
-        ] = document.get_document_info().get_number_of_pages()
+        number_of_pages: typing.Optional[Decimal] = (
+            document.get_document_info().get_number_of_pages()
+        )
         assert number_of_pages is not None
         for page_nr in range(0, int(number_of_pages)):
             page: Page = document.get_page(page_nr)
