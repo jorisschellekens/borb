@@ -23,6 +23,10 @@ It represents a PDF document as a JSON-like datastructure of nested lists, dicti
 
 This is currently a one-man project, so the focus will always be to support those use-cases that are more common in favor of those that are rare.
 
+📣 I am excited to share that **a major release is in the works**! 🎉 This update includes significant improvements and new features designed to enhance performance, usability, and functionality. 
+While this update is taking longer, I am confident that the added benefits will make the wait worthwhile.
+Stay tuned for more updates and thank you for your continued support!
+
 ## 1. About the Examples
 
 The examples can be found in a separate repository.
