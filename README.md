@@ -23,22 +23,7 @@ It represents a PDF document as a JSON-like datastructure of nested lists, dicti
 
 This is currently a one-man project, so the focus will always be to support those use-cases that are more common in favor of those that are rare.
 
-📣 I am excited to share that **a major release is in the works**! 🎉 This update includes significant improvements and new features designed to enhance performance, usability, and functionality. 
-While this update is taking longer, I am confident that the added benefits will make the wait worthwhile.
-Stay tuned for more updates and thank you for your continued support!
-
-📣 **update on the major release**: The vast majority of things related to creating a PDF are done. 
-Major changes include: 
-- The codebase no longer uses `Decimal`.
-- The codebase no longer uses external files (some people were experiencing issues with that when trying to pack their code into an executable.)
-- `Annotation` objects have become part of the `LayoutElement` hierarchy.
-- `LayoutElement` objects are characterised by 2 methods: `get_size` and `paint`.
-- The codebase is fully checked using `mypy`.
-- The codebase is fully checked using `pydocstyle`.
-- The codebase is tested even more thoroughly (1200+ tests!)
-
-Next up is reading a PDF, after which I can work on modifying a PDF in a way that is fully consistent with the ISO standard.
-
+📣 **Next (major) release**: You can track the status of the next release on a dedicated [GitHub Pages](https://jorisschellekens.github.io/borb-3-status/).
 
 ## 1. About the Examples
 
