@@ -236,7 +236,7 @@ class LowLevelTokenizer:
             while True:
                 ch = self._next_byte()
                 if len(ch) == 0:
-                    break
+                    return None
                 # escape char
                 if ch == b"\\":
                     ch = self._next_byte()
