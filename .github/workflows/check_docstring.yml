@@ -1,0 +1,36 @@
+name: Check Docstrings
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check_docstrings:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Use the desired Python version
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pydocstyle
+
+      # Step 4: Run pydocstyle to check docstrings in public methods
+      - name: Check Docstring Style
+        run: |
+          pydocstyle --match='(?!test_|__init__).*\.py' .
+

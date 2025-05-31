@@ -1,0 +1,38 @@
+import unittest
+
+from borb.pdf.color.x11_color import X11Color
+from borb.pdf.document import Document
+from borb.pdf.layout_element.list.ordered_list import OrderedList
+from borb.pdf.layout_element.text.chunk import Chunk
+from borb.pdf.page import Page
+from borb.pdf.visitor.pdf import PDF
+
+
+class TestOrderedListBackground(unittest.TestCase):
+
+    def test_ordered_list_background(self):
+        d: Document = Document()
+
+        p: Page = Page()
+        d.append_page(p)
+
+        # useful constant(s)
+        x: int = p.get_size()[0] // 10
+        y: int = p.get_size()[1] // 10
+        w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
+        h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
+
+        (
+            OrderedList(
+                background_color=X11Color.YELLOW_MUNSELL,
+            )
+            .append_layout_element(Chunk(text="Lorem"))
+            .append_layout_element(Chunk(text="Ipsum"))
+            .append_layout_element(Chunk(text="Dolor"))
+            .paint(
+                available_space=(x, y, w, h),
+                page=p,
+            )
+        )
+
+        PDF.write(what=d, where_to=f"assets/test_ordered_list_background.pdf")

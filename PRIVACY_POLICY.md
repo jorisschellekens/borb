@@ -1,60 +1,92 @@
 # Privacy Policy
 
-When you use `borb`, you’re trusting us with your information. 
-We understand this is a big responsibility and work hard to protect your information and put you in control.
+When you use `borb`, you’re trusting us with your information.  
+We understand this is a big responsibility and work hard to protect your data and put you in control.
 
-This **Privacy Policy** is meant to help you understand what information we collect, 
-why we collect it, and how you can update, manage, export, and delete your information.
+This **Privacy Policy** is designed to help you understand what information we collect, why we collect it, and how you can manage your preferences.
 
-## 1. Information we collect as you use our services
+---
 
-When you use `borb`, you are (by default) sending anonymous usage information to one of our servers.
-`borb` sends information upon creating and upon reading a PDF (although this may change in future releases). 
-These are roughly the steps followed:
+## 1. Information We Collect
 
-1. Upon installing `borb`, a random user ID is generated
-2. This user ID is stored in the installation directory of `borb` (assuming the right file-permissions, etc)
-3. Whenever a read/write operation is performed, `borb` sends the following data:
-   1. **anonymous_user_id** (A randomly generated ID, associated with your user/installation of `borb`)
-   2. **event** (The action that triggered sending statistics, this could be `PDF::loads` or `PDF::dumps`)
-   3. **number_of_pages** (the number of pages read/written)
-   4. **sys_platform** (which operating system you are using `borb` on)
-   5. **utc_time_in_ms**
-   6. **version** (which version of `borb` you are using)
+By default, when you use `borb`, anonymous usage statistics are sent to a secure endpoint managed by us.  
+These events are triggered when you **read** or **write** a PDF document using `borb`.
 
-***Note:** In order to determine your location (city, country_code, country_name, latitude, longitude, state) a free online API is used*
+### 1.1 What is collected
 
-## 2. We use data to build better services
+Each time a read/write operation is performed, the following data may be sent:
 
-We use this data to ensure our services are top-quality.
-For instance, knowing which versions of `borb` are currently in use enables to decide which versions to continue to support.
-Similarly, we may also decide to invest extra developer-time in supporting arabic scripts should we see a market in this. 
-And then there is the big split of investing effort into the "reading PDF documents" versus "writing PDF documents" code. 
-This is yet another example of where having user data helps.
+- **event**: the action performed (e.g., `"read_pdf"`, `"write_pdf"`)
+- **number_of_documents**: the number of documents processed
+- **number_of_pages**: the number of pages processed
+- **version**: the installed version of `borb`
+- **operating_system**: the OS/platform used (e.g., `linux`, `win32`, `darwin`)
+- **license_valid_from_in_ms / license_valid_until_in_ms**: if a license is present, the validity period (in milliseconds since epoch)
+- **company**: if specified in the license metadata
 
-### 2.1 Provide, maintain and improve our services
+### 1.2 What is **not** collected
 
-By being able to measure specific usages of `borb` (e.g. "reading a PDF", "writing a PDF", etc) we are able to determine where to invest
-developer-time. This in turn improves your experience with `borb` as we are continually orienting ourselves to the user-demands.
+- No personally identifiable information (PII) is collected
+- No document content, metadata, or filenames are transmitted
+- No user IDs or persistent tracking identifiers are involved
 
-### 2.3 Develop new services
+### 1.3 When data is sent
 
-By knowing our customers, we may develop new products and services that are tailored towards a specific market.
+- Events are queued in-memory
+- Once the queue exceeds a certain threshold or the application exits, data is aggregated and transmitted securely
+- If the system is unlicensed and usage crosses a threshold, a friendly reminder is shown (no telemetry is sent as a result of this reminder)
 
-### 2.4 Measure performance
+---
 
-By knowing the amount of PDF documents created/read with each version, we can get idea of the popularity and adoption rate of each version of `borb`.
-This gives us the opportunity to fine-tune our release-cycle.
+## 2. Why We Collect This Data
 
-### 2.6 Protect `borb`, our users, and the public
+The purpose of collecting anonymous usage data is to improve the overall quality and focus of `borb`'s development.
 
-We want to ensure developer-effort is spent on those issues that impact the most users. In order to ensure this, we need to know how many people are using
-a given version of `borb`.
+### 2.1 Improve Existing Features
 
-## 3. You have choices regarding the information we collect and how it's used
+Understanding how `borb` is used (e.g., reading vs. writing PDFs, document sizes) helps us prioritize development and optimize performance.
 
-You can disable the gathering of anonymous usage statistics, all you need to do is call `UsageStatistics.disable()`.
-This in turn will call `AnonymousUserID.disable()` which will replace the file (containing your user ID) with a 0 byte file.
-This is the signal to the rest of `borb` not to send the usage statistics anymore.
+### 2.2 Version Adoption and Support Lifecycle
 
-Should you so desire, you can (re-) enable them by calling `UsageStatistics.enable()`.
+By tracking version usage, we can make data-driven decisions on which versions to support or deprecate.
+
+### 2.3 License Insights (If Applicable)
+
+If a license is present, we use its metadata to understand enterprise usage patterns—again, anonymously.
+
+### 2.4 Safeguard Developer Resources
+
+Usage statistics help us allocate engineering effort where it has the highest impact—focusing on popular paths, platforms, and use cases.
+
+---
+
+## 3. Your Control Over Data Collection
+
+### 3.1 Disabling Usage Statistics
+
+You can opt out of telemetry collection at any time by calling:
+
+```python
+UsageStatistics.opt_out()
+```
+
+This prevents any further anonymous events from being sent.
+
+### 3.2 Re-enabling Usage Statistics
+
+If you wish to opt back in, you can do so via:
+
+```python
+UsageStatistics.opt_in()
+```
+
+### 3.3 Behavior Without a License
+
+If no license is found, `borb` tracks the number of documents processed (locally). Once a predefined threshold is exceeded, it shows a usage reminder, but no data is sent unless you’ve opted in.
+
+## 4. Summary
+
+We strive to ensure transparency and respect for your privacy.
+The telemetry system in borb is intentionally lightweight, anonymous, and fully opt-in/opt-out.
+
+For any questions or concerns, reach out to us at: `borbpdf@gmail.com`

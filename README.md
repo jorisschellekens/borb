@@ -1,129 +1,91 @@
 
 # ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) borb
 
-
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Corpus Coverage : 100.0%](https://img.shields.io/badge/corpus%20coverage-100.0%25-green)]()
-[![Text Extraction : 93.1%](https://img.shields.io/badge/text%20extraction-93.1%25-green)]()
-[![Public Method Documentation : 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
-[![Number of Tests : 760](https://img.shields.io/badge/number%20of%20tests-760-green)]()
-[![Python : 3.8 | 3.9 | 3.10 ](https://img.shields.io/badge/python-3.8%20&#124;%203.9%20&#124;%203.10-green)]()
-[![Type Checking : 98%](https://img.shields.io/badge/type%20checking-98%25-green)]()
-
-
+[![Public Method Documentation: 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
+[![Tests: 1300+](https://img.shields.io/badge/tests-1300%2B-green)]()
+[![Python Versions: 3.10, 3.11, 3.12](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-green)]()
+[![Type Checking: 100%](https://img.shields.io/badge/type%20checking-100%25-green)]()
 [![Downloads](https://pepy.tech/badge/borb)](https://pepy.tech/project/borb)
-[![Downloads](https://pepy.tech/badge/borb/month)](https://pepy.tech/project/borb)
+[![Monthly Downloads](https://pepy.tech/badge/borb/month)](https://pepy.tech/project/borb)
 
-`borb` is a library for creating and manipulating PDF files in python.
+`borb` is a powerful and flexible Python library for creating and manipulating PDF files.
 
-## 0. About borb
+## 📖 Overview
 
-`borb` is a pure python library to read, write and manipulate PDF documents. 
-It represents a PDF document as a JSON-like datastructure of nested lists, dictionaries and primitives (numbers, string, booleans, etc)
+`borb` provides a pure Python solution for PDF document management, allowing users to read, write, and manipulate PDFs. It models PDF files in a JSON-like structure, using nested lists, dictionaries, and primitives (numbers, strings, booleans, etc.). Created and maintained as a solo project, `borb` prioritizes common PDF use cases for practical and straightforward usage.
 
-This is currently a one-man project, so the focus will always be to support those use-cases that are more common in favor of those that are rare.
+## ✨ Features
 
-📣 I am excited to share that **a major release is in the works**! 🎉 This update includes significant improvements and new features designed to enhance performance, usability, and functionality. 
-While this update is taking longer, I am confident that the added benefits will make the wait worthwhile.
-Stay tuned for more updates and thank you for your continued support!
+Explore `borb`’s capabilities in the [examples repository](https://github.com/jorisschellekens/borb-examples) for practical, real-world applications, including:
 
-📣 **update on the major release**: The vast majority of things related to creating a PDF are done. 
-Major changes include: 
-- The codebase no longer uses `Decimal`.
-- The codebase no longer uses external files (some people were experiencing issues with that when trying to pack their code into an executable.)
-- `Annotation` objects have become part of the `LayoutElement` hierarchy.
-- `LayoutElement` objects are characterised by 2 methods: `get_size` and `paint`.
-- The codebase is fully checked using `mypy`.
-- The codebase is fully checked using `pydocstyle`.
-- The codebase is tested even more thoroughly (1200+ tests!)
+- PDF Metadata Management (reading, editing)
+- Text and Image Extraction
+- Adding Annotations (notes, links)
+- Content Manipulation (adding text, images, tables, lists)
+- Page Layout Management with `PageLayout`
 
-Next up is reading a PDF, after which I can work on modifying a PDF in a way that is fully consistent with the ISO standard.
+…and much more!
 
+## 🚀 Installation
 
-## 1. About the Examples
+Install `borb` directly via `pip`:
 
-The examples can be found in a separate repository.
-This ensures the `borb` repository stays relatively small, whilst still providing a thorough knowledgebase of code-samples, screenshots and explanatory text.
+```bash
+pip install borb
+```
 
-[Check out the examples repository here!](https://github.com/jorisschellekens/borb-examples)
+To ensure you have the latest version, consider the following commands:
 
-They include; 
+```bash
+pip uninstall borb
+pip install --no-cache borb
+```
 
-- Reading a PDF and extracting meta-information
-- Changing meta-information  
-- Extracting text from a PDF
-- Extracting images from a PDF
-- Changing images in a PDF
-- Adding annotations (notes, links, etc) to a PDF
-- Adding text to a PDF
-- Adding tables to a PDF
-- Adding lists to a PDF
-- Using a PageLayout manager
+## 👋 Getting Started: Hello World
 
- and much more
- 
-### 1.0 Installing `borb`
-
-`borb` can be installed using `pip`
-
-    pip install borb
-
-If you have installed `borb` before, and you want to ensure `pip` downloads the latest version (rather than using its internal cache) you can use the following commands:
-
-    pip uninstall borb
-    pip install --no-cache borb
-
-### 1.1 Hello World
-
-To give you an immediate idea of the way `borb` works, 
-this is the classic `Hello World` example, in `borb`:
+Create your first PDF in just a few lines of code with `borb`:
 
 ```python
 from pathlib import Path
+from borb.pdf import Document, Page, PageLayout, SingleColumnLayout, Paragraph, PDF
 
-from borb.pdf import Document
-from borb.pdf import Page
-from borb.pdf import SingleColumnLayout
-from borb.pdf import Paragraph
-from borb.pdf import PDF
+# Create an empty Document
+d: Document = Document()
 
-# create an empty Document
-pdf = Document()
+# Create an empty Page
+p: Page = Page()
+d.append_page(p)
 
-# add an empty Page
-page = Page()
-pdf.add_page(page)
+# Create a PageLayout
+l: PageLayout = SingleColumnLayout(p)
 
-# use a PageLayout (SingleColumnLayout in this case)
-layout = SingleColumnLayout(page)
+# Add a Paragraph
+l.append_layout_element(Paragraph('Hello World!'))
 
-# add a Paragraph object
-layout.add(Paragraph("Hello World!"))
-    
-# store the PDF
-with open(Path("output.pdf"), "wb") as pdf_file_handle:
-    PDF.dumps(pdf_file_handle, pdf)
+# Write the PDF
+PDF.write(what=d, where_to="assets/output.pdf")
+
 ```
 
-## 2. License
+## 🛠 License
 
-`borb` is dual licensed as AGPL/Commercial software.
+`borb` is dual-licensed under AGPL and a commercial license. 
 
-AGPL is a free / open source software license.
-This doesn't mean the software is [gratis](https://en.wikipedia.org/wiki/Gratis_versus_libre)!
+The AGPL (Affero General Public License) is an open-source license, but commercial use cases require a paid license, especially if you intend to:
 
-Buying a license is mandatory as soon as you develop commercial activities distributing the borb software inside your product or deploying it on a network without disclosing the source code of your own applications under the AGPL license. 
-These activities include:
+- Offer paid PDF services (e.g., PDF generation in cloud applications)
+- Use `borb` in closed-source projects
+- Distribute `borb` in any closed-source product
 
-- Offering paid services to customers as an ASP
-- Serving PDFs on the fly in the cloud or in a web application
-- Shipping `borb` with a closed source product
+For more information, [contact our sales team](https://borbpdf.com/).
 
-[Contact sales](https://borbpdf.com/) for more information.
+## 🙏 Acknowledgements
 
-## 3. Acknowledgements
+Special thanks to:
 
-I would like to thank the following people, for their contributions / advice with regards to developing `borb`:
 - Aleksander Banasik
 - Benoît Lagae
 - Michael Klink
+
+Your contributions and guidance have been invaluable to `borb`'s development.

@@ -1,76 +1,102 @@
-# Contributor Covenant Code of Conduct
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) Code of Conduct
 
-## Our Pledge
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, sex characteristics, gender identity and expression,
-level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
+## Introduction
 
-## Our Standards
+Our open source project is committed to creating a welcoming, inclusive, and harassment-free environment for everyone. By participating in this community, you agree to abide by this Code of Conduct, which outlines our shared values, expected behavior, and how we handle misconduct.
 
-Examples of behavior that contributes to creating a positive environment
-include:
+---
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+## Our Commitment
 
-Examples of unacceptable behavior by participants include:
+We are dedicated to fostering a respectful and welcoming space for all participants, regardless of:
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
- advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
- address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
- professional setting
+- Age  
+- Body size  
+- Disability  
+- Ethnicity  
+- Sex characteristics  
+- Gender identity or expression  
+- Level of experience  
+- Education  
+- Socio-economic status  
+- Nationality  
+- Personal appearance  
+- Race  
+- Religion  
+- Sexual orientation  
 
-## Our Responsibilities
+We aim to create a harassment-free experience where all community members feel safe and valued.
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+---
 
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
+## Expected Behavior
+
+To maintain a positive environment, we ask all participants to:
+
+- Use welcoming and inclusive language.  
+- Respect differing viewpoints and experiences.  
+- Accept constructive criticism gracefully.  
+- Prioritize what is best for the community.  
+- Show empathy and kindness toward others.
+
+---
+
+## Unacceptable Behavior
+
+The following actions are considered unacceptable and will not be tolerated:
+
+- Use of sexualized language, imagery, or unwelcome sexual attention or advances.  
+- Trolling, insulting remarks, or personal/political attacks.  
+- Public or private harassment.  
+- Sharing private information (e.g., addresses, emails) without consent.  
+- Engaging in any behavior deemed inappropriate in a professional environment.  
+
+---
+
+## Maintainers’ Responsibilities
+
+Project maintainers are responsible for upholding this Code of Conduct by:
+
+- Clarifying acceptable behavior standards.  
+- Taking appropriate action in response to violations, including warnings, content removal, or banning contributors.  
+- Ensuring fairness and impartiality in enforcement decisions.
+
+---
 
 ## Scope
 
-This Code of Conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community. Examples of
-representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event. Representation of a project may be
-further defined and clarified by project maintainers.
+This Code of Conduct applies to:
 
-## Enforcement
+1. **Project Spaces**: All online and offline spaces directly related to the project, such as repositories, forums, and community events.  
+2. **Representation of the Project**: Situations where an individual represents the project or its community (e.g., using official emails or social media).  
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at joris.schellekens.1989@gmail.com. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
+Further details may be defined by project maintainers as needed.
 
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
+---
 
-## Attribution
+## Reporting Issues
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+If you experience or witness unacceptable behavior, please report it to the project team at:
 
-[homepage]: https://www.contributor-covenant.org
+**Email:** joris.schellekens.1989@gmail.com  
 
-For answers to common questions about this code of conduct, see
-https://www.contributor-covenant.org/faq
+All reports will be reviewed confidentially. We are committed to taking necessary and appropriate actions to address reported incidents while protecting the privacy of those involved.
+
+---
+
+## Consequences of Violations
+
+Contributors who violate this Code of Conduct may face consequences, including but not limited to:
+
+- Temporary or permanent bans from the project.  
+- Removal of comments, commits, or other contributions.  
+- Additional corrective measures as determined by project leadership.  
+
+Maintainers who fail to enforce this Code of Conduct in good faith may also face repercussions.
+
+---
+
+## Acknowledgments
+
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 1.4. For additional details, visit the [Contributor Covenant FAQ](https://www.contributor-covenant.org/faq).  

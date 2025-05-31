@@ -1,0 +1,10 @@
+black
+cryptography
+fonttools
+matplotlib
+Pillow
+python-barcode
+py_avataaars
+requests
+segno
+setuptools

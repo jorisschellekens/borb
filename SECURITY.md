@@ -1,9 +1,9 @@
-# Reporting Security Issues
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) Security
 
-The `borb` team and community take security bugs in ``borb seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.
+The `borb` team and community prioritize the security of the `borb` library. We deeply value your efforts to responsibly disclose vulnerabilities and will work to acknowledge and address your contributions promptly.
 
-To report a security issue, please use the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/jorisschellekens/borb/security/advisories/new) tab.
+If you discover a security issue, please report it using the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/jorisschellekens/borb/security/advisories) tab.
 
-The `borb` team will send a response indicating the next steps in handling your report. After the initial reply to your report, the security team will keep you informed of the progress towards a fix and full announcement, and may ask for additional information or guidance.
+Upon receiving your report, the `borb` team will respond with the next steps for addressing the issue. Throughout the process, we will keep you updated on progress toward a resolution and any public announcements. We may also reach out for additional details or clarification.
 
-Report security bugs in third-party modules to the person or team maintaining the module.
+For security bugs in third-party modules, please contact the respective maintainer or team responsible for the module.

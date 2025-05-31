@@ -1,0 +1,31 @@
+name: Check Visibility Markers
+
+on:
+  # Run this workflow on pushes, pull requests to main, or when manually triggered.
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check_visibility_markers:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Retrieve the latest code version
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the required Python version
+      - name: Configure Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Specify the target Python version
+
+      # Step 3: Check for visibility markers (CONSTRUCTOR / PRIVATE / PUBLIC) in code files
+      - name: Check Visibility Markers in Code Files
+        run: |
+          python ./.github/workflows/check_visibility_markers.py borb/

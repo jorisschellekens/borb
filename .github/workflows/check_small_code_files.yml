@@ -1,0 +1,32 @@
+name: Check Small Code Files
+
+on:
+  # Trigger the workflow on push and pull request events
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+
+jobs:
+  check_small_code_files:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Choose your Python version
+
+      # Step 3: Check size of all .py files
+      - name: Check size of all .py files
+        run: |
+          python ./.github/workflows/check_small_code_files.py borb/
