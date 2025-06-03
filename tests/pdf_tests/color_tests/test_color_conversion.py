@@ -1,14 +1,7 @@
-import math
-import typing
 import unittest
 
 from borb.pdf.color.color import Color
-from borb.pdf.color.color_scheme import ColorScheme
 from borb.pdf.color.x11_color import X11Color
-from borb.pdf.document import Document
-from borb.pdf.layout_element.shape.line_art import LineArt
-from borb.pdf.page import Page
-from borb.pdf.visitor.pdf import PDF
 
 
 class TestColorConversion(unittest.TestCase):

@@ -1,4 +1,3 @@
-import pathlib
 import random
 import unittest
 
@@ -11,9 +10,7 @@ from borb.pdf import (
     PDF,
     PageLayout,
     GoogleTrueTypeFont,
-    GetDocumentAsGraphML,
     X11Color,
-    Chunk,
     Image,
 )
 from borb.pdf.conformance import Conformance

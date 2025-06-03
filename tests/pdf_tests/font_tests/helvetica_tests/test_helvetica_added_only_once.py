@@ -8,7 +8,6 @@ from borb.pdf import (
     SingleColumnLayout,
     PageLayout,
     Paragraph,
-    Lipsum,
     PDF,
     FlexibleColumnWidthTable,
     Table,

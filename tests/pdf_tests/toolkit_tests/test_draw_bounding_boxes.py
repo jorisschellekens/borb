@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from borb.pdf import Document, PDF, Pipeline, Source, GetText
+from borb.pdf import Document, PDF, Pipeline, Source
 from borb.pdf.toolkit.sink.draw_bounding_boxes import DrawBoundingBoxes
 
 

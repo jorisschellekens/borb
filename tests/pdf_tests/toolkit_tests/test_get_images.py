@@ -1,6 +1,4 @@
-import typing
 import unittest
-from datetime import datetime
 
 from borb.pdf import (
     PDF,

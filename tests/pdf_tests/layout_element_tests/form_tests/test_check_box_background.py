@@ -1,8 +1,7 @@
 import unittest
 
-from borb.pdf import Button, CheckBox, X11Color
+from borb.pdf import CheckBox, X11Color
 from borb.pdf.document import Document
-from borb.pdf.layout_element.form.country_drop_down_list import CountryDropDownList
 from borb.pdf.page import Page
 from borb.pdf.visitor.pdf import PDF
 

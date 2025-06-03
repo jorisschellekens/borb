@@ -1,6 +1,6 @@
 import unittest
 
-from borb.pdf import A4PortraitResume, Lipsum
+from borb.pdf import A4PortraitResume
 
 
 class TestA4PortraitResume(unittest.TestCase):

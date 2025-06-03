@@ -1,7 +1,6 @@
 import math
 import typing
 import unittest
-from io import BytesIO
 
 from borb.pdf import PageLayout, SingleColumnLayout
 from borb.pdf.document import Document

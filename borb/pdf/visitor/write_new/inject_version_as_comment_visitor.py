@@ -83,12 +83,13 @@ class InjectVersionAsCommentVisitor(WriteNewVisitor):
         :param node:    the node (PDFType) to be processed
         :return:        True if the visitor processed the node False otherwise
         """
-        # IF we are not processing a Document object
+        # IF we are not processing a ReferencedObject type
         # THEN return
-        from borb.pdf import Document
+        from borb.pdf.visitor.write_new.document_visitor import ReferencedObjectType
 
-        if not isinstance(node, Document):
+        if not isinstance(node, ReferencedObjectType):
             return False
+
         # IF the version info has already been embedded in the PDF
         # THEN do not do so again
         if self.__has_been_used:
@@ -96,13 +97,16 @@ class InjectVersionAsCommentVisitor(WriteNewVisitor):
 
         from borb.pdf import Version
 
-        str_to_write: str = f"# borb\n"
-        str_to_write += f"# version {Version.get_current_version()}\n"
+        str_to_write: str = ""
+        str_to_write += "\n"
+        str_to_write += f"% borb\n"
+        str_to_write += f"% version {Version.get_current_version()}\n"
         str_to_write += (
-            "# AGPL\n"
+            "% AGPL\n"
             if License.get_company() is None
-            else f"# Licensed to {License.get_company()}\n"
+            else f"% Licensed to {License.get_company()}\n"
         )
+        str_to_write += "\n"
 
         # append bytes
         self._append_bytes(str_to_write.encode("latin1"))

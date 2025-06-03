@@ -4,10 +4,8 @@ import time
 import typing
 import unittest
 
-from borb.pdf import PDF, Document, SingleColumnLayout, Paragraph, Page
+from borb.pdf import PDF, Document
 from borb.pdf.toolkit.pipeline import Pipeline
-from borb.pdf.toolkit.sink.draw_bounding_boxes import DrawBoundingBoxes
-from borb.pdf.toolkit.sink.get_events_as_json import GetEventsAsJSON
 from borb.pdf.toolkit.sink.get_text import GetText
 from borb.pdf.toolkit.source.operator.source import Source
 

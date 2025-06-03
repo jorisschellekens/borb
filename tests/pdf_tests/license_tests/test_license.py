@@ -1,8 +1,7 @@
+import datetime
 import pathlib
 import unittest
-import datetime
 
-from borb.pdf import Paragraph
 from borb.pdf.license.license import License
 from borb.pdf.license.version import Version
 

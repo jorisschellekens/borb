@@ -7,13 +7,16 @@ This class is responsible for traversing and processing the top-level components
 document, such as metadata, pages, and overall structure. It ensures that all essential
 elements of the document are correctly written and formatted in accordance with PDF standards.
 """
-
-
+import collections
 import typing
 
 from borb.pdf.document import Document
 from borb.pdf.primitives import PDFType, reference
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
+
+ReferencedObjectType = collections.namedtuple(
+    typename="ReferencedObjectType", field_names=["reference", "object"]
+)
 
 
 class DocumentVisitor(WriteNewVisitor):
@@ -108,26 +111,14 @@ class DocumentVisitor(WriteNewVisitor):
                 referenced_object=xref_entry.get_referenced_object(),
                 id=xref_entry.get_id(),
             )
-            self._append_bytes(
-                f"{xref_entry.get_object_nr()} {xref_entry.get_generation_nr()} obj\n".encode(
-                    "latin1"
-                ),
-                leading_space=False,
-                trailing_space=False,
+
+            # wrap in ReferencedObjectType
+            obj = ReferencedObjectType(
+                reference=xref[i], object=xref[i].get_referenced_object()
             )
 
-            # recursion
-            referenced_object: typing.Optional[PDFType] = (
-                xref_entry.get_referenced_object()
-            )
-            assert referenced_object is not None
-            self.go_to_root_and_visit(referenced_object)
-
-            # newline
-            self._append_bytes(b"\n", leading_space=False, trailing_space=False)
-
-            # end object
-            self._append_bytes(b"endobj\n", leading_space=False, trailing_space=False)
+            # recurse
+            self.go_to_root_and_visit(obj)
 
         # write_new xref
         xref_tell: int = self.tell()

@@ -9,7 +9,6 @@ from borb.pdf import (
     PageLayout,
     SingleColumnLayout,
     Paragraph,
-    Image,
     X11Color,
     Lipsum,
 )
@@ -17,7 +16,7 @@ from borb.pdf.toolkit.pipeline import Pipeline
 from borb.pdf.toolkit.sink.get_keywords_by_pagewise_tf_idf import (
     GetKeywordsByPagewiseTFIDF,
 )
-from borb.pdf.toolkit.sink.get_regular_expression import GetRegularExpression, MatchType
+from borb.pdf.toolkit.sink.get_regular_expression import MatchType
 from borb.pdf.toolkit.source.operator.source import Source
 
 

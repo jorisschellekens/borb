@@ -56,32 +56,31 @@ class FacadeVisitor(WriteNewVisitor):
         self.__document: typing.Optional[Document] = None
         # imports
         # fmt: off
+        from borb.pdf.visitor.validate.validation_visitor import ValidationVisitor
         from borb.pdf.visitor.write_new.bool_visitor import BoolVisitor
+        from borb.pdf.visitor.write_new.build_xref_visitor import BuildXRefVisitor
+        from borb.pdf.visitor.write_new.default_stream_compression_visitor import DefaultStreamCompressionVisitor
         from borb.pdf.visitor.write_new.dict_visitor import DictVisitor
         from borb.pdf.visitor.write_new.document_visitor import DocumentVisitor
         from borb.pdf.visitor.write_new.float_visitor import FloatVisitor
         from borb.pdf.visitor.write_new.hex_str_visitor import HexStrVisitor
+        from borb.pdf.visitor.write_new.inject_markinfo_visitor import InjectMarkInfoVisitor
+        from borb.pdf.visitor.write_new.inject_srgb_outputintent_visitor import InjectsRGBOutputIntentVisitor
+        from borb.pdf.visitor.write_new.inject_struct_tree_root_visitor import InjectStructTreeRootVisitor
+        from borb.pdf.visitor.write_new.inject_version_as_comment_visitor import InjectVersionAsCommentVisitor
+        from borb.pdf.visitor.write_new.inject_xmp_metadata_visitor import InjectXMPMetadataVisitor
         from borb.pdf.visitor.write_new.int_visitor import IntVisitor
         from borb.pdf.visitor.write_new.list_visitor import ListVisitor
-        from borb.pdf.visitor.write_new.inject_markinfo_visitor import InjectMarkInfoVisitor
+        from borb.pdf.visitor.write_new.referenced_object_visitor import ReferencedObjectVisitor
         from borb.pdf.visitor.write_new.reference_visitor import ReferenceVisitor
-        from borb.pdf.visitor.write_new.inject_srgb_outputintent_visitor import InjectsRGBOutputIntentVisitor
-        from borb.pdf.visitor.write_new.stream_visitor import StreamVisitor
-        from borb.pdf.visitor.write_new.inject_struct_tree_root_visitor import InjectStructTreeRootVisitor
         from borb.pdf.visitor.write_new.replace_str_by_name_visitor import ReplaceStrByNameVisitor
+        from borb.pdf.visitor.write_new.stream_visitor import StreamVisitor
         from borb.pdf.visitor.write_new.str_visitor import StrVisitor
         from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
-        from borb.pdf.visitor.write_new.inject_xmp_metadata_visitor import InjectXMPMetadataVisitor
-        from borb.pdf.visitor.write_new.build_xref_visitor import BuildXRefVisitor
-        from borb.pdf.visitor.validate.validation_visitor import ValidationVisitor
-        from borb.pdf.visitor.write_new.default_stream_compression_visitor import DefaultStreamCompressionVisitor
-        from borb.pdf.visitor.write_new.inject_version_as_comment_visitor import InjectVersionAsCommentVisitor
         # fmt: on
 
         # build typing.List[WriteNewVisitor]
         self.__visitors: typing.List[WriteNewVisitor] = [  # type: ignore[annotation-unchecked]
-            # Commercial
-            InjectVersionAsCommentVisitor(root=self),
             # PDF/A
             InjectMarkInfoVisitor(root=self),
             InjectsRGBOutputIntentVisitor(root=self),
@@ -96,6 +95,9 @@ class FacadeVisitor(WriteNewVisitor):
             ValidationVisitor(root=self),
             # Types (prio)
             DocumentVisitor(root=self),
+            ReferencedObjectVisitor(root=self),
+            # Types (hack to inject version)
+            InjectVersionAsCommentVisitor(root=self),
             # Types
             BoolVisitor(root=self),
             DictVisitor(root=self),

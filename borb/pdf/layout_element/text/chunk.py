@@ -11,12 +11,12 @@ smallest unit of text within a layout.
 import functools
 import typing
 
-from borb.pdf.font.simple_font.standard_14_fonts import Standard14Fonts
 from borb.pdf.color.color import Color
 from borb.pdf.color.rgb_color import RGBColor
 from borb.pdf.color.x11_color import X11Color
 from borb.pdf.font.font import Font
 from borb.pdf.font.simple_font.helvetica.helvetica import Helvetica
+from borb.pdf.font.simple_font.standard_14_fonts import Standard14Fonts
 from borb.pdf.layout_element.layout_element import LayoutElement
 from borb.pdf.page import Page
 from borb.pdf.primitives import name

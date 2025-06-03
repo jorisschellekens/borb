@@ -1,7 +1,6 @@
 import unittest
 
-from borb.pdf import Document, Page, PDF, Lipsum, X11Color
-from borb.pdf.layout_element.layout_element import LayoutElement
+from borb.pdf import Document, Page, PDF
 from borb.pdf.layout_element.text.markdown_paragraph import MarkdownParagraph
 
 

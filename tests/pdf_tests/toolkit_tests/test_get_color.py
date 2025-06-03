@@ -1,6 +1,4 @@
-import typing
 import unittest
-from datetime import datetime
 
 from borb.pdf import (
     PDF,
@@ -15,7 +13,6 @@ from borb.pdf import (
     GetColors,
 )
 from borb.pdf.toolkit.pipeline import Pipeline
-from borb.pdf.toolkit.sink.get_images import GetImages
 from borb.pdf.toolkit.source.operator.source import Source
 
 

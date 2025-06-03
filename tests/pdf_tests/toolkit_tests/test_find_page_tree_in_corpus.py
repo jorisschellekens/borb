@@ -1,14 +1,7 @@
 import pathlib
-import re
-import time
-import typing
 import unittest
 
-from borb.pdf import PDF, Document, Page
-from borb.pdf.toolkit.pipeline import Pipeline
-from borb.pdf.toolkit.sink.get_events_as_json import GetEventsAsJSON
-from borb.pdf.toolkit.sink.get_text import GetText
-from borb.pdf.toolkit.source.operator.source import Source
+from borb.pdf import PDF, Page
 
 
 class TestFindPageTreeInCorpus(unittest.TestCase):

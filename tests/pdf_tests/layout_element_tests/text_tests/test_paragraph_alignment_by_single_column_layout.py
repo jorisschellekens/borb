@@ -9,7 +9,6 @@ from borb.pdf import (
     LayoutElement,
     PDF,
     X11Color,
-    HorizontalBreak,
 )
 
 

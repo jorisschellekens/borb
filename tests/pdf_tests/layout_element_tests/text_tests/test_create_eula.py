@@ -11,8 +11,7 @@ from borb.pdf import (
     MarkdownParagraph,
     LayoutElement,
     Shape,
-    Emoji, Chunk,
-)
+    Emoji, )
 
 
 class TestCreateEULA(unittest.TestCase):

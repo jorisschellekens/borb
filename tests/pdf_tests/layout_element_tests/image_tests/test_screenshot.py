@@ -1,10 +1,5 @@
 import unittest
 
-from borb.pdf.document import Document
-from borb.pdf.layout_element.image.screenshot import Screenshot
-from borb.pdf.page import Page
-from borb.pdf.visitor.pdf import PDF
-
 
 class TestScreenshot(unittest.TestCase):
 

@@ -9,10 +9,7 @@ from borb.pdf import (
     Lipsum,
     PDF,
     PageLayout,
-    GoogleTrueTypeFont,
 )
-from borb.pdf.conformance import Conformance
-from tests.secrets import populate_os_environ
 
 
 class TestEasyImports(unittest.TestCase):

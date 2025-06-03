@@ -1,6 +1,5 @@
 import unittest
 
-from borb.pdf import X11Color
 from borb.pdf.document import Document
 from borb.pdf.layout_element.text.paragraph import Paragraph
 from borb.pdf.page import Page

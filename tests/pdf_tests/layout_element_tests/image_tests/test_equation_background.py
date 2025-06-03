@@ -3,7 +3,6 @@ import unittest
 from borb.pdf.color.x11_color import X11Color
 from borb.pdf.document import Document
 from borb.pdf.layout_element.image.equation import Equation
-from borb.pdf.layout_element.image.image import Image
 from borb.pdf.page import Page
 from borb.pdf.visitor.pdf import PDF
 
