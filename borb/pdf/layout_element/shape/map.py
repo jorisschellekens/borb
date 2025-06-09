@@ -305,7 +305,7 @@ class Map(Shape):
             page["Contents"]["DecodedBytes"] += b"\n"
 
         # store graphics state
-        page["Contents"]["DecodedBytes"] += b"Q\n"
+        page["Contents"]["DecodedBytes"] += b"q\n"
 
         # set width
         page["Contents"]["DecodedBytes"] += f"{self._Shape__line_width} w\n".encode("latin1")  # type: ignore[attr-defined]
@@ -360,7 +360,7 @@ class Map(Shape):
                     page["Contents"]["DecodedBytes"] += b"S\n"
 
         # restore graphics state
-        page["Contents"]["DecodedBytes"] += b"q\n"
+        page["Contents"]["DecodedBytes"] += b"Q\n"
 
     def rotate(self, angle_in_degrees: float) -> "Map":
         """

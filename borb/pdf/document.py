@@ -66,7 +66,7 @@ class Document(dict):
 
     @staticmethod
     def __get_now_as_date_str() -> str:
-        return datestr(datetime.datetime.now().strftime("D:%Y%m%d%H%M%S+00'00'"))
+        return datestr(datetime.datetime.now().strftime("D:%Y%m%d%H%M%SZ00"))
 
     @staticmethod
     def __get_random_id() -> hexstr:
@@ -172,6 +172,11 @@ class Document(dict):
         # add page
         self["Trailer"]["Root"]["Pages"]["Kids"] += [page]
         self["Trailer"]["Root"]["Pages"]["Count"] += 1
+
+        # link Page to parent
+        page[name("Parent")] = self["Trailer"]["Root"]["Pages"]
+
+        # link Page to Document
         page._Page__document = self  # type: ignore[attr-defined]
 
         # return

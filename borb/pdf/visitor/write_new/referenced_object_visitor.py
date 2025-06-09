@@ -88,4 +88,7 @@ class ReferencedObjectVisitor(WriteNewVisitor):
         self._append_bytes(b"\n", leading_space=False, trailing_space=False)
 
         # end object
-        self._append_bytes(b"endobj\n", leading_space=False, trailing_space=False)
+        self._append_bytes(b"endobj\n\n", leading_space=False, trailing_space=False)
+
+        # return
+        return True

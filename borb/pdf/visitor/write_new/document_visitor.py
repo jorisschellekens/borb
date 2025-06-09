@@ -122,18 +122,28 @@ class DocumentVisitor(WriteNewVisitor):
 
         # write_new xref
         xref_tell: int = self.tell()
-        self._append_bytes(b"xref\n")
-        self._append_bytes(f"0 {len(xref)+1}\n".encode("latin1"))
-        self._append_bytes("0000000000 65535 f\r\n".encode("latin1"))
+        self._append_bytes(b"xref\n", leading_space=False, trailing_space=False)
+        self._append_bytes(
+            f"0 {len(xref)+1}\n".encode("latin1"),
+            leading_space=False,
+            trailing_space=False,
+        )
+        self._append_bytes(
+            "0000000000 65535 f\r\n".encode("latin1"),
+            leading_space=False,
+            trailing_space=False,
+        )
         for xref_entry in xref:
             self._append_bytes(
-                f"{xref_entry.get_byte_offset():010d} 00000 n\r\n".encode("latin1")
+                f"{xref_entry.get_byte_offset():010d} 00000 n\r\n".encode("latin1"),
+                leading_space=False,
+                trailing_space=False,
             )
 
         # write_new trailer
         self._append_bytes(b"trailer\n", leading_space=False, trailing_space=False)
         self.go_to_root_and_visit(node["Trailer"])
-        self._append_bytes(b"\n")
+        self._append_bytes(b"\n", leading_space=False, trailing_space=False)
 
         # write_new xref
         self._append_bytes(b"startxref\n", leading_space=False, trailing_space=False)

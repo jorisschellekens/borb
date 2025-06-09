@@ -50,5 +50,7 @@ class IntVisitor(WriteNewVisitor):
             return False
 
         # default
-        self._append_bytes(str(node).encode("latin1"))
+        self._append_bytes(
+            str(node).encode("latin1"), leading_space=False, trailing_space=False
+        )
         return True

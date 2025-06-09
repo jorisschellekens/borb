@@ -382,7 +382,7 @@ class Shape(LayoutElement):
             page["Contents"]["DecodedBytes"] += b"\n"
 
         # store graphics state
-        page["Contents"]["DecodedBytes"] += b"Q\n"
+        page["Contents"]["DecodedBytes"] += b"q\n"
 
         # set fill color
         if self.__fill_color is not None:
@@ -436,9 +436,9 @@ class Shape(LayoutElement):
         if isinstance(self.__coordinates[0], list):
             for polygon in self.__coordinates:
                 # fmt: off
-                page["Contents"]["DecodedBytes"] += f"{polygon[0][0] + x_delta} {polygon[0][1] + y_delta} m\n".encode('latin1')    # type: ignore[index]
+                page["Contents"]["DecodedBytes"] += f"{round(polygon[0][0] + x_delta, 7)} {round(polygon[0][1] + y_delta, 7)} m\n".encode('latin1')    # type: ignore[index]
                 for x, y in polygon[1:]:                                                                            # type: ignore[misc]
-                    page["Contents"]["DecodedBytes"] += f"{x + x_delta} {y + y_delta} l\n".encode('latin1')
+                    page["Contents"]["DecodedBytes"] += f"{round(x + x_delta, 7)} {round(y + y_delta, 7)} l\n".encode('latin1')
                 if self.__fill_color is not None and self.__stroke_color is not None:
                     page["Contents"]["DecodedBytes"] += b"B\n"
                 elif self.__fill_color is not None:
@@ -448,9 +448,9 @@ class Shape(LayoutElement):
                 # fmt: on
         else:
             # fmt: off
-            page["Contents"]["DecodedBytes"] += f"{self.__coordinates[0][0] + x_delta} {self.__coordinates[0][1] + y_delta} m\n".encode('latin1')
+            page["Contents"]["DecodedBytes"] += f"{round(self.__coordinates[0][0] + x_delta, 7)} {round(self.__coordinates[0][1] + y_delta, 7)} m\n".encode('latin1')
             for x, y in self.__coordinates[1:]:
-                page["Contents"]["DecodedBytes"] += f"{x + x_delta} {y + y_delta} l\n".encode('latin1')    # type: ignore[operator]
+                page["Contents"]["DecodedBytes"] += f"{round(x + x_delta, 7)} {round(y + y_delta, 7)} l\n".encode('latin1')    # type: ignore[operator]
             if self.__fill_color is not None and self.__stroke_color is not None:
                 page["Contents"]["DecodedBytes"] += b"B\n"
             elif self.__fill_color is not None:
@@ -460,7 +460,7 @@ class Shape(LayoutElement):
             # fmt: on
 
         # restore graphics state
-        page["Contents"]["DecodedBytes"] += b"q\n"
+        page["Contents"]["DecodedBytes"] += b"Q\n"
 
         # EMC
         Shape._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]

@@ -109,7 +109,9 @@ class InjectVersionAsCommentVisitor(WriteNewVisitor):
         str_to_write += "\n"
 
         # append bytes
-        self._append_bytes(str_to_write.encode("latin1"))
+        self._append_bytes(
+            str_to_write.encode("latin1"), leading_space=False, trailing_space=False
+        )
         self.__has_been_used = True
 
         # call root

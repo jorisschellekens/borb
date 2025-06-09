@@ -54,7 +54,7 @@ class StreamVisitor(WriteNewVisitor):
             return False
 
         # start dictionary
-        self._append_bytes(b"<<", trailing_space=False)
+        self._append_bytes(b"<<", leading_space=False, trailing_space=False)
 
         # deflate the bytes
         deflated_bytes: bytes = node["Bytes"]
@@ -63,6 +63,7 @@ class StreamVisitor(WriteNewVisitor):
         node["Length"] = len(deflated_bytes)
 
         # write_new pairs
+        is_first_key: bool = True
         for k in sorted(node.keys()):
 
             # skip /Bytes
@@ -77,7 +78,15 @@ class StreamVisitor(WriteNewVisitor):
 
             # write_new key
             assert isinstance(k, str)
-            self._append_bytes(f"/{k}".encode("latin1"))
+            if is_first_key:
+                self._append_bytes(
+                    f"/{k}".encode("latin1"), leading_space=False, trailing_space=True
+                )
+                is_first_key = False
+            else:
+                self._append_bytes(
+                    f"/{k}".encode("latin1"), leading_space=True, trailing_space=True
+                )
 
             # write_new value
             v: PDFType = self.go_to_root_and_get_reference(node[k])
@@ -90,7 +99,8 @@ class StreamVisitor(WriteNewVisitor):
         self._append_bytes(b"stream\n", leading_space=False, trailing_space=False)
 
         # stream bytes
-        self._append_bytes(deflated_bytes, leading_space=False, trailing_space=False)
+        self._WriteNewVisitor__root._FacadeVisitor__destination += deflated_bytes
+        # self._append_bytes(deflated_bytes, leading_space=False, trailing_space=False)
 
         # end stream
         self._append_bytes(b"\nendstream", leading_space=False, trailing_space=False)

@@ -65,7 +65,8 @@ class BuildXRefVisitor(WriteNewVisitor):
 
             # handle parent link for dictionaries
             if isinstance(m, dict):
-                for k, v in m.items():
+                for k in sorted(m.keys()):
+                    v = m[k]
                     id_to_parent_dict[id(v)] = m
                     stk += [v]
 

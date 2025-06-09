@@ -66,6 +66,8 @@ class datestr(str):
 
         # Timezone handling
         if tz_sign:
+            tz_hour = tz_hour or "00"
+            tz_minute = tz_minute or "00"
             offset = datetime.timedelta(hours=int(tz_hour), minutes=int(tz_minute))
             if tz_sign == "-":
                 offset = -offset
@@ -331,7 +333,6 @@ class stream(dict):
         super().__init__()
         self[name("Bytes")] = b""
         self[name("Length")] = 0
-        self[name("Type")] = name("Stream")
         self[name("Filter")] = name("FlateDecode")
         if d is not None:
             for k, v in d.items():

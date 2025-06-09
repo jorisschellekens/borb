@@ -55,14 +55,21 @@ class DictVisitor(WriteNewVisitor):
             return False
 
         # start dictionary
-        self._append_bytes(b"<<", trailing_space=False)
+        self._append_bytes(b"<<", leading_space=True, trailing_space=False)
 
         # write_new pairs
-        for k in sorted(node.keys()):
+        for i, k in enumerate(sorted(node.keys())):
 
             # write_new key
             assert isinstance(k, str)
-            self._append_bytes(f"/{k}".encode("latin1"))
+            if i == 0:
+                self._append_bytes(
+                    f"/{k}".encode("latin1"), leading_space=False, trailing_space=True
+                )
+            else:
+                self._append_bytes(
+                    f"/{k}".encode("latin1"), leading_space=True, trailing_space=True
+                )
 
             # write_new value
             v: PDFType = self.go_to_root_and_get_reference(node[k])
