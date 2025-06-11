@@ -95,9 +95,8 @@ class FacadeVisitor(WriteNewVisitor):
             ValidationVisitor(root=self),
             # Types (prio)
             DocumentVisitor(root=self),
-            ReferencedObjectVisitor(root=self),
-            # Types (hack to inject version)
             InjectVersionAsCommentVisitor(root=self),
+            ReferencedObjectVisitor(root=self),
             # Types
             BoolVisitor(root=self),
             DictVisitor(root=self),
@@ -116,40 +115,8 @@ class FacadeVisitor(WriteNewVisitor):
     # PRIVATE
     #
 
-    def _append_bytes(
-        self, b: bytes, leading_space: bool = True, trailing_space: bool = True
-    ) -> "WriteNewVisitor":
-
-        # leading space
-        # fmt: off
-        leading_space_needed: bool = True
-        if len(self.__destination) == 0:
-            leading_space_needed = False
-        if len(self.__destination) > 0 and self.__destination[-1] == FacadeVisitor.__NEWLINE:
-            leading_space_needed = False
-        if len(self.__destination) > 0 and self.__destination[-1] == FacadeVisitor.__SPACE:
-            leading_space_needed = False
-        if leading_space and leading_space_needed:
-            self.__destination += b" "
-        # fmt: on
-
-        # actually write the desired bytes
+    def _append_bytes(self, b: bytes) -> "FacadeVisitor":
         self.__destination += b
-
-        # trailing space
-        # fmt: off
-        trailing_space_needed: bool = True
-        if len(self.__destination) == 0:
-            trailing_space_needed = False
-        if len(self.__destination) > 0 and self.__destination[-1] == FacadeVisitor.__NEWLINE:
-            trailing_space_needed = False
-        if len(self.__destination) > 0 and self.__destination[-1] == FacadeVisitor.__SPACE:
-            trailing_space_needed = False
-        if trailing_space and trailing_space_needed:
-            self.__destination += b" "
-        # fmt: on
-
-        # return
         return self
 
     #

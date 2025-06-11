@@ -75,20 +75,18 @@ class ReferencedObjectVisitor(WriteNewVisitor):
         obj: PDFType = node.object
 
         # recurse
-        self._append_bytes(
-            f"{ref.get_object_nr()} {ref.get_generation_nr()} obj\n".encode("latin1"),
-            leading_space=False,
-            trailing_space=False,
+        self._append_bytes_or_str(
+            f"{ref.get_object_nr()} {ref.get_generation_nr()} obj\n"
         )
 
         # recurse
         self.go_to_root_and_visit(obj)
 
         # newline
-        self._append_bytes(b"\n", leading_space=False, trailing_space=False)
+        self._append_newline_if_not_endswith_newline()
 
         # end object
-        self._append_bytes(b"endobj\n\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str("endobj\n\n")
 
         # return
         return True

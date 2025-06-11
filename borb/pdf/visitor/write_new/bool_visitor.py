@@ -53,7 +53,7 @@ class BoolVisitor(WriteNewVisitor):
 
         # default
         if node:
-            self._append_bytes(b"true", leading_space=False, trailing_space=False)
+            self._append_bytes_or_str("true")
         else:
-            self._append_bytes(b"false", leading_space=False, trailing_space=False)
+            self._append_bytes_or_str("false")
         return True

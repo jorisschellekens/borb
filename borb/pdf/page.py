@@ -40,9 +40,9 @@ class Page(dict):
         self["Contents"] = stream()
         # self["CropBox"] = [0, 0, width_in_points, height_in_points]
         self["MediaBox"] = [0, 0, width_in_points, height_in_points]
-        # self["ProcSet"] = [name("PDF"), name("Text")]
+        self["ProcSet"] = [name("PDF"), name("Text")]
         self["Resources"] = {}
-        # self["Rotate"] = 0
+        self["Rotate"] = 0
         self["Type"] = name("Page")
         self.__document: typing.Optional["Document"] = None  # type: ignore[name-defined]
 

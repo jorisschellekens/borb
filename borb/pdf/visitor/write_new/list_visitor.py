@@ -51,17 +51,17 @@ class ListVisitor(WriteNewVisitor):
             return False
 
         # start list
-        self._append_bytes(b"[", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str("[")
 
         # recurse
         N: int = len(node)
         for i in range(0, N):
             self.go_to_root_and_visit(self.go_to_root_and_get_reference(node[i]))
             if i != N - 1:
-                self._append_bytes(b"", leading_space=True, trailing_space=False)
+                self._append_space_if_not_endswith_space()
 
         # end list
-        self._append_bytes(b"]", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str("]")
 
         # default
         return True

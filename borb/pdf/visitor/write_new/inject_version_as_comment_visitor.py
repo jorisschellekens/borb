@@ -95,23 +95,34 @@ class InjectVersionAsCommentVisitor(WriteNewVisitor):
         if self.__has_been_used:
             return False
 
-        from borb.pdf import Version
-
-        str_to_write: str = ""
-        str_to_write += "\n"
-        str_to_write += f"% borb\n"
-        str_to_write += f"% version {Version.get_current_version()}\n"
-        str_to_write += (
-            "% AGPL\n"
-            if License.get_company() is None
-            else f"% Licensed to {License.get_company()}\n"
-        )
-        str_to_write += "\n"
+        # IF we are in the first 1Kb
+        # THEN do nothing
+        N: int = len(self.bytes())
+        if N < 1024:
+            return False
 
         # append bytes
-        self._append_bytes(
-            str_to_write.encode("latin1"), leading_space=False, trailing_space=False
-        )
+        from borb.pdf import Version
+
+        if License.get_company():
+            self._append_newline_if_not_endswith_newline()
+            self._append_bytes_or_str(
+                f"% borb\n"
+                f"% version {Version.get_current_version()}\n"
+                f"% Licensed to {License.get_company()}"
+                "\n"
+                "\n"
+            )
+        else:
+            self._append_newline_if_not_endswith_newline()
+            self._append_bytes_or_str(
+                f"% borb\n"
+                f"% version {Version.get_current_version()}\n"
+                f"% AGPL"
+                "\n"
+                "\n"
+            )
+
         self.__has_been_used = True
 
         # call root

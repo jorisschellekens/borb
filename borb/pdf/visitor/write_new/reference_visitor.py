@@ -60,9 +60,7 @@ class ReferenceVisitor(WriteNewVisitor):
             return False
 
         # default
-        self._append_bytes(
-            f"{node.get_object_nr()} {node.get_generation_nr()} R".encode("latin1"),
-            leading_space=False,
-            trailing_space=False,
+        self._append_bytes_or_str(
+            f"{node.get_object_nr()} {node.get_generation_nr()} R"
         )
         return True

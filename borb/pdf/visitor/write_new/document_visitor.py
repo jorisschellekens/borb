@@ -64,13 +64,13 @@ class DocumentVisitor(WriteNewVisitor):
             return False
 
         # write_new header
-        self._append_bytes(b"%PDF-1.7\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str("%PDF-1.7\n")
 
         # write 4 bytes
         # fmt: off
-        self._append_bytes(b"%", leading_space=False, trailing_space=False)
-        self._append_bytes(bytes([226, 227, 207, 211]), leading_space=False, trailing_space=False)
-        self._append_bytes(b"\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str(b"%")
+        self._append_bytes_or_str(bytes([226, 227, 207, 211]))
+        self._append_bytes_or_str(b"\n")
         # fmt: on
 
         # write_new objects
@@ -122,39 +122,27 @@ class DocumentVisitor(WriteNewVisitor):
 
         # write_new xref
         xref_tell: int = self.tell()
-        self._append_bytes(b"xref\n", leading_space=False, trailing_space=False)
-        self._append_bytes(
-            f"0 {len(xref)+1}\n".encode("latin1"),
-            leading_space=False,
-            trailing_space=False,
-        )
-        self._append_bytes(
-            "0000000000 65535 f\r\n".encode("latin1"),
-            leading_space=False,
-            trailing_space=False,
-        )
+        self._append_bytes_or_str(b"xref\n")
+        self._append_bytes_or_str(f"0 {len(xref)+1}\n")
+        self._append_bytes_or_str("0000000000 65535 f\r\n")
         for xref_entry in xref:
-            self._append_bytes(
-                f"{xref_entry.get_byte_offset():010d} 00000 n\r\n".encode("latin1"),
-                leading_space=False,
-                trailing_space=False,
+            self._append_bytes_or_str(
+                f"{xref_entry.get_byte_offset():010d} 00000 n\r\n"
             )
 
         # write_new trailer
-        self._append_bytes(b"trailer\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str(b"trailer\n")
         self.go_to_root_and_visit(node["Trailer"])
-        self._append_bytes(b"\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str(b"\n")
 
         # write_new xref
-        self._append_bytes(b"startxref\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str(b"startxref\n")
 
         # write_new
-        self._append_bytes(
-            f"{xref_tell}\n".encode("latin1"), leading_space=False, trailing_space=False
-        )
+        self._append_bytes_or_str(f"{xref_tell}\n")
 
         # write_new EOF
-        self._append_bytes(b"%%EOF\n", leading_space=False, trailing_space=False)
+        self._append_bytes_or_str(b"%%EOF\n")
 
         # return
         return True

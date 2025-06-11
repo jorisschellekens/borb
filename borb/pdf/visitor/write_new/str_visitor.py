@@ -57,13 +57,9 @@ class StrVisitor(WriteNewVisitor):
 
         # name
         if isinstance(node, name):
-            self._append_bytes(
-                f"/{node}".encode("latin1"), leading_space=False, trailing_space=False
-            )
+            self._append_bytes_or_str(f"/{node}")
             return True
 
         # default
-        self._append_bytes(
-            f"({node})".encode("latin1"), leading_space=False, trailing_space=False
-        )
+        self._append_bytes_or_str(f"({node})")
         return True

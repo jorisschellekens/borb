@@ -52,16 +52,88 @@ class WriteNewVisitor(NodeVisitor):
     # PRIVATE
     #
 
-    def _append_bytes(
-        self, b: bytes, leading_space: bool = True, trailing_space: bool = True
+    def _append_bytes_or_str(
+        self, bytes_or_str: typing.Union[bytes, str]
     ) -> "WriteNewVisitor":
-        r: typing.Optional[NodeVisitor] = self.__root
+        # IF the root is None
+        # THEN return
+        root: typing.Optional[NodeVisitor] = self.__root
+        if root is None:
+            return self
+
+        # IF the root is not a FacadeVisitor
+        # THEN return
         from borb.pdf.visitor.write_new.facade_visitor import FacadeVisitor
 
-        if r is not None and isinstance(r, FacadeVisitor):
-            r._append_bytes(
-                b=b, leading_space=leading_space, trailing_space=trailing_space
-            )
+        if not isinstance(root, FacadeVisitor):
+            return self
+
+        # IF we are dealing with str
+        # THEN convert to bytes
+        bts = b""
+        if isinstance(bytes_or_str, bytes):
+            bts = bytes_or_str
+        if isinstance(bytes_or_str, str):
+            bts = bytes_or_str.encode("latin1")
+
+        # append
+        root._append_bytes(bts)
+
+        # return
+        return self
+
+    def _append_newline_if_not_endswith_newline(self) -> "WriteNewVisitor":
+        # IF the root is None
+        # THEN return
+        root: typing.Optional[NodeVisitor] = self.__root
+        if root is None:
+            return self
+
+        # IF the root is not a FacadeVisitor
+        # THEN return
+        from borb.pdf.visitor.write_new.facade_visitor import FacadeVisitor
+
+        if not isinstance(root, FacadeVisitor):
+            return self
+
+        # IF we have not yet persisted any bytes
+        # THEN the space is not needed
+        if len(root.bytes()) == 0:
+            return self
+
+        # IF the last character persisted was a newline
+        # THEN newline is not needed
+        if root.bytes()[-1] == b"\n"[0]:
+            return self
+
+        root._append_bytes(b"\n")
+        return self
+
+    def _append_space_if_not_endswith_space(self) -> "WriteNewVisitor":
+        # IF the root is None
+        # THEN return
+        root: typing.Optional[NodeVisitor] = self.__root
+        if root is None:
+            return self
+
+        # IF the root is not a FacadeVisitor
+        # THEN return
+        from borb.pdf.visitor.write_new.facade_visitor import FacadeVisitor
+
+        if not isinstance(root, FacadeVisitor):
+            return self
+
+        # IF we have not yet persisted any bytes
+        # THEN the space is not needed
+        if len(root.bytes()) == 0:
+            return self
+
+        # IF the last character persisted was a newline
+        # THEN newline is not needed
+        if root.bytes()[-1] == b" "[0]:
+            return self
+
+        root._append_bytes(b" ")
         return self
 
     #

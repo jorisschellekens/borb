@@ -52,9 +52,5 @@ class FloatVisitor(WriteNewVisitor):
             return False
 
         # default
-        self._append_bytes(
-            str(round(node, 7)).encode("latin1"),
-            leading_space=False,
-            trailing_space=False,
-        )
+        self._append_bytes_or_str(str(round(node, 7)))
         return True
