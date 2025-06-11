@@ -24,8 +24,7 @@ class TestEmoji(unittest.TestCase):
         layout: PageLayout = SingleColumnLayout(p)
         layout.append_layout_element(Emoji.BORB_STICKER)
 
-        PDF.write(what=d,
-                  where_to='assets/test_single_emoji.pdf')
+        PDF.write(what=d, where_to="assets/test_single_emoji.pdf")
 
     def test_emoji(self):
 

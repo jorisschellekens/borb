@@ -129,6 +129,7 @@ from borb.pdf.layout_element.shape.map_of_the_united_states_of_america import Ma
 from borb.pdf.layout_element.shape.map_of_the_world import MapOfTheWorld
 from borb.pdf.layout_element.shape.shape import Shape
 from borb.pdf.layout_element.smart_art.smart_art import SmartArt
+from borb.pdf.layout_element.space.space import Space
 from borb.pdf.layout_element.table.fixed_column_width_table import FixedColumnWidthTable
 from borb.pdf.layout_element.table.flexible_column_width_table import FlexibleColumnWidthTable
 from borb.pdf.layout_element.table.table import Table

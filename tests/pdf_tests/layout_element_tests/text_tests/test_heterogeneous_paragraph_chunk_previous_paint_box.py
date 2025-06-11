@@ -24,7 +24,9 @@ class TestHeterogeneousParagraphChunkPreviousPaintBox(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        marked_chunk: Chunk = Chunk("Ut enim ad minim veniam", font=Standard14Fonts.get("Helvetica-Bold"))
+        marked_chunk: Chunk = Chunk(
+            "Ut enim ad minim veniam", font=Standard14Fonts.get("Helvetica-Bold")
+        )
         HeterogeneousParagraph(
             chunks=[
                 Chunk(
@@ -46,13 +48,14 @@ class TestHeterogeneousParagraphChunkPreviousPaintBox(unittest.TestCase):
 
         # paint a border around the marked chunk
         # thus proving the chunk's previous_paint_box has been set properly
-        x,y,w,h = marked_chunk.get_previous_paint_box()
-        Shape(coordinates=[(x,y),
-                           (x,y+h),
-                           (x+w, y+h),
-                           (x+w, y),
-                           (x,y)],
-              fill_color=None,
-              stroke_color=X11Color.RED).paint(available_space=(x,y,w,h), page=p)
+        x, y, w, h = marked_chunk.get_previous_paint_box()
+        Shape(
+            coordinates=[(x, y), (x, y + h), (x + w, y + h), (x + w, y), (x, y)],
+            fill_color=None,
+            stroke_color=X11Color.RED,
+        ).paint(available_space=(x, y, w, h), page=p)
 
-        PDF.write(what=d, where_to="assets/test_heterogeneous_paragraph_chunk_previous_paint_box_001.pdf")
+        PDF.write(
+            what=d,
+            where_to="assets/test_heterogeneous_paragraph_chunk_previous_paint_box_001.pdf",
+        )

@@ -19,7 +19,7 @@ class TestWriteChineseUsingHelvetica(unittest.TestCase):
 
         # attempt to insert character 龙
         with self.assertRaises(UnicodeEncodeError) as context:
-            l.append_layout_element(Paragraph('龙'))
+            l.append_layout_element(Paragraph("龙"))
 
         # we should have gotten an error
         assert context.exception is not None
