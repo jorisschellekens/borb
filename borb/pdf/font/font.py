@@ -65,9 +65,15 @@ class Font(dict):
         # •If the font dictionary contains a ToUnicode CMap (see 9.10.3, "ToUnicode CMaps"), use that CMap to
         # convert the character code to Unicode.
         if self.get("ToUnicode", None) is not None:
-            for k in range(0, 256):
+            cmap = self.get("ToUnicode")
+            from borb.pdf.font.cmap import CMap
+
+            assert isinstance(cmap, CMap)
+            for k in range(cmap.first_character_code(), cmap.last_character_code() + 1):
                 try:
-                    v: str = self["ToUnicode"].get_character(character_code=k)  # type: ignore[no-redef]
+                    v: str = cmap.get_character(character_code=k)  # type: ignore[no-redef]
+                    if v in self.__character_to_character_code:
+                        continue
                     self.__character_code_to_character[k] = v
                     self.__character_to_character_code[v] = k
                 except:

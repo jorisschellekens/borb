@@ -163,13 +163,32 @@ class Chunk(LayoutElement):
 
     @staticmethod
     def __escape_special_chars_in_hex_mode(font: Font, s: str) -> str:
+
+        # IF the font uses Identity-H OR Identity-V encoding
+        # THEN use four bytes
+        number_of_bytes_per_char: int = 2
+        if "Encoding" in font and font["Encoding"] in ["Identity-H", "Identity-V"]:
+            number_of_bytes_per_char = 4
+
+        # decode each character
         s2: str = ""
         for c in s:
-            c2 = hex(font.get_character_code(c))[2:]
-            while len(c2) < 4:
+            c1: int = font.get_character_code(c)
+            if c1 is None or c1 == -1:
+                assert False, f"Font {font['BaseFont']} can not represent {c}"
+            c2 = hex(c1)[2:]
+
+            # apply padding to each hex sequence
+            while len(c2) < number_of_bytes_per_char:
                 c2 = "0" + c2
+
+            # add the angle brackets
             c2 = "<" + c2 + ">"
+
+            # append to the string
             s2 += c2
+
+        # return
         return s2
 
     #

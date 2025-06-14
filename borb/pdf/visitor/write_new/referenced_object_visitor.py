@@ -71,8 +71,8 @@ class ReferencedObjectVisitor(WriteNewVisitor):
             return False
 
         # unpack tuple
-        ref: reference = node.reference
-        obj: PDFType = node.object
+        ref: reference = node.reference  # type: ignore[attr-defined]
+        obj: PDFType = node.object  # type: ignore[attr-defined]
 
         # recurse
         self._append_bytes_or_str(

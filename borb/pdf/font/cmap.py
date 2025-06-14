@@ -177,6 +177,9 @@ class CMap(stream):
     # PUBLIC
     #
 
+    def first_character_code(self) -> int:
+        return min(self.__character_code_to_character.keys())
+
     def get_character(self, character_code: int) -> str:
         """
         Retrieve the character corresponding to a given character code.
@@ -208,3 +211,6 @@ class CMap(stream):
                 v: k for k, v in self.__character_code_to_character.items()
             }
         return self.__character_to_character_code.get(character, -1)
+
+    def last_character_code(self) -> int:
+        return max(self.__character_code_to_character.keys())
