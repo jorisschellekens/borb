@@ -114,11 +114,12 @@ class DocumentVisitor(WriteNewVisitor):
 
             # wrap in ReferencedObjectType
             obj = ReferencedObjectType(
-                reference=xref[i], object=xref[i].get_referenced_object()
+                reference=xref[i],  # type: ignore[call-arg]
+                object=xref[i].get_referenced_object(),  # type: ignore[call-arg]
             )
 
             # recurse
-            self.go_to_root_and_visit(obj)
+            self.go_to_root_and_visit(obj)  # type: ignore[arg-type]
 
         # write_new xref
         xref_tell: int = self.tell()
