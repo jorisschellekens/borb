@@ -178,6 +178,15 @@ class CMap(stream):
     #
 
     def first_character_code(self) -> int:
+        """
+        Retrieve the lowest character code defined in the CMap.
+
+        This method returns the smallest character code for which a mapping
+        exists in the CMap. It is useful when iterating over the range of
+        character codes defined in the mapping.
+
+        :return: The smallest character code as an integer.
+        """
         return min(self.__character_code_to_character.keys())
 
     def get_character(self, character_code: int) -> str:
@@ -213,4 +222,13 @@ class CMap(stream):
         return self.__character_to_character_code.get(character, -1)
 
     def last_character_code(self) -> int:
+        """
+        Retrieve the highest character code defined in the CMap.
+
+        This method returns the largest character code for which a mapping
+        exists in the CMap. It is useful when iterating over the range of
+        character codes defined in the mapping.
+
+        :return: The largest character code as an integer.
+        """
         return max(self.__character_code_to_character.keys())
