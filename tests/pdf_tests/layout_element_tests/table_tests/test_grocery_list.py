@@ -11,8 +11,9 @@ from borb.pdf import (
     Paragraph,
     PDF,
     Space,
-    X11Color,
+    X11Color, GoogleTrueTypeFont, Font,
 )
+from tests.secrets import populate_os_environ
 
 
 class TestGroceryList(unittest.TestCase):
@@ -84,8 +85,11 @@ class TestGroceryList(unittest.TestCase):
 
         layout: MultiColumnLayout = MultiColumnLayout(page=page, number_of_columns=4)
 
+        populate_os_environ()
+        sansation_font: Font = GoogleTrueTypeFont.from_google_font_api(name="Sansation")
+
         layout.append_layout_element(
-            Paragraph("produce", font_size=16, font="Helvetica-Bold")
+            Paragraph("produce", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -106,7 +110,7 @@ class TestGroceryList(unittest.TestCase):
         )
 
         layout.append_layout_element(
-            Paragraph("deli", font_size=16, font="Helvetica-Bold")
+            Paragraph("deli", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -124,7 +128,7 @@ class TestGroceryList(unittest.TestCase):
         )
 
         layout.append_layout_element(
-            Paragraph("deli-adjacent", font_size=16, font="Helvetica-Bold")
+            Paragraph("deli-adjacent", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -143,7 +147,7 @@ class TestGroceryList(unittest.TestCase):
         )
 
         layout.append_layout_element(
-            Paragraph("baking", font_size=16, font="Helvetica-Bold")
+            Paragraph("baking", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -163,7 +167,7 @@ class TestGroceryList(unittest.TestCase):
         )
 
         layout.append_layout_element(
-            Paragraph("soup", font_size=16, font="Helvetica-Bold")
+            Paragraph("soup", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -186,7 +190,7 @@ class TestGroceryList(unittest.TestCase):
 
         layout.next_column()
         layout.append_layout_element(
-            Paragraph("sauce", font_size=16, font="Helvetica-Bold")
+            Paragraph("sauce", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -208,7 +212,7 @@ class TestGroceryList(unittest.TestCase):
         )
 
         layout.append_layout_element(
-            Paragraph("meat", font_size=16, font="Helvetica-Bold")
+            Paragraph("meat", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -228,7 +232,7 @@ class TestGroceryList(unittest.TestCase):
 
         layout.next_column()
         layout.append_layout_element(
-            Paragraph("fridge", font_size=16, font="Helvetica-Bold")
+            Paragraph("fridge", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
