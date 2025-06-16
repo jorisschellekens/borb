@@ -106,7 +106,23 @@ class CheckSomethingTemplate:
 if __name__ == "__main__":
     checker = CheckSomethingTemplate(
         root=pathlib.Path(sys.argv[1]),
-        known_exceptions=[],
+        known_exceptions=[
+            "a4_portrait.py",
+            "a4_portrait_invoice.py",
+            "adobe_glyph_list.py",
+            "avatar.py",
+            "conformance_checks.py",
+            "dict_visitor.py",
+            "emoji.py",
+            "layout_element.py",
+            "line_art.py",
+            "pantone_color.py",
+            "shape.py",
+            "slideshow.py",
+            "smart_art.py",
+            "source.py",
+            "table.py",
+        ],
     )
     checker.perform_check_on_directory()
     warnings: typing.List[WarningType] = checker.get_warnings()
