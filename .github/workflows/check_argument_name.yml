@@ -1,4 +1,4 @@
-name: Check Imports Dependencies
+name: Check Argument Name
 
 on:
   # Trigger the workflow on push and pull request events

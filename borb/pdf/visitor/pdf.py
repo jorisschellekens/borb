@@ -87,7 +87,6 @@ class PDF:
         :param what:        the document to be stored
         :return:    None
         """
-
         # instantiate FacadeVisitor
         from borb.pdf.visitor.write_new.facade_visitor import FacadeVisitor
 
