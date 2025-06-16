@@ -321,7 +321,7 @@ class Table(LayoutElement):
     # PUBLIC
     #
 
-    def append_layout_element(self, e: LayoutElement) -> "Table":
+    def append_layout_element(self, layout_element: LayoutElement) -> "Table":
         """
         Add a LayoutElement to the table.
 
@@ -329,11 +329,13 @@ class Table(LayoutElement):
         layout component) to the table. The element will be positioned according to the
         current table layout rules.
 
-        :param e:   The LayoutElement to be added to the table.
+        :param layout_element:   The LayoutElement to be added to the table.
         :return:    The Table instance, allowing for method chaining.
         """
         e2: Table.TableCell = (
-            e if isinstance(e, Table.TableCell) else Table.TableCell(e)
+            layout_element
+            if isinstance(layout_element, Table.TableCell)
+            else Table.TableCell(layout_element)
         )
         self.__inner_layout_elements += [e2]
 

@@ -20,7 +20,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=3).paint(
+        LineArt.n_toothed_gear(number_of_teeth=3).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -39,7 +39,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=4).paint(
+        LineArt.n_toothed_gear(number_of_teeth=4).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -58,7 +58,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=5).paint(
+        LineArt.n_toothed_gear(number_of_teeth=5).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -77,7 +77,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=6).paint(
+        LineArt.n_toothed_gear(number_of_teeth=6).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -96,7 +96,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=7).paint(
+        LineArt.n_toothed_gear(number_of_teeth=7).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -115,7 +115,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=8).paint(
+        LineArt.n_toothed_gear(number_of_teeth=8).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -134,7 +134,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=9).paint(
+        LineArt.n_toothed_gear(number_of_teeth=9).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -153,7 +153,7 @@ class TestLineArtNToothedGear(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_toothed_gear(n=10).paint(
+        LineArt.n_toothed_gear(number_of_teeth=10).paint(
             available_space=(x, y, w, h),
             page=p,
         )

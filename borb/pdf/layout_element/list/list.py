@@ -105,7 +105,7 @@ class List(LayoutElement):
     # PUBLIC
     #
 
-    def append_layout_element(self, e: LayoutElement) -> "List":
+    def append_layout_element(self, layout_element: LayoutElement) -> "List":
         """
         Add a layout element to the list and update the index.
 
@@ -114,8 +114,8 @@ class List(LayoutElement):
         (e.g., a numbered label). The index for the newly added item is automatically
         incremented and formatted as a numbered chunk.
 
-        :param e:   The LayoutElement to be added.
+        :param layout_element:   The LayoutElement to be added.
         :return:    Self, to allow for method chaining.
         """
-        self.__list_items.append(e)
+        self.__list_items.append(layout_element)
         return self

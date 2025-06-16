@@ -42,7 +42,7 @@ from borb.pdf.visitor.read.compression.run_length_decode import RunLengthDecode
 #
 
 
-def decode_stream(s: stream) -> stream:
+def decode_stream(stream_to_decode: stream) -> stream:
     """
     Decode a PDF `stream` object, applying compression filters specified in the stream's `Filter` entry.
 
@@ -62,35 +62,41 @@ def decode_stream(s: stream) -> stream:
                 entry, ready for uncompressed access.
     """
     # fmt: off
-    assert isinstance(s, stream), "decode_stream only works on Stream objects"
-    assert ("Bytes" in s), "decode_stream only works on Stream objects with a `Bytes` key."
+    assert isinstance(stream_to_decode, stream), "decode_stream only works on Stream objects"
+    assert ("Bytes" in stream_to_decode), "decode_stream only works on Stream objects with a `Bytes` key."
     # fmt: on
 
     # IF stream already has /DecodedBytes
     # THEN return stream
-    if "DecodedBytes" in s:
-        return s
+    if "DecodedBytes" in stream_to_decode:
+        return stream_to_decode
 
     # determine filter(s) to apply
     filters: typing.List[str] = []
-    if "Filter" in s:
-        if isinstance(s["Filter"], list):
-            filters = s["Filter"]
+    if "Filter" in stream_to_decode:
+        if isinstance(stream_to_decode["Filter"], list):
+            filters = stream_to_decode["Filter"]
         else:
-            filters = [s["Filter"]]
+            filters = [stream_to_decode["Filter"]]
 
     decode_params: typing.List[typing.Dict] = []
-    if "DecodeParms" in s:
-        if isinstance(s["DecodeParms"], list) and s["DecodeParms"] is not None:
-            decode_params = s["DecodeParms"]
+    if "DecodeParms" in stream_to_decode:
+        if (
+            isinstance(stream_to_decode["DecodeParms"], list)
+            and s["DecodeParms"] is not None
+        ):
+            decode_params = stream_to_decode["DecodeParms"]
             decode_params = [x or dict() for x in decode_params]
-        if isinstance(s["DecodeParms"], dict) and s["DecodeParms"] is not None:
-            decode_params = [s["DecodeParms"]]
+        if (
+            isinstance(stream_to_decode["DecodeParms"], dict)
+            and stream_to_decode["DecodeParms"] is not None
+        ):
+            decode_params = [stream_to_decode["DecodeParms"]]
     else:
         decode_params = [{} for x in range(0, len(filters))]
 
     # apply filter(s)
-    transformed_bytes = s["Bytes"]
+    transformed_bytes = stream_to_decode["Bytes"]
     for filter_index, filter_name in enumerate(filters):
         # FLATE
         if filter_name in ["FlateDecode", "Fl"]:
@@ -123,7 +129,7 @@ def decode_stream(s: stream) -> stream:
         assert False, "Unknown /Filter %s" % filter_name
 
     # set DecodedBytes
-    s[name("DecodedBytes")] = transformed_bytes
+    stream_to_decode[name("DecodedBytes")] = transformed_bytes
 
     # return
-    return s
+    return stream_to_decode

@@ -10,7 +10,7 @@ class TestLipsumLength(unittest.TestCase):
         for n in [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
             l: typing.List[int] = []
             for _ in range(0, 100):
-                l += [len(Lipsum.generate_agatha_christie(n=n))]
+                l += [len(Lipsum.generate_agatha_christie(number_of_characters=n))]
             nof_good_sentences: int = sum(
                 [1 if (n - 5) <= x <= (n + 5) else 0 for x in l]
             )
@@ -20,7 +20,7 @@ class TestLipsumLength(unittest.TestCase):
         for n in [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
             l: typing.List[int] = []
             for _ in range(0, 100):
-                l += [len(Lipsum.generate_arthur_conan_doyle(n=n))]
+                l += [len(Lipsum.generate_arthur_conan_doyle(number_of_characters=n))]
             nof_good_sentences: int = sum(
                 [1 if (n - 5) <= x <= (n + 5) else 0 for x in l]
             )
@@ -30,7 +30,7 @@ class TestLipsumLength(unittest.TestCase):
         for n in [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
             l: typing.List[int] = []
             for _ in range(0, 100):
-                l += [len(Lipsum.generate_jane_austen(n=n))]
+                l += [len(Lipsum.generate_jane_austen(number_of_characters=n))]
             nof_good_sentences: int = sum(
                 [1 if (n - 5) <= x <= (n + 5) else 0 for x in l]
             )
@@ -40,7 +40,7 @@ class TestLipsumLength(unittest.TestCase):
         for n in [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
             l: typing.List[int] = []
             for _ in range(0, 100):
-                l += [len(Lipsum.generate_lorem_ipsum(n=n))]
+                l += [len(Lipsum.generate_lorem_ipsum(number_of_characters=n))]
             nof_good_sentences: int = sum(
                 [1 if (n - 5) <= x <= (n + 5) else 0 for x in l]
             )
@@ -50,7 +50,7 @@ class TestLipsumLength(unittest.TestCase):
         for n in [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]:
             l: typing.List[int] = []
             for _ in range(0, 100):
-                l += [len(Lipsum.generate_mary_shelley(n=n))]
+                l += [len(Lipsum.generate_mary_shelley(number_of_characters=n))]
             nof_good_sentences: int = sum(
                 [1 if (n - 5) <= x <= (n + 5) else 0 for x in l]
             )

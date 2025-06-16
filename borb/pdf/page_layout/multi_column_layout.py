@@ -46,7 +46,16 @@ class MultiColumnLayout(PageLayout):
     # CONSTRUCTOR
     #
 
-    def __init__(self, page: Page, number_of_columns: int = 2):
+    def __init__(
+        self,
+        page: Page,
+        inter_column_margin: typing.Optional[int] = None,
+        margin_bottom: typing.Optional[int] = None,
+        margin_left: typing.Optional[int] = None,
+        margin_right: typing.Optional[int] = None,
+        margin_top: typing.Optional[int] = None,
+        number_of_columns: int = 2,
+    ):
         """
         Initialize the MultiColumnLayout with the specified page and number of columns.
 
@@ -64,11 +73,11 @@ class MultiColumnLayout(PageLayout):
         """
         self.__page: Page = page
         self.__page_width, self._page_height = page.get_size()
-        self.__page_margin_left: int = int(self.__page_width * 0.1)
-        self.__page_margin_right: int = int(self.__page_width * 0.1)
-        self.__page_margin_top: int = int(self._page_height * 0.1)
-        self.__page_margin_bottom: int = int(self._page_height * 0.1)
-        self.__inter_column_margin: int = 15
+        self.__page_margin_left: int = margin_left or int(self.__page_width * 0.1)
+        self.__page_margin_right: int = margin_right or int(self.__page_width * 0.1)
+        self.__page_margin_top: int = margin_top or int(self._page_height * 0.1)
+        self.__page_margin_bottom: int = margin_bottom or int(self._page_height * 0.1)
+        self.__inter_column_margin: int = inter_column_margin or 14
 
         # calculate w_avail
         # fmt: off
@@ -123,7 +132,9 @@ class MultiColumnLayout(PageLayout):
     # PUBLIC
     #
 
-    def append_layout_element(self, e: LayoutElement) -> "MultiColumnLayout":
+    def append_layout_element(
+        self, layout_element: LayoutElement
+    ) -> "MultiColumnLayout":
         """
         Append a layout element to the multi-column layout.
 
@@ -132,12 +143,12 @@ class MultiColumnLayout(PageLayout):
         positioned within the available columns and will flow from one column to
         the next if needed, maintaining the structured layout of the content.
 
-        :param e:   the LayoutElement to be added
+        :param layout_element:   the LayoutElement to be added
         :return:    Self, this allows for method-chaining
         """
         # IF no margin_top is specified
         # THEN calculate one
-        margin_top: int = MultiColumnLayout.__get_leading_or_margin_top(e)
+        margin_top: int = MultiColumnLayout.__get_leading_or_margin_top(layout_element)
 
         # IF this is the first LayoutElement being added to the very first Page (managed by this SingleColumnLayout)
         # THEN we don't care about margin_top (equivalent to this SingleColumnLayout starting a new Page)
@@ -155,14 +166,16 @@ class MultiColumnLayout(PageLayout):
         # fmt: on
 
         # determine the space of the LayoutElement
-        w, h = e.get_size(available_space=(w_avail, h_avail))
+        w, h = layout_element.get_size(available_space=(w_avail, h_avail))
 
         # check width
-        assert w <= w_avail, f"{e} is too wide, needed {w} pts, {w_avail} pts available"
+        assert (
+            w <= w_avail
+        ), f"{layout_element} is too wide, needed {w} pts, {w_avail} pts available"
 
         # check height
         # fmt: off
-        assert h <= h_avail_full, f"{e} is too tall, needed {h} pts, {h_avail_full} pts available"
+        assert h <= h_avail_full, f"{layout_element} is too tall, needed {h} pts, {h_avail_full} pts available"
         # fmt: on
 
         # IF we can fill the current column
@@ -171,7 +184,7 @@ class MultiColumnLayout(PageLayout):
 
             # place LayoutElement on the Page
             # fmt: off
-            e.paint(
+            layout_element.paint(
                 available_space=(
                     self.__page_margin_left + sum([cw for cw in self.__column_widths[: self.__previous_element_column]]+ [0]) + (self.__previous_element_column * self.__inter_column_margin),
                     self.__page_margin_bottom,
@@ -184,7 +197,7 @@ class MultiColumnLayout(PageLayout):
 
             # move _previous_element_bottom
             # fmt: off
-            previous_paint_box: typing.Optional[typing.Tuple[int, int, int, int]] = e.get_previous_paint_box()
+            previous_paint_box: typing.Optional[typing.Tuple[int, int, int, int]] = layout_element.get_previous_paint_box()
             assert previous_paint_box is not None
             self.__previous_element_bottom = previous_paint_box[1]
             # fmt: on
@@ -192,7 +205,7 @@ class MultiColumnLayout(PageLayout):
             # IF no margin_bottom is specified
             # THEN calculate one
             self.__previous_element_margin_bottom = (
-                MultiColumnLayout.__get_calculated_margin_bottom(e)
+                MultiColumnLayout.__get_calculated_margin_bottom(layout_element)
             )
 
             # return
@@ -202,7 +215,7 @@ class MultiColumnLayout(PageLayout):
         # THEN try the next one
         if h > h_avail:
             self.next_column()
-            return self.append_layout_element(e)
+            return self.append_layout_element(layout_element)
 
         # IF we got there
         # THEN something went wrong

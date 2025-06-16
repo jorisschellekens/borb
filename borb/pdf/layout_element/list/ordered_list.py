@@ -112,7 +112,7 @@ class OrderedList(List):
     # PUBLIC
     #
 
-    def append_layout_element(self, e: LayoutElement) -> "List":
+    def append_layout_element(self, layout_element: LayoutElement) -> "List":
         """
         Add a layout element to the list and update the index.
 
@@ -121,20 +121,22 @@ class OrderedList(List):
         (e.g., a numbered label). The index for the newly added item is automatically
         incremented and formatted as a numbered chunk.
 
-        :param e:   The LayoutElement to be added.
+        :param layout_element:   The LayoutElement to be added.
         :return:    Self, to allow for method chaining.
         """
-        super().append_layout_element(e)
+        super().append_layout_element(layout_element)
 
         # determine font_size to use (default 12)
         index_font_size: int = 12
         index_font_color: Color = X11Color.BLACK
-        if isinstance(e, Chunk):
-            index_font_size = e.get_font_size()
-            index_font_color = e.get_font_color()
-        if isinstance(e, HomogeneousParagraph) or isinstance(e, Paragraph):
-            index_font_size = e.get_font_size()
-            index_font_color = e.get_font_color()
+        if isinstance(layout_element, Chunk):
+            index_font_size = layout_element.get_font_size()
+            index_font_color = layout_element.get_font_color()
+        if isinstance(layout_element, HomogeneousParagraph) or isinstance(
+            layout_element, Paragraph
+        ):
+            index_font_size = layout_element.get_font_size()
+            index_font_color = layout_element.get_font_color()
 
         # add Chunk as index item
         n: int = len(self._List__list_items)  # type: ignore[attr-defined]

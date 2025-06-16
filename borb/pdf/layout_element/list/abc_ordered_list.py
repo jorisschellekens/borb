@@ -58,7 +58,7 @@ class ABCOrderedList(OrderedList):
     # PUBLIC
     #
 
-    def append_layout_element(self, e: LayoutElement) -> "ABCOrderedList":
+    def append_layout_element(self, layout_element: LayoutElement) -> "ABCOrderedList":
         """
         Add a layout element to the list and update the index.
 
@@ -67,10 +67,10 @@ class ABCOrderedList(OrderedList):
         (e.g., a numbered label). The index for the newly added item is automatically
         incremented and formatted as a numbered chunk.
 
-        :param e:   The LayoutElement to be added.
+        :param layout_element:   The LayoutElement to be added.
         :return:    Self, to allow for method chaining.
         """
-        self._List__list_items.append(e)  # type: ignore[attr-defined]
+        self._List__list_items.append(layout_element)  # type: ignore[attr-defined]
 
         # add Chunk as index item
         n: int = len(self._List__list_items)  # type: ignore[attr-defined]

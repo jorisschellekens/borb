@@ -64,7 +64,7 @@ class A4PortraitInvoice(DocumentLayout):
         self.__logo: typing.Optional[  # type: ignore[annotation-unchecked]
             typing.Union[bytes, pathlib.Path, "PIL.Image.Image", str]
         ] = None
-        self.__nr: typing.Optional[str] = None  # type: ignore[annotation-unchecked]
+        self.__invoice_nr: typing.Optional[str] = None  # type: ignore[annotation-unchecked]
         self.__ship_to_address_lines: typing.Optional[typing.List[str]] = None  # type: ignore[annotation-unchecked]
         self.__subtotal: typing.Optional[float] = None  # type: ignore[annotation-unchecked]
         self.__taxes: typing.Optional[float] = None  # type: ignore[annotation-unchecked]
@@ -97,9 +97,9 @@ class A4PortraitInvoice(DocumentLayout):
         if self.__due_date is None:
             self.__due_date = self.__date + datetime.timedelta(days=7)
 
-        # set __nr
-        if self.__nr is None:
-            self.__nr = f"{now.year}{now.month:02}{now.day:02}001"
+        # set __invoice_nr
+        if self.__invoice_nr is None:
+            self.__invoice_nr = f"{now.year}{now.month:02}{now.day:02}001"
 
         # set __ship_to_address_lines
         if self.__ship_to_address_lines is None:
@@ -172,7 +172,7 @@ class A4PortraitInvoice(DocumentLayout):
                         Chunk(
                             "Invoice Nr: ", font=Standard14Fonts.get("Helvetica-Bold")
                         ),
-                        Chunk(f"{self.__nr}"),
+                        Chunk(f"{self.__invoice_nr}"),
                     ]
                 )
             )
@@ -503,6 +503,19 @@ class A4PortraitInvoice(DocumentLayout):
         self.__due_date = due_date
         return self
 
+    def set_invoice_nr(self, invoice_nr: str) -> "A4PortraitInvoice":
+        """
+        Set the invoice number.
+
+        This method allows the user to specify a unique invoice number that will be displayed on the invoice.
+        The invoice number is typically used for tracking and reference purposes.
+
+        :param invoice_nr:  The unique invoice number, represented as a string.
+        :return:            The updated invoice object, allowing for method chaining.
+        """
+        self.__invoice_nr = invoice_nr
+        return self
+
     def set_logo(
         self,
         bytes_path_pil_image_or_url: typing.Union[  # type: ignore[name-defined]
@@ -523,19 +536,6 @@ class A4PortraitInvoice(DocumentLayout):
         :return: The updated invoice object, allowing for method chaining.
         """
         self.__logo = bytes_path_pil_image_or_url
-        return self
-
-    def set_nr(self, nr: str) -> "A4PortraitInvoice":
-        """
-        Set the invoice number.
-
-        This method allows the user to specify a unique invoice number that will be displayed on the invoice.
-        The invoice number is typically used for tracking and reference purposes.
-
-        :param nr:  The unique invoice number, represented as a string.
-        :return:    The updated invoice object, allowing for method chaining.
-        """
-        self.__nr = nr
         return self
 
     def set_ship_to(

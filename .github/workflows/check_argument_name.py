@@ -1,3 +1,4 @@
+import ast
 import collections
 import pathlib
 import re
@@ -13,6 +14,49 @@ WarningType = collections.namedtuple(
         "text",
     ],
 )
+
+
+class ArgNameChecker(ast.NodeVisitor):
+
+    #
+    # CONSTRUCTOR
+    #
+
+    def __init__(self):
+        self.__warnings: typing.List[WarningType] = []
+
+    #
+    # PUBLIC
+    #
+
+    def get_warnings(self) -> typing.List[WarningType]:
+        return self.__warnings
+
+    def visit_FunctionDef(self, node):
+        # IF the function is private
+        # THEN ignore it
+        if node.name.startswith("__"):
+            return
+        if node.name.startswith("_"):
+            return
+
+        # go over the arguments
+        for arg in node.args.args:
+
+            # IF the argument is a commonly used (accepted) abbreviation/short name
+            # THEN ignore
+            if arg.arg in ["x", "y", "xs", "ys"]:
+                continue
+            if len(arg.arg) <= 2:
+                self.__warnings += [
+                    WarningType(
+                        file="",
+                        function=node.name,
+                        line_number=node.lineno,
+                        text=f"{arg.arg}",
+                    )
+                ]
+        self.generic_visit(node)
 
 
 class CheckSomethingTemplate:
@@ -86,38 +130,26 @@ class CheckSomethingTemplate:
 
     def perform_check_on_file(self, file: pathlib.Path) -> None:
         self.__number_of_files_checked += 1
-        lines: typing.List[str] = []
-        try:
-            with open(file, "r") as fh:
-                lines = fh.readlines()
-        except:
-            return
-        if len(lines) < 2 or lines[0] != "#!/usr/bin/env python\n":
+
+        with open(file, "r", encoding="utf-8") as f:
+            tree = ast.parse(f.read(), filename=file)
+            arg_name_checker: ArgNameChecker = ArgNameChecker()
+            arg_name_checker.visit(tree)
             self.__warnings += [
                 WarningType(
                     file=file,
-                    function=None,
-                    line_number=0,
-                    text=f"Missing #!/usr/bin/env python",
+                    function=x.function,
+                    line_number=x.line_number,
+                    text=x.text,
                 )
+                for x in arg_name_checker.get_warnings()
             ]
-            return
-        if lines[1] != "# -*- coding: utf-8 -*-\n":
-            self.__warnings += [
-                WarningType(
-                    file=file,
-                    function=None,
-                    line_number=1,
-                    text=f"Missing # -*- coding: utf-8 -*-",
-                )
-            ]
-            return
 
 
 if __name__ == "__main__":
     checker = CheckSomethingTemplate(
         root=pathlib.Path(sys.argv[1]),
-        known_exceptions=[],
+        known_exceptions=["lzw_decode.py", "source.py"],
     )
     checker.perform_check_on_directory()
     warnings: typing.List[WarningType] = checker.get_warnings()

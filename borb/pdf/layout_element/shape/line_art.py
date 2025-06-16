@@ -764,7 +764,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_pointed_star(
-            n=5,
+            number_of_points=5,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -5933,7 +5933,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_pointed_star(
-            n=4,
+            number_of_points=4,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -6432,7 +6432,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_gon(
-            n=7,
+            number_of_sides=7,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -6462,7 +6462,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_gon(
-            n=6,
+            number_of_sides=6,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -6492,7 +6492,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_gon(
-            n=3,
+            number_of_sides=3,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -6544,7 +6544,7 @@ class LineArt:
 
     @staticmethod
     def n_gon(
-        n: int,
+        number_of_sides: int,
         dash_pattern: typing.List[int] = [],
         dash_phase: int = 0,
         fill_color: typing.Optional[Color] = None,
@@ -6557,7 +6557,7 @@ class LineArt:
         This function creates and returns a Shape object that visually represents
         a regular n-gon.
 
-        :param n:               the number of vertices in the n-gon
+        :param number_of_sides: the number of vertices in the n-gon
         :param stroke_color:    the color in which to draw the Shape
         :param fill_color:      the color in which to fill the Shape
         :param line_width:      the line width of the Shape
@@ -6565,14 +6565,14 @@ class LineArt:
         :param dash_phase:      the dash phase to be used when starting to draw the Shape
         :return:                a Shape
         """
-        assert isinstance(n, int)
-        assert n >= 3
+        assert isinstance(number_of_sides, int)
+        assert number_of_sides >= 3
         coords_0: typing.List[typing.Tuple[float, float]] = [
             (
-                math.cos(math.radians(i * 360 // n)) * 100,
-                math.sin(math.radians(i * 360 // n)) * 100,
+                math.cos(math.radians(i * 360 // number_of_sides)) * 100,
+                math.sin(math.radians(i * 360 // number_of_sides)) * 100,
             )
-            for i in range(0, n)
+            for i in range(0, number_of_sides)
         ]
         coords_0 += [coords_0[0]]
         return Shape(
@@ -6586,7 +6586,7 @@ class LineArt:
 
     @staticmethod
     def n_pointed_star(
-        n: int,
+        number_of_points: int,
         dash_pattern: typing.List[int] = [],
         dash_phase: int = 0,
         fill_color: typing.Optional[Color] = None,
@@ -6599,17 +6599,17 @@ class LineArt:
         This function creates and returns a Shape object that visually represents
         an n-pointed star.
 
-        :param n:               the number of vertices in the star
-        :param stroke_color:    the color in which to draw the Shape
-        :param fill_color:      the color in which to fill the Shape
-        :param line_width:      the line width of the Shape
-        :param dash_pattern:    the dash pattern to be used when drawing the Shape
-        :param dash_phase:      the dash phase to be used when starting to draw the Shape
-        :return:                a Shape
+        :param number_of_points:    the number of vertices in the star
+        :param stroke_color:        the color in which to draw the Shape
+        :param fill_color:          the color in which to fill the Shape
+        :param line_width:          the line width of the Shape
+        :param dash_pattern:        the dash pattern to be used when drawing the Shape
+        :param dash_phase:          the dash phase to be used when starting to draw the Shape
+        :return:                    a Shape
         """
-        assert isinstance(n, int)
-        assert n >= 3
-        m: int = n * 2
+        assert isinstance(number_of_points, int)
+        assert number_of_points >= 3
+        m: int = number_of_points * 2
         coords_0: typing.List[typing.Tuple[float, float]] = [
             (
                 math.cos(math.radians(i * 360 // m)) * (50 if i % 2 == 0 else 30) - 50,
@@ -6630,7 +6630,7 @@ class LineArt:
 
     @staticmethod
     def n_toothed_gear(
-        n: int,
+        number_of_teeth: int,
         dash_pattern: typing.List[int] = [],
         dash_phase: int = 0,
         fill_color: typing.Optional[Color] = None,
@@ -6643,7 +6643,7 @@ class LineArt:
         This function creates and returns a Shape object that visually represents
         an n-toothed gear.
 
-        :param n:               the number of gear teeth
+        :param number_of_teeth: the number of gear teeth
         :param stroke_color:    the color in which to draw the Shape
         :param fill_color:      the color in which to fill the Shape
         :param line_width:      the line width of the Shape
@@ -6651,9 +6651,9 @@ class LineArt:
         :param dash_phase:      the dash phase to be used when starting to draw the Shape
         :return:                a Shape
         """
-        assert isinstance(n, int)
-        assert n >= 3
-        m: int = n * 4
+        assert isinstance(number_of_teeth, int)
+        assert number_of_teeth >= 3
+        m: int = number_of_teeth * 4
         coords_0: typing.List[typing.Tuple[float, float]] = [
             (
                 math.cos(math.radians(i * 360 // m)) * (50 if i % 4 in [0, 3] else 30)
@@ -6702,7 +6702,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_gon(
-            n=8,
+            number_of_sides=8,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -6768,7 +6768,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_gon(
-            n=5,
+            number_of_sides=5,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,
@@ -7016,7 +7016,7 @@ class LineArt:
         :return:                a Shape
         """
         return LineArt.n_pointed_star(
-            n=6,
+            number_of_points=6,
             stroke_color=stroke_color,
             fill_color=fill_color,
             line_width=line_width,

@@ -123,8 +123,7 @@ from borb.pdf.layout_element.shape.map_of_europe import MapOfEurope
 from borb.pdf.layout_element.shape.map_of_north_america import MapOfNorthAmerica
 from borb.pdf.layout_element.shape.map_of_oceania import MapOfOceania
 from borb.pdf.layout_element.shape.map_of_south_america import MapOfSouthAmerica
-from borb.pdf.layout_element.shape.map_of_the_contiguous_united_states_of_america import \
-    MapOfTheContiguousUnitedStatesOfAmerica
+from borb.pdf.layout_element.shape.map_of_the_contiguous_united_states_of_america import MapOfTheContiguousUnitedStatesOfAmerica
 from borb.pdf.layout_element.shape.map_of_the_united_states_of_america import MapOfTheUnitedStatesOfAmerica
 from borb.pdf.layout_element.shape.map_of_the_world import MapOfTheWorld
 from borb.pdf.layout_element.shape.shape import Shape

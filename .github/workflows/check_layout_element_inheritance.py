@@ -119,29 +119,28 @@ def main(root: str):
 
         # compare the args to those of LayoutElement.__init__
         missing_init_args: typing.List[str] = [
-                x
-                for x in [
-                    "background_color",
-                    "border_color",
-                    "border_dash_pattern",
-                    "border_width_bottom",
-                    "border_width_left",
-                    "border_width_right",
-                    "border_width_top",
-                    "horizontal_alignment",
-                    "margin_bottom",
-                    "margin_left",
-                    "margin_right",
-                    "margin_top",
-                    "padding_bottom",
-                    "padding_left",
-                    "padding_right",
-                    "padding_top",
-                    "vertical_alignment",
-                ]
-                if x not in args
+            x
+            for x in [
+                "background_color",
+                "border_color",
+                "border_dash_pattern",
+                "border_width_bottom",
+                "border_width_left",
+                "border_width_right",
+                "border_width_top",
+                "horizontal_alignment",
+                "margin_bottom",
+                "margin_left",
+                "margin_right",
+                "margin_top",
+                "padding_bottom",
+                "padding_left",
+                "padding_right",
+                "padding_top",
+                "vertical_alignment",
             ]
-
+            if x not in args
+        ]
 
         if len(missing_init_args) != 0:
             classes_missing_init_args += [(class_name, class_file, missing_init_args)]

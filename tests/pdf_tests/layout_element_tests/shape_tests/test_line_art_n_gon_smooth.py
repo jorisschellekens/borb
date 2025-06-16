@@ -20,7 +20,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=3).smooth().paint(
+        LineArt.n_gon(number_of_sides=3).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -39,7 +39,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=4).smooth().paint(
+        LineArt.n_gon(number_of_sides=4).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -58,7 +58,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=5).smooth().paint(
+        LineArt.n_gon(number_of_sides=5).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -77,7 +77,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=6).smooth().paint(
+        LineArt.n_gon(number_of_sides=6).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -96,7 +96,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=7).smooth().paint(
+        LineArt.n_gon(number_of_sides=7).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -115,7 +115,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=8).smooth().paint(
+        LineArt.n_gon(number_of_sides=8).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -134,7 +134,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=9).smooth().paint(
+        LineArt.n_gon(number_of_sides=9).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -153,7 +153,7 @@ class TestLineArtNGonSmooth(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_gon(n=10).smooth().paint(
+        LineArt.n_gon(number_of_sides=10).smooth().paint(
             available_space=(x, y, w, h),
             page=p,
         )

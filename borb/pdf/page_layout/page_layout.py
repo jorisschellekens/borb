@@ -43,7 +43,7 @@ class PageLayout:
     # PUBLIC
     #
 
-    def append_layout_element(self, e: LayoutElement) -> "PageLayout":
+    def append_layout_element(self, layout_element: LayoutElement) -> "PageLayout":
         """
         Append a layout element to the page layout.
 
@@ -53,7 +53,7 @@ class PageLayout:
         implementation (e.g., single-column, multi-column). It ensures that content
         is organized and presented appropriately.
 
-        :param e:   the LayoutElement to be added
+        :param layout_element:   the LayoutElement to be added
         :return:    Self, this allows for method-chaining
         """
         return self

@@ -7,7 +7,7 @@ The `PDF` class simplifies PDF handling by offering an interface for reading,
 writing, and managing content within PDF documents. It abstracts the complexities
 of PDF structure, allowing users to easily manipulate documents.
 """
-
+import io
 import pathlib
 import typing
 
@@ -74,7 +74,7 @@ class PDF:
     @staticmethod
     def write(
         what: Document,
-        where_to: typing.Union[str, pathlib.Path],
+        where_to: typing.Union[pathlib.Path, str, typing.BinaryIO],
     ) -> None:
         """
         Write the specified Document to a PDF file.
@@ -87,15 +87,6 @@ class PDF:
         :param what:        the document to be stored
         :return:    None
         """
-        # convert to pathlib.Path
-        if isinstance(where_to, str):
-            where_to = pathlib.Path(where_to)
-            if not where_to.parent.exists():
-                where_to.parent.mkdir(parents=True)
-        assert isinstance(where_to, pathlib.Path)
-
-        # make sure the pathlib.Path exists
-        assert where_to.parent.exists()
 
         # instantiate FacadeVisitor
         from borb.pdf.visitor.write_new.facade_visitor import FacadeVisitor
@@ -105,6 +96,23 @@ class PDF:
         # convert everything to bytes using visitor design pattern
         rv.visit(node=what)
 
-        # persist
-        with open(where_to, "wb") as pdf_file_handle:
-            pdf_file_handle.write(rv.bytes())
+        # handle typing.BinaryIO
+        if isinstance(where_to, io.BytesIO):
+            where_to.write(rv.bytes())
+
+        # handle pathlib.path
+        if isinstance(where_to, pathlib.Path):
+            if not where_to.parent.exists():
+                where_to.parent.mkdir(parents=True)
+            assert where_to.parent.exists()
+            with open(where_to, "wb") as pdf_file_handle:
+                pdf_file_handle.write(rv.bytes())
+
+        # handle str
+        if isinstance(where_to, str):
+            where_to = pathlib.Path(where_to)
+            if not where_to.parent.exists():
+                where_to.parent.mkdir(parents=True)
+            assert where_to.parent.exists()
+            with open(where_to, "wb") as pdf_file_handle:
+                pdf_file_handle.write(rv.bytes())

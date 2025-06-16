@@ -1,6 +1,6 @@
 import unittest
 
-from borb.pdf import RemoteGoToAnnotation, Document, Page
+from borb.pdf import RemoteGoToAnnotation, Document, Page, PDF
 
 
 class TestRemoteGoToAnnotationHeight(unittest.TestCase):

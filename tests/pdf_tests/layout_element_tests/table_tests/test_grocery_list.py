@@ -1,3 +1,4 @@
+import io
 import typing
 import unittest
 
@@ -11,7 +12,7 @@ from borb.pdf import (
     Paragraph,
     PDF,
     Space,
-    X11Color, GoogleTrueTypeFont, Font,
+    X11Color, GoogleTrueTypeFont, Font, LayoutElement, FixedColumnWidthTable,
 )
 from tests.secrets import populate_os_environ
 
@@ -22,7 +23,7 @@ class TestGroceryList(unittest.TestCase):
     def __create_table_from_str_list(s: typing.List[str]) -> Table:
         nof_columns: int = 3 if any([x.startswith("\t") for x in s]) else 2
         nof_rows: int = len(s)
-        t: Table = FlexibleColumnWidthTable(
+        t: Table = FixedColumnWidthTable(
             number_of_columns=nof_columns, number_of_rows=nof_rows
         )
         i: int = 0
@@ -89,7 +90,10 @@ class TestGroceryList(unittest.TestCase):
         sansation_font: Font = GoogleTrueTypeFont.from_google_font_api(name="Sansation")
 
         layout.append_layout_element(
-            Paragraph("produce", font_size=16, font=sansation_font, font_color=X11Color.YELLOW_MUNSELL)
+            Paragraph("produce",
+                      font_size=16,
+                      font=sansation_font,
+                      font_color=X11Color.YELLOW_MUNSELL)
         )
         layout.append_layout_element(
             TestGroceryList.__create_table_from_str_list(
@@ -255,4 +259,6 @@ class TestGroceryList(unittest.TestCase):
             )
         )
 
-        PDF.write(what=doc, where_to="assets/test_grocery_list.pdf")
+        bts: typing.BinaryIO = io.BytesIO()
+        PDF.write(what=doc, where_to=bts)
+        print(len(bts.getvalue()))

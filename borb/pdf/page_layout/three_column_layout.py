@@ -11,6 +11,8 @@ and comprehension. It automatically manages the flow of content, ensuring
 that any overflow transitions seamlessly to the next column or page as
 needed.
 """
+import typing
+
 from borb.pdf.page import Page
 from borb.pdf.page_layout.multi_column_layout import MultiColumnLayout
 
@@ -31,7 +33,14 @@ class ThreeColumnLayout(MultiColumnLayout):
     #
     # CONSTRUCTOR
     #
-    def __init__(self, page: Page):
+    def __init__(
+        self,
+        page: Page,
+        margin_bottom: typing.Optional[int] = None,
+        margin_left: typing.Optional[int] = None,
+        margin_right: typing.Optional[int] = None,
+        margin_top: typing.Optional[int] = None,
+    ):
         """
         Initialize the ThreeColumnLayout with the specified page.
 
@@ -45,7 +54,14 @@ class ThreeColumnLayout(MultiColumnLayout):
         :param page:    An instance of the `Page` class that defines the area where the three-column layout will be applied.
                         This page serves as the canvas for the layout, determining its dimensions and any other relevant properties.
         """
-        super().__init__(page=page, number_of_columns=3)
+        super().__init__(
+            number_of_columns=3,
+            page=page,
+            margin_top=margin_top,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+        )
 
     #
     # PRIVATE

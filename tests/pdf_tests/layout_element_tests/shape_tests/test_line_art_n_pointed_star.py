@@ -20,7 +20,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=3).paint(
+        LineArt.n_pointed_star(number_of_points=3).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -39,7 +39,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=4).paint(
+        LineArt.n_pointed_star(number_of_points=4).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -58,7 +58,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=5).paint(
+        LineArt.n_pointed_star(number_of_points=5).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -77,7 +77,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=6).paint(
+        LineArt.n_pointed_star(number_of_points=6).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -96,7 +96,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=7).paint(
+        LineArt.n_pointed_star(number_of_points=7).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -115,7 +115,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=8).paint(
+        LineArt.n_pointed_star(number_of_points=8).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -134,7 +134,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=9).paint(
+        LineArt.n_pointed_star(number_of_points=9).paint(
             available_space=(x, y, w, h),
             page=p,
         )
@@ -153,7 +153,7 @@ class TestLineArtNPointedStar(unittest.TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
-        LineArt.n_pointed_star(n=10).paint(
+        LineArt.n_pointed_star(number_of_points=10).paint(
             available_space=(x, y, w, h),
             page=p,
         )

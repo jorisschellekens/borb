@@ -149,7 +149,7 @@ class FixedColumnWidthTable(Table):
         # fmt: on
 
         # utility function to get the column_width for a given element
-        def get_available_width(e: Table.TableCell) -> int:
+        def _get_available_width(e: Table.TableCell) -> int:
             # fmt: off
             cs: typing.Set[int] = set([c for _, c in self._Table__inner_layout_element_to_table_coordinates[e]])    # type: ignore[attr-defined]
             return sum([self.__column_widths[c] for c in cs])
@@ -161,7 +161,7 @@ class FixedColumnWidthTable(Table):
             row_height[row_index] = max(
                 [
                     math.ceil(
-                        e.get_size(available_space=(get_available_width(e), 2**64))[1]
+                        e.get_size(available_space=(_get_available_width(e), 2**64))[1]
                         / e.get_row_span()
                     )
                     for e in self.get_row(row_index)
@@ -231,7 +231,7 @@ class FixedColumnWidthTable(Table):
         # fmt: on
 
         # utility function to get the column_width for a given element
-        def get_available_width(e: Table.TableCell) -> int:
+        def _get_available_width(e: Table.TableCell) -> int:
             # fmt: off
             cs: typing.Set[int] = set([c for _, c in self._Table__inner_layout_element_to_table_coordinates[e]])    # type: ignore[attr-defined]
             return sum([column_widths[c] for c in cs])
@@ -243,7 +243,7 @@ class FixedColumnWidthTable(Table):
             row_heights[row_index] = max(
                 [
                     math.ceil(
-                        e.get_size(available_space=(get_available_width(e), 2**64))[1]
+                        e.get_size(available_space=(_get_available_width(e), 2**64))[1]
                         / e.get_row_span()
                     )
                     for e in self.get_row(row_index)

@@ -11,6 +11,7 @@ and comprehension. It automatically manages the flow of content, ensuring
 that any overflow transitions seamlessly to the next column or page as
 needed.
 """
+import typing
 
 from borb.pdf.page import Page
 from borb.pdf.page_layout.multi_column_layout import MultiColumnLayout
@@ -33,7 +34,14 @@ class TwoColumnLayout(MultiColumnLayout):
     # CONSTRUCTOR
     #
 
-    def __init__(self, page: Page):
+    def __init__(
+        self,
+        page: Page,
+        margin_bottom: typing.Optional[int] = None,
+        margin_left: typing.Optional[int] = None,
+        margin_right: typing.Optional[int] = None,
+        margin_top: typing.Optional[int] = None,
+    ):
         """
         Initialize the TwoColumnLayout with the specified page.
 
@@ -47,7 +55,14 @@ class TwoColumnLayout(MultiColumnLayout):
         :param page:    An instance of the `Page` class that represents the area where the two-column layout will be applied.
                         This page serves as the foundation for the layout, determining its size and any relevant attributes.
         """
-        super().__init__(page=page, number_of_columns=2)
+        super().__init__(
+            number_of_columns=2,
+            page=page,
+            margin_top=margin_top,
+            margin_bottom=margin_bottom,
+            margin_left=margin_left,
+            margin_right=margin_right,
+        )
 
     #
     # PRIVATE

@@ -127,7 +127,7 @@ class Lipsum:
     #
 
     @staticmethod
-    def generate_agatha_christie(n: int) -> str:
+    def generate_agatha_christie(number_of_characters: int) -> str:
         """
         Generate text resembling Agatha Christie's style using a Markov model.
 
@@ -137,20 +137,20 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Agatha Christie Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Agatha Christie Markov model.
         """
         import json
         import zlib
 
         return Lipsum.__generate(
             markov_model=json.loads(zlib.decompress(Lipsum.__MARY_SHELLEY_MM).decode()),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_alan_alexander_milne(n: int) -> str:
+    def generate_alan_alexander_milne(number_of_characters: int) -> str:
         """
         Generate text resembling A.A. Milne's style using a Markov model.
 
@@ -160,9 +160,9 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the A.A. Milne Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the A.A. Milne Markov model.
         """
         import json
         import zlib
@@ -171,11 +171,11 @@ class Lipsum:
             markov_model=json.loads(
                 zlib.decompress(Lipsum.__ALAN_ALEXANDER_MILNE_MM).decode()
             ),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_arthur_conan_doyle(n: int) -> str:
+    def generate_arthur_conan_doyle(number_of_characters: int) -> str:
         """
         Generate text resembling Arthur Conan Doyle's style using a Markov model.
 
@@ -185,9 +185,9 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Arthur Conan Doyle Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Arthur Conan Doyle Markov model.
         """
         import json
         import zlib
@@ -196,11 +196,11 @@ class Lipsum:
             markov_model=json.loads(
                 zlib.decompress(Lipsum.__ARTHUR_CONAN_DOYLE_MM).decode()
             ),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_emily_bronte(n: int) -> str:
+    def generate_emily_bronte(number_of_characters: int) -> str:
         """
         Generate text resembling Emily Brontë's style using a Markov model.
 
@@ -210,20 +210,20 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Emily Brontë Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Emily Brontë Markov model.
         """
         import json
         import zlib
 
         return Lipsum.__generate(
             markov_model=json.loads(zlib.decompress(Lipsum.__EMILY_BRONTE_MM).decode()),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_jane_austen(n: int) -> str:
+    def generate_jane_austen(number_of_characters: int) -> str:
         """
         Generate text resembling Jane Austen's style using a Markov model.
 
@@ -233,20 +233,20 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Jane Austen Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Jane Austen Markov model.
         """
         import json
         import zlib
 
         return Lipsum.__generate(
             markov_model=json.loads(zlib.decompress(Lipsum.__JANE_AUSTEN_MM).decode()),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_lewis_carroll(n: int) -> str:
+    def generate_lewis_carroll(number_of_characters: int) -> str:
         """
         Generate text resembling Lewis Carroll's style using a Markov model.
 
@@ -256,9 +256,9 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Lewis Carroll Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Lewis Carroll Markov model.
         """
         import json
         import zlib
@@ -267,11 +267,11 @@ class Lipsum:
             markov_model=json.loads(
                 zlib.decompress(Lipsum.__LEWIS_CARROLL_MM).decode()
             ),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_lorem_ipsum(n: int) -> str:
+    def generate_lorem_ipsum(number_of_characters: int) -> str:
         """
         Generate text resembling a classic Lorem Ipsum style using a Markov model.
 
@@ -281,20 +281,20 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Lorem Ipsum Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Lorem Ipsum Markov model.
         """
         import json
         import zlib
 
         return Lipsum.__generate(
             markov_model=json.loads(zlib.decompress(Lipsum.__LOREM_IPSUM_MM).decode()),
-            n=n,
+            n=number_of_characters,
         )
 
     @staticmethod
-    def generate_mary_shelley(n: int) -> str:
+    def generate_mary_shelley(number_of_characters: int) -> str:
         """
         Generate text resembling Mary Shelley's style using a Markov model.
 
@@ -304,14 +304,14 @@ class Lipsum:
         a text length close to the specified `n` characters by predicting and
         chaining characters using the Markov model.
 
-        :param n:   The target number of characters to generate.
-        :return:    A string containing approximately `n` characters generated
-                    using the Mary Shelley Markov model.
+        :param number_of_characters:    The target number of characters to generate.
+        :return:                        A string containing approximately `n` characters generated
+                                        using the Mary Shelley Markov model.
         """
         import json
         import zlib
 
         return Lipsum.__generate(
             markov_model=json.loads(zlib.decompress(Lipsum.__MARY_SHELLEY_MM).decode()),
-            n=n,
+            n=number_of_characters,
         )
