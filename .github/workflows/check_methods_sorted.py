@@ -1,99 +1,179 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import collections
 import pathlib
-import sys
+import re
 import typing
+import sys
 
-KNOWN_EXCEPTIONS = [
-    "lzw_decode.py",
-    "primitives.py",
-]
+WarningType = collections.namedtuple(
+    "WarningType",
+    field_names=[
+        "file",
+        "function",
+        "line_number",
+        "text",
+    ],
+)
 
 
-def main(root: str):
-    stk_todo = [pathlib.Path(root)]
-    stk_done = []
-    while len(stk_todo) > 0:
-        f = stk_todo.pop(0)
-        if f.is_dir():
+class CheckSomethingTemplate:
 
-            # IF we have reached the /.github directory
-            # THEN do not delve into it
-            if f.name == ".github":
-                continue
+    #
+    # CONSTRUCTOR
+    #
 
-            # IF we have reached the /.venv directory
-            # THEN do not delve into it
-            if f.name == ".venv":
-                continue
+    def __init__(
+        self,
+        root: pathlib.Path,
+        known_exceptions: typing.List[typing.Union[pathlib.Path, str]],
+    ):
+        self.__root: pathlib.Path = root
+        self.__warnings: typing.List[WarningType] = []
+        self.__number_of_files_checked: int = 0
+        self.__known_exceptions: typing.List[pathlib.Path] = known_exceptions
 
-            # IF we have reached the /tests directory
-            # THEN do not delve into it
-            if f.name == "tests":
-                continue
+    #
+    # PRIVATE
+    #
 
-            stk_todo += [subdir for subdir in f.iterdir()]
-        else:
-            if f.name.endswith(".py"):
-                stk_done += [f]
+    #
+    # PUBLIC
+    #
 
-    def __extract_method_name(s: str) -> str:
-        s = s[s.find("    def ") + 8 :]
-        s = s[: s.find("(")]
-        return s
+    def get_number_of_files_checked(self) -> int:
+        return self.__number_of_files_checked
 
-    # loop over all .py files
-    exit_code: int = 0
-    for python_file in stk_done:
-        lines = []
-        with open(python_file, "r") as python_file_handle:
-            lines = python_file_handle.readlines()
+    def get_warnings(self) -> typing.List[WarningType]:
+        return self.__warnings
 
-        lines = [l for l in lines if l.startswith("    def ")]
-        unsorted_method_names: typing.List[str] = [
-            __extract_method_name(l) for l in lines
-        ]
+    def perform_check_on_directory(self) -> None:
+        stk_todo = [self.__root]
+        stk_done = []
+        while len(stk_todo) > 0:
+            f = stk_todo.pop(0)
+            if f.is_dir():
 
-        # constructor
-        constructor_methods = [
-            __extract_method_name(l) for l in lines if l.startswith("    def __init__")
-        ]
+                # IF we have reached the /.github directory
+                # THEN do not delve into it
+                if f.name == ".github":
+                    continue
 
-        # filter private methods
-        private_methods = [
-            __extract_method_name(l)
-            for l in lines
-            if l.startswith("    def _") and not l.startswith("    def __init__")
-        ]
+                # IF we have reached the /.venv directory
+                # THEN do not delve into it
+                if f.name == ".venv":
+                    continue
 
-        # filter public methods
-        public_methods = [
-            __extract_method_name(l) for l in lines if not l.startswith("    def _")
-        ]
+                # IF we have reached the /tests directory
+                # THEN do not delve into it
+                if f.name == "tests":
+                    continue
+                stk_todo += [subdir for subdir in f.iterdir()]
+            else:
+                if f.name.endswith(".py"):
+                    stk_done += [f]
 
-        # compare unsorted to sorted
-        sorted_method_names = (
-            sorted(constructor_methods)
-            + sorted(private_methods)
-            + sorted(public_methods)
-        )
+        # filter out known_exceptions
+        # fmt: off
+        known_exceptions_01 = [x for x in self.__known_exceptions if isinstance(x, pathlib.Path)]
+        known_exceptions_02 = [re.compile(x) for x in self.__known_exceptions if isinstance(x, str)]
+        stk_done = [x for x in stk_done if x not in known_exceptions_01]
+        stk_done = [x for x in stk_done if not any([y.match(x.name) is not None for y in known_exceptions_02])]
+        # fmt: on
 
-        if sorted_method_names != unsorted_method_names:
+        # perform_check_on_file for each item in stk_done
+        stk_done.sort(key=lambda x: x.name)
+        for f in stk_done:
+            self.perform_check_on_file(f)
 
-            # IF the file is a known exception
-            # THEN skip it
-            if python_file.name in KNOWN_EXCEPTIONS:
-                continue
+    def perform_check_on_file(self, file: pathlib.Path) -> None:
+        self.__number_of_files_checked += 1
+        lines: typing.List[typing.Tuple[int, str]] = []
+        try:
+            with open(file, "r") as fh:
+                lines = [(i, x) for i, x in enumerate(fh.readlines())]
+        except:
+            return
 
-            exit_code = 1
-            print(f"Methods unsorted in {python_file}")
-            print(f"\t- <ACTUAL> \t <EXPECTED>")
-            for m0, m1 in zip(unsorted_method_names, sorted_method_names):
-                print(f"\t- {m0} \t {m1}")
+        # find only the method definitions
+        lines = [(i, x.strip()) for i, x in lines]
+        lines = [(i, x) for i, x in lines if x.startswith("def ")]
+        lines = [(i, x[4 : x.find("(")]) for i, x in lines]
 
-    # exit
-    sys.exit(exit_code)
+        # determine how the methods ought to be sorted
+        # fmt: off
+        lines_sorted = []
+        lines_sorted += sorted([(i, x) for i, x in lines if x.startswith("__init__")], key=lambda y: y[1])
+        lines_sorted += sorted([(i, x) for i, x in lines if x.startswith("_") and not x.startswith("__init__")], key=lambda y: y[1])
+        lines_sorted += sorted([(i, x) for i, x in lines if not x.startswith("_") and not x.startswith("__init__")], key=lambda y: y[1])
+        # fmt: on
+
+        if len(lines) != len(lines_sorted):
+            self.__warnings += [
+                WarningType(
+                    file=file,
+                    line_number=0,
+                    function=None,
+                    text=f"Unable to perform sort",
+                )
+            ]
+            return
+
+        for i in range(0, len(lines)):
+            if lines[i] != lines_sorted[i]:
+                self.__warnings += [
+                    WarningType(
+                        file=file,
+                        function=lines[i][1],
+                        line_number=lines[i][0],
+                        text=f"This should be the {lines_sorted.index(lines[i])}th method.",
+                    )
+                ]
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    checker = CheckSomethingTemplate(
+        root=pathlib.Path(sys.argv[1]),
+        known_exceptions=[
+            "fixed_column_width_table.py",
+            "get_regular_expression.py",
+            "get_text.py",
+            "lzw_decode.py",
+            "primitives.py",
+            "table.py",
+        ],
+    )
+    checker.perform_check_on_directory()
+    warnings: typing.List[WarningType] = checker.get_warnings()
+
+    # IF everything passed
+    # THEN display pass text
+    if len(warnings) == 0:
+        print(
+            f"Finished checking {checker.get_number_of_files_checked()} file(s), everything OK"
+        )
+
+    # IF there are warnings
+    # THEN display them
+    if len(warnings) > 0:
+        print(
+            f"Finished checking {checker.get_number_of_files_checked()} file(s), found {len(warnings)} warnings:"
+        )
+        for w in warnings:
+            if (
+                w.file is not None
+                and w.function is not None
+                and w.line_number is not None
+                and w.text is not None
+            ):
+                print(f"{w.file}:{w.function}:{w.line_number} {w.text}")
+                continue
+            if w.file is not None and w.line_number is not None and w.text is not None:
+                print(f"{w.file}:{w.line_number} {w.text}")
+                continue
+            if w.file is not None and w.text is not None:
+                print(f"{w.file} {w.text}")
+                continue
+            if w.file is not None:
+                print(f"{w.file}")
+                continue
+
+        sys.exit(1)
