@@ -131,7 +131,7 @@ class CheckSomethingTemplate:
 
 if __name__ == "__main__":
     checker = CheckSomethingTemplate(
-        root=pathlib.Path("/home/joris-schellekens/Code/borb"),
+        root=pathlib.Path(sys.argv[1]),
         known_exceptions=["^(?!conformance_checks.py$).+$"],
     )
     checker.perform_check_on_directory()
