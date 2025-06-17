@@ -48,7 +48,9 @@ class TestLineArtNGonSize(unittest.TestCase):
         assert w in [98, 99, 100] or h in [98, 99, 100]
 
     def test_line_art_n_gon_size_010_size(self):
-        w, h = LineArt.n_gon(number_of_sides=10).get_size(available_space=(2**64, 2**64))
+        w, h = LineArt.n_gon(number_of_sides=10).get_size(
+            available_space=(2**64, 2**64)
+        )
         assert 0 <= w <= 100
         assert 0 <= h <= 100
         assert w in [98, 99, 100] or h in [98, 99, 100]
