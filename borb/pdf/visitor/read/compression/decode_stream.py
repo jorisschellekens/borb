@@ -83,7 +83,7 @@ def decode_stream(stream_to_decode: stream) -> stream:
     if "DecodeParms" in stream_to_decode:
         if (
             isinstance(stream_to_decode["DecodeParms"], list)
-            and s["DecodeParms"] is not None
+            and stream_to_decode["DecodeParms"] is not None
         ):
             decode_params = stream_to_decode["DecodeParms"]
             decode_params = [x or dict() for x in decode_params]
