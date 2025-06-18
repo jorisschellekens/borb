@@ -15,7 +15,7 @@ from borb.pdf.primitives import PDFType, reference
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 ReferencedObjectType = collections.namedtuple(
-    typename="ReferencedObjectType", field_names=["reference", "object"]
+    "ReferencedObjectType", ["reference", "object"]
 )
 
 
