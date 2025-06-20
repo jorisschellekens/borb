@@ -160,4 +160,4 @@ class Version:
             pass
 
         # default
-        return Version("3.0.0")
+        return Version("3.0.1")

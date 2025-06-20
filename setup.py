@@ -15,7 +15,7 @@ required = [
 
 setuptools.setup(
     name="borb",
-    version="3.0.0",
+    version="3.0.1",
     author="Joris Schellekens",
     author_email="joris.schellekens.1989@gmail.com",
     description="borb is a library for reading, creating and manipulating PDF files in python.",
