@@ -100,7 +100,7 @@ class VerticalProcess:
             )
             if i != n - 1:
                 arrow = LineArt.arrow_down(
-                    line_width=level_1_font_size // 3,
+                    line_width=1,
                     fill_color=lighter_background_color,
                     stroke_color=lighter_background_color,
                 ).scale_to_fit(size=(level_1_font_size * 3, level_1_font_size * 3))
