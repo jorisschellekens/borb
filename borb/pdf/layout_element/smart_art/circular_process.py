@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import typing
 
 from borb.pdf.layout_element.layout_element import LayoutElement
