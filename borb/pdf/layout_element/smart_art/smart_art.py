@@ -16,6 +16,7 @@ from borb.pdf.color.x11_color import X11Color
 from borb.pdf.layout_element.layout_element import LayoutElement
 from borb.pdf.layout_element.smart_art.bending_process import BendingProcess
 from borb.pdf.layout_element.smart_art.block_list import BasicBlockList
+from borb.pdf.layout_element.smart_art.circular_process import CircularProcess
 from borb.pdf.layout_element.smart_art.horizontal_ascending_list import (
     HorizontalAscendingList,
 )
@@ -117,6 +118,34 @@ class SmartArt:
                     which can be used for further rendering or manipulation.
         """
         return BasicBlockList.build(
+            level_1_items=level_1_items,
+            background_color=background_color,
+            level_1_font_color=level_1_font_color,
+            level_1_font_size=level_1_font_size,
+        )
+
+    @staticmethod
+    def circular_process(
+        level_1_items: typing.List[str],
+        background_color: Color = X11Color.PRUSSIAN_BLUE,
+        level_1_font_color: Color = X11Color.WHITE,
+        level_1_font_size=12,
+    ) -> LayoutElement:
+        """
+        Construct a circular process layout with items arranged radially around a center.
+
+        This static method creates a visual layout of a process, placing each
+        item (level 1) evenly spaced around a circle to represent cyclical flow
+        or repeating sequences. Arrows connect items in a clockwise direction,
+        emphasizing the ongoing, looped nature of the process.
+
+        :param level_1_items:       A list of strings representing the primary items or steps in the process.
+        :param background_color:    The background color for the layout. Defaults to X11Color.PRUSSIAN_BLUE.
+        :param level_1_font_color:  The font color for item labels. Defaults to X11Color.WHITE.
+        :param level_1_font_size:   The font size for item labels. Defaults to 12.
+        :returns: A LayoutElement representing the constructed circular process layout, ready for rendering in a graphical interface.
+        """
+        return CircularProcess.build(
             level_1_items=level_1_items,
             background_color=background_color,
             level_1_font_color=level_1_font_color,

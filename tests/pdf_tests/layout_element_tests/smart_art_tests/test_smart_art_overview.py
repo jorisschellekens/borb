@@ -57,6 +57,23 @@ class TestSmartArtOverview(unittest.TestCase):
             )
         )
 
+        # circular_process
+        layout.append_layout_element(
+            Paragraph(
+                "Circular Process",
+                font_color=X11Color.PRUSSIAN_BLUE,
+                font="Helvetica-Bold",
+            )
+        )
+        layout.append_layout_element(
+            SmartArt.circular_process(
+                level_1_items=["Lorem", "Ipsum", "Dolor", "Sit"],
+                level_1_font_size=4,
+                level_1_font_color=X11Color.WHITE,
+                background_color=X11Color.PRUSSIAN_BLUE,
+            )
+        )
+
         # horizontal_ascending_list
         layout.append_layout_element(
             Paragraph(
@@ -128,7 +145,6 @@ class TestSmartArtOverview(unittest.TestCase):
         )
 
         # horizontal_picture_list
-        layout.next_column()
         layout.append_layout_element(
             Paragraph(
                 "Horizontal Picture List",
@@ -253,6 +269,7 @@ class TestSmartArtOverview(unittest.TestCase):
         )
 
         # vertical_bullet_list
+        layout.next_column()
         layout.append_layout_element(
             Paragraph(
                 "Vertical Bullet List",
@@ -272,7 +289,6 @@ class TestSmartArtOverview(unittest.TestCase):
         )
 
         # vertical_equation
-        layout.next_column()
         layout.append_layout_element(
             Paragraph(
                 "Vertical Equation",
