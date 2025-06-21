@@ -15,6 +15,18 @@ from borb.pdf.layout_element.meta.circular_layout_element_group import (
 
 class CircularProcess:
 
+    #
+    # CONSTRUCTOR
+    #
+
+    #
+    # PRIVATE
+    #
+
+    #
+    # PUBLIC
+    #
+
     @staticmethod
     def build(
         level_1_items: typing.List[str],
