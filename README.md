@@ -3,7 +3,7 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Public Method Documentation: 100%](https://img.shields.io/badge/public%20method%20documentation-100%25-green)]()
-[![Tests: 1300+](https://img.shields.io/badge/tests-1300%2B-green)]()
+[![Tests: 1400+](https://img.shields.io/badge/tests-1400%2B-green)]()
 [![Python Versions: 3.10, 3.11, 3.12](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-green)]()
 [![Type Checking: 100%](https://img.shields.io/badge/type%20checking-100%25-green)]()
 [![Downloads](https://pepy.tech/badge/borb)](https://pepy.tech/project/borb)

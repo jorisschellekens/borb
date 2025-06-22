@@ -11,7 +11,7 @@ class TestA4PortraitInvoice(unittest.TestCase):
             (
                 A4PortraitInvoice()
                 .set_logo(
-                    bytes_path_pil_image_or_url="https://raw.githubusercontent.com/jorisschellekens/borb/refs/heads/master/logo/borb_64.png"
+                    bytes_path_pil_image_or_url="https://raw.githubusercontent.com/jorisschellekens/borb/refs/heads/master/logo/borb_square_64_64.png"
                 )
                 .set_address(
                     address_line_1="123 Maple Street",

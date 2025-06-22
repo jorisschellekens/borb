@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Represents a circular process layout that visually organizes a series of steps or items in a looped, radial arrangement to emphasize cyclic or continuous progression.
+
+This class is designed to display items evenly distributed around a circle,
+visually reinforcing the concept of repetition, feedback loops, or perpetual flow.
+Each item represents a step or stage in the process, with arrows or connectors
+indicating directionality—typically clockwise. This layout is ideal for systems
+that repeat, evolve in stages, or emphasize closed-loop structures such as life
+cycles, iterative processes, or circular economies.
+"""
 import typing
 
 from borb.pdf.layout_element.layout_element import LayoutElement
@@ -14,6 +24,16 @@ from borb.pdf.layout_element.meta.circular_layout_element_group import (
 
 
 class CircularProcess:
+    """
+    Represents a circular process layout that visually organizes a series of steps or items in a looped, radial arrangement to emphasize cyclic or continuous progression.
+
+    This class is designed to display items evenly distributed around a circle,
+    visually reinforcing the concept of repetition, feedback loops, or perpetual flow.
+    Each item represents a step or stage in the process, with arrows or connectors
+    indicating directionality—typically clockwise. This layout is ideal for systems
+    that repeat, evolve in stages, or emphasize closed-loop structures such as life
+    cycles, iterative processes, or circular economies.
+    """
 
     #
     # CONSTRUCTOR
