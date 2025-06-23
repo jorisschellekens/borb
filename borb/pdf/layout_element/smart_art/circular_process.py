@@ -93,11 +93,10 @@ class CircularProcess:
                     font_size=level_1_font_size,
                 )
             ]
-            sizes += [
-                CircularLayoutElementGroup._CircularLayoutElementGroup__golden_ratio_landscape_box(
-                    elements[-1]
-                )
-            ]
+
+            # fmt: off
+            sizes += [CircularLayoutElementGroup._CircularLayoutElementGroup__golden_ratio_landscape_box(elements[-1])] # type: ignore[attr-defined]
+            # fmt: on
 
             # add arrow
             elements += [
@@ -114,17 +113,17 @@ class CircularProcess:
             elements[-1]._LayoutElement__vertical_alignment = LayoutElement.VerticalAlignment.MIDDLE        # type: ignore[attr-defined]
             # fmt: on
 
-            sizes += [None]
+            sizes += [(-1, -1)]
 
         # calculate average width/height
-        average_width = sum([s[0] for s in sizes if s is not None]) // len(sizes)
-        average_height = sum([s[1] for s in sizes if s is not None]) // len(sizes)
-        average_width = max(average_height, 16)
+        average_width = sum([s[0] for s in sizes if s != (-1, -1)]) // len(sizes)
+        average_height = sum([s[1] for s in sizes if s != (-1, -1)]) // len(sizes)
+        average_width = max(average_width, 16)
         average_height = max(average_height, 16)
 
         # set size for arrows
         sizes = [
-            (x[0], x[1]) if x is not None else (average_width, average_height)
+            (x[0], x[1]) if x != (-1, -1) else (average_width, average_height)
             for x in sizes
         ]
 
