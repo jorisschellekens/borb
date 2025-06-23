@@ -110,8 +110,8 @@ class CircularProcess:
 
             # force alignment
             # fmt: off
-            elements[-1]._LayoutElement__horizontal_alignment = LayoutElement.HorizontalAlignment.MIDDLE
-            elements[-1]._LayoutElement__vertical_alignment = LayoutElement.VerticalAlignment.MIDDLE
+            elements[-1]._LayoutElement__horizontal_alignment = LayoutElement.HorizontalAlignment.MIDDLE    # type: ignore[attr-defined]
+            elements[-1]._LayoutElement__vertical_alignment = LayoutElement.VerticalAlignment.MIDDLE        # type: ignore[attr-defined]
             # fmt: on
 
             sizes += [None]
@@ -132,17 +132,17 @@ class CircularProcess:
         angle = 360 / len(level_1_items)
         for i, l in enumerate(elements):
             if isinstance(l, Shape):
-                elements[i] = elements[i].rotate(-angle * (i // 2) - angle // 2)
+                elements[i] = elements[i].rotate(-angle * (i // 2) - angle // 2)  # type: ignore[attr-defined]
 
                 # scale
                 # fmt: off
-                elements[i] = elements[i].scale_to_fit(size=(average_width, average_height))
+                elements[i] = elements[i].scale_to_fit(size=(average_width, average_height))    # type: ignore[attr-defined]
                 # fmt: on
 
                 # force alignment
                 # fmt: off
-                elements[-1]._LayoutElement__horizontal_alignment = LayoutElement.HorizontalAlignment.MIDDLE
-                elements[-1]._LayoutElement__vertical_alignment = LayoutElement.VerticalAlignment.MIDDLE
+                elements[-1]._LayoutElement__horizontal_alignment = LayoutElement.HorizontalAlignment.MIDDLE    # type: ignore[attr-defined]
+                elements[-1]._LayoutElement__vertical_alignment = LayoutElement.VerticalAlignment.MIDDLE        # type: ignore[attr-defined]
                 # fmt: on
 
         # build CircularLayoutElementGroup
