@@ -159,7 +159,7 @@ class ReplaceStrByNameVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

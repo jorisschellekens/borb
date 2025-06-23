@@ -8,6 +8,7 @@ in the PDF document tree. It ensures that key-value pairs in the dictionaries ar
 written or exported, handling the necessary formatting and encoding required for PDF
 dictionaries.
 """
+import typing
 
 from borb.pdf.primitives import PDFType, stream
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -35,7 +36,7 @@ class DictVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

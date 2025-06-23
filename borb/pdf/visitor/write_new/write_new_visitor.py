@@ -158,7 +158,7 @@ class WriteNewVisitor(NodeVisitor):
             return r.bytes()
         return b""
 
-    def go_to_root_and_get_reference(self, node: PDFType) -> PDFType:
+    def go_to_root_and_get_reference(self, node: typing.Any) -> PDFType:
         """
         Resolve the indirect reference of a PDF node via the root visitor.
 
@@ -179,7 +179,7 @@ class WriteNewVisitor(NodeVisitor):
             pass
         return node
 
-    def go_to_root_and_visit(self, node: PDFType) -> typing.Optional[typing.Any]:
+    def go_to_root_and_visit(self, node: typing.Any) -> typing.Optional[typing.Any]:
         """
         Delegate the visiting of a PDF node to the root visitor.
 

@@ -7,6 +7,7 @@ This class is responsible for traversing and processing nodes that contain list 
 in the PDF document tree. It ensures that each element of the list is correctly written
 or exported, managing the necessary formatting and encoding to adhere to PDF standards.
 """
+import typing
 
 from borb.pdf.primitives import PDFType
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -33,7 +34,7 @@ class ListVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

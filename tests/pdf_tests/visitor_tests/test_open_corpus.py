@@ -21,7 +21,7 @@ class TestOpenCorpus(unittest.TestCase):
         "/home/joris-schellekens/Code/borb-pdf-corpus"
     )
 
-    # @unittest.skip
+    @unittest.skip
     def test_open_corpus(self):
         positive: typing.List[pathlib.Path] = []
         positive_timing: typing.List[float] = []
@@ -76,6 +76,6 @@ class TestOpenCorpus(unittest.TestCase):
             for pdf_file in negative:
                 print(f"\t\t- {pdf_file}")
 
-    # @unittest.skip
+    @unittest.skip
     def test_open_single_file_from_corpus(self):
         d = PDF.read(where_from=TestOpenCorpus.CORPUS_DIRECTORY / "0353.pdf")

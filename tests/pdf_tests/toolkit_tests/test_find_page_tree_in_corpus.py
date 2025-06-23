@@ -19,7 +19,7 @@ class TestFindPageTreeInCorpus(unittest.TestCase):
         "/home/joris-schellekens/Code/borb-pdf-corpus"
     )
 
-    # @unittest.skip
+    @unittest.skip
     def test_read_corpus(self):
         for pdf_file in TestFindPageTreeInCorpus.CORPUS_DIRECTORY.iterdir():
 
@@ -58,6 +58,7 @@ class TestFindPageTreeInCorpus(unittest.TestCase):
 
             # pathlib.Path('/home/joris-schellekens/Code/borb-pdf-corpus/0176.pdf')
 
+    @unittest.skip
     def test_read_single_file(self):
         doc = PDF.read(TestFindPageTreeInCorpus.CORPUS_DIRECTORY / "0176.pdf")
         doc.insert_page(Page(), 5)

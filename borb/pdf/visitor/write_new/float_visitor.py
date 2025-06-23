@@ -8,6 +8,7 @@ PDF document structure. It extends the functionality of `WriteNewVisitor` by pro
 specific methods to handle the writing of floating-point values, ensuring proper formatting
 and storage within the PDF.
 """
+import typing
 
 from borb.pdf.primitives import PDFType
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -35,7 +36,7 @@ class FloatVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

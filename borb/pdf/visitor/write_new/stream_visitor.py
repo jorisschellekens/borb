@@ -8,6 +8,7 @@ or embedded files. This class is responsible for traversing nodes that contain s
 data and writing them in the appropriate binary format. It ensures that the data is
 correctly encoded, compressed (if necessary), and stored in compliance with PDF standards.
 """
+import typing
 
 from borb.pdf.primitives import PDFType, stream
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -37,7 +38,7 @@ class StreamVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

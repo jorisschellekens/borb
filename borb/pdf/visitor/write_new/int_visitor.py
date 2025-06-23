@@ -7,6 +7,7 @@ This class is designed to traverse and process nodes containing integer data in 
 document tree. It ensures that integer values are correctly written and formatted according
 to PDF standards, allowing for proper storage and representation within the document.
 """
+import typing
 
 from borb.pdf.primitives import PDFType
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -33,7 +34,7 @@ class IntVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

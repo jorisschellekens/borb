@@ -12,6 +12,7 @@ This class inherits from the `WriteNewVisitor` class, providing a consistent
 approach to processing reference nodes while maintaining the integrity of the
 document structure.
 """
+import typing
 
 from borb.pdf.primitives import PDFType, reference
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -43,7 +44,7 @@ class ReferenceVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 

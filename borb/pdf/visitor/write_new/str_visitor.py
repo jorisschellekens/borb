@@ -10,6 +10,7 @@ handling the necessary formatting, encoding, and any specific PDF string-related
 This class inherits from the `WriteNewVisitor` class and focuses on processing string nodes in a
 manner consistent with the PDF standard.
 """
+import typing
 
 from borb.pdf.primitives import PDFType, name
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
@@ -39,7 +40,7 @@ class StrVisitor(WriteNewVisitor):
     # PUBLIC
     #
 
-    def visit(self, node: PDFType) -> bool:
+    def visit(self, node: typing.Any) -> bool:
         """
         Traverse the PDF document tree using the visitor pattern.
 
