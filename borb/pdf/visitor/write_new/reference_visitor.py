@@ -14,7 +14,7 @@ document structure.
 """
 import typing
 
-from borb.pdf.primitives import PDFType, reference
+from borb.pdf.primitives import reference
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 

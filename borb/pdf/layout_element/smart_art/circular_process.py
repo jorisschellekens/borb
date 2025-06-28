@@ -12,15 +12,15 @@ cycles, iterative processes, or circular economies.
 """
 import typing
 
-from borb.pdf.layout_element.layout_element import LayoutElement
 from borb.pdf.color.color import Color
 from borb.pdf.color.x11_color import X11Color
-from borb.pdf.layout_element.text.paragraph import Paragraph
-from borb.pdf.layout_element.shape.line_art import LineArt
-from borb.pdf.layout_element.shape.shape import Shape
+from borb.pdf.layout_element.layout_element import LayoutElement
 from borb.pdf.layout_element.meta.circular_layout_element_group import (
     CircularLayoutElementGroup,
 )
+from borb.pdf.layout_element.shape.line_art import LineArt
+from borb.pdf.layout_element.shape.shape import Shape
+from borb.pdf.layout_element.text.paragraph import Paragraph
 
 
 class CircularProcess:

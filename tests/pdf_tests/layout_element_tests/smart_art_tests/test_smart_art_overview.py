@@ -1,16 +1,13 @@
 import unittest
-from sndhdr import whathdr
 
 from borb.pdf import (
     Document,
     Page,
     MultiColumnLayout,
-    PageLayout,
     SmartArt,
     X11Color,
     PDF,
     Paragraph,
-    HorizontalBreak,
 )
 
 

@@ -12,7 +12,7 @@ manner consistent with the PDF standard.
 """
 import typing
 
-from borb.pdf.primitives import PDFType, hexstr
+from borb.pdf.primitives import hexstr
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 

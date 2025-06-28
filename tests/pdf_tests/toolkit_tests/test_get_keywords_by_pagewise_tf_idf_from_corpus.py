@@ -2,8 +2,6 @@ import pathlib
 import typing
 import unittest
 
-import requests
-
 from borb.pdf import Pipeline, PDF, Source, GetKeywordsByPagewiseTFIDF
 
 

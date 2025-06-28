@@ -10,7 +10,6 @@ and storage within the PDF.
 """
 import typing
 
-from borb.pdf.primitives import PDFType
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 

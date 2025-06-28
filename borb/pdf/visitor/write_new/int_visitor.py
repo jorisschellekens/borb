@@ -9,7 +9,6 @@ to PDF standards, allowing for proper storage and representation within the docu
 """
 import typing
 
-from borb.pdf.primitives import PDFType
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 

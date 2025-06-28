@@ -2,7 +2,6 @@ import unittest
 
 from borb.pdf import PDF, SmartArt
 from borb.pdf.document import Document
-from borb.pdf.layout_element.smart_art.circular_process import CircularProcess
 from borb.pdf.page import Page
 from borb.pdf.page_layout.page_layout import PageLayout
 from borb.pdf.page_layout.single_column_layout import SingleColumnLayout
@@ -24,7 +23,7 @@ class TestCircularProcess(unittest.TestCase):
                     "Potassium",
                     "Vitamin A",
                     "Manganese",
-                    "Fiber"
+                    "Fiber",
                 ],
             )
         )

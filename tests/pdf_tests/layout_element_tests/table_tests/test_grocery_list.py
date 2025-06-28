@@ -6,16 +6,13 @@ from borb.pdf import (
     Document,
     Page,
     MultiColumnLayout,
-    PageLayout,
     Table,
-    FlexibleColumnWidthTable,
     Paragraph,
     PDF,
     Space,
     X11Color,
     GoogleTrueTypeFont,
     Font,
-    LayoutElement,
     FixedColumnWidthTable,
 )
 from tests.secrets import populate_os_environ

@@ -12,7 +12,7 @@ manner consistent with the PDF standard.
 """
 import typing
 
-from borb.pdf.primitives import PDFType, name
+from borb.pdf.primitives import name
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 

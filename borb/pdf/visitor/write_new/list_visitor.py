@@ -9,7 +9,6 @@ or exported, managing the necessary formatting and encoding to adhere to PDF sta
 """
 import typing
 
-from borb.pdf.primitives import PDFType
 from borb.pdf.visitor.write_new.write_new_visitor import WriteNewVisitor
 
 
