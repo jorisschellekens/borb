@@ -1,4 +1,4 @@
-# Privacy Policy
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_square_64_64.png) Privacy Policy
 
 When you use `borb`, you’re trusting us with your information.  
 We understand this is a big responsibility and work hard to protect your data and put you in control.

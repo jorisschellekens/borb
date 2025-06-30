@@ -1,4 +1,4 @@
-# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) License
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_square_64_64.png) License
 
 This program is offered under a commercial license and under the AGPL license.
 For commercial licensing, see the pricing table below. For AGPL licensing, refer to the terms described in the **AGPL Licensing** section.

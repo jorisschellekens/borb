@@ -1,4 +1,4 @@
-# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) Code of Conduct
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_square_64_64.png) Code of Conduct
 
 
 ## Introduction

@@ -1,4 +1,4 @@
-# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) Contributor License Agreement
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_square_64_64.png) Contributor License Agreement
 
 In order for borb to have a clear understanding of its ownership and rights in the intellectual property associated with the borb software library (hereinafter the “borb Project”), and to clearly determine the responsibilities and obligations related to Contributions (as defined herein), borb requires a signed Contributor License Agreement (CLA) from each Contributor. This Agreement protects both the Contributor and borb.
 

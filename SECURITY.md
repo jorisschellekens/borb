@@ -1,4 +1,4 @@
-# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) Security
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_square_64_64.png)Security
 
 The `borb` team and community prioritize the security of the `borb` library. We deeply value your efforts to responsibly disclose vulnerabilities and will work to acknowledge and address your contributions promptly.
 

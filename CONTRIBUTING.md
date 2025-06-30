@@ -1,4 +1,4 @@
-# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_64.png) Contributing
+# ![borb logo](https://github.com/jorisschellekens/borb/raw/master/logo/borb_square_64_64.png) Contributing
 
 
 We’re excited to have you contribute to **borb**! Follow these guidelines to make the process smooth and enjoyable for everyone.
