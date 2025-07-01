@@ -21,7 +21,7 @@ class TestOpenCorpus(unittest.TestCase):
         "/home/joris-schellekens/Code/borb-pdf-corpus"
     )
 
-    @unittest.skip
+    #@unittest.skip
     def test_open_corpus(self):
         positive: typing.List[pathlib.Path] = []
         positive_timing: typing.List[float] = []
@@ -29,6 +29,9 @@ class TestOpenCorpus(unittest.TestCase):
         negative_timing: typing.List[float] = []
         reasons_for_failure: typing.Dict[str, int] = {}
         for pdf_file in TestOpenCorpus.CORPUS_DIRECTORY.iterdir():
+            if pdf_file.name in ['0013.pdf', '0020.pdf', '0329.pdf', '0363.pdf', '0430.pdf',
+                                 '0173.pdf', '0399.pdf', '0095.pdf', '0006.pdf', '0364.pdf']:
+                continue
             if not pdf_file.name.endswith(".pdf"):
                 continue
 

@@ -78,7 +78,12 @@ class Helvetica(StandardType1Font):
         :return:                    The width (in points) of the text in the specified font size.
         """
         if self.get("FontDescriptor", {}).get("Widths", None) is not None:
-            return super().get_width(font_size=font_size, text=text)
+            return super().get_width(
+                text=text,
+                character_spacing=character_spacing,
+                font_size=font_size,
+                word_spacing=word_spacing,
+            )
 
         # default
         if len(text) == 0:
