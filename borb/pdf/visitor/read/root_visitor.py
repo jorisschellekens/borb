@@ -164,7 +164,13 @@ class RootVisitor(ReadVisitor):
             w = v.visit(node)
             if w is not None:
                 # store in cache
-                if isinstance(node, int):
+                if (
+                    isinstance(node, int)
+                    and isinstance(w, tuple)
+                    and len(w) == 2
+                    and isinstance(w[1], int)
+                    and abs(w[1] - node) > 256
+                ):
                     self.__cache[node] = w
                 # return
                 return w
