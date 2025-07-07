@@ -114,37 +114,6 @@ class ReferenceVisitor(ReadVisitor):
             return self.__visit_reference(o)
         return o
 
-    def __visit_reference(self, r: reference) -> typing.Optional[PDFType]:
-        # IF we are already resolving that reference (for instance /Parent)
-        # THEN do not attempt to visit the byte offset
-        if self.__reference_is_being_resolved(r):
-            return r
-
-        # mark reference as being resolved
-        self.__mark_reference_as_being_resolved(r)
-
-        # IF we have already resolved the reference in the past
-        # THEN simply return that item
-        if r.get_referenced_object() is not None:
-            return r.get_referenced_object()
-
-        # IF the reference has a parent stream
-        # THEN call __visit_object_stm_reference
-        if r.get_index_in_parent_stream() is not None:
-            retval = self.__visit_object_stm_reference(r) or r, -1
-            r._reference__referenced_object = retval[0]
-            return r.get_referenced_object()
-
-        # IF the reference has a byte offset
-        # THEN call  __visit_byte_offset_reference
-        if r.get_byte_offset() is not None:
-            retval = self.__visit_byte_offset_reference(r) or r, -1
-            r._reference__referenced_object = retval[0]  # type: ignore[attr-defined]
-            return r.get_referenced_object()
-
-        # default (not able to resolve)
-        return r
-
     def __visit_byte_offset_reference(self, r: reference) -> typing.Optional[PDFType]:
 
         # attempt to resolve the reference
@@ -238,6 +207,37 @@ class ReferenceVisitor(ReadVisitor):
         referenced_object = objs[index_in_parent_stream]
         referenced_object = self.__resolve_references(referenced_object)
         return referenced_object
+
+    def __visit_reference(self, r: reference) -> typing.Optional[PDFType]:
+        # IF we are already resolving that reference (for instance /Parent)
+        # THEN do not attempt to visit the byte offset
+        if self.__reference_is_being_resolved(r):
+            return r
+
+        # mark reference as being resolved
+        self.__mark_reference_as_being_resolved(r)
+
+        # IF we have already resolved the reference in the past
+        # THEN simply return that item
+        if r.get_referenced_object() is not None:
+            return r.get_referenced_object()
+
+        # IF the reference has a parent stream
+        # THEN call __visit_object_stm_reference
+        if r.get_index_in_parent_stream() is not None:
+            retval = self.__visit_object_stm_reference(r) or r, -1
+            r._reference__referenced_object = retval[0]
+            return r.get_referenced_object()
+
+        # IF the reference has a byte offset
+        # THEN call  __visit_byte_offset_reference
+        if r.get_byte_offset() is not None:
+            retval = self.__visit_byte_offset_reference(r) or r, -1
+            r._reference__referenced_object = retval[0]  # type: ignore[attr-defined]
+            return r.get_referenced_object()
+
+        # default (not able to resolve)
+        return r
 
     #
     # PUBLIC
