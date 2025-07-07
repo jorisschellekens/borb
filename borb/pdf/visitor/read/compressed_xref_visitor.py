@@ -189,7 +189,7 @@ class CompressedXRefVisitor(XRefVisitor):
 
         # process decoded bytes
         decoded_xref_bytes: bytes = tmp_stream["DecodedBytes"]
-        xref: typing.List[PDFType] = []
+        xref: typing.List[reference] = []
         for k in range(0, len(indices), 2):
             start = indices[k]
             length = indices[k + 1]
