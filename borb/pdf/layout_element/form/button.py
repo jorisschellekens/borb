@@ -275,7 +275,7 @@ class Button(FormField):
 
         # BDC
         # fmt: off
-        Button._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
+        Button._begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint
@@ -317,4 +317,4 @@ class Button(FormField):
         # fmt: on
 
         # EMC
-        Button._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        Button._end_marked_content(page=page)  # type: ignore[attr-defined]

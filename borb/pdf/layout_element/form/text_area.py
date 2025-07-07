@@ -243,7 +243,7 @@ class TextArea(FormField):
 
         # BDC
         # fmt: off
-        TextArea._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
+        TextArea._begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -269,4 +269,4 @@ class TextArea(FormField):
                                                content_y + content_h]
 
         # EMC
-        TextArea._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        TextArea._end_marked_content(page=page)  # type: ignore[attr-defined]

@@ -279,7 +279,7 @@ class UnorderedList(List):
 
         # BDC
         # fmt: off
-        UnorderedList._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='L')  # type: ignore[attr-defined]
+        UnorderedList._begin_marked_content_with_dictionary(page=page, structure_element_type='L')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -296,7 +296,7 @@ class UnorderedList(List):
 
             # BDC
             # fmt: off
-            UnorderedList._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='LI')  # type: ignore[attr-defined]
+            UnorderedList._begin_marked_content_with_dictionary(page=page, structure_element_type='LI')  # type: ignore[attr-defined]
             # fmt: on
 
             # paint index element
@@ -324,10 +324,10 @@ class UnorderedList(List):
             )
 
             # EMC
-            UnorderedList._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+            UnorderedList._end_marked_content(page=page)  # type: ignore[attr-defined]
 
             # next element(s) should be lower
             bottom_y += max(index_h, elem_h)
 
         # EMC
-        UnorderedList._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        UnorderedList._end_marked_content(page=page)  # type: ignore[attr-defined]

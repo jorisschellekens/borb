@@ -270,7 +270,7 @@ class CheckBox(FormField):
 
         # BDC
         # fmt: off
-        CheckBox._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
+        CheckBox._begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -298,4 +298,4 @@ class CheckBox(FormField):
                                                content_y + content_h]
 
         # EMC
-        CheckBox._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        CheckBox._end_marked_content(page=page)  # type: ignore[attr-defined]

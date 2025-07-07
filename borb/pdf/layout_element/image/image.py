@@ -322,7 +322,7 @@ class Image(LayoutElement):
 
         # BDC
         # fmt: off
-        Image._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Figure')  # type: ignore[attr-defined]
+        Image._begin_marked_content_with_dictionary(page=page, structure_element_type='Figure')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -332,7 +332,7 @@ class Image(LayoutElement):
         self._LayoutElement__previous_paint_box = (background_x, background_y, w, h)
 
         # leading newline (if needed)
-        self._append_newline_to_content_stream(page)
+        Image._append_newline_to_content_stream(page)
 
         # store graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"
@@ -351,4 +351,4 @@ class Image(LayoutElement):
         page["Contents"]["DecodedBytes"] += b"Q\n"
 
         # EMC
-        Image._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        Image._end_marked_content(page=page)  # type: ignore[attr-defined]

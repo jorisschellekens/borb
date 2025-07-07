@@ -140,14 +140,16 @@ class LayoutElement:
     # PRIVATE
     #
 
-    def _append_newline_to_content_stream(self, page: Page) -> None:
+    @staticmethod
+    def _append_newline_to_content_stream(page: Page) -> None:
         if (
             len(page["Contents"]["DecodedBytes"]) > 0
             and page["Contents"]["DecodedBytes"][-1] != b"\n"[0]
         ):
             page["Contents"]["DecodedBytes"] += b"\n"
 
-    def _append_space_to_content_stream(self, page: Page) -> None:
+    @staticmethod
+    def _append_space_to_content_stream(page: Page) -> None:
         if (
             len(page["Contents"]["DecodedBytes"]) > 0
             and page["Contents"]["DecodedBytes"][-1] != b" "[0]
@@ -155,7 +157,7 @@ class LayoutElement:
             page["Contents"]["DecodedBytes"] += b"\n"
 
     @staticmethod
-    def __begin_marked_content_with_dictionary(
+    def _begin_marked_content_with_dictionary(
         page: Page,
         structure_element_type: str,
         alt: typing.Optional[str] = None,
@@ -201,7 +203,7 @@ class LayoutElement:
         # fmt: on
 
     @staticmethod
-    def __end_marked_content(page: Page) -> None:
+    def _end_marked_content(page: Page) -> None:
         # check whether the conformance level requires us to do this
         document: typing.Optional[Document] = page.get_document()
         if document is None:
@@ -242,7 +244,7 @@ class LayoutElement:
             return
 
         # leading newline (if needed)
-        self._append_newline_to_content_stream(page)
+        LayoutElement._append_newline_to_content_stream(page)
 
         # store the graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"

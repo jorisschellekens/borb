@@ -244,7 +244,7 @@ class TextBox(FormField):
 
         # BDC
         # fmt: off
-        TextBox._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
+        TextBox._begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders

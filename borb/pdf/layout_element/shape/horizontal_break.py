@@ -195,7 +195,7 @@ class HorizontalBreak(LayoutElement):
         :return:                None.
         """
         # leading newline (if needed)
-        self._append_newline_to_content_stream(page)
+        HorizontalBreak._append_newline_to_content_stream(page)
 
         # store graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"

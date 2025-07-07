@@ -365,7 +365,7 @@ class Shape(LayoutElement):
 
         # BDC
         # fmt: off
-        Shape._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Figure')  # type: ignore[attr-defined]
+        Shape._begin_marked_content_with_dictionary(page=page, structure_element_type='Figure')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -375,7 +375,7 @@ class Shape(LayoutElement):
         self._LayoutElement__previous_paint_box = (background_x, background_y, w, h)
 
         # leading newline (if needed)
-        self._append_newline_to_content_stream(page)
+        Shape._append_newline_to_content_stream(page)
 
         # store graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"
@@ -459,7 +459,7 @@ class Shape(LayoutElement):
         page["Contents"]["DecodedBytes"] += b"Q\n"
 
         # EMC
-        Shape._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        Shape._end_marked_content(page=page)  # type: ignore[attr-defined]
 
     def rotate(self, angle_in_degrees: float) -> "Shape":
         """

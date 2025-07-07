@@ -254,7 +254,7 @@ class DropDownList(FormField):
 
         # BDC
         # fmt: off
-        DropDownList._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
+        DropDownList._begin_marked_content_with_dictionary(page=page, structure_element_type='Form')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -280,4 +280,4 @@ class DropDownList(FormField):
                                                content_y + content_h]
 
         # EMC
-        DropDownList._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        DropDownList._end_marked_content(page=page)  # type: ignore[attr-defined]

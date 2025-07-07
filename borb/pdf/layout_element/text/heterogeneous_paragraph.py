@@ -337,7 +337,7 @@ class HeterogeneousParagraph(LayoutElement):
 
         # BDC
         # fmt: off
-        HeterogeneousParagraph._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='P')  # type: ignore[attr-defined]
+        HeterogeneousParagraph._begin_marked_content_with_dictionary(page=page, structure_element_type='P')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -406,7 +406,7 @@ class HeterogeneousParagraph(LayoutElement):
                 line_x += cw
 
         # EMC
-        HeterogeneousParagraph._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        HeterogeneousParagraph._end_marked_content(page=page)  # type: ignore[attr-defined]
 
         # update bounding boxes of (original) Chunk objects
         min_max_x_y: typing.Dict[Chunk, typing.Tuple[int, int, int, int]] = {}

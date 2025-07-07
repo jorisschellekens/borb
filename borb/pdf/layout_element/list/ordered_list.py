@@ -236,7 +236,7 @@ class OrderedList(List):
 
         # BDC
         # fmt: off
-        OrderedList._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='L')  # type: ignore[attr-defined]
+        OrderedList._begin_marked_content_with_dictionary(page=page, structure_element_type='L')  # type: ignore[attr-defined]
         # fmt: on
 
         # paint background/borders
@@ -253,7 +253,7 @@ class OrderedList(List):
 
             # BDC
             # fmt: off
-            OrderedList._LayoutElement__begin_marked_content_with_dictionary(page=page, structure_element_type='LI')  # type: ignore[attr-defined]
+            OrderedList._begin_marked_content_with_dictionary(page=page, structure_element_type='LI')  # type: ignore[attr-defined]
             # fmt: on
 
             # paint index element
@@ -281,10 +281,10 @@ class OrderedList(List):
             )
 
             # EMC
-            OrderedList._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+            OrderedList._end_marked_content(page=page)  # type: ignore[attr-defined]
 
             # next element(s) should be lower
             bottom_y += max(index_h, elem_h)
 
         # EMC
-        OrderedList._LayoutElement__end_marked_content(page=page)  # type: ignore[attr-defined]
+        OrderedList._end_marked_content(page=page)  # type: ignore[attr-defined]

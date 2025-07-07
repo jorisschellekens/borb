@@ -249,7 +249,7 @@ class Watermark(Image):
         page["Resources"]["XObject"][image_name] = image_stream
 
         # leading newline (if needed)
-        self._append_newline_to_content_stream(page)
+        Watermark._append_newline_to_content_stream(page)
 
         # store graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"

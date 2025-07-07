@@ -354,7 +354,7 @@ class Chunk(LayoutElement):
         self._LayoutElement__previous_paint_box = (background_x, background_y, w, h)
 
         # leading newline (if needed)
-        self._append_newline_to_content_stream(page)
+        Chunk._append_newline_to_content_stream(page)
 
         # store graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"
