@@ -56,6 +56,20 @@ class ReferenceVisitor(ReadVisitor):
     # PRIVATE
     #
 
+    def __get_modified_root_visitor(self) -> ReadVisitor:
+        # build a (modified) FacadeVisitor
+        # fmt: off
+        rv = RootVisitor()
+        rv._RootVisitor__visitors = [x for x in rv._RootVisitor__visitors if not isinstance(x, DocumentVisitor)]                                        # type: ignore[attr-defined]
+        rv._RootVisitor__visitors = [x for x in rv._RootVisitor__visitors if not isinstance(x, PlaintextXRefVisitor)]                                   # type: ignore[attr-defined]
+        rv._RootVisitor__visitors = [x for x in rv._RootVisitor__visitors if not isinstance(x, CompressedXRefVisitor)]                                  # type: ignore[attr-defined]
+        rv._RootVisitor__visitors = [x if not isinstance(x, ReferenceVisitor) else NoOpReferenceVisitor(root=rv) for x in rv._RootVisitor__visitors]    # type: ignore[attr-defined]
+        rv._ReadVisitor__root._RootVisitor__xref = self._ReadVisitor__root._RootVisitor__xref                                                           # type: ignore[attr-defined]
+        # fmt: on
+
+        # return
+        return rv
+
     def __look_up_reference(
         self, object_nr: int, generation_nr: int
     ) -> typing.Optional[reference]:
@@ -97,17 +111,41 @@ class ReferenceVisitor(ReadVisitor):
                 )
                 or o
             )
-            return self.__visit_byte_offset_reference(o) or o
+            return self.__visit_reference(o)
         return o
 
-    def __visit_byte_offset_reference(self, r: reference) -> typing.Optional[PDFType]:
-        # IF the reference is already being resolved
-        # THEN return the reference as is
+    def __visit_reference(self, r: reference) -> typing.Optional[PDFType]:
+        # IF we are already resolving that reference (for instance /Parent)
+        # THEN do not attempt to visit the byte offset
         if self.__reference_is_being_resolved(r):
             return r
 
         # mark reference as being resolved
         self.__mark_reference_as_being_resolved(r)
+
+        # IF we have already resolved the reference in the past
+        # THEN simply return that item
+        if r.get_referenced_object() is not None:
+            return r.get_referenced_object()
+
+        # IF the reference has a parent stream
+        # THEN call __visit_object_stm_reference
+        if r.get_index_in_parent_stream() is not None:
+            retval = self.__visit_object_stm_reference(r) or r, -1
+            r._reference__referenced_object = retval[0]
+            return r.get_referenced_object()
+
+        # IF the reference has a byte offset
+        # THEN call  __visit_byte_offset_reference
+        if r.get_byte_offset() is not None:
+            retval = self.__visit_byte_offset_reference(r) or r, -1
+            r._reference__referenced_object = retval[0]  # type: ignore[attr-defined]
+            return r.get_referenced_object()
+
+        # default (not able to resolve)
+        return r
+
+    def __visit_byte_offset_reference(self, r: reference) -> typing.Optional[PDFType]:
 
         # attempt to resolve the reference
         try:
@@ -152,51 +190,49 @@ class ReferenceVisitor(ReadVisitor):
         # decode
         decode_stream(object_stm)
 
-        # build a (modified) FacadeVisitor
+        # decode the bytes
         # fmt: off
-        rv = RootVisitor()
-        rv._RootVisitor__visitors = [x for x in rv._RootVisitor__visitors if not isinstance(x, DocumentVisitor)]                                        # type: ignore[attr-defined]
-        rv._RootVisitor__visitors = [x for x in rv._RootVisitor__visitors if not isinstance(x, PlaintextXRefVisitor)]                                   # type: ignore[attr-defined]
-        rv._RootVisitor__visitors = [x for x in rv._RootVisitor__visitors if not isinstance(x, CompressedXRefVisitor)]                                  # type: ignore[attr-defined]
-        rv._RootVisitor__visitors = [x if not isinstance(x, ReferenceVisitor) else NoOpReferenceVisitor(root=rv) for x in rv._RootVisitor__visitors]    # type: ignore[attr-defined]
-        rv._ReadVisitor__root._RootVisitor__xref = self._ReadVisitor__root._RootVisitor__xref                                                           # type: ignore[attr-defined]
+        header_offset: int = object_stm.get("First", 0)
+        object_stm_header: bytes = object_stm["DecodedBytes"][:header_offset]
+        object_stm_bytes_without_header: bytes = object_stm["DecodedBytes"][header_offset:]
         # fmt: on
 
-        # decode the bytes
-        object_stm_bytes: bytes = object_stm["DecodedBytes"]
         objs: typing.List[PDFType] = []
-        while len(object_stm_bytes) > 0:
+        while len(object_stm_bytes_without_header) > 0:
 
             # IF we see a space
             # THEN skip
-            if object_stm_bytes[0:1] == b" ":
-                object_stm_bytes = object_stm_bytes[1:]
+            if object_stm_bytes_without_header[0:1] == b" ":
+                object_stm_bytes_without_header = object_stm_bytes_without_header[1:]
                 continue
 
             # IF we see a newline (\n\r)
             # THEN skip
-            if object_stm_bytes[0:2] == b"\n\r":
-                object_stm_bytes = object_stm_bytes[2:]
+            if object_stm_bytes_without_header[0:2] == b"\n\r":
+                object_stm_bytes_without_header = object_stm_bytes_without_header[2:]
                 continue
-            if object_stm_bytes[0:2] == b"\r\n":
-                object_stm_bytes = object_stm_bytes[2:]
+            if object_stm_bytes_without_header[0:2] == b"\r\n":
+                object_stm_bytes_without_header = object_stm_bytes_without_header[2:]
                 continue
-            if object_stm_bytes[0:2] == b"\n":
-                object_stm_bytes = object_stm_bytes[2:]
+            if object_stm_bytes_without_header[0:1] == b"\n":
+                object_stm_bytes_without_header = object_stm_bytes_without_header[1:]
                 continue
-            if object_stm_bytes[0:1] == b"\r":
-                object_stm_bytes = object_stm_bytes[1:]
+            if object_stm_bytes_without_header[0:1] == b"\r":
+                object_stm_bytes_without_header = object_stm_bytes_without_header[1:]
                 continue
 
+            rv = self.__get_modified_root_visitor()
             rv._ReadVisitor__root._RootVisitor__source = b""  # type: ignore[attr-defined]
-            referenced_object_and_i = rv.visit(object_stm_bytes)
+            referenced_object_and_i = rv.visit(object_stm_bytes_without_header)
             if referenced_object_and_i is None:
                 break
             objs += [referenced_object_and_i[0]]
-            object_stm_bytes = object_stm_bytes[referenced_object_and_i[1] :]
+            object_stm_bytes_without_header = object_stm_bytes_without_header[
+                referenced_object_and_i[1] :
+            ]
 
-        # first 2 objs are always object number and generation nr
-        objs = objs[2:]
+        # header:  list of object numbers and their offsets (within the stream)
+        header: typing.List[int] = [int(x) for x in object_stm_header.split()]
 
         # return
         referenced_object = objs[index_in_parent_stream]
@@ -278,25 +314,5 @@ class ReferenceVisitor(ReadVisitor):
                 i,
             )
 
-        # IF we are already resolving that reference (for instance /Parent)
-        # THEN do not attempt to visit the byte offset
-        if self.__reference_is_being_resolved(matching_ref):
-            return matching_ref, i
-
-        # IF the reference has a byte offset
-        # THEN call  __visit_byte_offset_reference
-        if matching_ref.get_byte_offset() is not None:
-            retval = (
-                self.__visit_byte_offset_reference(r=matching_ref) or matching_ref,
-                i,
-            )
-            matching_ref._reference__referenced_object = retval[0]  # type: ignore[attr-defined]
-            return retval
-
-        # IF the reference has a parent stream
-        # THEN start reading from that object
-        if matching_ref.get_index_in_parent_stream() is not None:
-            return self.__visit_object_stm_reference(r=matching_ref) or matching_ref, i
-
         # default
-        return matching_ref, i
+        return self.__visit_reference(matching_ref), i

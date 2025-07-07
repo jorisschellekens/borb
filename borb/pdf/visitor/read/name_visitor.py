@@ -59,10 +59,7 @@ class NameVisitor(ReadVisitor):
         # find
         i: int = node
         j: int = node + 1
-        while (
-            self.get_bytes()[j]
-            in b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-_.#,"
-        ):
+        while self.get_bytes()[j] not in b"()<>[]{}/%\x00\x09\x0a\x0c\x0d\x20":
             j += 1
 
         # return

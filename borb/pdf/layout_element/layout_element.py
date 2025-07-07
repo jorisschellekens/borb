@@ -140,6 +140,20 @@ class LayoutElement:
     # PRIVATE
     #
 
+    def _append_newline_to_content_stream(self, page: Page) -> None:
+        if (
+            len(page["Contents"]["DecodedBytes"]) > 0
+            and page["Contents"]["DecodedBytes"][-1] != b"\n"[0]
+        ):
+            page["Contents"]["DecodedBytes"] += b"\n"
+
+    def _append_space_to_content_stream(self, page: Page) -> None:
+        if (
+            len(page["Contents"]["DecodedBytes"]) > 0
+            and page["Contents"]["DecodedBytes"][-1] != b" "[0]
+        ):
+            page["Contents"]["DecodedBytes"] += b"\n"
+
     @staticmethod
     def __begin_marked_content_with_dictionary(
         page: Page,
@@ -228,11 +242,7 @@ class LayoutElement:
             return
 
         # leading newline (if needed)
-        if (
-            len(page["Contents"]["DecodedBytes"]) > 0
-            and page["Contents"]["DecodedBytes"][-1] != b"\n"[0]
-        ):
-            page["Contents"]["DecodedBytes"] += b"\n"
+        self._append_newline_to_content_stream(page)
 
         # store the graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"

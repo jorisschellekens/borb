@@ -195,14 +195,10 @@ class HorizontalBreak(LayoutElement):
         :return:                None.
         """
         # leading newline (if needed)
-        if (
-            len(page["Contents"]["DecodedBytes"]) > 0
-            and page["Contents"]["DecodedBytes"][-1] != b"\n"[0]
-        ):
-            page["Contents"]["DecodedBytes"] += b"\n"
+        self._append_newline_to_content_stream(page)
 
         # store graphics state
-        page["Contents"]["DecodedBytes"] += b"Q\n"
+        page["Contents"]["DecodedBytes"] += b"q\n"
 
         # set color
         rgb_line_color: RGBColor = self.__line_color.to_rgb_color()
@@ -245,4 +241,4 @@ class HorizontalBreak(LayoutElement):
         )
 
         # restore graphics state
-        page["Contents"]["DecodedBytes"] += b"q\n"
+        page["Contents"]["DecodedBytes"] += b"Q\n"

@@ -110,10 +110,24 @@ class RootVisitor(ReadVisitor):
         self.__source: bytes = b""  # type: ignore[annotation-unchecked]
         self.__references_being_resolved: typing.List[reference] = []  # type: ignore[annotation-unchecked]
         self.__xref: typing.List[reference] = []  # type: ignore[annotation-unchecked]
+        self.__cache: typing.Dict[int, typing.Any] = {}
 
     #
     # PRIVATE
     #
+
+    @staticmethod
+    def __get_stack_size(size=2):
+        """Get stack size for caller's frame."""
+        import sys
+        from itertools import count
+
+        frame = sys._getframe(size)
+        for size in count(size):
+            frame = frame.f_back
+            if not frame:
+                return size
+        return 0
 
     #
     # PUBLIC
@@ -141,11 +155,18 @@ class RootVisitor(ReadVisitor):
         ):
             self.__source = node
             node = 0
+        # print(f'stack depth: {RootVisitor.__get_stack_size()}, byte pos: {node}')
+        if isinstance(node, int) and node in self.__cache:
+            return self.__cache[node]
         for v in self.__visitors:
             if v is self:
                 continue
             w = v.visit(node)
             if w is not None:
+                # store in cache
+                if isinstance(node, int):
+                    self.__cache[node] = w
+                # return
                 return w
         # debug
         if isinstance(node, int):

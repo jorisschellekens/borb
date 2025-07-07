@@ -105,7 +105,7 @@ class InjectVersionAsCommentVisitor(WriteNewVisitor):
         from borb.pdf import Version
 
         if License.get_company():
-            self._append_newline_if_not_endswith_newline()
+            self._append_newline_to_output_stream()
             self._append_bytes_or_str(
                 f"% borb\n"
                 f"% version {Version.get_current_version()}\n"
@@ -114,7 +114,7 @@ class InjectVersionAsCommentVisitor(WriteNewVisitor):
                 "\n"
             )
         else:
-            self._append_newline_if_not_endswith_newline()
+            self._append_newline_to_output_stream()
             self._append_bytes_or_str(
                 f"% borb\n"
                 f"% version {Version.get_current_version()}\n"

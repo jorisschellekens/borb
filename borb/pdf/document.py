@@ -294,7 +294,7 @@ class Document(dict):
         pages_in_order = [self["Trailer"]["Root"]["Pages"]]
         i: int = 0
         while i < len(pages_in_order):
-            n = pages_in_order[0]
+            n = pages_in_order[i]
 
             # page tree nodes are exploded and processed in next turn
             if isinstance(n, dict) and "Kids" in n:
@@ -305,10 +305,11 @@ class Document(dict):
                 )
                 continue
 
-            # page is processed as expected
+            # IF we processed a Page
+            # THEN move ahead by 1
             if isinstance(n, Page):
                 i += 1
-                continue
+
         # return
         return pages_in_order[index]
 

@@ -82,7 +82,7 @@ class WriteNewVisitor(NodeVisitor):
         # return
         return self
 
-    def _append_newline_if_not_endswith_newline(self) -> "WriteNewVisitor":
+    def _append_newline_to_output_stream(self) -> "WriteNewVisitor":
         # IF the root is None
         # THEN return
         root: typing.Optional[NodeVisitor] = self.__root
@@ -109,7 +109,7 @@ class WriteNewVisitor(NodeVisitor):
         root._append_bytes(b"\n")
         return self
 
-    def _append_space_if_not_endswith_space(self) -> "WriteNewVisitor":
+    def _append_space_to_output_stream(self) -> "WriteNewVisitor":
         # IF the root is None
         # THEN return
         root: typing.Optional[NodeVisitor] = self.__root

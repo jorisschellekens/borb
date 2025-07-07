@@ -267,6 +267,20 @@ class CompressedXRefVisitor(XRefVisitor):
                     )
                     xref += [ref]
 
+        # for every entry that refers to a parent stream
+        # set the byte offset
+        for ref in xref:
+            if ref.get_parent_stream_object_nr() is not None:
+                ref._reference__byte_offset = next(
+                    iter(
+                        [
+                            x.get_byte_offset()
+                            for x in xref[::-1]
+                            if x.get_object_nr() == ref.get_parent_stream_object_nr()
+                        ]
+                    )
+                )
+
         # add to (root) xref tables
         self._ReadVisitor__root._RootVisitor__xref += xref  # type: ignore[attr-defined]
 

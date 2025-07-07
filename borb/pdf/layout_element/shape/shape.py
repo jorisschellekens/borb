@@ -375,11 +375,7 @@ class Shape(LayoutElement):
         self._LayoutElement__previous_paint_box = (background_x, background_y, w, h)
 
         # leading newline (if needed)
-        if (
-            len(page["Contents"]["DecodedBytes"]) > 0
-            and page["Contents"]["DecodedBytes"][-1] != b"\n"[0]
-        ):
-            page["Contents"]["DecodedBytes"] += b"\n"
+        self._append_newline_to_content_stream(page)
 
         # store graphics state
         page["Contents"]["DecodedBytes"] += b"q\n"

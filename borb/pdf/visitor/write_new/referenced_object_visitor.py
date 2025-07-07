@@ -83,7 +83,7 @@ class ReferencedObjectVisitor(WriteNewVisitor):
         self.go_to_root_and_visit(obj)
 
         # newline
-        self._append_newline_if_not_endswith_newline()
+        self._append_newline_to_output_stream()
 
         # end object
         self._append_bytes_or_str("endobj\n\n")

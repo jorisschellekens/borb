@@ -81,12 +81,12 @@ class StreamVisitor(WriteNewVisitor):
             assert isinstance(k, str)
             if is_first_key:
                 self._append_bytes_or_str(f"/{k}")
-                self._append_space_if_not_endswith_space()
+                self._append_space_to_output_stream()
                 is_first_key = False
             else:
-                self._append_space_if_not_endswith_space()
+                self._append_space_to_output_stream()
                 self._append_bytes_or_str(f"/{k}")
-                self._append_space_if_not_endswith_space()
+                self._append_space_to_output_stream()
 
             # write_new value
             v: PDFType = self.go_to_root_and_get_reference(node[k])

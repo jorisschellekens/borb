@@ -58,7 +58,7 @@ class ListVisitor(WriteNewVisitor):
         for i in range(0, N):
             self.go_to_root_and_visit(self.go_to_root_and_get_reference(node[i]))
             if i != N - 1:
-                self._append_space_if_not_endswith_space()
+                self._append_space_to_output_stream()
 
         # end list
         self._append_bytes_or_str("]")
