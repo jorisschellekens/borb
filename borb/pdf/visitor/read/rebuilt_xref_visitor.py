@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-RebuiltXREFVisitor is a low-level PDF visitor that scans the raw PDF byte stream
-to reconstruct the cross-reference (XREF) table. It does so by identifying object
-declarations of the form `<object_number> <generation_number> obj`, recording the
-byte offset at which they occur, and registering these in the document's XREF table.
+A visitor that reconstructs the cross-reference (XREF) table.
 
-This is useful in damaged or linearized PDFs where the standard XREF table may be
-incomplete or missing.
+This class scans the PDF byte stream for object declarations (e.g., "12 0 obj")
+and builds `reference` entries with their byte offsets. It is useful for
+recovering XREF tables in corrupted or linearized PDFs.
 """
 import re
 import typing
@@ -18,12 +16,11 @@ from borb.pdf.visitor.read.read_visitor import ReadVisitor
 
 class RebuiltXREFVisitor(ReadVisitor):
     """
-    A visitor that reconstructs the cross-reference (XREF) table by scanning the raw
-    byte stream for object declarations. Matches lines like "12 0 obj" and records
-    their position, building `reference` entries accordingly.
+    A visitor that reconstructs the cross-reference (XREF) table.
 
-    This class can be used to recover XREF information when it is missing, corrupt,
-    or incomplete.
+    This class scans the PDF byte stream for object declarations (e.g., "12 0 obj")
+    and builds `reference` entries with their byte offsets. It is useful for
+    recovering XREF tables in corrupted or linearized PDFs.
     """
 
     OBJ_PATTERN: re.Pattern = re.compile(
