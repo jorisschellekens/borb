@@ -68,6 +68,18 @@ class PDF:
             return None
         assert isinstance(document_and_index[0], Document)
 
+        # UsageStatistics
+        try:
+            from borb.pdf import UsageStatistics
+
+            UsageStatistics.event(
+                what="PDF.read",
+                number_of_documents=1,
+                number_of_pages=document_and_index[0].get_number_of_pages(),
+            )
+        except:
+            pass
+
         # return
         return document_and_index[0]
 
@@ -94,6 +106,18 @@ class PDF:
 
         # convert everything to bytes using visitor design pattern
         rv.visit(node=what)
+
+        # UsageStatistics
+        try:
+            from borb.pdf import UsageStatistics
+
+            UsageStatistics.event(
+                what="PDF.write",
+                number_of_documents=1,
+                number_of_pages=what.get_number_of_pages(),
+            )
+        except:
+            pass
 
         # handle typing.BinaryIO
         if isinstance(where_to, io.BytesIO):

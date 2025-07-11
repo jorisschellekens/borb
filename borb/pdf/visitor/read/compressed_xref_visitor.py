@@ -16,7 +16,7 @@ in building the PDF object tree for decoding and rendering purposes.
 """
 import typing
 
-from borb.pdf.primitives import PDFType, stream, name, reference
+from borb.pdf.primitives import stream, name, reference
 from borb.pdf.visitor.read.compression.decode_stream import decode_stream
 from borb.pdf.visitor.read.xref_visitor import XRefVisitor
 
