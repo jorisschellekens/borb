@@ -161,6 +161,7 @@ coverage.xml
 .pytest_cache/
 pytestdebug.log
 tests/assets/
+tests/**/assets/**
 
 # Translations
 *.mo
