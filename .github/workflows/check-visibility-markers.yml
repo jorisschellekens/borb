@@ -13,7 +13,7 @@ jobs:
 
       # Step 2: Set up the required Python version
       - name: Configure Python Environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.x'  # Specify the target Python version
 
