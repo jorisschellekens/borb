@@ -84,5 +84,5 @@ setuptools.setup(
     },
     python_requires=">=3.6",
     url="https://github.com/borb-pdf/borb",
-    version="3.0.8",
+    version="3.0.9",
 )
