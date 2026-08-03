@@ -208,4 +208,4 @@ class TestSmoke(TestCase):
         )
         l.append_layout_element(t)
 
-        TestCase.write(what=d, where_to="test_smoke.pdf")
+        TestSmoke.__write(what=d, where_to="test_smoke.pdf")
