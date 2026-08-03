@@ -1,3 +1,4 @@
+from borb.pdf import X11Color
 from borb.pdf.document import Document
 from borb.pdf.layout_element.layout_element import LayoutElement
 from borb.pdf.layout_element.list.abc_ordered_list import OrderedList
@@ -25,6 +26,11 @@ class TestOrderedOrderedListPadding(TestCase):
                 padding_left=100,
                 horizontal_alignment=LayoutElement.HorizontalAlignment.LEFT,
                 vertical_alignment=LayoutElement.VerticalAlignment.TOP,
+                border_color=X11Color.BLACK,
+                border_width_left=1,
+                border_width_right=1,
+                border_width_bottom=1,
+                border_width_top=1,
             )
             .append_layout_element(Chunk(text="Lorem"))
             .append_layout_element(Chunk(text="Ipsum"))

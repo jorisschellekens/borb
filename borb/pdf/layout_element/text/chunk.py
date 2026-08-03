@@ -274,7 +274,7 @@ class Chunk(LayoutElement):
         )
         h: int = self.__font_size
         return (
-            w + self.get_padding_bottom() + self.get_padding_right(),
+            w + self.get_padding_left() + self.get_padding_right(),
             h + self.get_padding_bottom() + self.get_padding_top(),
         )
 
