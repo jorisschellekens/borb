@@ -80,8 +80,8 @@ class VisualAssert:
         norm: float = 0
         for i in range(from_col, to_col):
             for j in range(0, image_0.height):
-                pixel0: typing.Tuple[int, int, int] = image_0.getpixel(xy=(i, j))
-                pixel1: typing.Tuple[int, int, int] = image_1.getpixel(xy=(i, j))
+                pixel0: typing.Tuple[int, int, int] = image_0.getpixel(xy=(i, j))  # type: ignore[assignment]
+                pixel1: typing.Tuple[int, int, int] = image_1.getpixel(xy=(i, j))  # type: ignore[assignment]
                 d: float = 0
                 d += (pixel0[0] - pixel1[0]) ** 2 / 255**2
                 d += (pixel0[1] - pixel1[1]) ** 2 / 255**2
@@ -187,11 +187,11 @@ class VisualAssert:
             delete_pdf_or_image_1 = True
 
         # load pdf_or_image_0
-        image_0 = Image.open(pdf_or_image_0)
+        image_0: Image.Image = Image.open(pdf_or_image_0)
         image_0 = image_0.resize(size=(248, 351))
 
         # load pdf_or_image_1
-        image_1 = Image.open(pdf_or_image_1)
+        image_1: Image.Image = Image.open(pdf_or_image_1)
         image_1 = image_1.resize(size=(248, 351))
 
         # compare pixels

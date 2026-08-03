@@ -9,6 +9,7 @@ from borb.pdf import (
     A4Portrait,
 )
 from borb.pdf.primitives import name, hexstr, stream
+from tests.test_case import TestCase
 
 
 class TestLayersOfAbstraction(TestCase):
