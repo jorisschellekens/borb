@@ -1,4 +1,5 @@
 import random
+from unittest import TestCase
 
 from borb.pdf import (
     Page,
@@ -18,10 +19,13 @@ from borb.pdf import (
     X11Color,
     Standard14Fonts,
 )
-from tests.test_case import TestCase
 
 
 class TestSmoke(TestCase):
+
+    # Note: This class does not inherit from the borb TestCase
+    #       because we execute it as a smoke test, and do not want to drag in
+    #       unneeded dependencies (PIL) for doing a visual comparison.
 
     def test_smoke(self):
 
