@@ -1,4 +1,6 @@
+import pathlib
 import random
+import typing
 from unittest import TestCase
 
 from borb.pdf import (
@@ -18,6 +20,7 @@ from borb.pdf import (
     ProgressSquare,
     X11Color,
     Standard14Fonts,
+    PDF,
 )
 
 
@@ -26,6 +29,58 @@ class TestSmoke(TestCase):
     # Note: This class does not inherit from the borb TestCase
     #       because we execute it as a smoke test, and do not want to drag in
     #       unneeded dependencies (PIL) for doing a visual comparison.
+
+    #
+    # PRIVATE
+    #
+
+    @staticmethod
+    def __get_assets_dir() -> pathlib.Path:
+        return TestSmoke.__get_project_dir() / "tests" / "assets"
+
+    @staticmethod
+    def __get_project_dir() -> pathlib.Path:
+        me: pathlib.Path = pathlib.Path(__file__).resolve().parent
+        while True:
+            if (me / ".git").is_dir():
+                return me
+            if me.parent == me:
+                break  # reached filesystem root
+            me = me.parent
+        raise FileNotFoundError(
+            "Could not find project root (.git directory not found)"
+        )
+
+    @staticmethod
+    def __write(
+        what: Document,
+        where_to: typing.Union[pathlib.Path, str, typing.BinaryIO],
+    ) -> None:
+
+        # canonize
+        if isinstance(where_to, str):
+            where_to = pathlib.Path(where_to)
+        where_to = TestSmoke.__get_assets_dir() / where_to.name
+
+        # write
+        PDF.write(what=what, where_to=where_to)
+
+        # IF we are writing to a stream
+        # THEN we can't really compare to the ground truth
+        if isinstance(where_to, typing.BinaryIO):
+            return
+
+        # determine the ground-truth name
+        stem: typing.Optional[str] = None
+        if isinstance(where_to, pathlib.Path):
+            stem = where_to.stem
+        if isinstance(where_to, str):
+            stem = pathlib.Path(where_to).stem
+        assert stem is not None
+
+    #
+    # PUBLIC
+    #
 
     def test_smoke(self):
 
