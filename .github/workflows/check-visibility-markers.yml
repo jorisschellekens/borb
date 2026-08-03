@@ -9,7 +9,7 @@ jobs:
     steps:
       # Step 1: Retrieve the latest code version
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Step 2: Set up the required Python version
       - name: Configure Python Environment
