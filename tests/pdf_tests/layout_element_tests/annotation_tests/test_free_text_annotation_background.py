@@ -1,3 +1,5 @@
+import random
+
 from borb.pdf.color.x11_color import X11Color
 from borb.pdf.document import Document
 from borb.pdf.layout_element.annotation.free_text_annotation import FreeTextAnnotation
@@ -20,6 +22,7 @@ class TestFreeTextAnnotationBackground(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             background_color=X11Color.YELLOW_MUNSELL,

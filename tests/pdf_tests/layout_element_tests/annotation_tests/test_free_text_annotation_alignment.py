@@ -1,3 +1,5 @@
+import random
+
 from borb.pdf.document import Document
 from borb.pdf.layout_element.annotation.free_text_annotation import FreeTextAnnotation
 from borb.pdf.layout_element.layout_element import LayoutElement
@@ -20,6 +22,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -49,6 +52,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -78,6 +82,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -107,6 +112,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -136,6 +142,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -165,6 +172,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -194,6 +202,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -223,6 +232,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
@@ -252,6 +262,7 @@ class TestFreeTextAnnotation(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             size=(100, 100),
