@@ -8,7 +8,7 @@ from tests.test_case import TestCase
 
 class TestPolyLineAnnotationBackground(TestCase):
 
-    def test_poly_line_annotation(self):
+    def test_poly_line_annotation_background(self):
         d: Document = Document()
 
         p: Page = Page()
@@ -29,4 +29,4 @@ class TestPolyLineAnnotationBackground(TestCase):
             page=p,
         )
 
-        TestCase.write(what=d, where_to="test_poly_line_annotation.pdf")
+        TestCase.write(what=d, where_to="test_poly_line_annotation_background.pdf")

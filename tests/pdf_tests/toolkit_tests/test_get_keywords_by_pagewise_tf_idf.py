@@ -43,10 +43,10 @@ class TestGetKeywordsByPagewiseTFIDF(unittest.TestCase):
         # generate text
         for _ in range(0, 10):
             l.append_layout_element(Paragraph(Lipsum.generate_arthur_conan_doyle(512)))
-        TestCase.write(what=d, where_to="output.pdf")
+        TestCase.write(what=d, where_to="test_get_keywords_by_pagewise_tf_idf.pdf")
 
         # step 2: read PDF
-        d: Document = TestCase.read("output.pdf")
+        d: Document = TestCase.read("test_get_keywords_by_pagewise_tf_idf.pdf")
 
         # step 3: process
         keywords: typing.List[MatchType] = Pipeline(

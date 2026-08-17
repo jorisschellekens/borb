@@ -1,3 +1,5 @@
+import random
+
 from borb.pdf.color.x11_color import X11Color
 from borb.pdf.document import Document
 from borb.pdf.layout_element.annotation.free_text_annotation import FreeTextAnnotation
@@ -6,9 +8,9 @@ from borb.pdf.page import Page
 from tests.test_case import TestCase
 
 
-class TestFreeTextAnnotationBackground(TestCase):
+class TestFreeTextAnnotationStrokeColor(TestCase):
 
-    def test_free_text_annotation_background(self):
+    def test_free_text_annotation_stroke_color(self):
         d: Document = Document()
 
         p: Page = Page()
@@ -20,6 +22,7 @@ class TestFreeTextAnnotationBackground(TestCase):
         w: int = p.get_size()[0] - 2 * (p.get_size()[0] // 10)
         h: int = p.get_size()[1] - 2 * (p.get_size()[1] // 10)
 
+        random.seed(0)
         FreeTextAnnotation(
             contents=Lipsum.generate_lorem_ipsum(50),
             stroke_color=X11Color.YELLOW_MUNSELL,
@@ -34,4 +37,4 @@ class TestFreeTextAnnotationBackground(TestCase):
             page=p,
         )
 
-        TestCase.write(what=d, where_to="test_free_text_annotation_background.pdf")
+        TestCase.write(what=d, where_to="test_free_text_annotation_stroke_color.pdf")

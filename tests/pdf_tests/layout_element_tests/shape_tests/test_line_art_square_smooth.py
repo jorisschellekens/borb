@@ -25,4 +25,4 @@ class TestLineArtSquareSmooth(unittest.TestCase):
             page=p,
         )
 
-        TestCase.write(what=d, where_to="test_line_art_square.pdf")
+        TestCase.write(what=d, where_to="test_line_art_square_smooth.pdf")

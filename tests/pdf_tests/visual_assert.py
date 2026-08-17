@@ -224,7 +224,7 @@ class VisualAssert:
             t.join()
 
         # delete tmp files
-        if delete_pdf_or_image_0 and False:
+        if delete_pdf_or_image_0:
             try:
                 pdf_or_image_0.unlink()
             except:

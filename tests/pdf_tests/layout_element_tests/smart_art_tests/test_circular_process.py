@@ -27,4 +27,4 @@ class TestCircularProcess(TestCase):
             )
         )
 
-        TestCase.write(what=d, where_to="test_bending_process.pdf")
+        TestCase.write(what=d, where_to="test_circular_process.pdf")

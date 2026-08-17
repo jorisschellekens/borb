@@ -24,10 +24,10 @@ class TestReadWrite(TestCase):
                 Lipsum.generate_lorem_ipsum(32), font_color=X11Color.YELLOW_MUNSELL
             )
         )
-        TestCase.write(what=d, where_to="test_read_write_001.pdf")
+        TestCase.write(what=d, where_to="test_read_write.pdf")
 
         # STEP 2: read PDF
-        d = TestCase.read(where_from="test_read_write_001.pdf")
+        d = TestCase.read(where_from="test_read_write.pdf")
 
         # STEP 3: add content to PDF
         p = d.get_page(0)
@@ -43,4 +43,4 @@ class TestReadWrite(TestCase):
         ).paint(available_space=(x, y, w, h - 15), page=p)
 
         # STEP 4: write PDF
-        TestCase.write(what=d, where_to="test_read_write_002.pdf")
+        TestCase.write(what=d, where_to="test_read_write_b.pdf")

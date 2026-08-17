@@ -1,3 +1,5 @@
+import random
+
 from borb.pdf import (
     SingleColumnLayout,
     PageLayout,
@@ -21,6 +23,8 @@ class TestWatermark(TestCase):
         d.append_page(p)
 
         l: PageLayout = SingleColumnLayout(p)
+
+        random.seed(0)
         for _ in range(0, 5):
             l.append_layout_element(
                 Paragraph(

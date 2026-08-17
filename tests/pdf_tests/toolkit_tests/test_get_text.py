@@ -1,3 +1,5 @@
+import random
+
 from borb.pdf import (
     Document,
     Page,
@@ -24,6 +26,9 @@ class TestGetText(TestCase):
         p: Page = Page()
         d.append_page(p)
         l: PageLayout = SingleColumnLayout(p)
+
+        # add text
+        random.seed(0)
         l.append_layout_element(
             Paragraph(
                 Lipsum.generate_lorem_ipsum(32),
@@ -31,17 +36,21 @@ class TestGetText(TestCase):
                 font_color=X11Color.PRUSSIAN_BLUE,
             )
         )
+
+        # add image
         l.append_layout_element(
             Image(
                 bytes_path_pil_image_or_url="https://images.unsplash.com/photo-1732130318657-c8740c0f5215",
                 size=(128, 128),
             )
         )
+
+        # add text
         l.append_layout_element(Paragraph(Lipsum.generate_lorem_ipsum(512)))
-        TestCase.write(what=d, where_to="output.pdf")
+        TestCase.write(what=d, where_to="test_get_text.pdf")
 
         # step 2: read PDF
-        d: Document = TestCase.read("output.pdf")
+        d: Document = TestCase.read("test_get_text.pdf")
 
         # step 3: process
         text = Pipeline(

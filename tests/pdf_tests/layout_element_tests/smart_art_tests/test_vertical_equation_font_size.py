@@ -46,7 +46,7 @@ class TestVerticalEquationFontSize(TestCase):
             )
         )
 
-        TestCase.write(what=d, where_to="test_vertical_equation_font_size_large.pdf")
+        TestCase.write(what=d, where_to="test_vertical_equation_font_size_regular.pdf")
 
     def test_vertical_equation_font_size_large(self):
         d: Document = Document()

@@ -1,4 +1,5 @@
 import copy
+import random
 
 from borb.pdf import (
     Document,
@@ -27,6 +28,7 @@ class TestWriteTwice(TestCase):
 
         l: PageLayout = SingleColumnLayout(p)
 
+        random.seed(0)
         l.append_layout_element(Paragraph(Lipsum.generate_lorem_ipsum(32)))
 
         d2 = copy.deepcopy(d1)
@@ -40,15 +42,26 @@ class TestWriteTwice(TestCase):
         p: Page = Page()
         d1.append_page(p)
         l: PageLayout = SingleColumnLayout(p)
+
+        # add text
+        random.seed(0)
         l.append_layout_element(Paragraph(Lipsum.generate_lorem_ipsum(32)))
+
+        # add rectangle
         l.append_layout_element(LineArt.rectangle())
+
+        # add annotation
         l.append_layout_element(TextAnnotation(contents="Lorem ipsum"))
+
+        # add image
         l.append_layout_element(
             Image(
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm0Wq_2sTfpM9NisExXWpwhvxr5bPO2IUPfg&s",
                 size=(100, 100),
             )
         )
+
+        # add table
         l.append_layout_element(
             TableUtil.from_2d_data(
                 [["Lorem", "Ipsum"], [1, 2], [3, 4]]

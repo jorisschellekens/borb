@@ -46,7 +46,7 @@ class TestHeterogeneousParagraph(TestCase):
         delta = time.time() - delta
 
         # persist
-        TestCase.write(what=d, where_to="build_temporary_document.pdf")
+        TestCase.write(what=d, where_to="test_heterogeneous_paragraph_speed.pdf")
 
         # return
         return delta

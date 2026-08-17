@@ -30,7 +30,7 @@ class TestChart(TestCase):
         # return
         return plt
 
-    def test_chart(self):
+    def test_chart_001(self):
         d: Document = Document()
 
         p: Page = Page()
@@ -50,7 +50,7 @@ class TestChart(TestCase):
             page=p,
         )
 
-        TestCase.write(what=d, where_to="test_chart.pdf")
+        TestCase.write(what=d, where_to="test_chart_001.pdf")
 
     def test_chart_002(self):
         import numpy as np  # type: ignore[import-untyped]

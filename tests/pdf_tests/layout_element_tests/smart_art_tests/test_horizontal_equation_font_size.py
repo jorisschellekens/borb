@@ -46,7 +46,9 @@ class TestHorizontalEquationFontSize(TestCase):
             )
         )
 
-        TestCase.write(what=d, where_to="test_horizontal_equation_font_size_large.pdf")
+        TestCase.write(
+            what=d, where_to="test_horizontal_equation_font_size_regular.pdf"
+        )
 
     def test_horizontal_equation_font_size_large(self):
         d: Document = Document()
