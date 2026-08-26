@@ -160,6 +160,7 @@ class FacadeVisitor(ReadVisitor):
             and self.__source == b""
         ):
             self.__source = node
+            self.__cache = {}
             node = 0
         if isinstance(node, int) and node in self.__cache:
             return self.__cache[node]

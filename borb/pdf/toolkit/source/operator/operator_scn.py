@@ -119,7 +119,7 @@ class Operatorscn(Operator):
             assert isinstance(operands[0], int) or isinstance(operands[0], float)
             assert isinstance(operands[1], int) or isinstance(operands[1], float)
             assert isinstance(operands[2], int) or isinstance(operands[2], float)
-            self.__source.stroke_color = RGBColor(
+            self.__source.non_stroke_color = RGBColor(
                 red=int(operands[0] * 255),
                 green=int(operands[1] * 255),
                 blue=int(operands[2] * 255),
@@ -142,7 +142,7 @@ class Operatorscn(Operator):
             assert isinstance(operands[0], int) or isinstance(operands[0], float)
             assert isinstance(operands[1], int) or isinstance(operands[1], float)
             assert isinstance(operands[2], int) or isinstance(operands[2], float)
-            self.__source.stroke_color = RGBColor(
+            self.__source.non_stroke_color = RGBColor(
                 red=int(operands[0] * 255),
                 green=int(operands[1] * 255),
                 blue=int(operands[2] * 255),

@@ -469,6 +469,7 @@ class Source(Pipe):
                 for _ in range(0, operator.get_number_of_operands()):
                     args += [operands.pop(-1)]  # type: ignore[list-item]
                 args.reverse()
+                # print(f'pos:{i}, op: {operator.get_name()}, args: {args}')
                 operator.apply(
                     operands=args,  # type: ignore[arg-type]
                     page=page,
