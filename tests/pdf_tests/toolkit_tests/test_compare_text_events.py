@@ -31,7 +31,7 @@ class AllTextEvents(Sink):
             w: int = int(evt.get_width())
             s: str = evt.get_text()
             for i, c in enumerate(s):
-                self.__glyphs += [Glyph(char=c, x=x + i * (w / len(s)), y=y)]
+                self.__glyphs += [Glyph(char=c, x=int(x + i * (w / len(s))), y=y)]
 
     def get_output(self) -> typing.Any:
         return {0: self.__glyphs}
@@ -71,15 +71,19 @@ class TestCompareTextEvents(unittest.TestCase):
                 w: int = obj["width"]
                 s: str = obj["text"]
                 for i, c in enumerate(s):
-                    glyphs_01 += [Glyph(char=c, x=x + i * (w / len(s)), y=y)]
+                    glyphs_01 += [Glyph(char=c, x=int(x + i * (w / len(s))), y=y)]
 
         # glyphs according to borb
         pdf_file: pathlib.Path = (
             TestCompareTextEvents.FIRST_PAGE_PDF_DIR / f"{pdf_nr:04d}.pdf"
         )
-        glyphs_02: typing.List[Glyph] = Pipeline([Source(), AllTextEvents()]).process(
-            PDF.read(where_from=pdf_file)
-        )[0]
+
+        glyphs_02: typing.List[Glyph] = []
+        
+        if ((document := PDF.read(where_from=pdf_file)) is not None):
+            glyphs_02 = Pipeline([Source(), AllTextEvents()]).process(
+                document
+            )[0]
 
         # compare
         pos: int = 0
